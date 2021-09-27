@@ -18,7 +18,7 @@ Contributions to this repository must:
 
 * Be *functional* -- they must work in at least some particular circumstance.
 * Include the complete code for the plugin or extension.
-* Include a `readme.md` file following our [template]().
+* Include a `readme.md` file following our [template](readme-template.md).
 * Include a `package.json` file.
 
 Optionally, contributions can include:
