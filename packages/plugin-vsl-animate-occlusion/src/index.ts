@@ -1,5 +1,5 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
-import { Snap } from 'snapsvg';
+import Snap from "snapsvg";
 
 const info = <const>{
   name: "vsl-animate-occlusion",
@@ -125,9 +125,7 @@ class VslAnimateOcclusionPlugin implements JsPsychPlugin<Info> {
         var i = trial.stimuli[which_image];
         which_image++;
 
-        // @ts-expect-error What is `mina`?
         c.animate(d[0].params, d[0].ms, mina.linear, function () {
-          // @ts-expect-error What is `mina`?
           c.animate(d[1].params, d[1].ms, mina.linear, function () {
             next_step();
           });

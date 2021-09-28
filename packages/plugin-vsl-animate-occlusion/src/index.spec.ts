@@ -6,15 +6,13 @@ jest.useFakeTimers();
 
 describe("plugin vsl-animate-occlusion", () => {
   it("should load", async () => {
-    const { expectFinished } = await startTimeline([
+    const { expectRunning } = await startTimeline([
       {
         type: vslAnimateOcclusion,
         stimuli: ["img1.png", "img2.png"],
       },
     ]);
 
-    jest.runAllTimers();
-
-    await expectFinished();
+    await expectRunning();
   });
 });
