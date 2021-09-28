@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-template",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "unpkg": "dist/index.browser.min.js",
   "files": [
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib#readme",
   "devDependencies": {
-    "@jspsych/config": "https://gitpkg.now.sh/jspsych/jsPsych/packages/config?modularization",
-    "jspsych": "https://gitpkg.now.sh/jspsych/jsPsych/packages/jspsych?74998174&scripts.postinstall=npm%20install%20--ignore-scripts%20%26%26%20npm%20run%20build"
+    "@jspsych/config": "https://gitpkg.now.sh/jspsych/jsPsych/packages/config?ff2827d",
+    "jspsych": "https://github.com/bjoluc/jspsych-preliminary-package-archives/raw/fde4511/jspsych-7.0.0.tgz"
   }
 }

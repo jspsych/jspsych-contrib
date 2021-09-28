@@ -1,9 +1,19 @@
-import { initJsPsych } from "jspsych";
+import { startTimeline } from "@jspsych/test-utils";
 
 import pluginName from ".";
 
-describe("something", () => {
-  it("should pass", () => {
-    const jsPsych = initJsPsych();
+jest.useFakeTimers();
+
+describe("my plugin", () => {
+  it("should load", async () => {
+    const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
+      {
+        type: pluginName,
+        parameter_name: 1,
+        parameter_name2: "img.png",
+      },
+    ]);
+
+    await expectFinished();
   });
 });
