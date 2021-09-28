@@ -21,7 +21,7 @@ npm install @jspsych-contrib/plugin-vsl-animate-occlusion
 ```
 
 ```js
-import { jsPsychVslAnimateOcclusion } from '@jspsych-contrib/plugin-vsl-animate-occlusion';
+import jsPsychVslAnimateOcclusion from '@jspsych-contrib/plugin-vsl-animate-occlusion';
 ```
 
 ## Compatibility
