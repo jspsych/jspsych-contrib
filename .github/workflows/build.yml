@@ -25,8 +25,11 @@ jobs:
       - name: Install npm@v7
         run: npm install -g npm@7
 
-      - name: Install dependencies and build packages
+      - name: Install dependencies
         run: npm ci
+
+      - name: Build packages
+        run: npm run build
 
       - name: Run tests
         run: npm run test -- --ci --coverage --maxWorkers=2
