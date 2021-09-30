@@ -1,20 +1,12 @@
 import { JsPsych, JsPsychExtension, JsPsychExtensionInfo } from "jspsych";
 
-interface InitializeParameters {
+interface InitializeParameters {}
 
-}
+interface OnStartParameters {}
 
-interface OnStartParameters {
+interface OnLoadParameters {}
 
-}
-
-interface OnLoadParameters {
-
-}
-
-interface OnFinishParameters {
-
-}
+interface OnFinishParameters {}
 
 /**
  * **EXTENSION-NAME**
@@ -26,30 +18,26 @@ interface OnFinishParameters {
  */
 class ExtensionNameExtension implements JsPsychExtension {
   static info: JsPsychExtensionInfo = {
-    name: "extension-name"
-  }
+    name: "extension-name",
+  };
 
   constructor(private jsPsych: JsPsych) {}
 
-  initialize = ({}:InitializeParameters): Promise<void> => {
-    return new Promise((resolve, reject)=>{
+  initialize = ({}: InitializeParameters): Promise<void> => {
+    return new Promise((resolve, reject) => {
       resolve();
-    })
-  }
+    });
+  };
 
-  on_start = ({}:OnStartParameters): void => {
+  on_start = ({}: OnStartParameters): void => {};
 
-  }
+  on_load = ({}: OnLoadParameters): void => {};
 
-  on_load = ({}:OnLoadParameters): void => {
-
-  }
-
-  on_finish = ({}:OnFinishParameters): {[key: string]: any} => {
+  on_finish = ({}: OnFinishParameters): { [key: string]: any } => {
     return {
-      data_property: 'data_value'
-    }
-  }
+      data_property: "data_value",
+    };
+  };
 }
 
 export default ExtensionNameExtension;

@@ -14,30 +14,25 @@ var jsPsychExtensionName = (function (jspsych) {
       this.jsPsych = jsPsych;
     }
 
-    initialize(params){
-      return new Promise((resolve, reject)=>{
+    initialize(params) {
+      return new Promise((resolve, reject) => {
         resolve();
-      })
+      });
     }
 
-    on_start(params){
+    on_start(params) {}
 
-    }
+    on_load(params) {}
 
-    on_load(params){
-
-    }
-
-    on_finish(params){
+    on_finish(params) {
       return {
-        data_property: 'data_value'
-      }
+        data_property: "data_value",
+      };
     }
-    
   }
   ExtensionNameExtension.info = {
-    name: "extension-name"
-  }
+    name: "extension-name",
+  };
 
   return ExtensionNameExtension;
 })(jsPsychModule);
