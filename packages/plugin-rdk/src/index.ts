@@ -661,6 +661,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     //----RDK Functions Begin----
 
     //Function to set the parameters of the array
+    //@ts-expect-error "not all code paths return a value"
     function setParameter(originalVariable) {
       //Check if it is an array and its length matches the aperture then return the original array
       if (originalVariable.constructor === Array && originalVariable.length === nApertures) {
@@ -1094,7 +1095,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     }
 
     //Function to check if dot is out of bounds
-
+    //@ts-expect-error "not all code paths return a value"
     function outOfBounds(dot) {
       //For circle and ellipse
       if (apertureType == 1 || apertureType == 2) {
