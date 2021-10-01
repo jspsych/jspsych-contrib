@@ -39,7 +39,9 @@ We try to review pull requests quickly and add new contributions as soon as the 
 There are two plugin template directories inside the `/packages` directory that you can use as a reference when creating a directory for your plugin contribution. 
 Both templates are compatible with jsPsych v7+.
 
-Regardless of which template you use, you can get started by creating a copy of the template folder in `/packages` and renaming it according to your plugin/extension name. Be sure that you also:
+Regardless of which template you use, you can get started by creating a copy of the template folder in `/packages` and renaming it according to your plugin/extension name. 
+You may also want to read the jsPsych documentation on [plugin development](https://www.jspsych.org/latest/developers/plugin-development/) to understand how to work with the `index.ts`file (in `plugin-template-ts`) and `index.js` file (in `plugin-template`).
+In your plugin/extension folder, be sure that you also:
 * Edit the `package.json` file
 * Add a readme.md file to your plugin/extension directory, based on the [readme template](readme-template.md)
 
@@ -51,17 +53,18 @@ To use this template, you should edit the `src/index.ts` file, keeping the overa
 You can then use the `npm run build` command to compile your `index.ts` code into JavaScript files, which will appear in a `/dist` directory.
 This format also allows you to add a Jest test file (optional), which you can create based on the `src/index.spec.ts` template file.
 
-In the `rollup.config.mjs` file, replace "jsPsychPluginName" with your plugin name (same as the class name in the `index.ts` file).
+In the `rollup.config.mjs` file, replace "jsPsychPluginName" with your plugin name.
 You do not need to edit the other config files in this template directory.
 
 For more details, including setup instructions and detailed explanations of files, please see the jsPsych documentation page: [Configuring the jsPsych development environment](https://www.jspsych.org/latest/developers/configuration).
-You can also look at the plugin/extension folders in the main jsPsych repository `/packages` directory for more examples.
+You can also read the [plugin development documentation](https://www.jspsych.org/latest/developers/plugin-development/) and look at the plugin/extension folders in the main jsPsych repository `/packages` directory for more examples.
 
 ### `plugin-template`
 
 This template allows you to put your plugin's JavaScript code directly into a JavaScript template file, rather than using TypeScript and Node.js/npm. 
 To use this template, you should keep the overall structure of the `index.js` file, but change the details as appropriate for your plugin (plugin name, parameters, etc.).
 The JavaScript code that runs the trial goes inside the `trial` method for the plugin class.
+More information about working with the `index.js` file can be found in the [plugin development documentation](https://www.jspsych.org/latest/developers/plugin-development/).
 
 ## jsPsych version compatibility
 
