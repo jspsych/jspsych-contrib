@@ -10,7 +10,7 @@ The team takes responsibility for fixing bugs and updating plugins to take advan
 Plugins and extensions in this repository are contributed by community members. 
 They are not extensively tested or verified by the core jsPsych team. 
 
-Contributions to `jspsych-contrib` that are broadly useful, well-documented, and-well tested may be added to the main `jsPsych` repository, with the contributor's permission.
+Contributions to `jspsych-contrib` that are broadly useful, well-documented, and well-tested may be added to the main `jsPsych` repository, with the contributor's permission.
 
 ## Guidelines for contributions
 
