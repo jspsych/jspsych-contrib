@@ -37,7 +37,9 @@ We try to review pull requests quickly and add new contributions as soon as the 
 
 There are two plugin template directories inside the `/packages` directory that you can as a reference when creating a directory for your plugin contribution. Both templates are compatible with jsPsych v7+.
 
-* `plugin-template-ts`: This template uses TypeScript source files that are complied into JavaScript using Node.js and npm. This is the format used for plugins in the main jsPsych repo. For more details, please see the jsPsych documentation page [Configuring the jsPsych development environment](https://www.jspsych.org/developers/configuration).
+* `plugin-template-ts`: This template uses TypeScript source files that are complied into JavaScript using Node.js and npm.
+  This is the format used for plugins in the main jsPsych repo.
+  For more details, including setup instructions, please see the jsPsych documentation page [Configuring the jsPsych development environment](https://www.jspsych.org/latest/developers/configuration).
 * `plugin-template`: This template allows you to put your plugin's JavaScript code directly into a JavaScript template file, rather than using TypeScript and Node.js/npm. 
 
 ## jsPsych version compatibility
