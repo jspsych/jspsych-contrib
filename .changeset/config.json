@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@1.6.1/schema.json",
+  "changelog": ["@changesets/changelog-github", { "repo": "jspsych/jspsych-contrib" }],
+  "commit": false,
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "@jspsych-contrib/extension-template",
+    "@jspsych-contrib/extension-template-ts",
+    "@jspsych-contrib/plugin-template",
+    "@jspsych-contrib/plugin-template-ts"
+  ]
+}

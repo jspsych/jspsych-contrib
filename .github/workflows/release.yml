@@ -1,0 +1,44 @@
+name: release
+
+env:
+  HUSKY: 0
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
+
+      - name: Setup Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build packages
+        run: npm run build
+
+      - name: Run tests
+        run: npm run test -- --ci --maxWorkers=2
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096" # Increase heap size for jest
+
+      - name: Create Release Pull Request
+        uses: changesets/action@master
+        with:
+          publish: npm run release
+          commit: "chore(release): version packages"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
