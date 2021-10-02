@@ -1,5 +1,5 @@
 {
-  "name": "@jspsych-contrib/plugin-template",
+  "name": "@jspsych-contrib/extension-template",
   "version": "0.1.0",
   "description": "",
   "unpkg": "dist/index.browser.min.js",
