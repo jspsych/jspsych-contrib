@@ -14,9 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
-          fetch-depth: 0
 
       - name: Setup Node.js 16.x
         uses: actions/setup-node@v2
@@ -34,7 +31,7 @@ jobs:
         env:
           NODE_OPTIONS: "--max-old-space-size=4096" # Increase heap size for jest
 
-      - name: Create Release Pull Request
+      - name: Create Release Pull Request or Publish Packages
         uses: changesets/action@master
         with:
           publish: npm run release
