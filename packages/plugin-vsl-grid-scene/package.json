@@ -24,14 +24,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jspsych/jsPsych.git"
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/plugin-vsl-grid-scene"
   },
   "author": "Josh de Leeuw",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-contrib#readme",
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/packages/plugin-vsl-grid-scene",
   "peerDependencies": {
     "jspsych": ">=7"
   },
