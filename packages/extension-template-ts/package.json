@@ -1,5 +1,6 @@
 {
   "name": "@jspsych-contrib/extension-template-ts",
+  "private": "true",
   "version": "0.1.0",
   "description": "",
   "type": "module",
@@ -24,14 +25,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jspsych/jsPsych.git"
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/extension-template-ts"
   },
   "author": "Josh de Leeuw",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-contrib#readme",
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-template-ts",
   "peerDependencies": {
     "jspsych": ">=7.0.0"
   },
