@@ -9,7 +9,7 @@ This plugin displays a Random Dot Kinematogram (RDK) and allows the subject to r
 ### In browser
 
 ```js
-<script src="http://unpkg.com/@jspsych-contrib/plugin-rdk@1.0.0">
+<script src="https://unpkg.com/@jspsych-contrib/plugin-rdk@1.0.0">
 ```
 
 ### Via NPM
