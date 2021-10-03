@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://unpkg.com/jspsych@7.0.0"></script>
+    <script src="../dist/index.browser.js"></script>
+    <script src="http://unpkg.com/@jspsych/plugin-html-keyboard-response@1.0.0"></script>
+    <script src="http://unpkg.com/@jspsych/plugin-preload@1.0.0"></script>
+    <link rel="stylesheet" href="http://unpkg.com/jspsych@7.0.0/css/jspsych.css">
+  </head>
+  <body></body>
+  <script>
+
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    var images = ["img/1.gif","img/2.gif","img/3.gif","img/4.gif","img/5.gif","img/6.gif","img/7.gif","img/8.gif","img/9.gif","img/10.gif"];
+
+    var preload = {
+      type: jsPsychPreload,
+      auto_preload: true
+    };
+
+    var scene =
+      [
+        [0,"img/8.gif","img/9.gif",0,0],
+        ["img/1.gif", "img/2.gif", 0, 0,0],
+        [ 0, "img/3.gif", 0, 0, 0],
+        ["img/5.gif", "img/4.gif", 0, 0, 0],
+        [0,0,0,0,0]
+      ];
+
+    var trial = {
+      type: jsPsychVslGridScene,
+      stimuli: scene,
+      image_size: [50,50]
+    };
+
+    var trial_2 = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function() {
+        return jsPsychVslGridScene.generate_stimulus(scene, [100,100]);
+      }
+    };
+
+    jsPsych.run([preload, trial, trial_2]);
+
+  </script>
+</html>
