@@ -9,7 +9,7 @@ A short description of the plugin or extension.
 ### In browser
 
 ```js
-<script src="http://unpkg.com/@jspsych-contrib/my-package-name@1.0.0">
+<script src="https://unpkg.com/@jspsych-contrib/my-package-name@1.0.0">
 ```
 
 ### Via NPM
@@ -19,7 +19,7 @@ npm install @jspsych-contrib/my-package-name
 ```
 
 ```js
-import { jsPsychPluginName } from '@jspsych-contrib/my-package-name';
+import jsPsychPluginName from '@jspsych-contrib/my-package-name';
 ```
 
 ## Compatibility
