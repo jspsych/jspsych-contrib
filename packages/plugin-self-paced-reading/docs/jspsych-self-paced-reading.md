@@ -18,7 +18,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | mask_colour            | string   | "black"          | Mask colour                                             |
 | font                   | string   | "30px monospace" | Font to use (NB. requires monospaced font type)         |
 | font_colour            | string   | "black"          | Font colour                                             |
-| line_height            | number   | 80               | Lineheight for multiline text                           |
+| line_height            | number   | 80               | Line height for multiline text                          |
 | canvas_colour          | string   | "white"          | Canvas colour                                           |
 | canvas_size            | number[] | [1280 960]       | Canvas size                                             |
 | canvas_border          | string   | "0px solid black | Canvas border                                           |
@@ -37,7 +37,8 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 | Name        | Type        | Value                                    |
 | --------    | ----------- | ---------------------------------------- |
-| rt          | number      | Keypress time in ms                      |
+| rt_sentence | number      | Running total time (ms)                  |
+| rt_word     | number      | Individual word time (ms)                |
 | word        | string      | Individual word                          |
 | word_number | number      | Individual word number within sentence   |
 | sentence    | string      | Sentence item                            |

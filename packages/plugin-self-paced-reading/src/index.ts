@@ -21,7 +21,7 @@ const info = <const>{
     mask_on_word: {
       type: ParameterType.BOOL,
       pretty_name: "Mask word",
-      default: false,
+      default: true,
     },
     mask_gap_character: {
       type: ParameterType.STRING,
@@ -114,7 +114,6 @@ const info = <const>{
 };
 
 function text_mask(txt: string, mask_character: string) {
-  "use strict";
   return txt.replace(/[^\s]/g, mask_character);
 }
 
@@ -125,7 +124,6 @@ let mask_operator = {
 };
 
 function display_word(mask_type: number) {
-  "use strict";
   return (words: string[], word_number: number) =>
     words
       .map((word, idx) =>
@@ -140,7 +138,6 @@ function display_mask(
   mask_character: string,
   mask_gap_character: string
 ) {
-  "use strict";
   return (words: string[], word_number: number) =>
     words
       .map((word: string, idx: number) =>
@@ -151,17 +148,22 @@ function display_mask(
       .join(mask_gap_character);
 }
 
-function set_canvas(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, colour: string | CanvasGradient | CanvasPattern, translate_origin:Boolean) {
-    let canvas_rect: number[];
-    if (translate_origin) {
-      ctx.translate(canvas.width / 2, canvas.height / 2); // make center (0, 0)
-      canvas_rect = [-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height];
-    } else {
-      canvas_rect = [0, 0, canvas.width, canvas.height];
-    }
-    ctx.fillStyle = colour;
-    ctx.fillRect(canvas_rect[0], canvas_rect[1], canvas_rect[2], canvas_rect[3]);
-    return canvas_rect;
+function set_canvas(
+  canvas: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D,
+  colour: string | CanvasGradient | CanvasPattern,
+  translate_origin: Boolean
+) {
+  let canvas_rect: number[];
+  if (translate_origin) {
+    ctx.translate(canvas.width / 2, canvas.height / 2); // make center (0, 0)
+    canvas_rect = [-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height];
+  } else {
+    canvas_rect = [0, 0, canvas.width, canvas.height];
+  }
+  ctx.fillStyle = colour;
+  ctx.fillRect(canvas_rect[0], canvas_rect[1], canvas_rect[2], canvas_rect[3]);
+  return canvas_rect;
 }
 
 type Info = typeof info;
@@ -180,7 +182,6 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-
     display_element.innerHTML =
       "<div>" +
       '<canvas id="canvas" width="' +
@@ -194,7 +195,12 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
 
     let canvas = <HTMLCanvasElement>document.getElementById("canvas");
     let ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
-    let canvas_rect: number[] = set_canvas(canvas, ctx, trial.canvas_colour, trial.translate_origin);
+    let canvas_rect: number[] = set_canvas(
+      canvas,
+      ctx,
+      trial.canvas_colour,
+      trial.translate_origin
+    );
 
     // basic font style
     ctx.textAlign = trial.x_align as CanvasTextAlign;
@@ -211,8 +217,13 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     let sentence = trial.sentence.replace(/(\r\n|\n|\r)/gm, "");
     let words_concat = sentence.split(" ");
 
+    let rts: number[] = [0];
+
     // if mask type = 3, repeat mask character x times
-    let mask_character = trial.mask_type !== 3 ? trial.mask_character : trial.mask_character.repeat(words_concat[0].length);
+    let mask_character =
+      trial.mask_type !== 3
+        ? trial.mask_character
+        : trial.mask_character.repeat(words_concat[0].length);
 
     // deal with potential multi-line sentences with user defined splits
     let sentence_split: string[];
@@ -285,11 +296,10 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       }
     }
 
-    let keyboardListener: { (e: KeyboardEvent): void; (e: KeyboardEvent): void; (e: KeyboardEvent): void; (e: KeyboardEvent): void; };
-
     // store response
     let response = {
-      rt: null,
+      rt_sentence: null,
+      rt_word: null,
       word: null,
       word_number: null,
       sentence: null,
@@ -317,43 +327,45 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     };
 
     // function to handle responses by the subject
-    const after_response = (info: { rt: any; }) => {
-
+    const after_response = (info: { rt: any }) => {
       // gather/store data
-      response.rt = info.rt
-      response.word = words_concat[word_number];
-      response.word_number = word_number + 1;
-      if (trial.save_sentence) {
-        response.sentence = sentence;
+      response.rt_sentence = info.rt;
+      rts.push(info.rt);
+
+      if (word_number === 0) {
+        response.rt_word = rts[rts.length - 1] - rts[rts.length - 2];
+      } else {
+        response.rt_word = rts[rts.length - 1] - rts[rts.length - 2] - trial.inter_word_interval;
       }
 
-      if (word_number < sentence_length - 1) {
-        this.jsPsych.data.write(response);
+      if (response.rt_word > 0) {
+        // valid rt
+        response.word = words_concat[word_number];
+        response.word_number = word_number + 1;
+        if (trial.save_sentence) {
+          response.sentence = sentence;
+        }
+        if (word_number < sentence_length - 1) {
+          this.jsPsych.data.write(response);
+        }
+        // keep drawing until words in sentence complete
+        word_number++;
+        draw_mask();
+        this.jsPsych.pluginAPI.setTimeout(function () {
+          word_number < sentence_length ? draw_word() : end_trial();
+        }, trial.inter_word_interval);
+      } else {
+        rts.pop(); // invalid rt when trial.inter_word_interval is > 0
       }
-
-      this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
-
-      // keep drawing until words in sentence complete
-      word_number++;
-      draw_mask();
-      this.jsPsych.pluginAPI.setTimeout(function () {
-        keyboardListener = key();
-        word_number < sentence_length ? draw_word() : end_trial();
-      }, trial.inter_word_interval);
     };
 
-    const key = () => {
-      return this.jsPsych.pluginAPI.getKeyboardResponse({
-        callback_function: after_response,
-        valid_responses: trial.choices,
-        rt_method: 'performance',
-        persist: false,
-        allow_held_key: true,
-      });
-    }
-
-    keyboardListener = key();
-
+    let keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+      callback_function: after_response,
+      valid_responses: trial.choices,
+      rt_method: "performance",
+      persist: true,
+      allow_held_key: false,
+    });
   }
 }
 
