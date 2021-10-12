@@ -220,7 +220,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     // basic font style
     ctx.textAlign = trial.x_align as CanvasTextAlign;
     ctx.textBaseline = "middle";
-    
+
     // text properties
     let words = [];
     let line_length = [];
@@ -229,20 +229,20 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     let word_number_line = -1;
     let line_number = 0;
     let sentence = trial.sentence.replace(/(\r\n|\n|\r)/gm, "");
+    let sentence_split: string[];
     let words_concat = sentence.split(" ");
-    let sentence_font = trial.font_weight + " " + trial.font_size + " " +trial.font_family;
+    let sentence_font = trial.font_weight + " " + trial.font_size + " " + trial.font_family;
     let mask_font = trial.mask_weight + " " + trial.font_size + " " + trial.font_family;
 
     let rts: number[] = [0];
 
-    // if mask type = 3, repeat mask character x times
+    // if mask type = 3, repeat mask character x number of letters in first word
     let mask_character =
       trial.mask_type !== 3
         ? trial.mask_character
         : trial.mask_character.repeat(words_concat[0].length);
 
     // deal with potential multi-line sentences with user defined splits
-    let sentence_split: string[];
     if (trial.mask_type !== 3) {
       sentence_split = trial.sentence.split("\n").map((s) => s.trim());
       for (let i = 0; i < sentence_split.length; i++) {
@@ -267,12 +267,13 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       trial.mask_gap_character
     );
 
-    function draw_mask() {
-      // canvas
+    function clear_canvas() {
       ctx.fillStyle = trial.canvas_colour;
       ctx.font = trial.canvas_colour;
       ctx.fillRect(canvas_rect[0], canvas_rect[1], canvas_rect[2], canvas_rect[3]);
+    }
 
+    function draw_mask() {
       ctx.font = mask_font;
       ctx.fillStyle = trial.mask_colour;
       if (trial.mask_type !== 3) {
@@ -293,24 +294,37 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       }
     }
 
-    function draw_word() {
+    function draw_word(adj: number, inc: Boolean) {
       ctx.font = sentence_font;
       ctx.fillStyle = trial.font_colour;
       if (trial.mask_type !== 3) {
+        // previous lines in multi-line
+        for (let i = 0; i < line_number; i++) {
+          ctx.fillText(
+            word(words[i], words[i].length),
+            trial.xy_position[0],
+            trial.xy_position[1] + i * trial.line_height
+          );
+        }
+
+        // current line
         ctx.fillText(
-          word(words[line_number], word_number_line),
+          word(words[line_number], word_number_line + adj),
           trial.xy_position[0],
           trial.xy_position[1] + line_number * trial.line_height
         );
       } else if (trial.mask_type === 3 && word_number > -1) {
         ctx.fillText(words[word_number], trial.xy_position[0], trial.xy_position[1]);
       }
+
       // set line/word numbers
-      if (word_number_line + 1 < line_length[line_number]) {
-        word_number_line++;
-      } else if (line_number < words.length - 1) {
-        line_number++;
-        word_number_line = 0;
+      if (inc) {
+        if (word_number_line + 1 < line_length[line_number]) {
+          word_number_line++;
+        } else if (line_number < words.length - 1) {
+          line_number++;
+          word_number_line = 0;
+        }
       }
     }
 
@@ -325,7 +339,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
 
     // initial draw
     draw_mask();
-    draw_word();
+    draw_word(0, true);
 
     // function to end trial when it is time
     const end_trial = () => {
@@ -356,8 +370,16 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
         response.rt_word = rts[rts.length - 1] - rts[rts.length - 2] - trial.inter_word_interval;
       }
 
+      clear_canvas();
+      draw_mask();
+
+      // if mask type === 2, need to draw currently presented words before moving on
+      if (trial.mask_type === 2) {
+        draw_word(-1, false);
+      }
+
       if (response.rt_word > 0) {
-        // valid rt
+        // valid rts
         response.word = words_concat[word_number];
         response.word_number = word_number + 1;
         if (trial.save_sentence) {
@@ -368,12 +390,11 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
         }
         // keep drawing until words in sentence complete
         word_number++;
-        draw_mask();
         this.jsPsych.pluginAPI.setTimeout(function () {
-          word_number < sentence_length ? draw_word() : end_trial();
+          word_number < sentence_length ? draw_word(0, true) : end_trial();
         }, trial.inter_word_interval);
       } else {
-        rts.pop(); // invalid rt when trial.inter_word_interval is > 0
+        rts.pop(); // invalid rt possible when trial.inter_word_interval is > 0
       }
     };
 
