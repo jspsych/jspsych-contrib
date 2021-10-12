@@ -14,7 +14,7 @@
   // Mask type 1:
   // ___ _____ _____
   // The _____ _____
-  // ___ quick _____
+  // ___ brown _____
 
   var jsPsych = initJsPsych({
     default_iti: 500,
@@ -30,33 +30,35 @@
 
   let timeline = [];
 
-  // defaults
-  for (let sent_num = 0; sent_num < sentences.length; sent_num++) {
-    let moving_window = {
-      type: SelfPacedReadingPlugin,
-      sentence: sentences[sent_num],
-    };
-    timeline.push(moving_window);
-  }
+  // // defaults
+  // for (let sent_num = 0; sent_num < sentences.length; sent_num++) {
+  //   let moving_window = {
+  //     type: SelfPacedReadingPlugin,
+  //     sentence: sentences[sent_num],
+  //     mask_type: 2,
+  //   };
+  //   timeline.push(moving_window);
+  // }
 
-  // change some mask properties 
-  for (let sent_num = 0; sent_num < sentences.length; sent_num++) {
-    let moving_window = {
-      type: SelfPacedReadingPlugin,
-      sentence: sentences[sent_num],
-      mask_gap_character: '|',
-      mask_weight: 'bold',
-      mask_on_word: false,
-      x_align: 'left',
-      xy_position: [-400, 0],
-    };
-    timeline.push(moving_window);
-  }
+  // // change some mask properties 
+  // for (let sent_num = 0; sent_num < sentences.length; sent_num++) {
+  //   let moving_window = {
+  //     type: SelfPacedReadingPlugin,
+  //     sentence: sentences[sent_num],
+  //     mask_type: 2,
+  //     mask_gap_character: '|',
+  //     mask_weight: 'bold',
+  //     mask_on_word: false,
+  //     x_align: 'left',
+  //     xy_position: [-400, 0],
+  //   };
+  //   timeline.push(moving_window);
+  // }
 
   // user define line breaks
   const sentences_with_line_breaks = [
-    'The quick brown fox \njumps over the lazy dog.',
-    'Victor jagt zwölf Boxkämpfer \nquer über den großen Sylter Deich.',
+    ///'The quick brown fox \njumps over the lazy dog.',
+    // 'Victor jagt zwölf Boxkämpfer \nquer über den großen Sylter Deich.',
     `Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
     sed diam nonumy neirmod tempor invidunt ut labore et dolore
     magna aliquyam erat, sed diam voluptua. At vero eos et
@@ -68,6 +70,7 @@
     let moving_window = {
       type: SelfPacedReadingPlugin,
       sentence: sentences_with_line_breaks[sent_num],
+      mask_type: 2,
       mask_on_word: true,
       mask_colour: "grey",
       font_size: '24pt',
@@ -84,3 +87,4 @@
 </script>
 
 </html>
+

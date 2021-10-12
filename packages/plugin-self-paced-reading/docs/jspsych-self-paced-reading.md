@@ -9,15 +9,17 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | Parameter              | Type     | Default Value    | Description                                             |
 | ---------------------- | -------- | -----------------| ------------------------------------------------------- |
 | sentence               | string   | undefined        | The sentence to be presented                            |
+| font_family            | string   | "monospace"      | Font to use (NB. requires monospaced font type)         |
+| font_size              | string   | "24px"           | Font size                                               |
+| font_weight            | string   | "normal"         | Font weight                                             |
+| font_colour            | string   | "black"          | Font colour                                             |
 | mask_type              | number   | 1                | The type of mask (1 vs. 2 vs. 3)                        |
 | mask_character         | string   | "_"              | The character used as the mask                          |
-| mask3_character_length | number   | 3                | The number of characters in the mask when mask_type = 3 |
 | mask_on_word           | bool     | false            | Display the mask together with the word                 |
 | mask_gap_character     | string   | " "              | Character to display between the masked words           |
 | mask_offset            | number   | 0                | Mask offset in y direction                              |
+| mask_weight            | string   | "normal"         | Mask weight                                             |
 | mask_colour            | string   | "black"          | Mask colour                                             |
-| font                   | string   | "30px monospace" | Font to use (NB. requires monospaced font type)         |
-| font_colour            | string   | "black"          | Font colour                                             |
 | line_height            | number   | 80               | Line height for multiline text                          |
 | canvas_colour          | string   | "white"          | Canvas colour                                           |
 | canvas_size            | number[] | [1280 960]       | Canvas size                                             |
@@ -26,7 +28,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | translate_origin       | bool     | false            | Translate coordinates to [0,0] at centre                |
 | choices                | string[] | " "              | Key to press                                            |
 | xy_position            | number[] | [0, 0]           | X and Y position                                        |
-| x_align                | string   | "left"           | X alignment                                             |
+| x_align                | string   | "center"         | X alignment                                             |
 | y_align                | string   | "top"            | Y alignment                                             |
 | inter_word_interval    | number   | 0                | Interval (in ms) between succesive words                |
 | save_sentence          | bool     | true             | Keep sentence in results file                           |

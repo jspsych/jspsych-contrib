@@ -8,6 +8,26 @@ const info = <const>{
       pretty_name: "Sentence",
       default: undefined,
     },
+    font_family: {
+      type: ParameterType.STRING,
+      pretty_name: "Font family",
+      default: "monospace",
+    },
+    font_size: {
+      type: ParameterType.STRING,
+      pretty_name: "Font size",
+      default: "24px",
+    },
+    font_weight: {
+      type: ParameterType.STRING,
+      pretty_name: "Font weight",
+      default: "normal",
+    },
+    font_colour: {
+      type: ParameterType.STRING,
+      pretty_name: "Font colour",
+      default: "black",
+    },
     mask_type: {
       type: ParameterType.INT,
       pretty_name: "Mask type",
@@ -33,19 +53,14 @@ const info = <const>{
       pretty_name: "Mask offset",
       default: 0,
     },
+    mask_weight: {
+      type: ParameterType.STRING,
+      pretty_name: "Mask weight",
+      default: "normal",
+    },
     mask_colour: {
       type: ParameterType.STRING,
       pretty_name: "Mask colour",
-      default: "black",
-    },
-    font: {
-      type: ParameterType.STRING,
-      pretty_name: "Font",
-      default: "30px monospace",
-    },
-    font_colour: {
-      type: ParameterType.STRING,
-      pretty_name: "Font colour",
       default: "black",
     },
     line_height: {
@@ -93,7 +108,7 @@ const info = <const>{
     x_align: {
       type: ParameterType.STRING,
       pretty_name: "X alignment",
-      default: "left",
+      default: "center",
     },
     y_align: {
       type: ParameterType.STRING,
@@ -205,8 +220,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     // basic font style
     ctx.textAlign = trial.x_align as CanvasTextAlign;
     ctx.textBaseline = "middle";
-    ctx.font = trial.font;
-
+    
     // text properties
     let words = [];
     let line_length = [];
@@ -216,6 +230,8 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     let line_number = 0;
     let sentence = trial.sentence.replace(/(\r\n|\n|\r)/gm, "");
     let words_concat = sentence.split(" ");
+    let sentence_font = trial.font_weight + " " + trial.font_size + " " +trial.font_family;
+    let mask_font = trial.mask_weight + " " + trial.font_size + " " + trial.font_family;
 
     let rts: number[] = [0];
 
@@ -254,9 +270,12 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     function draw_mask() {
       // canvas
       ctx.fillStyle = trial.canvas_colour;
+      ctx.font = trial.canvas_colour;
       ctx.fillRect(canvas_rect[0], canvas_rect[1], canvas_rect[2], canvas_rect[3]);
+
+      ctx.font = mask_font;
+      ctx.fillStyle = trial.mask_colour;
       if (trial.mask_type !== 3) {
-        ctx.fillStyle = trial.mask_colour;
         for (let i = 0; i < words.length; i++) {
           let mw = i === line_number ? word_number_line : -1;
           ctx.fillText(
@@ -266,7 +285,6 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
           );
         }
       } else if (trial.mask_type === 3 && word_number === -1) {
-        ctx.fillStyle = trial.mask_colour;
         ctx.fillText(
           mask_character,
           trial.xy_position[0],
@@ -276,15 +294,15 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     }
 
     function draw_word() {
+      ctx.font = sentence_font;
+      ctx.fillStyle = trial.font_colour;
       if (trial.mask_type !== 3) {
-        ctx.fillStyle = trial.font_colour;
         ctx.fillText(
           word(words[line_number], word_number_line),
           trial.xy_position[0],
           trial.xy_position[1] + line_number * trial.line_height
         );
       } else if (trial.mask_type === 3 && word_number > -1) {
-        ctx.fillStyle = trial.font_colour;
         ctx.fillText(words[word_number], trial.xy_position[0], trial.xy_position[1]);
       }
       // set line/word numbers
