@@ -1,18 +1,24 @@
-import { startTimeline } from "@jspsych/test-utils";
+import { pressKey, startTimeline } from "@jspsych/test-utils";
 
 import SelfPacedReadingPlugin from ".";
-import pluginName from ".";
 
 jest.useFakeTimers();
 
 describe("self-paced-reading plugin", () => {
-  it("should load", async () => {
-    const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
+  test("should load", async () => {
+    const { expectFinished } = await startTimeline([
       {
         type: SelfPacedReadingPlugin,
         sentence: "The quick brown fox jumps over the lazy dog.",
+        choices: ["m"],
       },
     ]);
+
+    // number of key presses meeded to complete trial
+    for (let i = 0; i <= 10; i++) {
+      pressKey("m");
+      jest.advanceTimersByTime(100);
+    }
 
     await expectFinished();
   });
