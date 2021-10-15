@@ -1,17 +1,118 @@
-import { startTimeline } from "@jspsych/test-utils";
-import SelfPacedReadingPlugin from ".";
+import { pressKey, startTimeline } from "@jspsych/test-utils";
 
-import pluginName from ".";
+import SelfPacedReadingPlugin from ".";
 
 jest.useFakeTimers();
 
 describe("self-paced-reading plugin", () => {
-  it("should load", async () => {
-    const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
+  test("Click through sentence: Mask 1", async () => {
+    const { expectFinished } = await startTimeline([
       {
         type: SelfPacedReadingPlugin,
+        sentence: "The quick brown fox jumps over the lazy dog.",
+        choices: [" "],
       },
     ]);
+
+    // number of key presses meeded to complete trial
+    for (let i = 0; i <= 10; i++) {
+      pressKey(" ");
+      jest.advanceTimersByTime(100);
+    }
+
+    await expectFinished();
+  });
+
+  test("Click through sentence: Mask 1", async () => {
+    const { expectFinished } = await startTimeline([
+      {
+        type: SelfPacedReadingPlugin,
+        sentence: "One two three four five",
+        choices: ["ArrowRight"],
+      },
+    ]);
+
+    // number of key presses meeded to complete trial
+    for (let i = 0; i <= 6; i++) {
+      pressKey("ArrowRight");
+      jest.advanceTimersByTime(100);
+    }
+
+    await expectFinished();
+  });
+
+  test("Click through sentence: Mask 2", async () => {
+    const { expectFinished } = await startTimeline([
+      {
+        type: SelfPacedReadingPlugin,
+        sentence: "The quick brown fox jumps over the lazy dog.",
+        mask_type: 2,
+        choices: [" "],
+      },
+    ]);
+
+    // number of key presses meeded to complete trial
+    for (let i = 0; i <= 10; i++) {
+      pressKey(" ");
+      jest.advanceTimersByTime(100);
+    }
+
+    await expectFinished();
+  });
+
+  test("Click through sentence: Mask 2", async () => {
+    const { expectFinished } = await startTimeline([
+      {
+        type: SelfPacedReadingPlugin,
+        sentence: "One two three four five",
+        mask_type: 2,
+        choices: ["ArrowRight"],
+      },
+    ]);
+
+    // number of key presses meeded to complete trial
+    for (let i = 0; i <= 6; i++) {
+      pressKey("ArrowRight");
+      jest.advanceTimersByTime(100);
+    }
+
+    await expectFinished();
+  });
+
+  test("Click through sentence: Mask 3", async () => {
+    const { expectFinished } = await startTimeline([
+      {
+        type: SelfPacedReadingPlugin,
+        sentence: "The quick brown fox jumps over the lazy dog.",
+        mask_type: 2,
+        choices: [" "],
+      },
+    ]);
+
+    // number of key presses meeded to complete trial
+    for (let i = 0; i <= 10; i++) {
+      pressKey(" ");
+      jest.advanceTimersByTime(100);
+    }
+
+    await expectFinished();
+  });
+
+  test("Click through sentence: Mask 3", async () => {
+    const { expectFinished } = await startTimeline([
+      {
+        type: SelfPacedReadingPlugin,
+        sentence: "One two three four five",
+        mask_type: 2,
+        choices: ["ArrowRight"],
+      },
+    ]);
+
+    // number of key presses meeded to complete trial
+    for (let i = 0; i <= 6; i++) {
+      pressKey("ArrowRight");
+      jest.advanceTimersByTime(100);
+    }
 
     await expectFinished();
   });

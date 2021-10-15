@@ -87,7 +87,7 @@ const info = <const>{
     canvas_clear_border: {
       type: ParameterType.BOOL,
       pretty_name: "Clear canvas border",
-      default: true,
+      default: false,
     },
     translate_origin: {
       type: ParameterType.BOOL,
@@ -294,7 +294,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       }
     }
 
-    function draw_word(adj: number, inc: Boolean) {
+    function draw_word() {
       ctx.font = sentence_font;
       ctx.fillStyle = trial.font_colour;
       if (trial.mask_type !== 3) {
@@ -309,7 +309,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
 
         // current line
         ctx.fillText(
-          word(words[line_number], word_number_line + adj),
+          word(words[line_number], word_number_line),
           trial.xy_position[0],
           trial.xy_position[1] + line_number * trial.line_height
         );
@@ -318,13 +318,11 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       }
 
       // set line/word numbers
-      if (inc) {
-        if (word_number_line + 1 < line_length[line_number]) {
-          word_number_line++;
-        } else if (line_number < words.length - 1) {
-          line_number++;
-          word_number_line = 0;
-        }
+      if (word_number_line + 1 < line_length[line_number]) {
+        word_number_line++;
+      } else if (line_number < words.length - 1) {
+        line_number++;
+        word_number_line = 0;
       }
     }
 
@@ -339,20 +337,20 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
 
     // initial draw
     draw_mask();
-    draw_word(0, true);
+    draw_word();
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers + kill keyboard listeners
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-      this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
-
       if (trial.canvas_clear_border) {
-        display_element.innerHTML = "";
+        display_element.innerHTML = " ";
       } else {
         ctx.fillStyle = trial.canvas_colour;
         ctx.fillRect(canvas_rect[0], canvas_rect[1], canvas_rect[2], canvas_rect[3]);
       }
+
+      // kill any remaining setTimeout handlers + kill keyboard listeners
+      this.jsPsych.pluginAPI.clearAllTimeouts();
+      this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
 
       // move on to the next trial
       this.jsPsych.finishTrial(response);
@@ -370,14 +368,6 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
         response.rt_word = rts[rts.length - 1] - rts[rts.length - 2] - trial.inter_word_interval;
       }
 
-      clear_canvas();
-      draw_mask();
-
-      // if mask type === 2, need to draw currently presented words before moving on
-      if (trial.mask_type === 2) {
-        draw_word(-1, false);
-      }
-
       if (response.rt_word > 0) {
         // valid rts
         response.word = words_concat[word_number];
@@ -391,7 +381,13 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
         // keep drawing until words in sentence complete
         word_number++;
         this.jsPsych.pluginAPI.setTimeout(function () {
-          word_number < sentence_length ? draw_word(0, true) : end_trial();
+          if (word_number < sentence_length) {
+            clear_canvas();
+            draw_mask();
+            draw_word();
+          } else {
+            end_trial();
+          }
         }, trial.inter_word_interval);
       } else {
         rts.pop(); // invalid rt possible when trial.inter_word_interval is > 0

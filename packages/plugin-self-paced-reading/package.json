@@ -41,5 +41,8 @@
     "@jspsych/config": "^1.0.0",
     "@jspsych/test-utils": "^1.0.0",
     "jspsych": "^7.0.0"
+  },
+  "dependencies": {
+    "husky": "^7.0.2"
   }
 }
