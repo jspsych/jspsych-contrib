@@ -1,6 +1,5 @@
 {
   "name": "@jspsych-contrib/plugin-self-paced-reading",
-  "private": "true",
   "version": "0.1.0",
   "description": "",
   "type": "module",
@@ -41,8 +40,5 @@
     "@jspsych/config": "^1.0.0",
     "@jspsych/test-utils": "^1.0.0",
     "jspsych": "^7.0.0"
-  },
-  "dependencies": {
-    "husky": "^7.0.2"
   }
 }
