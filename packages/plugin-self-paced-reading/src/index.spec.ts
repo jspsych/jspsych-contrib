@@ -6,7 +6,7 @@ jest.useFakeTimers();
 
 describe("self-paced-reading plugin", () => {
   test("Click through sentence: Mask 1", async () => {
-    const { expectFinished } = await startTimeline([
+    const { expectFinished, getData } = await startTimeline([
       {
         type: jsPsychSelfPacedReading,
         sentence: "The quick brown fox jumps over the lazy dog.",
@@ -21,10 +21,13 @@ describe("self-paced-reading plugin", () => {
     }
 
     await expectFinished();
+
+    expect(getData().last(1).values()[0].word).toBe("dog.");
+    expect(getData().last(1).values()[0].word_number).toBe(9);
   });
 
   test("Click through sentence: Mask 1", async () => {
-    const { expectFinished } = await startTimeline([
+    const { expectFinished, getData } = await startTimeline([
       {
         type: jsPsychSelfPacedReading,
         sentence: "One two three four five",
@@ -39,10 +42,13 @@ describe("self-paced-reading plugin", () => {
     }
 
     await expectFinished();
+
+    expect(getData().last(1).values()[0].word).toBe("five");
+    expect(getData().last(1).values()[0].word_number).toBe(5);
   });
 
   test("Click through sentence: Mask 2", async () => {
-    const { expectFinished } = await startTimeline([
+    const { expectFinished, getData } = await startTimeline([
       {
         type: jsPsychSelfPacedReading,
         sentence: "The quick brown fox jumps over the lazy dog.",
@@ -58,10 +64,13 @@ describe("self-paced-reading plugin", () => {
     }
 
     await expectFinished();
+
+    expect(getData().last(1).values()[0].word).toBe("dog.");
+    expect(getData().last(1).values()[0].word_number).toBe(9);
   });
 
   test("Click through sentence: Mask 2", async () => {
-    const { expectFinished } = await startTimeline([
+    const { expectFinished, getData } = await startTimeline([
       {
         type: jsPsychSelfPacedReading,
         sentence: "One two three four five",
@@ -77,10 +86,13 @@ describe("self-paced-reading plugin", () => {
     }
 
     await expectFinished();
+
+    expect(getData().last(1).values()[0].word).toBe("five");
+    expect(getData().last(1).values()[0].word_number).toBe(5);
   });
 
   test("Click through sentence: Mask 3", async () => {
-    const { expectFinished } = await startTimeline([
+    const { expectFinished, getData } = await startTimeline([
       {
         type: jsPsychSelfPacedReading,
         sentence: "The quick brown fox jumps over the lazy dog.",
@@ -96,10 +108,13 @@ describe("self-paced-reading plugin", () => {
     }
 
     await expectFinished();
+
+    expect(getData().last(1).values()[0].word).toBe("dog.");
+    expect(getData().last(1).values()[0].word_number).toBe(9);
   });
 
   test("Click through sentence: Mask 3", async () => {
-    const { expectFinished } = await startTimeline([
+    const { expectFinished, getData } = await startTimeline([
       {
         type: jsPsychSelfPacedReading,
         sentence: "One two three four five",
@@ -115,5 +130,8 @@ describe("self-paced-reading plugin", () => {
     }
 
     await expectFinished();
+
+    expect(getData().last(1).values()[0].word).toBe("five");
+    expect(getData().last(1).values()[0].word_number).toBe(5);
   });
 });

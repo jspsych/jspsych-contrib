@@ -33,7 +33,7 @@
   // defaults
   for (let sent_num = 0; sent_num < sentences.length; sent_num++) {
     let moving_window = {
-      type: SelfPacedReadingPlugin,
+      type: jsPsychSelfPacedReading,
       sentence: sentences[sent_num],
     };
     timeline.push(moving_window);
@@ -42,7 +42,7 @@
   // change some mask properties 
   for (let sent_num = 0; sent_num < sentences.length; sent_num++) {
     let moving_window = {
-      type: SelfPacedReadingPlugin,
+      type: jsPsychSelfPacedReading,
       sentence: sentences[sent_num],
       mask_gap_character: '|',
       mask_weight: 'bold',
@@ -66,7 +66,7 @@
   // multiline text
   for (let sent_num = 0; sent_num < sentences_with_line_breaks.length; sent_num++) {
     let moving_window = {
-      type: SelfPacedReadingPlugin,
+      type: jsPsychSelfPacedReading,
       sentence: sentences_with_line_breaks[sent_num],
       mask_on_word: true,
       mask_colour: "grey",
