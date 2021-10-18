@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-self-paced-reading",
   "version": "0.1.0",
-  "description": "",
+  "description": "jsPsych plugin for self paced reading paraddigms.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {

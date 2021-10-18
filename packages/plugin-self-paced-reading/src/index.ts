@@ -191,7 +191,7 @@ type Info = typeof info;
  * @author igmmgi
  * @see {@link https://www.jspsych.org/plugins/jspsych-self-paced-reading/ self-paced-reading plugin documentation on jspsych.org}
  */
-class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
+class jsPsychSelfPacedReading implements JsPsychPlugin<Info> {
   static info = info;
 
   constructor(private jsPsych: JsPsych) {}
@@ -404,4 +404,4 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
   }
 }
 
-export default SelfPacedReadingPlugin;
+export default jsPsychSelfPacedReading;
