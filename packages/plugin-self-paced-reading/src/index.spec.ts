@@ -1,6 +1,6 @@
 import { pressKey, startTimeline } from "@jspsych/test-utils";
 
-import jsPsychSelfPacedReading from ".";
+import SelfPacedReadingPlugin from ".";
 
 jest.useFakeTimers();
 
@@ -8,7 +8,7 @@ describe("self-paced-reading plugin", () => {
   test("Click through sentence: Mask 1", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychSelfPacedReading,
+        type: SelfPacedReadingPlugin,
         sentence: "The quick brown fox jumps over the lazy dog.",
         choices: [" "],
       },
@@ -29,7 +29,7 @@ describe("self-paced-reading plugin", () => {
   test("Click through sentence: Mask 1", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychSelfPacedReading,
+        type: SelfPacedReadingPlugin,
         sentence: "One two three four five",
         choices: ["ArrowRight"],
       },
@@ -50,7 +50,7 @@ describe("self-paced-reading plugin", () => {
   test("Click through sentence: Mask 2", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychSelfPacedReading,
+        type: SelfPacedReadingPlugin,
         sentence: "The quick brown fox jumps over the lazy dog.",
         mask_type: 2,
         choices: [" "],
@@ -72,7 +72,7 @@ describe("self-paced-reading plugin", () => {
   test("Click through sentence: Mask 2", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychSelfPacedReading,
+        type: SelfPacedReadingPlugin,
         sentence: "One two three four five",
         mask_type: 2,
         choices: ["ArrowRight"],
@@ -94,7 +94,7 @@ describe("self-paced-reading plugin", () => {
   test("Click through sentence: Mask 3", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychSelfPacedReading,
+        type: SelfPacedReadingPlugin,
         sentence: "The quick brown fox jumps over the lazy dog.",
         mask_type: 2,
         choices: [" "],
@@ -116,7 +116,7 @@ describe("self-paced-reading plugin", () => {
   test("Click through sentence: Mask 3", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychSelfPacedReading,
+        type: SelfPacedReadingPlugin,
         sentence: "One two three four five",
         mask_type: 2,
         choices: ["ArrowRight"],

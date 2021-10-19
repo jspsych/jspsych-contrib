@@ -1,7 +1,7 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 const info = <const>{
-  name: "SelfPacedReadingPlugin",
+  name: "self-paced-reading",
   parameters: {
     sentence: {
       type: ParameterType.STRING,
@@ -208,14 +208,9 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       ';"></canvas>' +
       "</div>";
 
-    let canvas = <HTMLCanvasElement>document.getElementById("canvas");
-    let ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
-    let canvas_rect: number[] = set_canvas(
-      canvas,
-      ctx,
-      trial.canvas_colour,
-      trial.translate_origin
-    );
+    let canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    let ctx = canvas.getContext("2d");
+    let canvas_rect = set_canvas(canvas, ctx, trial.canvas_colour, trial.translate_origin);
 
     // basic font style
     ctx.textAlign = trial.x_align as CanvasTextAlign;
