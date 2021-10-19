@@ -50,7 +50,7 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 ```javascript
 const sentence = [ `The quick brown fox jumps over the lazy dog.`];
 const moving_window = {
-        type: SelfPacedReadingPlugin,
+        type: jsPsychSelfPacedReading,
         sentence: sentence,
       };
 ```

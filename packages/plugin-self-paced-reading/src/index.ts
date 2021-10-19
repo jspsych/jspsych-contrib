@@ -1,7 +1,7 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 const info = <const>{
-  name: "self-paced-reading",
+  name: "SelfPacedReadingPlugin",
   parameters: {
     sentence: {
       type: ParameterType.STRING,
@@ -191,7 +191,7 @@ type Info = typeof info;
  * @author igmmgi
  * @see {@link https://www.jspsych.org/plugins/jspsych-self-paced-reading/ self-paced-reading plugin documentation on jspsych.org}
  */
-class jsPsychSelfPacedReading implements JsPsychPlugin<Info> {
+class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
   static info = info;
 
   constructor(private jsPsych: JsPsych) {}
@@ -404,4 +404,4 @@ class jsPsychSelfPacedReading implements JsPsychPlugin<Info> {
   }
 }
 
-export default jsPsychSelfPacedReading;
+export default SelfPacedReadingPlugin;
