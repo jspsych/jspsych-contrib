@@ -13,6 +13,17 @@ However we would encourage contributors to respond to issues/questions and to ma
 
 Contributions to `jspsych-contrib` that are broadly useful, well-documented, and well-tested may be added to the main `jsPsych` repository, with the contributor's permission.
 
+## List of available plugins/extensions
+
+The jsPsych plugins/extensions that have been contributed by community members can be found in the `/packages` directory. 
+The `/packages` directory also contains four template sub-folders that can be used as a starting point for contributing a plugin/extension (see the [Guidelines for contributions](#guidelines-for-contributions) section).
+
+Plugin/Extension | Contributor | Description
+----------- | ----------- | -----------
+[rdk](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-rdk/docs/jspsych-rdk.md#jspsych-rdk-plugin) | [Sivananda Rajananda](https://github.com/vrsivananda) | This plugin displays a Random Dot Kinematogram (RDK) and allows the subject to report the primary direction of motion by pressing a key on the keyboard. 
+[vsl-animate-occlusion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-animate-occlusion/docs/jspsych-vsl-animate-occlusion.md#jspsych-vsl-animate-occlusion-plugin) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) animate occlusion plugin displays an animated sequence of shapes that disappear behind an occluding rectangle while they change from one shape to another. 
+[vsl-grid-scene](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-grid-scene/docs/jspsych-vsl-grid-scene.md#jspsych-vsl-grid-scene-plugin) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) grid scene plugin displays images arranged in a grid. 
+
 ## Guidelines for contributions
 
 Contributions to this repository must:
