@@ -129,7 +129,7 @@ const info = <const>{
 };
 
 function text_mask(txt: string, mask_character: string) {
-  return txt.replace(/[^\s]/g, mask_character);
+  return mask_character.repeat(txt.length);
 }
 
 // deal with mask type 1 and 2
