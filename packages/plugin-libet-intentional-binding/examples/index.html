@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="https://unpkg.com/jspsych@7.0.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.0.0"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+    /* initialize jsPsych */
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    var welcome_trial = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: 'Press any key to begin the trial'
+    }
+
+    var libet_trial = {
+      type: jsPsychLibetIntentionalBinding,
+      cond: 'operant-tone',
+      tone_file: 'tone.mp3'
+    }
+
+    jsPsych.run([hello_trial, libet_trial]);
+  </script>
+</html>
