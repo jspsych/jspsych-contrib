@@ -8,6 +8,8 @@ This plugin measures intentional binding using a Libet clock, and allows the par
 
 ```js
 <script src="https://unpkg.com/@jspsych-contrib/plugin-libet-intentional-binding@1.0.0">
+```
+
 ## Compatibility
 
 jsPsych v7.0
