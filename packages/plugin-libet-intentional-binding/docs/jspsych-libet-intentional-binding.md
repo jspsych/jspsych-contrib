@@ -14,7 +14,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | ------------------------ | ---------------- | -------------------- | ---------------------------------------- |
 | cond                     | string           | `'baseline-key'`       | Specifies the condition ("baseline-key", "baseline-tone", "operant-key", or "operant-tone"). |
 | tone_file                | audio            | undefined            | The audio file to be played, if applicable. |
-| tone_file                | keys            | `"ALL_KEYS"`            | The keys a participant can press, if applicable. |
+| choices                  | keys            | `"ALL_KEYS"`            | The keys a participant can press, if applicable. |
 | tone_delay_ms            | int              | 2500                 | The time after the key press or the beginning of the clock animation that the tone is played, if applicable. |
 | hand_est                 | boolean          | true                 | Specifies whether the participant moves the hand to estimate an angle. If false, the trial ends after the clock hand stops spinning. |
 | instructions             | string           | `''`                   | The instructions shown to the participant during estimation, if any. |
