@@ -17,6 +17,12 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
         default: undefined,
         description: "The audio file to be played.",
       },
+      choices: {
+        type: jspsych.ParameterType.KEYS,
+        pretty_name: "Choices",
+        default: "ALL_KEYS",
+        description: "The keys a participant can press.",
+      },
       tone_delay_ms: {
         type: jspsych.ParameterType.INT,
         pretty_name: "Tone delay",
@@ -455,7 +461,7 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
               }
               // add a response listener that cancels the trial stop
               jsPsych.pluginAPI.getKeyboardResponse({
-                valid_responses: "ALL_KEYS",
+                valid_responses: trial.choices,
                 rt_method: "performance",
                 persist: false,
                 allow_held_key: false,
