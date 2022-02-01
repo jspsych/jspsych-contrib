@@ -15,6 +15,7 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 | Name      | Type        | Value                                    |
 | --------- | ----------- | ---------------------------------------- |
 | x, y, z   | numeric     | Acceleration along x, y, z axis. [See details](https://w3c.github.io/deviceorientation/#devicemotion) |
+| t         | numeric     | Time (ms) between beginning of trial and accelerometer reading.            |
 | interval  | numeric     | Interval between samples (ms)            |
 | event     | string      | Type of event being listened.     |
 
