@@ -1,6 +1,6 @@
 {
-  "name": "@jspsych/extension-device-motion",
-  "version": "1.0.0",
+  "name": "@jspsych-contrib/extension-device-motion",
+  "version": "0.1.0",
   "description": "jsPsych extension for tracking device motion",
   "type": "module",
   "main": "dist/index.cjs",
@@ -24,20 +24,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jspsych/jsPsych.git",
-    "directory": "packages/extension-mouse-tracking"
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/extension-device-motion"
   },
-  "author": "Josh de Leeuw",
+  "author": "Pedro Neto",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jspsych/jsPsych/issues"
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
-  "homepage": "https://www.jspsych.org/latest/extensions/mouse-tracking",
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-device-motion",
   "peerDependencies": {
     "jspsych": ">=7.0.0"
   },
   "devDependencies": {
     "@jspsych/config": "^1.1.0",
-    "@jspsych/test-utils": "^1.1.0"
+    "@jspsych/test-utils": "^1.1.1",
+    "jspsych": "^7.1.2"
   }
 }
