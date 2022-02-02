@@ -1,7 +1,6 @@
 import { JsPsych, JsPsychExtension, JsPsychExtensionInfo } from "jspsych";
 
-interface InitializeParameters {
-}
+interface InitializeParameters {}
 
 interface OnStartParameters {
   /**
