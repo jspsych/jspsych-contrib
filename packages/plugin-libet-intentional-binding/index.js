@@ -11,7 +11,7 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
         description:
           'Specifies whether condition ("baseline-key", "baseline-tone", "operant-key", or "operant-tone".',
       },
-      est_wo_button_press: {
+      est_wo_keypress: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Estimate of urge without button press",
         default: false,
@@ -48,11 +48,11 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
         default: "",
         description: "The instructions shown to the participant during estimation.",
       },
-      instructions_wo_button_press: {
+      instructions_wo_keypress: {
         type: jspsych.ParameterType.HTML_STRING,
         pretty_name: "",
         default: "",
-        description: 'The instructions shown to the participant during estimation if they did not make a keypress. E.g., "When did you feel the urge to make a keypress?". Only applicable if hand_est and est_wo_button_press are set to true. If left undefined, the parameter takes on the same value as instructions.',
+        description: 'The instructions shown to the participant during estimation if they did not make a keypress. E.g., "When did you feel the urge to make a keypress?". Only applicable if hand_est and est_wo_keypress are set to true. If left undefined, the parameter takes on the same value as instructions.',
       },
       feedback: {
         type: jspsych.ParameterType.BOOL,
@@ -232,13 +232,13 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
       // If any parameters are functions, call those functions
       var func_params = [
         'cond',
-        'est_wo_button_press',
+        'est_wo_keypress',
         'tone_file',
         'choices',
         'tone_delay_ms',
         'hand_est',
         'instructions',
-        'instructions_wo_button_press',
+        'instructions_wo_keypress',
         'feedback',
         'feedback_ms',
         'pre_estimation_ms',
@@ -474,7 +474,7 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
           })
           .catch((err) => {
             console.error(
-              Failed to load audio file "${trial.tone_file}". Try checking the file path. We recommend using the preload plugin to load audio files.
+              'Failed to load audio file "${trial.tone_file}". Try checking the file path. We recommend using the preload plugin to load audio files.'
             );
             console.error(err);
           });
@@ -510,7 +510,7 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
                   trial_data.timeout = true;
                   // call user-defined timeout function
                   trial.timeout_fcn();
-                  if (trial.est_wo_button_press) {
+                  if (trial.est_wo_keypress) {
                     ctrl_fcn('estimate');
                   } else {
                     ctrl_fcn('end');
@@ -591,8 +591,8 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
                   // we can infer that the participant is allowed to do
                   // estimation without having made a keypress. Therefore
                   // update the text of the prompt
-                  if (trial.instructions_wo_button_press) {
-                    prompt_div.innerHTML = trial.instructions_wo_button_press;
+                  if (trial.instructions_wo_keypress) {
+                    prompt_div.innerHTML = trial.instructions_wo_keypress;
                   }
                 }
                 // add prompt
