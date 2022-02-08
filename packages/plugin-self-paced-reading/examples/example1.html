@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych@7.0.0"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css" />
+</head>
+
+<body></body>
+
+<script>
+
+  // Mask type 1:
+  // ___ _____ _____
+  // The _____ _____
+  // ___ quick _____
+
+  var jsPsych = initJsPsych({
+    default_iti: 1000,
+    on_finish: function () {
+      jsPsych.data.displayData('csv');
+    }
+  });
+
+  const sentences = [
+    'The quick brown fox jumps over the lazy dog.',
+    'Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich.',
+  ];
+
+  let timeline = [];
+
+  // defaults
+  for (let sent_num = 0; sent_num < sentences.length; sent_num++) {
+    let moving_window = {
+      type: jsPsychSelfPacedReading,
+      sentence: sentences[sent_num],
+    };
+    timeline.push(moving_window);
+  }
+
+  // change some mask properties 
+  for (let sent_num = 0; sent_num < sentences.length; sent_num++) {
+    let moving_window = {
+      type: jsPsychSelfPacedReading,
+      sentence: sentences[sent_num],
+      mask_gap_character: '|',
+      mask_weight: 'bold',
+      mask_on_word: false,
+      x_align: 'left',
+      xy_position: [-400, 0],
+    };
+    timeline.push(moving_window);
+  }
+
+  // user define line breaks
+  const sentences_with_line_breaks = [
+    'The quick brown fox \njumps over the lazy dog.',
+    'Victor jagt zwölf Boxkämpfer \nquer über den großen Sylter Deich.',
+    `Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+    sed diam nonumy neirmod tempor invidunt ut labore et dolore
+    magna aliquyam erat, sed diam voluptua. At vero eos et
+    accusam et justo duo dolores et ea rebum.`,
+  ];
+
+  // multiline text
+  for (let sent_num = 0; sent_num < sentences_with_line_breaks.length; sent_num++) {
+    let moving_window = {
+      type: jsPsychSelfPacedReading,
+      sentence: sentences_with_line_breaks[sent_num],
+      mask_on_word: true,
+      mask_colour: "grey",
+      font_size: '24pt',
+      x_align: 'left',
+      line_height: 40,
+      xy_position: [-500, 0],
+    };
+    timeline.push(moving_window);
+  }
+
+  //---------Run experiment---------
+  jsPsych.run(timeline);
+
+</script>
+
+</html>
