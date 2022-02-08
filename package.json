@@ -10,7 +10,8 @@
     "build": "npm run build -ws",
     "prepare": "husky install",
     "changeset": "changeset",
-    "release": "changeset publish"
+    "changeset:version": "changeset version && npm install",
+    "changeset:publish": "npm run build && changeset publish"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.0",
