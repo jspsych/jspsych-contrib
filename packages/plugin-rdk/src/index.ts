@@ -927,14 +927,17 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       //Load in the current set of dot array for easy handling
       var dotArray = dotArray2d[currentSetArray[currentApertureNumber]];
 
+      const pi2 = Math.PI * 2;
+
       //Loop through the dots one by one and draw them
+      ctx.fillStyle = dotColor;
+      ctx.beginPath();
       for (var i = 0; i < nDots; i++) {
         const dot = dotArray[i];
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dotRadius, 0, Math.PI * 2);
-        ctx.fillStyle = dotColor;
-        ctx.fill();
+        ctx.moveTo(dot.x + dotRadius, dot.y);
+        ctx.arc(dot.x, dot.y, dotRadius, 0, pi2);
       }
+      ctx.fill();
 
       //Draw the fixation cross if we want it
       if (fixationCross === true) {
