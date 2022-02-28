@@ -880,13 +880,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       //Three for loops that do things in sequence: clear, update, and draw dots.
 
       // Clear all the current dots
-      for (currentApertureNumber = 0; currentApertureNumber < nApertures; currentApertureNumber++) {
-        //Initialize the variables for each parameter
-        initializeCurrentApertureParameters(currentApertureNumber);
-
-        //Clear the canvas by drawing over the current dots
-        clearDots();
-      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Update all the relevant dots
       for (currentApertureNumber = 0; currentApertureNumber < nApertures; currentApertureNumber++) {
@@ -905,20 +899,19 @@ class RdkPlugin implements JsPsychPlugin<Info> {
         //Draw on the canvas
         draw();
       }
-    }
-
-    //Function that clears the dots on the canvas by drawing over it with the color of the baclground
-    function clearDots() {
-      //Load in the current set of dot array for easy handling
-      var dotArray = dotArray2d[currentSetArray[currentApertureNumber]];
-
-      //Loop through the dots one by one and draw them
-      for (var i = 0; i < nDots; i++) {
-        const dot = dotArray[i];
+      //Draw the fixation cross if we want it
+      if (fixationCross === true) {
+        //Horizontal line
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dotRadius + 1, 0, Math.PI * 2);
-        ctx.fillStyle = backgroundColor;
-        ctx.fill();
+        ctx.lineWidth = fixationCrossThickness;
+        ctx.moveTo(canvasWidth / 2 - fixationCrossWidth, canvasHeight / 2);
+        ctx.lineTo(canvasWidth / 2 + fixationCrossWidth, canvasHeight / 2);
+
+        //Vertical line
+        ctx.moveTo(canvasWidth / 2, canvasHeight / 2 - fixationCrossHeight);
+        ctx.lineTo(canvasWidth / 2, canvasHeight / 2 + fixationCrossHeight);
+        ctx.strokeStyle = fixationCrossColor;
+        ctx.stroke();
       }
     }
 
@@ -938,25 +931,6 @@ class RdkPlugin implements JsPsychPlugin<Info> {
         ctx.arc(dot.x, dot.y, dotRadius, 0, pi2);
       }
       ctx.fill();
-
-      //Draw the fixation cross if we want it
-      if (fixationCross === true) {
-        //Horizontal line
-        ctx.beginPath();
-        ctx.lineWidth = fixationCrossThickness;
-        ctx.moveTo(canvasWidth / 2 - fixationCrossWidth, canvasHeight / 2);
-        ctx.lineTo(canvasWidth / 2 + fixationCrossWidth, canvasHeight / 2);
-        ctx.strokeStyle = fixationCrossColor;
-        ctx.stroke();
-
-        //Vertical line
-        ctx.beginPath();
-        ctx.lineWidth = fixationCrossThickness;
-        ctx.moveTo(canvasWidth / 2, canvasHeight / 2 - fixationCrossHeight);
-        ctx.lineTo(canvasWidth / 2, canvasHeight / 2 + fixationCrossHeight);
-        ctx.strokeStyle = fixationCrossColor;
-        ctx.stroke();
-      }
 
       //Draw the border if we want it
       if (border === true) {
