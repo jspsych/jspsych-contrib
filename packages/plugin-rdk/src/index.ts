@@ -530,7 +530,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       ctx.arc(x, y, rad, 0, pi2);
     };
     const rectFn = (x, y, rad) => {
-      ctx.rect(x, y, rad * 2, rad * 2);
+      ctx.rect(x - rad, y - rad, rad * 2, rad * 2);
     };
 
     //Function to start the keyboard listener
