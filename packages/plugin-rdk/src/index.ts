@@ -99,6 +99,12 @@ const info = <const>{
       pretty_name: "Dot color",
       default: "white",
     },
+    /** The shape of the dots */
+    dot_shape: {
+      type: ParameterType.INT,
+      pretty_name: "Dot shape",
+      default: 1,
+    },
     /** The background color of the stimulus. */
     background_color: {
       type: ParameterType.STRING,
@@ -248,6 +254,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     var aperture_width = assignParameterValue(trial.aperture_width, 600);
     var aperture_height = assignParameterValue(trial.aperture_height, 400);
     var dot_color = assignParameterValue(trial.dot_color, "white");
+    var dot_shape = assignParameterValue(trial.dot_shape, 1);
     var background_color = assignParameterValue(trial.background_color, "gray");
     var RDK_type = assignParameterValue(trial.RDK_type, 3);
     var aperture_type = assignParameterValue(trial.aperture_type, 2);
@@ -320,6 +327,13 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       4 - Rectangle
       */
     var apertureType = aperture_type;
+
+    /**
+      Shape of dots
+      1 - Circle
+      3 - Square
+      */
+    var dotShape = dot_shape;
 
     /*
       Out of Bounds Decision
@@ -406,6 +420,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     var apertureWidthArray;
     var apertureHeightArray;
     var dotColorArray;
+    var dotShapeArray;
     var apertureCenterXArray;
     var apertureCenterYArray;
     var RDKArray;
@@ -433,6 +448,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       apertureWidthArray = setParameter(apertureWidth);
       apertureHeightArray = setParameter(apertureHeight);
       dotColorArray = setParameter(dotColor);
+      dotShapeArray = setParameter(dotShape);
       apertureCenterXArray = setParameter(apertureCenterX);
       apertureCenterYArray = setParameter(apertureCenterY);
       RDKArray = setParameter(RDK);
@@ -705,6 +721,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       apertureWidth = apertureWidthArray[currentApertureNumber];
       apertureHeight = apertureHeightArray[currentApertureNumber];
       dotColor = dotColorArray[currentApertureNumber];
+      dotShape = dotShapeArray[currentApertureNumber];
       apertureCenterX = apertureCenterXArray[currentApertureNumber];
       apertureCenterY = apertureCenterYArray[currentApertureNumber];
       RDK = RDKArray[currentApertureNumber];
@@ -922,13 +939,21 @@ class RdkPlugin implements JsPsychPlugin<Info> {
 
       const pi2 = Math.PI * 2;
 
+      const circleFn = (x, y, rad) => {
+        ctx.arc(x, y, rad, 0, pi2);
+      };
+      const rectFn = (x, y, rad) => {
+        ctx.rect(x, y, rad * 2, rad * 2);
+      };
+      const drawFn = dotShape == 3 ? rectFn : circleFn;
+
       //Loop through the dots one by one and draw them
       ctx.fillStyle = dotColor;
       ctx.beginPath();
       for (var i = 0; i < nDots; i++) {
         const dot = dotArray[i];
         ctx.moveTo(dot.x + dotRadius, dot.y);
-        ctx.arc(dot.x, dot.y, dotRadius, 0, pi2);
+        drawFn(dot.x, dot.y, dotRadius);
       }
       ctx.fill();
 
