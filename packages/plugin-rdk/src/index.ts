@@ -524,6 +524,15 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     //variable to store how many frames were presented.
     var numberOfFrames = 0;
 
+    // set up dot-drawing abstractions
+    const pi2 = Math.PI * 2;
+    const circleFn = (x, y, rad) => {
+      ctx.arc(x, y, rad, 0, pi2);
+    };
+    const rectFn = (x, y, rad) => {
+      ctx.rect(x, y, rad * 2, rad * 2);
+    };
+
     //Function to start the keyboard listener
     const startKeyboardListener = () => {
       //Start the response listener if there are choices for keys
@@ -937,14 +946,6 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       //Load in the current set of dot array for easy handling
       var dotArray = dotArray2d[currentSetArray[currentApertureNumber]];
 
-      const pi2 = Math.PI * 2;
-
-      const circleFn = (x, y, rad) => {
-        ctx.arc(x, y, rad, 0, pi2);
-      };
-      const rectFn = (x, y, rad) => {
-        ctx.rect(x, y, rad * 2, rad * 2);
-      };
       const drawFn = dotShape == 3 ? rectFn : circleFn;
 
       //Loop through the dots one by one and draw them
@@ -971,7 +972,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
             verticalAxis + borderThickness / 2,
             0,
             0,
-            Math.PI * 2
+            pi2
           );
           ctx.stroke();
         } //End of if circle or ellipse
