@@ -69,6 +69,12 @@ const info = <const>{
       pretty_name: "Dot radius",
       default: 2,
     },
+    /** The length of the side of a dot in pixels (only when dot_shape is "square") */
+    dot_side_length: {
+      type: ParameterType.INT,
+      pretty_name: "Dot side length",
+      default: 1,
+    },
     /** The number of frames that pass before each dot disappears and reappears somewhere else. */
     dot_life: {
       type: ParameterType.INT,
@@ -101,9 +107,9 @@ const info = <const>{
     },
     /** The shape of the dots */
     dot_shape: {
-      type: ParameterType.INT,
+      type: ParameterType.STRING,
       pretty_name: "Dot shape",
-      default: 1,
+      default: "circle",
     },
     /** The background color of the stimulus. */
     background_color: {
@@ -249,12 +255,13 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     var coherence = assignParameterValue(trial.coherence, 0.5);
     var opposite_coherence = assignParameterValue(trial.opposite_coherence, 0);
     var dot_radius = assignParameterValue(trial.dot_radius, 2);
+    var dot_side_length = assignParameterValue(trial.dot_side_length, 1);
     var dot_life = assignParameterValue(trial.dot_life, -1);
     var move_distance = assignParameterValue(trial.move_distance, 1);
     var aperture_width = assignParameterValue(trial.aperture_width, 600);
     var aperture_height = assignParameterValue(trial.aperture_height, 400);
     var dot_color = assignParameterValue(trial.dot_color, "white");
-    var dot_shape = assignParameterValue(trial.dot_shape, 1);
+    var dot_shape = assignParameterValue(trial.dot_shape, "circle");
     var background_color = assignParameterValue(trial.background_color, "gray");
     var RDK_type = assignParameterValue(trial.RDK_type, 3);
     var aperture_type = assignParameterValue(trial.aperture_type, 2);
@@ -284,6 +291,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     var coherence = coherence; //Proportion of dots to move together, range from 0 to 1
     var oppositeCoherence = opposite_coherence; // The coherence for the dots going the opposite direction as the coherent dots
     var dotRadius = dot_radius; //Radius of each dot in pixels
+    var dotSideLength = dot_side_length; // Length of dot side in pixels (only when dot_shape is "square")
     var dotLife = dot_life; //How many frames a dot will keep following its trajectory before it is redrawn at a random location. -1 denotes infinite life (the dot will only be redrawn if it reaches the end of the aperture).
     var moveDistance = move_distance; //How many pixels the dots move per frame
     var apertureWidth = aperture_width; // How many pixels wide the aperture is. For square aperture this will be the both height and width. For circle, this will be the diameter.
@@ -330,8 +338,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
 
     /**
       Shape of dots
-      1 - Circle
-      3 - Square
+      "circle" (default) or "square"
       */
     var dotShape = dot_shape;
 
@@ -415,6 +422,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     var coherenceArray;
     var oppositeCoherenceArray;
     var dotRadiusArray;
+    var dotSideLengthArray;
     var dotLifeArray;
     var moveDistanceArray;
     var apertureWidthArray;
@@ -443,6 +451,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       coherenceArray = setParameter(coherence);
       oppositeCoherenceArray = setParameter(oppositeCoherence);
       dotRadiusArray = setParameter(dotRadius);
+      dotSideLengthArray = setParameter(dotSideLength);
       dotLifeArray = setParameter(dotLife);
       moveDistanceArray = setParameter(moveDistance);
       apertureWidthArray = setParameter(apertureWidth);
@@ -529,8 +538,9 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     const circleFn = (x, y, rad) => {
       ctx.arc(x, y, rad, 0, pi2);
     };
-    const rectFn = (x, y, rad) => {
-      ctx.rect(x - rad, y - rad, rad * 2, rad * 2);
+    const squareFn = (x, y, half_len) => {
+      const len = half_len * 2;
+      ctx.rect(x - half_len, y - half_len, len, len);
     };
 
     //Function to start the keyboard listener
@@ -589,6 +599,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
         coherence: coherence,
         opposite_coherence: opposite_coherence,
         dot_radius: dot_radius,
+        dot_side_length: dot_side_length,
         dot_life: dot_life,
         move_distance: move_distance,
         aperture_width: aperture_width,
@@ -725,6 +736,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       coherence = coherenceArray[currentApertureNumber];
       oppositeCoherence = oppositeCoherenceArray[currentApertureNumber];
       dotRadius = dotRadiusArray[currentApertureNumber];
+      dotSideLength = dotSideLengthArray[currentApertureNumber];
       dotLife = dotLifeArray[currentApertureNumber];
       moveDistance = moveDistanceArray[currentApertureNumber];
       apertureWidth = apertureWidthArray[currentApertureNumber];
@@ -944,17 +956,25 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     //Draw the dots on the canvas after they're updated
     function draw() {
       //Load in the current set of dot array for easy handling
-      var dotArray = dotArray2d[currentSetArray[currentApertureNumber]];
+      const dotArray = dotArray2d[currentSetArray[currentApertureNumber]];
 
-      const drawFn = dotShape == 3 ? rectFn : circleFn;
+      let drawFn;
+      let dot_size;
+      if (dotShape == "square") {
+        drawFn = squareFn;
+        dot_size = dotSideLength * 0.5;
+      } else {
+        drawFn = circleFn;
+        dot_size = dotRadius;
+      }
 
       //Loop through the dots one by one and draw them
       ctx.fillStyle = dotColor;
       ctx.beginPath();
-      for (var i = 0; i < nDots; i++) {
+      for (let i = 0; i < nDots; i++) {
         const dot = dotArray[i];
-        ctx.moveTo(dot.x + dotRadius, dot.y);
-        drawFn(dot.x, dot.y, dotRadius);
+        ctx.moveTo(dot.x + dot_size, dot.y);
+        drawFn(dot.x, dot.y, dot_size);
       }
       ctx.fill();
 
@@ -1002,9 +1022,6 @@ class RdkPlugin implements JsPsychPlugin<Info> {
 
       //Load in the current set of dot array for easy handling
       var dotArray = dotArray2d[currentSetArray[currentApertureNumber]];
-
-      //Load in the current set of dot array for easy handling
-      //dotArray = dotArray2d[currentSetArray[currentApertureNumber]]; //Global variable, so the draw function also uses this array
 
       //Loop through the dots one by one and update them accordingly
       for (var i = 0; i < nDots; i++) {
