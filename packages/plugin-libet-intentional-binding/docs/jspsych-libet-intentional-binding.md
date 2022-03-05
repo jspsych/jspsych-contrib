@@ -12,13 +12,15 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 
 | Parameter                | Type             | Default Value        | Descripton                               |
 | ------------------------ | ---------------- | -------------------- | ---------------------------------------- |
-| cond                     | string           | `'baseline-key'`       | Specifies the condition ("baseline-key", "baseline-tone", "operant-key", or "operant-tone"). |
+| cond                     | string           | `'baseline-key'`     | Specifies the condition ("baseline-key", "baseline-tone", "operant-key", or "operant-tone"). |
+| est_wo_keypress      | boolean          | false                | If `true`, and if `hand_est` is true, the participant can make an estimate even if they did not make a keypress during the trial. |
 | tone_file                | audio            | undefined            | The audio file to be played, if applicable. |
-| choices                  | keys            | `"ALL_KEYS"`            | The keys a participant can press, if applicable. |
-| tone_delay_ms            | int              | 2500                 | The time after the key press or the beginning of the clock animation that the tone is played, if applicable. |
+| choices                  | keys             | `"ALL_KEYS"`         | The keys a participant can press, if applicable. |
+| tone_delay_ms            | int              | 250                  | The time after the key press or the beginning of the clock animation that the tone is played, if applicable. |
 | hand_est                 | boolean          | true                 | Specifies whether the participant moves the hand to estimate an angle. If false, the trial ends after the clock hand stops spinning. |
-| instructions             | string           | `''`                   | The instructions shown to the participant during estimation, if any. |
-| feedback                 | boolean          | false                | If true (and if hand_est is true), the participant sees feedback. |
+| instructions             | HTML string      | `''`                   | The instructions shown to the participant during estimation, if any. |
+| instructions_wo_keypress             | HTML string      | undefined                   | The instructions shown to the participant during estimation if they did not make a keypress. E.g., "When did you feel the urge to make a keypress?". Only applicable if `hand_est` and `est_wo_keypress` are set to `true`. If left undefined, the parameter takes on the same value as `instructions`. |
+| feedback                 | boolean          | false                | If true, and if `hand_est` is true, the participant sees feedback in the form of a black clock hand pointing in the correct direction. |
 | feedback_ms              | int              | 2000                 | Number of milliseconds to display feedback, if applicable. |
 | pre_estimation_ms        | int              | 1000                 | The length of time, in ms, that the clock hand disappears before reappearing to be moved by the participant, if applicable. |
 | hand_inc                 | float            | `Math.PI*2/120`        | The minimum number of radians a participant can rotate the clock hand. |
