@@ -535,10 +535,10 @@ class RdkPlugin implements JsPsychPlugin<Info> {
 
     // set up dot-drawing abstractions
     const pi2 = Math.PI * 2;
-    const circleFn = (x, y, rad) => {
+    const circleFn = (x: number, y: number, rad: number) => {
       ctx.arc(x, y, rad, 0, pi2);
     };
-    const squareFn = (x, y, half_len) => {
+    const squareFn = (x: number, y: number, half_len: number) => {
       const len = half_len * 2;
       ctx.rect(x - half_len, y - half_len, len, len);
     };
@@ -605,6 +605,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
         aperture_width: aperture_width,
         aperture_height: aperture_height,
         dot_color: dot_color,
+        dot_shape: dot_shape,
         background_color: background_color,
         RDK_type: RDK_type,
         aperture_type: aperture_type,

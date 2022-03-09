@@ -25,12 +25,14 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | coherent_direction       | numeric          | 0                    | The direction of movement for coherent dots in degrees. 0 degrees is in the 3 o'clock direction, and increasing this number moves counterclockwise. (E.g. 12 o'clock is 90, 9 o'clock is 180, etc.) Range is 0 - 360. |
 | coherence                | numeric          | 0.5                  | The proportion of dots that move together in the coherent direction. Range is 0 to 1. |
 | opposite_coherence       | numeric          | 0                    | The proportion of moving in the direction opposite of the coherent direction. Range is 0 to (1-coherence). |
-| dot_radius               | numeric          | 2                    | The radius of each individual dot in pixels. |
+| dot_radius               | numeric          | 2                    | The radius of each individual dot in pixels (only used when `dot_shape` is "circle"). |
+| dot_side_length          | numeric          | 1                    | The length of the dot's side in pixels (only used when `dot_shape` is "square"). |
 | dot_life                 | numeric          | -1                   | The number of frames that pass before a dot disappears and reappears in a new frame. -1 denotes that the dot life is infinite (i.e., a dot will only disappear and reappear if it moves out of the aperture). |
 | move_distance            | numeric          | 1                    | The number of pixel lengths the dot will move in each frame (analogous to speed of dots). |
 | aperture_width           | numeric          | 600                  | The width of the aperture in pixels. For a square aperture, this will determine both the width and height. For circular aperture, this will determine the diameter. |
 | aperture_height          | numeric          | 400                  | The height of the aperture in pixels. For square and circle apertures, this will be ignored. |
 | dot_color                | string           | "white"              | The color of the dots.                   |
+| dot_shape                | string           | "circle"             | The shape of the dots (either "circle" or "square"). Squares are significantly faster to draw, and may be indistinguishable from circles when the dot size is small. |
 | background_color         | string           | "gray"               | The color of the background.             |
 | RDK_type                 | numeric          | 3                    | The Signal Selection Rule (Same/Different) and Noise Type (Random Position/Walk/Direction):<br><br>1 - Same && Random Position<br>2 - Same && Random Walk<br>3 - Same && Random Direction<br>4 - Different && Random Position<br>5 - Different && Random Walk<br>6 - Different && Random Direction<br><br>(See 'RDK parameter' below for more detailed information)<br> |
 | aperture_type            | numeric          | 2                    | The shape of the aperture.<br><br>1 - Circle<br>2 - Ellipse<br>3 - Square<br>4 - Rectangle<br> |
