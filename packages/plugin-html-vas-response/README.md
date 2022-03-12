@@ -7,7 +7,8 @@ This plugin collects responses to an arbitrary HTML string using a point-and-cli
 ## Loading
 
 ```js
-<script src="plugin-html-vas-response/index.js">
+<script src="https://unpkg.com/@jspsych-contrib/plugin-libet-intentional-binding@1.0.0">
+
 ```
 
 ## Compatibility
