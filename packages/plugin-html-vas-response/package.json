@@ -17,7 +17,7 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-html-vas-response"
   },
-  "author": "Josh de Leeuw",
+  "author": "Isaac Kinley",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
