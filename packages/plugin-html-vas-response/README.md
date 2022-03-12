@@ -25,4 +25,4 @@ Created by [Isaac Kinley](https://github.com/kinleyid)
 
 Citation:
 
-Kinley, I. (2022, March 7). "A jsPsych plugin for visual analogue scales." Retrieved from psyarxiv.com/avj92. DOI: 10.31234/osf.io/avj92
+Kinley, I. (2022, March 7). "A jsPsych plugin for visual analogue scales." Retrieved from https://psyarxiv.com/avj92. DOI: 10.31234/osf.io/avj92
