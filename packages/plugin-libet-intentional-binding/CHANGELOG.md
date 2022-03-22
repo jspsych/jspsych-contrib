@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-libet-intentional-binding
 
+## 1.2.0
+
+### Minor Changes
+
+- [#20](https://github.com/jspsych/jspsych-contrib/pull/20) [`a9ed71a`](https://github.com/jspsych/jspsych-contrib/commit/a9ed71a67449213a690d4694f92c4fccbd2d59e8) Thanks [@kinleyid](https://github.com/kinleyid)! - Updates to the plugin by Yu Hei Shum, allowing the plugin to run without loading any audio files if none will be used, and allowing the participant to produce an estimate even in the absence of a key press (e.g., to report when they felt the urge to press a key).
+
 ## 1.1.0
 
 ### Minor Changes
