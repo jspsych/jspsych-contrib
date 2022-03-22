@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-html-vas-response",
   "private": "false",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "unpkg": "dist/index.browser.min.js",
   "files": [
