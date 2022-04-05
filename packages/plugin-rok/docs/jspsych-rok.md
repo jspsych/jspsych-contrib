@@ -93,7 +93,7 @@ let trial = {
         type:jsPsychRok,
         prompt: 'Welcome to the demo of a fully cusomizable rok task, >F< to continue',
         choices: ['f', 'j'],
-        correct_choice: 'f',
+        correct_choice: ['f'],
         coherent_orientation: 0, // orientation to the right
         coherent_movement_direction: 90, // movement up
         coherence_orientation: 50, // 50% are orientated right
@@ -198,7 +198,7 @@ let trial = {
         type: jsPsychRok,
         number_of_apertures: 3,
         choices: ['f', 'j'],
-        correct_choice: 'f',
+        correct_choice: ['f'],
         trial_duration: 0, // trial_duration, 0 meaning endless
         coherent_movement_direction: [0, 30, 90], // coherent movement direction in degree (0 being right, 90 being up)
         coherent_orientation: [0, 210, 0], // coherent orientation in degree
@@ -226,7 +226,7 @@ let trial = {
         type: jsPsychRok,
         number_of_apertures: 2,
         choices: ['f', 'j'],
-        correct_choice: 'f',
+        correct_choice: ['f'],
         trial_duration: 0, // trial_duration, 0 meaning endless
         coherent_movement_direction: [0,90], // coherent movement direction in degree (0 being right, 90 being up)
         coherent_orientation: [90,0], // coherent orientation in degree
