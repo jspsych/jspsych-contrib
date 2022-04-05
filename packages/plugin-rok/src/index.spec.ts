@@ -7,7 +7,7 @@ describe("rok plugin", () => {
         const {getData} = await startTimeline([
             {
                 type: rok,
-                number_of_dots: 200,
+                number_of_oobs: 200,
                 choices: ["a", "l"],
                 correct_choice: ["l"],
                 coherent_movement_direction: 0,
