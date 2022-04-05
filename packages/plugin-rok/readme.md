@@ -20,7 +20,7 @@ npm install @jspsych-contrib/plugin-rok
 ```
 
 ```js
-import jsPsychRdk from '@jspsych-contrib/plugin-rok';
+import jsPsychRok from '@jspsych-contrib/plugin-rok';
 ```
 
 ## Compatibility
@@ -33,8 +33,8 @@ See [documentation](docs/jspsych-rok.md)
 
 ## Author / Citation
 
-Created by [Younes Strittmatter](https://github.com/younesStrittmatter), Hakwan Lau, and Brian Odegaard. Modified by the jsPsych core team for 7.0 compatibility.
+Created by [Younes Strittmatter](https://github.com/younesStrittmatter).
 
-We would appreciate it if you cited this paper when you use the RDK plugin.
+We would appreciate it if you cited this paper when you use the ROK plugin.
 
 Strittmatter, Y., Spitzer, M., & Kiesel, A. (2021, July 12). A Random-Object-Kinematogram Plugin for Web-Based Research: Implementing Oriented Objects Enables Varying Coherence Levels and Stimulus Congruency Levels. DOI: [10.31234/osf.io/hmq4u]

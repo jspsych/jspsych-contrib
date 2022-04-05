@@ -5,7 +5,7 @@ The stimulus can be displayed until a keyboard response is given or until a cert
 
 We would appreciate it if you cited this paper when you use the plugin: 
 
-<b>Strittmatter, Y., Spitzer, M., & Kiesel, A. (2021, July 12). A Random-Object-Kinematogram Plugin for Web-Based Research: Implementing Oriented Objects Enables Varying Coherence Levels and Stimulus Congruency Levels. DOI: [10.31234/osf.io/hmq4u]</b>
+**Strittmatter, Y., Spitzer, M., & Kiesel, A. (2021, July 12). A Random-Object-Kinematogram Plugin for Web-Based Research: Implementing Oriented Objects Enables Varying Coherence Levels and Stimulus Congruency Levels. DOI: [10.31234/osf.io/hmq4u]**
 
 
 ## Parameters
@@ -77,25 +77,20 @@ In addition to the default data collected by all plugins, this plugin collects a
 
 The feature to draw a border around the aperture is not implemented yet. Also the feature to present a fixation cross behind the oobs is not implemented yet. (Both features were implemented in the RDK plugin.)
 
-## Example
-
-### Setting the correct_choice parameter by linking it to the coherent_direction parameter:
-
+## Examples
+### Setting the correct_choice parameter by linking it to the coherent_direction parameter.
 ```javascript
 let trial = {
-            type: 'rok',
+            type: jsPsychRok,
             choices: ['f'],
-            correct_choice: 'f',
+            correct_choice: ['f'],
             trial_duration: 0
         }
 ```
-
 ### Setting the coherent_orientation to right (50% pointing right, 30% pointing left, 20% pointing random).
-### The coherent_movement to up (70% percent moving up, 30% moving random). Setting a prompt. 
-
 ```javascript
     let trial =  {
-        type:'rok',
+        type:jsPsychRok,
         prompt: 'Welcome to the demo of a fully cusomizable rok task, >F< to continue',
         choices: ['f', 'j'],
         correct_choice: 'f',
@@ -103,18 +98,43 @@ let trial = {
         coherent_movement_direction: 90, // movement up
         coherence_orientation: 50, // 50% are orientated right
         coherence_orientation_opposite: 30, // 30% are orientated left (rest random)
+    };
+```
+### The coherent_movement to up (70% percent moving up, 30% moving random). Setting a prompt. 
+```javascript
+    let trial =  {
+        type:jsPsychRok,
+        prompt: 'Welcome to the demo of a fully cusomizable rok task, >F< to continue',
+        choices: ['f', 'j'],
+        correct_choice: ['f'],
+        coherent_movement_direction: 90, // movement up
         coherence_movement: 70, // 
         coherence_movement_opposite:30,
     };
 ```
 
 ### Setting animated images as stimulus. Fade out images on the edges of the aperture. Mirror images instead of rotating them all the way (no upside down birds)
+```javascript
+    let trial =  {
+        type:jsPsychRok,
+        choices: ['f', 'j'],
+        correct_choice: ['f'],
+        fade_out: 1,
+        stimulus_type: 4, // Make type image (0-triangles, 1-circle, 2-square, 3-origami_birds, 4-image)
+        number_of_oobs: 100,
+        oob_size: 10,
+        stimulus_image: ['./res/img/stimuli/bird1_4.png'],
+        stimulus_image_keyframes:4, // There are 4 frames in the image
+        stimulus_keyframe_time: .1, // times between frames
+        stimulus_mirror: 1,
+    };
+```
 ### Set congruency mode to 2 so that movement and orientation of incoherent oobs match. Randomise movement speed (not direction!) so that oobs move with different speed.
 ```javascript
     let trial =  {
-        type:'rok',
+        type:jsPsychRok,
         choices: ['f', 'j'],
-        correct_choice: 'f',
+        correct_choice: ['f'],
         fade_out: 1,
         stimulus_type: 4, // Make type image (0-triangles, 1-circle, 2-square, 3-origami_birds, 4-image)
         number_of_oobs: 100,
@@ -137,10 +157,10 @@ let trial = {
 
 ### Setting randomisation to non static (random orientation as well as movement direction change over time). Setting type to animated origami bird
 ```javascript
-    let trial2 =  {
-        type:'rok',
+    let trial =  {
+        type:jsPsychRok,
         choices: ['f', 'j'],
-        correct_choice: 'f',
+        correct_choice: ['f'],
         stimulus_type: 3, // 0 - triangle, 1-circle, 2-square, 3-origamiBird 4-image
         random_movement_type: 1,
         random_orientation_type: 1,
@@ -150,9 +170,9 @@ let trial = {
 ### Layering apertures to create random distractors
 ```javascript
     let trial = {
-        type: 'rok',
+        type: jsPsychRok,
         choices: ['f', 'j'],
-        correct_choice: 'f',
+        correct_choice: ['f'],
         trial_duration: 0, 
         coherent_movement_direction: [90,90],
         coherent_orientation: [90,90], 
@@ -174,8 +194,8 @@ let trial = {
 ```
 ### Demonstrating all main features
 ```javascript
- let trial5 = {
-        type: 'rok',
+ let trial = {
+        type: jsPsychRok,
         number_of_apertures: 3,
         choices: ['f', 'j'],
         correct_choice: 'f',
@@ -202,8 +222,8 @@ let trial = {
         prompt: ['coherent/congruent', 'coherent/incongruent', 'randomness can be manipulated']
     };
 
-    let trial6 = {
-        type: 'rok',
+    let trial_2 = {
+        type: jsPsychRok,
         number_of_apertures: 2,
         choices: ['f', 'j'],
         correct_choice: 'f',

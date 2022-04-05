@@ -1,6 +1,6 @@
 import {pressKey, startTimeline} from "@jspsych/test-utils";
 
-import rok from "../../../../packages/plugin-rok/src";
+import rok from ".";
 
 describe("rok plugin", () => {
     test("choices and frame data are stored as arrays", async () => {
