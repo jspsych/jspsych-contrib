@@ -392,7 +392,7 @@ class RokPlugin implements JsPsychPlugin<Info> {
             let p = document.createElement('div');
             p.style.margin = '10px';
             p.style.padding = '10px';
-            display_element.appendChild(p);
+            containerArray[0].appendChild(p);
             p.style.textAlign = "center";
             p.innerHTML = prompt;
         }
@@ -1268,9 +1268,9 @@ class Oob {
         this.pos.y += this.vel.y * deltaTime / 1000;
         if (this.isRandomWalk) this.randomMovement(deltaTime);
         if (this.isRandomOrientated) this.randomOrientation(deltaTime);
-        this.handleOutOfBounds();
-
-
+        if (deltaTime > 0) {
+            this.handleOutOfBounds();
+        }
     }
 
     draw() {
