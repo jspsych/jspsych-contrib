@@ -45,7 +45,7 @@
     // The coherent movement to up (70% percent moving up, 30% moving random). Setting a prompt.
     let trial2 = {
         type: jsPsychRok,
-        prompt: 'Welcome to the demo of a fully cusomizable rok task, >F< to continue',
+        prompt: 'Welcome to the demo of a fully customizable rok task, >F< to continue',
         choices: ['f', 'j'],
         correct_choice: ['f'],
         coherent_orientation: 0, // orientation angle in degree (0 for right)
@@ -66,7 +66,7 @@
         correct_choice: ['f'],
         trial_duration: 0,
         number_of_apertures: 2, // show 2 kinematograms on top of each other
-        coherent_movement_direction: [90, 90], // when shown more then one kinematogram, most parameters can be specified as array to adress the different kinematograms
+        coherent_movement_direction: [90, 90], // when shown more then one kinematogram, most parameters can be specified as array to address the different kinematograms
         coherent_orientation: [90, 90],
         coherence_movement: [90, 0],
         coherence_orientation: [90, 0],
@@ -77,10 +77,10 @@
         oob_color: ['green', 'red'],
         number_of_oobs: [100, 20],
         oob_size: [5, 5],
-        stimulus_type: [0, 2], // 0-triangle, 2-square
+        stimulus_type: [0, 3], // 0-triangle, 2-origami bird
         aperture_width: 200,
         aperture_height: 600,
-        aperture_position_left: [50, 50], // here the position of the kinematograms can be specified to show them on top of eaech other
+        aperture_position_left: [50, 50], // here the position of the kinematograms can be specified to show them on top of each other
         aperture_position_top: [50, 50], // if position left is specified, position top should be also specified
         aperture_shape: 1,
         fade_out: 1,
@@ -90,6 +90,7 @@
     // Showing the kinematograms next to each other
     let trial4 = {
         type: jsPsychRok,
+        prompt: ['Is orientation direction here', 'equal to movement here?'],
         choices: ['f', 'j'],
         correct_choice: ['f'],
         trial_duration: 0,
@@ -103,10 +104,10 @@
         movement_speed: [2, 5],
         movement_speed_randomisation: [0, 50],
         oob_color: ['green', 'red'],
-        oob_size: [3, 1],
+        oob_size: [4, 2],
         stimulus_type: [0, 2],
         aperture_width: 200,
-        aperture_height: 600,
+        aperture_height: 500,
         aperture_position_left: [25, 75], // here the position of the kinematograms can be specified to show them next to each other
         aperture_position_top: [50, 50], // if position left is specified, position top should be also specified
         aperture_shape: [0, 1],

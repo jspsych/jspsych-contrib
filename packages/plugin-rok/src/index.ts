@@ -380,26 +380,36 @@ class RokPlugin implements JsPsychPlugin<Info> {
             containerArray[i].appendChild(canvasArray[i]);
             if (Array.isArray(prompt)) {
                 let p = document.createElement('div');
-                p.style.margin = '5px';
+                p.style.margin = '0';
                 p.style.padding = '0';
                 containerArray[i].appendChild(p);
                 p.style.textAlign = "center";
                 p.innerHTML = prompt[i];
+                p.style.position = 'absolute';
+                p.style.transform = 'translate(-50%, 100%)';
+                p.style.textAlign = "center";
+                p.style.top = (10 + getValueFromArrayOrNot(aperture_height, 0) / 2) + 'px';
+                p.style.width = getValueFromArrayOrNot(aperture_width, 0) + 'px';
             }
         }
 
         if (prompt != null && !Array.isArray(prompt)) {
             let p = document.createElement('div');
-            p.style.margin = '10px';
-            p.style.padding = '10px';
+            p.style.margin = '0';
+            p.style.padding = '0';
             containerArray[0].appendChild(p);
             p.style.textAlign = "center";
             p.innerHTML = prompt;
+            p.style.position = 'absolute';
+            p.style.transform = 'translate(-50%, 100%)';
+            p.style.textAlign = "center";
+            p.style.top = (10 + getValueFromArrayOrNot(aperture_height, 0) / 2) + 'px';
+            p.style.width = getValueFromArrayOrNot(aperture_width, 0) + 'px';
         }
 
         //Get body element from jsPsych
         let body = document.getElementsByClassName("jspsych-display-element")[0] as HTMLElement;
-        ;
+
 
         //Save the current settings to be restored later
         let originalMargin = body.style.margin;
@@ -940,7 +950,6 @@ class RokPlugin implements JsPsychPlugin<Info> {
                         if (document.hasFocus()) {
                             dT = currentTimeStamp - previousTimestamp;
                         } else {
-                            dT = 0;
                             previousTimestamp = performance.now();
                         }
 
@@ -1268,9 +1277,7 @@ class Oob {
         this.pos.y += this.vel.y * deltaTime / 1000;
         if (this.isRandomWalk) this.randomMovement(deltaTime);
         if (this.isRandomOrientated) this.randomOrientation(deltaTime);
-        if (deltaTime > 0) {
-            this.handleOutOfBounds();
-        }
+        this.handleOutOfBounds();
     }
 
     draw() {
@@ -1441,7 +1448,7 @@ class OobImage extends Oob {
         this.animationTime += deltaTime / 1000;
         let d = this.keyframeTime - this.animationTime;
         if (d < 0) {
-            this.animationTime = -d;
+            this.animationTime = 0;
             this.actualKeyframe++;
             if (this.actualKeyframe >= this.keyframes) this.actualKeyframe = 0;
         }

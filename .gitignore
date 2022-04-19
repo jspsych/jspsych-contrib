@@ -10,3 +10,5 @@ coverage/
 .vscode/
 dist.zip
 .idea
+/packages/plugin-rdk
+/packages/plugin-html-vas-response
