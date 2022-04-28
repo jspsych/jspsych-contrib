@@ -51,7 +51,7 @@ fade_out|INT|0|Fade the oobs on the edges of the aperture|can|
 experiment_congruency_mode|INT|0|Sets experiment to congruency mode: experiment_main_task has to be  set (0 = movement or 1 = direction) if this is set to 1 or 2. The congruency of the task does only apply to coherent oobs of main task. If this is set to 1 the remaining oobs secondary feature (the non task feature) is set at random. If this is set to 2 the remaining oobs have the same direction and orientation|no|
 experiment_main_task|INT|0|Sets the main task when experiment is in congruency mode. The congruency of the other task then only applies to non random oobs of main task|can|
 units|STRING|null|Units in which size and speed of oobs is expressed (null - percentage of aperture width, px - pixels|no|
-
+aperture_mode|STRING|overlay|When in overlay draws stimuli of different apertures on top of each other. When in intermixed oobs all show up in one aperture intermixed.
 
 ### Image Loading
 If image are key framed, the keyframes must be loaded as one picture in a frame sheet. Keyframes are next to each other. If the image should be mirrored a mirrored version of the image must be in the same sheet below the original keyframe.
