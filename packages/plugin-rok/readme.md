@@ -1,4 +1,4 @@
-# rdk plugin
+# rok plugin
 
 ## Overview
 
