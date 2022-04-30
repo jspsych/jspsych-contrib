@@ -75,7 +75,7 @@
         oob_color: ['green', 'red'],
         number_of_oobs: [100, 20],
         oob_size: [5, 5],
-        stimulus_type: [0, 3], // 0-triangle, 2-origami bird
+        stimulus_type: [0, 3], // 0-triangle, 3-origami bird
         aperture_width: 200,
         aperture_height: 600,
         aperture_position_left: [50, 50], // here the position of the kinematograms can be specified to show them on top of each other
@@ -139,7 +139,7 @@
     };
     timeline.push(trial5);
 
-    // Layering apertures to show two stimuli mixed
+    // Layering apertures in mixed mode to show two stimuli mixed
     let trial6 = {
         type: jsPsychRok,
         choices: ['f', 'j'],
