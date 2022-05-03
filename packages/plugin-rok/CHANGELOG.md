@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-rok
 
+## 1.1.1
+
+### Patch Changes
+
+- [#30](https://github.com/jspsych/jspsych-contrib/pull/30) [`864493c`](https://github.com/jspsych/jspsych-contrib/commit/864493cc51a84711466802398607e3c92b08fe14) Thanks [@younesStrittmatter](https://github.com/younesStrittmatter)! - fixed bug in mixed layering mode
+
 ## 1.1.0
 
 ### Minor Changes
