@@ -790,7 +790,7 @@ class RokPlugin implements JsPsychPlugin<Info> {
           );
         } else if (stimulusType === 4) {
           let imageArray, keyframes, keyframeTime, mirrorType;
-          if (nApertures === 1) {
+          if (nAperturesTmp === 1) {
             imageArray = img;
             keyframes = stimulus_image_keyframes;
             keyframeTime = stimulus_keyframe_time;
