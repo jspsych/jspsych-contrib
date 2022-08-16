@@ -1,4 +1,4 @@
-import { clickTarget, pressKey, startTimeline } from "@jspsych/test-utils";
+import { clickTarget, pressKey, simulateTimeline, startTimeline } from "@jspsych/test-utils";
 
 import htmlMultiResponse from ".";
 
@@ -213,5 +213,70 @@ describe("plugin-html-multi-response", () => {
     expect(document.querySelector("#jspsych-html-multi-response-stimulus").className).toBe(
       " responded"
     );
+  });
+});
+
+describe("html-multi-response simulation", () => {
+  test("data mode works", async () => {
+    const timeline = [
+      {
+        type: htmlMultiResponse,
+        stimulus: "foo",
+        keyboard_choices: "ALL_KEYS",
+        button_choices: ["a", "b", "c"],
+      },
+    ];
+
+    const { expectFinished, getData } = await simulateTimeline(timeline);
+
+    await expectFinished();
+
+    const buttonResponse = getData().values()[0].button_response;
+    const keyboardResponse = getData().values()[0].keyboard_response;
+    const responseSource = getData().values()[0].response_source;
+
+    expect(getData().values()[0].rt).toBeGreaterThan(0);
+    if (responseSource == "keyboard") {
+      expect(typeof keyboardResponse).toBe("string");
+    } else if (responseSource == "button") {
+      expect(buttonResponse).toBeGreaterThanOrEqual(0);
+      expect(buttonResponse).toBeLessThanOrEqual(2);
+    }
+  });
+
+  test("visual mode works", async () => {
+    const timeline = [
+      {
+        type: htmlMultiResponse,
+        stimulus: "foo",
+        keyboard_choices: "ALL_KEYS",
+        button_choices: ["a", "b", "c"],
+      },
+    ];
+
+    const { expectFinished, expectRunning, getHTML, getData } = await simulateTimeline(
+      timeline,
+      "visual"
+    );
+
+    await expectRunning();
+
+    expect(getHTML()).toContain("foo");
+
+    jest.runAllTimers();
+
+    await expectFinished();
+
+    const buttonResponse = getData().values()[0].button_response;
+    const keyboardResponse = getData().values()[0].keyboard_response;
+    const responseSource = getData().values()[0].response_source;
+
+    expect(getData().values()[0].rt).toBeGreaterThan(0);
+    if (responseSource == "keyboard") {
+      expect(typeof keyboardResponse).toBe("string");
+    } else if (responseSource == "button") {
+      expect(buttonResponse).toBeGreaterThanOrEqual(0);
+      expect(buttonResponse).toBeLessThanOrEqual(2);
+    }
   });
 });
