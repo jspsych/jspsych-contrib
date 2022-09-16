@@ -303,7 +303,7 @@ class HtmlMultiResponsePlugin implements JsPsychPlugin<Info> {
     load_callback();
 
     if (data.rt !== null) {
-      if (Math.random() < 0.5) {
+      if (data.button_response !== null) {
         this.jsPsych.pluginAPI.clickTarget(
           display_element.querySelector(`div[data-choice="${data.button_response}"] button`),
           data.rt
