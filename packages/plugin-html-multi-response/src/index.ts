@@ -76,7 +76,7 @@ type Info = typeof info;
  * html-multi-response
  * jsPsych plugin for displaying an html stimulus and getting a response
  * @author Adam Richie-Halford
- * @see {@link https://DOCUMENTATION_URL DOCUMENTATION LINK TEXT}
+ * @see {@link https://www.jspsych.org/plugins/jspsych-html-multi-response/ html-multi-response plugin documentation on jspsych.org}
  */
 class HtmlMultiResponsePlugin implements JsPsychPlugin<Info> {
   static info = info;
