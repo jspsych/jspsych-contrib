@@ -1,33 +1,38 @@
 import { clickTarget, pressKey, simulateTimeline, startTimeline } from "@jspsych/test-utils";
 
-import htmlMultiResponse from ".";
+import imageMultiResponse from ".";
 
 jest.useFakeTimers();
 
-describe("plugin-html-multi-response", () => {
-  test("displays html stimulus", async () => {
+describe("plugin-image-multi-response", () => {
+  test("displays image stimulus", async () => {
     const { getHTML } = await startTimeline([
       {
-        type: htmlMultiResponse,
-        stimulus: "this is html",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
+        render_on_canvas: false,
       },
     ]);
 
     expect(getHTML()).toContain(
-      '<div id="jspsych-html-multi-response-stimulus">this is html</div><div id="jspsych-html-multi-response-btngroup"></div>'
+      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
+
+    expect(getHTML()).toContain('<div id="jspsych-image-multi-response-btngroup"></div>');
   });
 
   test("display clears after key press", async () => {
     const { getHTML, expectFinished } = await startTimeline([
       {
-        type: htmlMultiResponse,
-        stimulus: "this is html",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         keyboard_choices: ["f", "j"],
+        render_on_canvas: false,
       },
     ]);
+
     expect(getHTML()).toContain(
-      '<div id="jspsych-html-multi-response-stimulus">this is html</div>'
+      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
     pressKey("f");
@@ -37,8 +42,8 @@ describe("plugin-html-multi-response", () => {
   test("display button labels", async () => {
     const { getHTML } = await startTimeline([
       {
-        type: htmlMultiResponse,
-        stimulus: "this is html",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         button_choices: ["button-choice1", "button-choice2"],
       },
     ]);
@@ -50,8 +55,8 @@ describe("plugin-html-multi-response", () => {
   test("display button html", async () => {
     const { getHTML } = await startTimeline([
       {
-        type: htmlMultiResponse,
-        stimulus: "this is html",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         button_choices: ["buttonChoice"],
         button_html: '<button class="jspsych-custom-button">%choice%</button>',
       },
@@ -63,17 +68,18 @@ describe("plugin-html-multi-response", () => {
   test("display should clear after button click", async () => {
     const { getHTML, expectFinished } = await startTimeline([
       {
-        type: htmlMultiResponse,
-        stimulus: "this is html",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         button_choices: ["button-choice"],
+        render_on_canvas: false,
       },
     ]);
 
     expect(getHTML()).toContain(
-      '<div id="jspsych-html-multi-response-stimulus">this is html</div>'
+      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
-    clickTarget(document.querySelector("#jspsych-html-multi-response-button-0"));
+    clickTarget(document.querySelector("#jspsych-image-multi-response-button-0"));
 
     await expectFinished();
   });
@@ -81,8 +87,8 @@ describe("plugin-html-multi-response", () => {
   test("prompt should append below button", async () => {
     const { getHTML } = await startTimeline([
       {
-        type: htmlMultiResponse,
-        stimulus: "this is html",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         button_choices: ["button-choice"],
         prompt: "<p>this is a prompt</p>",
       },
@@ -96,22 +102,22 @@ describe("plugin-html-multi-response", () => {
   test("should hide stimulus if stimulus-duration is set", async () => {
     const { displayElement, expectFinished } = await startTimeline([
       {
-        type: htmlMultiResponse,
-        stimulus: "this is html",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         keyboard_choices: ["f", "j"],
         stimulus_duration: 500,
       },
     ]);
 
     expect(
-      displayElement.querySelector<HTMLElement>("#jspsych-html-multi-response-stimulus").style
+      displayElement.querySelector<HTMLElement>("#jspsych-image-multi-response-stimulus").style
         .visibility
     ).toMatch("");
 
     jest.advanceTimersByTime(500);
 
     expect(
-      displayElement.querySelector<HTMLElement>("#jspsych-html-multi-response-stimulus").style
+      displayElement.querySelector<HTMLElement>("#jspsych-image-multi-response-stimulus").style
         .visibility
     ).toBe("hidden");
 
@@ -122,15 +128,16 @@ describe("plugin-html-multi-response", () => {
   test("should end trial when trial duration is reached", async () => {
     const { getHTML, expectFinished } = await startTimeline([
       {
-        type: htmlMultiResponse,
-        stimulus: "this is html",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         keyboard_choices: ["f", "j"],
         trial_duration: 500,
+        render_on_canvas: false,
       },
     ]);
 
-    expect(getHTML()).toBe(
-      '<div id="jspsych-html-multi-response-stimulus">this is html</div><div id="jspsych-html-multi-response-btngroup"></div>'
+    expect(getHTML()).toContain(
+      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
     jest.advanceTimersByTime(500);
     await expectFinished();
@@ -139,15 +146,16 @@ describe("plugin-html-multi-response", () => {
   test("should end trial when key press", async () => {
     const { getHTML, expectFinished } = await startTimeline([
       {
-        type: htmlMultiResponse,
-        stimulus: "this is html",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         keyboard_choices: ["f", "j"],
         response_ends_trial: true,
+        render_on_canvas: false,
       },
     ]);
 
     expect(getHTML()).toContain(
-      '<div id="jspsych-html-multi-response-stimulus">this is html</div>'
+      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
     pressKey("f");
@@ -157,38 +165,40 @@ describe("plugin-html-multi-response", () => {
   test("should end trial when button is clicked", async () => {
     const { getHTML, expectFinished } = await startTimeline([
       {
-        type: htmlMultiResponse,
-        stimulus: "this is html",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         button_choices: ["button-choice"],
         response_ends_trial: true,
+        render_on_canvas: false,
       },
     ]);
 
     expect(getHTML()).toContain(
-      '<div id="jspsych-html-multi-response-stimulus">this is html</div>'
+      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
-    clickTarget(document.querySelector("#jspsych-html-multi-response-button-0"));
+    clickTarget(document.querySelector("#jspsych-image-multi-response-button-0"));
     await expectFinished();
   });
 
   test("class should say responded when key is pressed", async () => {
     const { getHTML, expectRunning } = await startTimeline([
       {
-        type: htmlMultiResponse,
-        stimulus: "this is html",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         keyboard_choices: ["f", "j"],
         response_ends_trial: false,
+        render_on_canvas: false,
       },
     ]);
 
     expect(getHTML()).toContain(
-      '<div id="jspsych-html-multi-response-stimulus">this is html</div>'
+      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
     pressKey("f");
 
-    expect(document.querySelector("#jspsych-html-multi-response-stimulus").className).toBe(
+    expect(document.querySelector("#jspsych-image-multi-response-stimulus").className).toBe(
       " responded"
     );
 
@@ -198,30 +208,31 @@ describe("plugin-html-multi-response", () => {
   test("class should have responded when button is clicked", async () => {
     const { getHTML } = await startTimeline([
       {
-        type: htmlMultiResponse,
-        stimulus: "this is html",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         button_choices: ["button-choice"],
         response_ends_trial: false,
+        render_on_canvas: false,
       },
     ]);
 
     expect(getHTML()).toContain(
-      '<div id="jspsych-html-multi-response-stimulus">this is html</div>'
+      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
-    clickTarget(document.querySelector("#jspsych-html-multi-response-button-0"));
-    expect(document.querySelector("#jspsych-html-multi-response-stimulus").className).toBe(
+    clickTarget(document.querySelector("#jspsych-image-multi-response-button-0"));
+    expect(document.querySelector("#jspsych-image-multi-response-stimulus").className).toBe(
       " responded"
     );
   });
 });
 
-describe("html-multi-response simulation", () => {
+describe("image-multi-response simulation", () => {
   test("data mode works", async () => {
     const timeline = [
       {
-        type: htmlMultiResponse,
-        stimulus: "foo",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         keyboard_choices: "ALL_KEYS",
         button_choices: ["a", "b", "c"],
       },
@@ -247,8 +258,8 @@ describe("html-multi-response simulation", () => {
   test("visual mode works", async () => {
     const timeline = [
       {
-        type: htmlMultiResponse,
-        stimulus: "foo",
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
         keyboard_choices: "ALL_KEYS",
         button_choices: ["a", "b", "c"],
       },
@@ -261,8 +272,7 @@ describe("html-multi-response simulation", () => {
 
     await expectRunning();
 
-    expect(getHTML()).toContain("foo");
-
+    expect(getHTML()).toContain('<canvas id="jspsych-image-multi-response-stimulus"');
     jest.runAllTimers();
 
     await expectFinished();
