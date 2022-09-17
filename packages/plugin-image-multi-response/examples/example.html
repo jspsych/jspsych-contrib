@@ -20,23 +20,23 @@
 
 		// Add a trial that only accepts keyboard responses
 		const keyboard_trial = {
-			type: jsPsychHtmlMultiResponse,
-      stimulus: '<p style="font-size:48px; color:green;">BLUE</p>',
+			type: jsPsychImageMultiResponse,
+      stimulus: './blue_text_green_color.png',
       keyboard_choices: ['r', 'g', 'b'],
       prompt: "<p>Is the ink color red, green, or blue?<br>Press the <kbd>r</kbd>, <kbd>g</kbd>, or <kbd>b</kbd> keys to respond.</p>"
 		};
 
 		// Add a trial that only accepts button responses
 		const button_trial = {
-			type: jsPsychHtmlMultiResponse,
-      stimulus: '<p style="font-size:48px; color:red;">GREEN</p>',
+			type: jsPsychImageMultiResponse,
+      stimulus: './green_text_red_color.png',
       button_choices: ['Red', 'Green', 'Blue'],
       prompt: "<p>Is the ink color red, green, or blue?<br>Click the buttons to respond.</p>"
 		};
 
     const multi_trial = {
-      type: jsPsychHtmlMultiResponse,
-      stimulus: '<p style="font-size:48px; color:blue;">RED</p>',
+      type: jsPsychImageMultiResponse,
+      stimulus: './red_text_blue_color.png',
       button_choices: ['Red', 'Green', 'Blue'],
       keyboard_choices: ['r', 'g', 'b'],
       prompt: "<p>Is the ink color red, green, or blue?<br>Click the buttons or press the <kbd>r</kbd>, <kbd>g</kbd>, or <kbd>b</kbd> keys to respond.</p>"

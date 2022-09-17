@@ -1,3 +1,3 @@
 import { makeRollupConfig } from "@jspsych/config/rollup";
 
-export default makeRollupConfig("jsPsychHtmlMultiResponse");
+export default makeRollupConfig("jsPsychImageMultiResponse");
