@@ -393,9 +393,13 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
       }, trial.stimulus_duration);
     }
 
-    // end trial if time limit is set
+    // end trial if trial_duration is set
     if (trial.trial_duration !== null) {
       this.jsPsych.pluginAPI.setTimeout(end_trial, trial.trial_duration);
+    } else if (trial.response_ends_trial === false) {
+      console.warn(
+        "The experiment may be deadlocked. Try setting a trial duration or set response_ends_trial to true."
+      );
     }
   }
 

@@ -181,6 +181,24 @@ describe("plugin-image-multi-response", () => {
     await expectFinished();
   });
 
+  test("should show console warning when trial duration is null and response ends trial is false", async () => {
+    const spy = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+    await startTimeline([
+      {
+        type: imageMultiResponse,
+        stimulus: "../media/blue.png",
+        keyboard_choices: ["f", "j"],
+        response_ends_trial: false,
+        trial_duration: null,
+        render_on_canvas: false,
+      },
+    ]);
+
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
   test("class should say responded when key is pressed", async () => {
     const { getHTML, expectRunning } = await startTimeline([
       {
