@@ -76,7 +76,7 @@ type Info = typeof info;
  * html-multi-response
  * jsPsych plugin for displaying an html stimulus and getting a response
  * @author Adam Richie-Halford
- * @see {@link https://DOCUMENTATION_URL DOCUMENTATION LINK TEXT}
+ * @see {@link https://www.jspsych.org/plugins/jspsych-html-multi-response/ html-multi-response plugin documentation on jspsych.org}
  */
 class HtmlMultiResponsePlugin implements JsPsychPlugin<Info> {
   static info = info;
@@ -303,7 +303,7 @@ class HtmlMultiResponsePlugin implements JsPsychPlugin<Info> {
     load_callback();
 
     if (data.rt !== null) {
-      if (Math.random() < 0.5) {
+      if (data.button_response !== null) {
         this.jsPsych.pluginAPI.clickTarget(
           display_element.querySelector(`div[data-choice="${data.button_response}"] button`),
           data.rt
