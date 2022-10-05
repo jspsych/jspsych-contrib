@@ -1,4 +1,5 @@
-import { FaceMesh } from "@mediapipe/face_mesh/face_mesh";
+import "@mediapipe/face_mesh";
+
 import autoBind from "auto-bind";
 import { JsPsych, JsPsychExtension, JsPsychExtensionInfo } from "jspsych";
 
