@@ -80,12 +80,10 @@ class MediapipeFacemeshExtension implements JsPsychExtension {
     this.recordedChunks = [];
   };
 
-  on_finish = (): Promise<any> => {
+  on_finish = () => {
     console.log("face_mesh tracked chunks: " + this.recordedChunks.length);
-    return new Promise((resolve) => {
-      this.stopAnimationFrame();
-      resolve({ face_mesh: this.recordedChunks });
-    });
+    this.stopAnimationFrame();
+    return { face_mesh: this.recordedChunks };
   };
 
   /**
