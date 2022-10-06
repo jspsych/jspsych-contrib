@@ -1,6 +1,5 @@
 {
   "name": "@jspsych-contrib/extension-mediapipe-face-mesh",
-  "private": "true",
   "version": "0.1.0",
   "description": "",
   "type": "module",
