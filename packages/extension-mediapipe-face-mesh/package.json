@@ -39,10 +39,12 @@
   "devDependencies": {
     "@jspsych/config": "^1.0.0",
     "@jspsych/test-utils": "^1.0.0",
+    "@types/three": "^0.144.0",
     "jspsych": "^7.0.0"
   },
   "dependencies": {
-    "@mediapipe/face_mesh": "^0.4.1633559619",
-    "three": "^0.145.0"
+    "@mediapipe/face_mesh": "0.4.1633559619",
+    "autobind": "^1.0.3",
+    "three": "0.145.0"
   }
 }
