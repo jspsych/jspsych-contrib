@@ -3,8 +3,6 @@
  * From https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/index.d.ts
  */
 
-export {};
-
 /**
  * @fileoverview Declarations for the face tracking API.
  */
