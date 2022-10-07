@@ -3,6 +3,10 @@
  * From https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/index.d.ts
  */
 
+// "If your module exports nothing, you'll need this line. Otherwise, delete it"
+// (https://www.typescriptlang.org/docs/handbook/declaration-files/templates/global-modifying-module-d-ts.html)
+export {};
+
 /**
  * @fileoverview Declarations for the face tracking API.
  */
