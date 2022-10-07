@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/extension-mediapipe-face-mesh",
   "version": "0.1.0",
-  "description": "",
+  "description": "A jsPsych extension for online tracking of facial posture during trials using the MediaPipe Face Mesh library",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -32,13 +32,13 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-mediapipe-face-mesh",
   "peerDependencies": {
-    "jspsych": ">=7.0.0"
+    "jspsych": ">=7.3.0"
   },
   "devDependencies": {
     "@jspsych/config": "^1.0.0",
     "@jspsych/test-utils": "^1.0.0",
     "@types/three": "^0.144.0",
-    "jspsych": "^7.0.0"
+    "jspsych": "^7.3.0"
   },
   "dependencies": {
     "@mediapipe/face_mesh": "0.4.1633559619",
