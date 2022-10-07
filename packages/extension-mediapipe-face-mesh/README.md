@@ -11,7 +11,7 @@ For future releases, it is planned to provide callback registration. This foster
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/extension-mediapipe-face-mesh@0.1.0">
+<script src="https://unpkg.com/@jspsych-contrib/extension-mediapipe-face-mesh@1.0.0">
 ```
 
 ### Via NPM
