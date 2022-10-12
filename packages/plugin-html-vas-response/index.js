@@ -15,6 +15,11 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         default: [],
         array: true,
       },
+      resp_fcn: {
+        type: jspsych.ParameterType.FUNCTION,
+        pretty_name: "Response function",
+        default: null,
+      },
       ticks: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Ticks",
@@ -163,7 +168,9 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       // Function to move vertical tick
       var pct_tick = null;
       var vas_enabled = true;
+      var clicks = [];
       vas.onclick = function(e) {
+        var clickTime = performance.now() - startTime;
         if (!vas_enabled) {
           return;
         }
@@ -175,12 +182,16 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
           var cx = Math.round(e.clientX);
           vline.style.left = (e.clientX - vas_rect.left - 1) + 'px';
           vline.style.visibility = 'visible';
-          console.log(pct_tick);
           pct_tick = (e.clientX - vas_rect.left) / vas_rect.width;
-          console.log(pct_tick);
           vas.appendChild(vline);
           var continue_button = document.getElementById('jspsych-html-vas-response-next');
           continue_button.disabled = false;
+          // record time series of clicks
+          clicks.push({time: clickTime, location: pct_tick});
+          // call
+          if (trial.resp_fcn) {
+            trial.resp_fcn(pct_tick);
+          }
         }
       }
       
@@ -197,6 +208,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
           rt: response.rt,
           stimulus: trial.stimulus,
           response: response.response,
+          clicks: clicks
         };
 
         display_element.innerHTML = "";

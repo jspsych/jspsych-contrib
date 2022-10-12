@@ -14,6 +14,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | ------------------------ | ---------------- | -------------------- | ---------------------------------------- |
 | stimulus                     | HTML string           | `undefined`     | The string to be displayed. |
 | labels                     | array of strings           | `[]`     | Specifies the labels to be displayed, equally spaced along the scale, as in jspsych-html-slider-response. |
+| resp_fcn                     | function           | `null`     | A function called when the participant clicks on the scale. The current location of the participant's response (between 0 and 1) is provided as an input. |
 | ticks                     | Boolean           | `true`     | Specifies whether smaller vertical tick marks should accompany the labels. |
 | scale_width | integer | `null` |  The width of the VAS in pixels. If left null, then the width will be equal to the widest element in the display. |
 | scale_height | integer | 40 | The height of the clickable region around the VAS in pixels. |
@@ -37,6 +38,7 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 | response             | numeric      | The value selected, between 0 and 1. 0 is the leftmost point on the scale, 1 is the rightmost point, and 0.5 is exactly in the middle. |
 | rt            | numeric     | The time in milliseconds, between when the trial began and when the paticipant clicked the continue button. |
 | stimulus          | string     | The stimulus displayed during the trial. |
+| clicks          | array of objects     | A record of the participant's clicks on the scale. Each element in the array is an object with properties `time` (the time of the click, in milliseconds since the trial began) and `location` (the location of the click on the VAS, from 0 to 1). |
 
 ## Example
 
@@ -45,6 +47,7 @@ var trial = {
   type: jsPsychHtmlVasResponse,
   stimulus: 'What is your temperature?',
   scale_width: 500,
-  labels: ['Maximally<br>cold', 'Maximally<br>hot']
+  labels: ['Maximally<br>cold', 'Maximally<br>hot'],
+  resp_fcn: function(ppn) {console.log(ppn)}
 };
 ```
