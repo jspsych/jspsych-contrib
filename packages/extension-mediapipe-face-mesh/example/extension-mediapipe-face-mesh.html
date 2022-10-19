@@ -12,10 +12,16 @@
   <script>
 
     const jsPsych = initJsPsych({
-        extensions: [
-            {type: jsPsychExtensionRecordVideo},
-            {type: jsPsychExtensionMediapipeFacemesh}
-        ],
+      extensions: [
+        { type: jsPsychExtensionRecordVideo },
+        {
+          type: jsPsychExtensionMediapipeFacemesh, params: {
+            locateFile: (file) => {
+              return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+            }
+          }
+        }
+      ],
         on_finish: function() {
         jsPsych.data.displayData('json');
     }
@@ -47,7 +53,10 @@
               type: jsPsychExtensionRecordVideo
             },
             {
-              type: jsPsychExtensionMediapipeFacemesh
+              type: jsPsychExtensionMediapipeFacemesh,
+              params: {
+                record: false
+              }
             }]
         }],
         timeline_variables: trials,
