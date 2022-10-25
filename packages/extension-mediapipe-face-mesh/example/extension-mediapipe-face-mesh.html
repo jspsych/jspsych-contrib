@@ -1,60 +1,72 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <script src="https://unpkg.com/jspsych@7.3.0/dist/index.browser.js"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2/dist/index.browser.js"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-initialize-camera@1.0.1/dist/index.browser.js"></script>
-    <script src="https://unpkg.com/@jspsych/extension-record-video@1.0.1/dist/index.browser.js"></script>
-    <script src="../dist/index.browser.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/jspsych@7.3.0/css/jspsych.css" />
-  </head>
-  <body></body>
-  <script>
 
-    const jsPsych = initJsPsych({
-        extensions: [
-            {type: jsPsychExtensionRecordVideo},
-            {type: jsPsychExtensionMediapipeFacemesh}
-        ],
-        on_finish: function() {
-        jsPsych.data.displayData('json');
+<head>
+  <script src="https://unpkg.com/jspsych@7.3.0/dist/index.browser.js"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2/dist/index.browser.js"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-initialize-camera@1.0.1/dist/index.browser.js"></script>
+  <script src="https://unpkg.com/@jspsych/extension-record-video@1.0.1/dist/index.browser.js"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@7.3.0/css/jspsych.css" />
+</head>
+
+<body></body>
+<script>
+
+  const jsPsych = initJsPsych({
+    extensions: [
+      { type: jsPsychExtensionRecordVideo },
+      {
+        type: jsPsychExtensionMediapipeFacemesh, params: {
+          locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+          }
+        }
+      }
+    ],
+    on_finish: function () {
+      jsPsych.data.displayData('json');
     }
-    });
+  });
 
-    const initCamera = {
-      type: jsPsychInitializeCamera
-    }
+  const initCamera = {
+    type: jsPsychInitializeCamera
+  }
 
-    const trials = [
-        {x:25, y:25},
-        {x:25, y:75},
-        {x:75, y:25},
-        {x:75, y:75}
-    ];
+  const trials = [
+    { x: 25, y: 25 },
+    { x: 25, y: 75 },
+    { x: 75, y: 25 },
+    { x: 75, y: 75 }
+  ];
 
-    const trial = {
-        timeline: [{
-            type: jsPsychHtmlKeyboardResponse,
-            stimulus: ()=>{
-                let html = `<div style="width:100vw; height:100vh; position: relative;">
+  const trial = {
+    timeline: [{
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: () => {
+        let html = `<div style="width:100vw; height:100vh; position: relative;">
                   <div style="width:15px; height:15px; border-radius:15px; background-color: #000; position:absolute; top: ${jsPsych.timelineVariable('y')}%; left: ${jsPsych.timelineVariable('x')}%;"></div>
                   </div>`;
-              return html;
-            },
-            choices: "NO_KEYS",
-            trial_duration: 2000,
-            extensions: [{
-              type: jsPsychExtensionRecordVideo
-            },
-            {
-              type: jsPsychExtensionMediapipeFacemesh
-            }]
-        }],
-        timeline_variables: trials,
-        randomize_order: true
-    }
+        return html;
+      },
+      choices: "NO_KEYS",
+      trial_duration: 2000,
+      extensions: [{
+        type: jsPsychExtensionRecordVideo
+      },
+      {
+        type: jsPsychExtensionMediapipeFacemesh,
+        params: {
+          record: false
+        }
+      }]
+    }],
+    timeline_variables: trials,
+    randomize_order: true
+  }
 
 
-    jsPsych.run([initCamera, trial]);
-  </script>
+  jsPsych.run([initCamera, trial]);
+</script>
+
 </html>

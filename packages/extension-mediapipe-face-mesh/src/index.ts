@@ -4,27 +4,38 @@ import autoBind from "auto-bind";
 import { JsPsych, JsPsychExtension, JsPsychExtensionInfo } from "jspsych";
 import { Euler, Matrix4, Vector3 } from "three";
 
+interface IFaceTrackingResult {
+  frame_id: number;
+  transformation: number[];
+  rotation: Euler;
+  translation: Vector3;
+}
+
 class MediapipeFacemeshExtension implements JsPsychExtension {
   static info: JsPsychExtensionInfo = {
     name: "mediapipe-face-mesh",
   };
 
-  private recordedChunks = [];
+  private recordedChunks = new Array<IFaceTrackingResult>();
   private animationFrameId: number;
   public mediaStream: MediaStream;
   private videoElement: HTMLVideoElement;
   private canvasElement: HTMLCanvasElement;
   private faceMesh: FaceMesh;
+  private onResultCallbacks = new Array<(ITrackingResult) => void>();
+  private recordTracks = false;
 
   constructor(private jsPsych: JsPsych) {
     autoBind(this);
   }
 
-  initialize = (): Promise<void> => {
+  initialize = (params): Promise<void> => {
     this.faceMesh = new FaceMesh({
-      locateFile: (file) => {
-        return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
-      },
+      locateFile:
+        params?.locateFile ??
+        function (file) {
+          return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+        },
     });
 
     // Set the options for the face mesh tracking
@@ -76,13 +87,15 @@ class MediapipeFacemeshExtension implements JsPsychExtension {
     this.videoElement.play();
   };
 
-  on_load = () => {
-    this.recordedChunks = [];
+  on_load = (params) => {
+    this.recordedChunks = new Array<IFaceTrackingResult>();
+    this.recordTracks = params?.record ?? false;
   };
 
   on_finish = () => {
     console.log("face_mesh tracked chunks: " + this.recordedChunks.length);
     this.stopAnimationFrame();
+    this.recordTracks = false;
     return { face_mesh: this.recordedChunks };
   };
 
@@ -97,11 +110,17 @@ class MediapipeFacemeshExtension implements JsPsychExtension {
     const canvasContext = this.canvasElement.getContext("2d");
     canvasContext.drawImage(this.videoElement, 0, 0);
 
-    // const imageData = canvasContext.getImageData(0, 0, 1280, 720);
-
     this.faceMesh.send({ image: this.canvasElement });
 
     this.animationFrameId = window.requestAnimationFrame(this.processFrame.bind(this));
+  }
+
+  public addTrackingResultCallback(callback: (ITrackingResult) => void) {
+    this.onResultCallbacks.push(callback);
+  }
+
+  public removeTrackingResultCallback(callback: (ITrackingResult) => void) {
+    this.onResultCallbacks.splice(this.onResultCallbacks.indexOf(callback), 1);
   }
 
   private onMediaPipeResult(results: Results): void {
@@ -115,11 +134,15 @@ class MediapipeFacemeshExtension implements JsPsychExtension {
       const translation = new Vector3().setFromMatrixPosition(
         new Matrix4().fromArray(transformationMatrix)
       );
-      this.recordedChunks.push({
+      const result = {
         frame_id: this.animationFrameId,
         transformation: transformationMatrix,
         rotation: rotation,
         translation: translation,
+      };
+      if (this.recordTracks) this.recordedChunks.push(result);
+      this.onResultCallbacks.forEach((callback) => {
+        callback(result);
       });
     }
   }
