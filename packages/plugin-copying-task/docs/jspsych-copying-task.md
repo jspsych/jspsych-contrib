@@ -32,7 +32,8 @@ The elements of the array then apply to the corresponding aperture. Features tha
 In addition to the default data collected by all plugins, this plugin collects all parameter data described above and the following data for each trial.
 
 |Name|Type|Description|
-|rt|numeric|-----|
+|----|----|-----------|
+|rt|numeric|Time the trial took from start to finish.|
 |key_press|sting|null|
 |grid_contents|array of arrays of string|The state of the arrays (model, workspace, resource, respectively) when the trial ends|
 |trial_events|array|Timestamped trial events, such as items pick ups and placements.|
