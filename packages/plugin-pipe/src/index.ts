@@ -3,14 +3,30 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 const info = <const>{
   name: "pipe",
   parameters: {
+    /**
+     * The 12-character experiment ID provided by pipe.jspsych.org.
+     */
     experiment_id: {
-      type: ParameterType.STRING, // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
+      type: ParameterType.STRING,
       default: undefined,
     },
+    /**
+     * Name of the file to create on the OSF. It should include the extension.
+     * If the file already exists, no data will be saved.
+     */
     filename: {
       type: ParameterType.STRING,
       default: undefined,
     },
+    /**
+     * A string-based representation of the data to save.
+     *
+     * To save JSON, you can use `()=>jsPsych.data.get().json()`.
+     * To save CSV, you can use `()=>jsPsych.data.get().csv()`.
+     *
+     * The use of a function is necessary to get the updated data at
+     * the time of saving.
+     */
     data: {
       type: ParameterType.STRING,
       default: undefined,
@@ -50,15 +66,14 @@ class PipePlugin implements JsPsychPlugin<Info> {
         margin: -25px 0 0 -25px;
         width: 50px;
         height: 50px;
-        
-        & .path {
-          stroke: rgb(25,25,25);
-          stroke-linecap: round;
-          animation: dash 1.5s ease-in-out infinite;
-        }
-        
       }
-      
+        
+      .spinner .path {
+        stroke: rgb(25,25,25);
+        stroke-linecap: round;
+        animation: dash 1.5s ease-in-out infinite;
+      }
+
       @keyframes rotate {
         100% {
           transform: rotate(360deg);
@@ -82,10 +97,10 @@ class PipePlugin implements JsPsychPlugin<Info> {
     `;
 
     const progressHTML = `
-    <style>${progressCSS}</style>
-    <svg class="spinner" viewBox="0 0 50 50">
-      <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
-    </svg>`;
+      <style>${progressCSS}</style>
+      <svg class="spinner" viewBox="0 0 50 50">
+        <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+      </svg>`;
 
     display_element.innerHTML = progressHTML;
 
@@ -120,7 +135,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
     } catch (error) {
       return error;
     }
-    return await response.json();
+    return await response.text();
   }
 }
 
