@@ -1,0 +1,52 @@
+.jsTouchButton {
+    position: fixed;
+    width: 12vw;
+    height: 12vw;
+    border-radius: 50%;
+    border: 1vw solid #fff0;
+    font-family: sans-serif;
+    line-height: 12vw;
+    text-align: center;
+    font-size: 22pt;
+}
+
+.jsTouchButtonMiddle {
+    bottom: 2vw;
+    left: 50vw;
+    transform: translateX(-50%);
+
+}
+
+.jsTouchButtonLeftBottom {
+    bottom: 2vw;
+    left: 14vw;
+
+}
+
+.jsTouchButtonLeftTop {
+    bottom: 14vw;
+    left: 2vw;
+
+}
+
+.jsTouchButtonRightBottom {
+    bottom: 2vw;
+    right: 14vw;
+
+}
+
+.jsTouchButtonRightTop {
+    bottom: 14vw;
+    right: 2vw;
+
+}
+
+.jsTouchButtonLeft {
+    bottom: 2vw;
+    left: 2vw;
+}
+
+.jsTouchButtonRight {
+    bottom: 2vw;
+    right: 2vw;
+}
