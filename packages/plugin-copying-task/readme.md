@@ -12,16 +12,6 @@ This plugin runs a copying task. In a trial, an example grid (the "model", conta
 <script src="https://unpkg.com/@jspsych-contrib/plugin-copying-task@1.0.0">
 ```
 
-### Via NPM
-
-```
-npm install @jspsych-contrib/plugin-copying-task
-```
-
-```js
-import jsPsychCopyingTask from '@jspsych-contrib/plugin-copying-task';
-```
-
 ## Compatibility
 
 This  plugin was developed for version: "jsPsych v7.3.0". 
