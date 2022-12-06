@@ -15,7 +15,7 @@ describe("plugin-image-multi-response", () => {
     ]);
 
     expect(getHTML()).toContain(
-      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
+      '<img draggable="false" src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
     expect(getHTML()).toContain('<div id="jspsych-image-multi-response-btngroup"></div>');
@@ -32,7 +32,7 @@ describe("plugin-image-multi-response", () => {
     ]);
 
     expect(getHTML()).toContain(
-      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
+      '<img draggable="false" src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
     pressKey("f");
@@ -76,7 +76,7 @@ describe("plugin-image-multi-response", () => {
     ]);
 
     expect(getHTML()).toContain(
-      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
+      '<img draggable="false" src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
     clickTarget(document.querySelector("#jspsych-image-multi-response-button-0"));
@@ -137,7 +137,7 @@ describe("plugin-image-multi-response", () => {
     ]);
 
     expect(getHTML()).toContain(
-      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
+      '<img draggable="false" src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
     jest.advanceTimersByTime(500);
     await expectFinished();
@@ -155,7 +155,7 @@ describe("plugin-image-multi-response", () => {
     ]);
 
     expect(getHTML()).toContain(
-      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
+      '<img draggable="false" src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
     pressKey("f");
@@ -174,7 +174,7 @@ describe("plugin-image-multi-response", () => {
     ]);
 
     expect(getHTML()).toContain(
-      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
+      '<img draggable="false" src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
     clickTarget(document.querySelector("#jspsych-image-multi-response-button-0"));
@@ -211,7 +211,7 @@ describe("plugin-image-multi-response", () => {
     ]);
 
     expect(getHTML()).toContain(
-      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
+      '<img draggable="false" src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
     pressKey("f");
@@ -235,7 +235,7 @@ describe("plugin-image-multi-response", () => {
     ]);
 
     expect(getHTML()).toContain(
-      '<img src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
+      '<img draggable="false" src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
     clickTarget(document.querySelector("#jspsych-image-multi-response-button-0"));

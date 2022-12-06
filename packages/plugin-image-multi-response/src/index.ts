@@ -211,7 +211,10 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
       }
     } else {
       // display stimulus as an image element
-      html = '<img src="' + trial.stimulus + '" id="jspsych-image-multi-response-stimulus">';
+      html =
+        '<img draggable="false" src="' +
+        trial.stimulus +
+        '" id="jspsych-image-multi-response-stimulus">';
       //display buttons
       var buttons = [];
       if (Array.isArray(trial.button_html)) {
