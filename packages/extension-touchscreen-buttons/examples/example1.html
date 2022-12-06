@@ -15,7 +15,7 @@
 <script>
     let jsPsych = initJsPsych({
         extensions: [{
-            type: jsPsychTouchScreenButtonsExtension, params: [
+            type: jsPsychExtensionTouchscreenButtons, params: [
                 {
                     middle: {key: 'm'} // middle key that triggers m press on keyboard
                 }, // layout 0
@@ -47,7 +47,7 @@
         choices: ['m'], // the key defined above
         stimulus: 'press bellow',
         extensions: [{
-            type: jsPsychTouchScreenButtonsExtension // defaults to layout 0
+            type: jsPsychExtensionTouchscreenButtons // defaults to layout 0
         }]
     };
 
@@ -59,7 +59,7 @@
         correct_choice: ['r'],
         extensions: [
             {
-                type: jsPsychTouchScreenButtonsExtension, params: {layout: 1}
+                type: jsPsychExtensionTouchscreenButtons, params: {layout: 1}
             }
         ]
     };
@@ -71,7 +71,7 @@
         correct_choice: ['b'],
         stimulus: '<div style="color: blue; font-size: 40pt; font-family: sans-serif; font-weight: bold">YELLOW</div>',
         extensions: [{
-            type: jsPsychTouchScreenButtonsExtension, params: {layout: 2}
+            type: jsPsychExtensionTouchscreenButtons, params: {layout: 2}
         }]
     };
 
@@ -82,7 +82,7 @@
         correct_choice: ['m'],
         stimulus: 'press to end',
         extensions: [{
-            type: jsPsychTouchScreenButtonsExtension, params: {layout: 3}
+            type: jsPsychExtensionTouchscreenButtons, params: {layout: 3}
         }],
         trial_duration: 0
     }
