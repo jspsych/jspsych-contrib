@@ -277,7 +277,7 @@ var jsPsychTouchScreenButtonsExtension = (function (jspsych) {
   }
 
   jsPsychTouchScreenButtonsExtension.info = {
-    name: "mobile-buttons",
+    name: "touchscreen-buttons",
   };
 
   return jsPsychTouchScreenButtonsExtension;
