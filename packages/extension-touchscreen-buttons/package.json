@@ -1,6 +1,5 @@
 {
   "name": "@jspsych-contrib/extension-touchscreen-buttons",
-  "private": "true",
   "version": "0.1.0",
   "description": "",
   "unpkg": "dist/index.browser.min.js",
