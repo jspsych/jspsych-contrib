@@ -24,7 +24,6 @@
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-copying-task",
   "devDependencies": {
     "@jspsych/config": "^1.0.0",
-    "jspsych": "^7.3.0",
-    "fabric": "5.2.4"
+    "jspsych": "^7.3.0"
   }
 }
