@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/extension-device-motion",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "jsPsych extension for tracking device motion",
   "type": "module",
   "main": "dist/index.cjs",
