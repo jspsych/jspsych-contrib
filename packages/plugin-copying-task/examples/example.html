@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@7.3.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@1.0.0"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css">
+    
+    <script src="https://www.unpkg.com/fabric@5.2.4-browser/dist/fabric.js"></script>
+    
+    <script src="../src/index.js"></script>
+  
+</head>
+  <body></body>
+<script>
+
+var jsPsych = initJsPsych({
+on_finish: function() {
+    jsPsych.data.displayData();
+}
+});
+
+
+// 12 shapes
+const shapes = ['img/card.png', 'img/2.gif', 'img/happy_face_2.jpg', 'img/4.gif', 'img/sad_face_4.jpg', 'img/6.gif','img/7.gif', 'img/8.gif', 'img/9.gif', 'img/10.gif', 'img/11.gif', 'img/12.gif']
+
+const preload = {
+      type: jsPsychPreload,
+      auto_preload: true,
+      images: shapes
+};
+
+var timeline = [];
+timeline.push(preload)
+
+
+// create a nested array (3 rows by 4 columns, for this example) of items that should be in the resource grid (items form this grid are used as building blocks)
+var resource_grid_contents = [
+    [shapes[0], shapes[1],  shapes[2],  shapes[3], ],
+    [shapes[4], shapes[5],  shapes[6],  shapes[7], ],
+    [shapes[8], shapes[9], shapes[10], shapes[11], ],
+]
+
+
+// create a nested array (5 by 5, for this example) of items selected from the resource grid of items in the model (the grid that should be copied)
+// spacing is here for overview 
+var model_grid_contents = [
+    [shapes[11],  shapes[6],       null,  shapes[3],       null, ],
+    [      null,       null,  shapes[0],       null,  shapes[4], ],
+    [      null,       null,       null,       null,       null, ],
+    [      null, shapes[11],       null,       null,       null, ],
+    [      null,  shapes[7],  shapes[7],  shapes[2], shapes[11], ],
+]
+
+const copying_task_1 = {
+    type: jsPsychCopyingTask,
+    model_grid_contents: model_grid_contents,
+    resource_grid_contents: resource_grid_contents,
+}
+
+timeline.push(copying_task_1)
+
+
+
+// programmatically create a resource grid (3 by 3)  with randomized items
+var n_rows = 3
+var n_cols = 3
+
+var resource_items = jsPsych.randomization.sampleWithoutReplacement(shapes, (n_rows*n_cols))
+
+var resource_grid_contents = []
+for (var r=0;r<n_rows;r++){    
+    resource_grid_contents[r] = []
+    for (var c=0; c<n_cols; c++){
+        let item_num = r*n_cols + c 
+        resource_grid_contents[r][c] = resource_items[item_num]
+    }
+}
+
+
+// programmatically create a model grid (4 by 4)  with 6 items 
+var n_rows = 4
+var n_cols = 4
+var n_model_items = 6
+
+// Note: all model grid items should be in the resource grid, such that the model can be recreated,
+// therefore I recommend sampling items from the resource grid (could be done WITH replacement)
+var selected_model_items = jsPsych.randomization.sampleWithReplacement(resource_items, n_model_items)
+
+// select unique (sample WITHOUT replacement) positions in the model grid to place the items in
+var selected_model_grid_indices = jsPsych.randomization.sampleWithoutReplacement([...Array((n_rows*n_cols)).keys()], n_model_items)
+
+
+var model_grid_contents = []
+
+for (var r=0;r<n_rows;r++){    
+    model_grid_contents[r] = []
+    for (var c=0; c<n_cols; c++){
+        let index = r*n_cols + c 
+        if (selected_model_grid_indices.includes(index)) {
+            model_grid_contents[r][c] = selected_model_items.pop()
+        } else {
+            model_grid_contents[r][c] = null
+        }
+    }
+}
+
+const copying_task_2 = {
+    type: jsPsychCopyingTask,
+    model_grid_contents: model_grid_contents,
+    resource_grid_contents: resource_grid_contents,
+}
+
+timeline.push(copying_task_2)
+
+
+// the plugin also contains 20 unique "nonsense" shapes adopted form Arnoult (1955) DOI:  https://doi.org/10.1037/h0047772
+// the colors can be set by literal color names or rgb values
+// an item should a a string formatted like this: "[shape number]--[color string]". For example "0--red" or "19--rgb(54,233,98)" 
+// NOTE: the item_file_type parameter of the plugin should be set to 'svg_path'
+
+// programmatically create a resource grid (4 by 4)  with randomized items
+var n_rows = 2
+var n_cols = 3
+var n_resource_items = n_rows * n_cols
+
+// 16 shapes
+var selected_shape_numbers = jsPsych.randomization.sampleWithoutReplacement([...Array(20).keys()], n_resource_items)
+
+// 12 colors
+const colors = ['orange', 'red', 'blue', 'teal', 'pink', 'darkgreen', 'rgb(255, 255 ,0)',   'rgb(128, 128 ,128)',  'rgb(0, 255, 255)',  'rgb(0, 255, 0)',  'rgb(100, 255, 100)',]
+
+var resource_items = []
+var selected_colors = jsPsych.randomization.sampleWithoutReplacement(colors, n_resource_items)
+
+for (var i=0; i<n_resource_items; i++){
+    var item_string = selected_shape_numbers[i] + '--' + selected_colors[i]
+    resource_items.push(item_string)
+}
+
+var resource_grid_contents = []
+for (var r=0;r<n_rows;r++){    
+    resource_grid_contents[r] = []
+    for (var c=0; c<n_cols; c++){
+        let item_num = r*n_cols + c 
+        resource_grid_contents[r][c] = resource_items[item_num]
+    }
+}
+
+
+// programmatically create a model grid ( by 53)  with 4 items 
+var n_rows = 5
+var n_cols = 3
+var n_model_items = 4
+
+// Note: all model grid items should be in the resource grid, such that the model can be recreated,
+// therefore I recommend sampling items from the resource grid (could be done WITH replacement)
+var selected_model_items = jsPsych.randomization.sampleWithReplacement(resource_items, n_model_items)
+
+// select unique (sample WITHOUT replacement) positions in the model grid to place the items in
+var selected_model_grid_indices = jsPsych.randomization.sampleWithoutReplacement([...Array((n_rows*n_cols)).keys()], n_model_items)
+
+var model_grid_contents = []
+
+for (var r=0;r<n_rows;r++){    
+    model_grid_contents[r] = []
+    for (var c=0; c<n_cols; c++){
+        let index = r*n_cols + c 
+        if (selected_model_grid_indices.includes(index)) {
+            model_grid_contents[r][c] = selected_model_items.pop()
+        } else {
+            model_grid_contents[r][c] = null
+        }
+    }
+}
+
+// copying task with stimuli adapted from Arnoult (1955) (https://doi.org/10.1037/h0044049)
+const copying_task_3 = {
+    type: jsPsychCopyingTask,
+    model_grid_contents: model_grid_contents,
+    resource_grid_contents: resource_grid_contents,
+    item_file_type:'svg_path'                       // NOTE THIS PARAMETER
+}
+
+
+timeline.push(copying_task_3);
+
+jsPsych.run(timeline);
+
+</script>
+</html>
