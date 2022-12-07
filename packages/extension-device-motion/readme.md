@@ -1,4 +1,4 @@
-# my-plugin-name plugin OR my-extension-name extension
+# device-motion extension
 
 ## Overview
 
@@ -19,7 +19,7 @@ npm install @jspsych-contrib/extension-device-motion
 ```
 
 ```js
-import jsPsychPluginName from '@jspsych-contrib/extension-device-motion';
+import jsPsychExtensionDeviceMotion from '@jspsych-contrib/extension-device-motion';
 ```
 
 ## Compatibility

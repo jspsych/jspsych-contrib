@@ -1,13 +1,5 @@
 import { JsPsych, JsPsychExtension, JsPsychExtensionInfo } from "jspsych";
 
-interface OnStartParameters {
-  /**
-   * An array of mouse events to track. Can include `"mousemove"`, `"mousedown"`, and `"mouseup"`.
-   * @default ['devicemotion']
-   */
-  events?: Array<string>;
-}
-
 class DeviceMotionExtension implements JsPsychExtension {
   static info: JsPsychExtensionInfo = {
     name: "device-motion-tracking",
@@ -17,13 +9,11 @@ class DeviceMotionExtension implements JsPsychExtension {
 
   private currentTrialData: Array<object>;
   private currentTrialStartTime: number;
-  private eventsToTrack: Array<string>;
 
   initialize = async () => {};
 
-  on_start = ({ events = ["devicemotion"] }: OnStartParameters = {}): void => {
+  on_start = (): void => {
     this.currentTrialData = [];
-    this.eventsToTrack = events;
   };
 
   on_load = () => {
@@ -31,15 +21,11 @@ class DeviceMotionExtension implements JsPsychExtension {
     this.currentTrialStartTime = performance.now();
 
     // start data collection
-    if (this.eventsToTrack.includes("devicemotion")) {
-      window.addEventListener("devicemotion", this.deviceMotionEventHandler, true);
-    }
+    window.addEventListener("devicemotion", this.deviceMotionEventHandler, true);
   };
 
   on_finish = () => {
-    if (this.eventsToTrack.includes("devicemotion")) {
-      window.removeEventListener("devicemotion", this.deviceMotionEventHandler, true);
-    }
+    window.removeEventListener("devicemotion", this.deviceMotionEventHandler, true);
 
     return {
       device_motion_data: this.currentTrialData,
@@ -52,7 +38,7 @@ class DeviceMotionExtension implements JsPsychExtension {
 
     const { x, y, z } = eventA.acceleration;
     const interval = eventA.interval; //gets interval between samples in ms
-    this.currentTrialData.push({ x, y, z, interval, t, event: "devicemotion" });
+    this.currentTrialData.push({ x, y, z, interval, t });
   };
 }
 

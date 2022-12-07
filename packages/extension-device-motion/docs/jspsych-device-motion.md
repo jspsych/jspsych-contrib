@@ -1,13 +1,5 @@
 # jspsych-device-motion extension
 
-
-## Trial parameters
-
-
-| Parameter             | Type             | Default Value      | Description                              |
-| --------------------- | ---------------- | ------------------ | ---------------------------------------- |
-| events                | array            | devicemotion       | Event passed to window. see [devicemotion Events](https://developer.mozilla.org/en-US/docs/Web/API/Window/devicemotion_event).  |
-
 ## Data Generated
 
 In addition to the [default data collected by all plugins](https://www.jspsych.org/overview/plugins#data-collected-by-all-plugins), this plugin collects the following data for each trial.
