@@ -21,10 +21,7 @@ jobs:
           node-version: 16.x
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Build packages
-        run: npm run build
+        run: npm ci
 
       - name: Run tests
         run: npm run test -- --ci --maxWorkers=2
@@ -34,7 +31,8 @@ jobs:
       - name: Create Release Pull Request or Publish Packages
         uses: changesets/action@master
         with:
-          publish: npm run release
+          version: npm run changeset:version
+          publish: npm run changeset:publish
           commit: "chore(release): version packages"
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

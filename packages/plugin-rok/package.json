@@ -1,0 +1,44 @@
+{
+  "name": "@jspsych-contrib/plugin-rok",
+  "version": "1.1.1",
+  "description": "",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "typings": "dist/index.d.ts",
+  "unpkg": "dist/index.browser.min.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "source": "src/index.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
+    "tsc": "tsc",
+    "build": "rollup --config",
+    "build:watch": "npm run build -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/plugin-rdk"
+  },
+  "author": "Younes Strittmatter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-rok",
+  "peerDependencies": {
+    "jspsych": ">=7.0.0"
+  },
+  "devDependencies": {
+    "@jspsych/config": "^1.0.0",
+    "@jspsych/test-utils": "^1.0.0",
+    "jspsych": "^7.0.0"
+  }
+}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://unpkg.com/jspsych@7.0.0"></script>
+		<script src="../dist/index.browser.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@1.0.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.0.0"></script>
+		<link rel="stylesheet" href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css">
+	</head>
+	<body></body>
+	<script>
+
+		var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+		// Create arrays of hot dog / not hot dog images
+		const numFiles = 5;
+		const hotDogFiles = Array.from(Array(numFiles), (_, i) => i + 1).map(
+			(idx) => `./hotdog/${idx}.jpg`
+		);
+		const notHotDogFiles = Array.from(Array(numFiles), (_, i) => i + 1).map(
+			(idx) => `./nothotdog/${idx}.jpg`
+		);
+		const allFiles = hotDogFiles.concat(notHotDogFiles);
+		const allTargets = allFiles.map((url) => {
+			return { target: url };
+		});
+
+		const timeline = [];
+
+		/* preload images */
+		const preloadImages = {
+			type: jsPsychPreload,
+			auto_preload: true,
+		};
+		timeline.push(preloadImages);
+
+		//---------Create trials---------
+		/* define welcome message trial */
+		const welcome = {
+			type: jsPsychHtmlKeyboardResponse,
+			stimulus: `
+				<h3>Directions</h3>
+				<p>
+					Swipe right or press the right arrow key if the displayed image is a hot dog.
+					Swipe left or press the left arrow key otherwise.
+				</p>
+				<p>Press any key to continue</p>
+				`
+		};
+		timeline.push(welcome);
+		
+		const hotDogTrials = {
+			timeline: [
+				{
+					type: jsPsychHtmlKeyboardResponse,
+					stimulus: '<div style="font-size:60px;">+</div>',
+					choices: "NO_KEYS",
+					trial_duration: 500,
+				},
+				{
+					type: jsPsychImageSwipeResponse,
+					stimulus: jsPsych.timelineVariable('target'),
+					stimulus_height: 250,
+					stimulus_width: 250,
+					prompt: `
+						<p>Is this a hot dog?</p>
+						<p>If yes, swipe right or press the right arrow key.</p>
+						<p>If no, swipe left or press the left arrow key.</p>
+					`,
+				},
+			],
+			timeline_variables: allTargets,
+			sample: {
+				type: "without-replacement",
+				size: 10,
+			},
+		};
+
+		timeline.push(hotDogTrials);
+
+		const endTrial = {
+			type: jsPsychHtmlKeyboardResponse,
+			stimulus: 'Great job! Press any key to finish the assessment.',
+			choices: "ALL_KEYS",
+			response_ends_trial: true,
+		};
+
+		timeline.push(endTrial);
+
+		//---------Run the experiment---------
+		jsPsych.run(timeline);
+
+	</script>
+</html>
