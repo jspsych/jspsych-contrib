@@ -200,6 +200,7 @@ class AudioSwipeResponsePlugin implements JsPsychPlugin<Info> {
 
       // clear the display
       display_element.innerHTML = "";
+      resetPosition();
 
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
@@ -419,7 +420,9 @@ class AudioSwipeResponsePlugin implements JsPsychPlugin<Info> {
     const respond = () => {
       if (data.rt !== null) {
         if (data.swipe_response !== null) {
-          const test_stimulus_div = document.getElementById("jspsych-html-swipe-response-stimulus");
+          const test_stimulus_div = document.getElementById(
+            "jspsych-audio-swipe-response-stimulus"
+          );
 
           let pageX = trial.swipe_threshold * 5;
           if (data.swipe_response === "left") {
