@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Experiment</title>
+    <script src="https://unpkg.com/jspsych@7.2.1"></script>
+    <script src="https://unpkg.com/@jspsych-contrib/plugin-rok@1.1.1"></script>
+    <script src="https://unpkg.com/@jspsych-contrib/plugin-rdk@1.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-fullscreen@1.1.0"></script>
+    <script src="../index.js"></script>
+    <link href="https://unpkg.com/jspsych@7.2.1/css/jspsych.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/extension-touchscreen-buttons.css" rel="stylesheet" type="text/css">
+</head>
+<script>
+    let jsPsych = initJsPsych({
+        extensions: [{
+            type: jsPsychExtensionTouchscreenButtons, params: [
+                {
+                    middle: {key: 'm'} // middle key that triggers m press on keyboard
+                }, // layout 0
+                {
+                    left: {key: 'l', innerText: 'left'}, // write text in the button
+                    right: {key: 'r', innerText: 'right'}
+                }, // layout 1
+                {
+                    left_bottom: {key: 'r', color: '#f00'}, // layout 2
+                    left_top: {key: 'g', color: 'green'},
+                    right_bottom: {key: 'b', color: 'blue'},
+                    right_top: {key: 'y', color: 'yellow'}
+                },
+                {
+                    middle: {
+                        key: 'm',
+                        style: {top: '2vw', fontWeight: 'bold', boxShadow: "1vw 1vw 2vw 1vw #0009"}, // in the style entry there can be used most css styles
+                        innerText: 'press'
+                    }
+                }
+            ]
+        }]
+    });
+
+
+    let trial1 = {
+        type: jsPsychHtmlKeyboardResponse,
+        response_ends_trial: true,
+        choices: ['m'], // the key defined above
+        stimulus: 'press bellow',
+        extensions: [{
+            type: jsPsychExtensionTouchscreenButtons // defaults to layout 0
+        }]
+    };
+
+
+    let trial2 = {
+        type: jsPsychRok, // can be used with plugins that use keyboard as input
+        response_ends_trial: true,
+        choices: ['l', 'r'],
+        correct_choice: ['r'],
+        extensions: [
+            {
+                type: jsPsychExtensionTouchscreenButtons, params: {layout: 1}
+            }
+        ]
+    };
+
+    let trial3 = {
+        type: jsPsychHtmlKeyboardResponse,
+        response_ends_trial: true,
+        choices: ['r', 'g', 'b', 'y'],
+        correct_choice: ['b'],
+        stimulus: '<div style="color: blue; font-size: 40pt; font-family: sans-serif; font-weight: bold">YELLOW</div>',
+        extensions: [{
+            type: jsPsychExtensionTouchscreenButtons, params: {layout: 2}
+        }]
+    };
+
+    let trial4 = {
+        type: jsPsychRdk,
+        response_ends_trial: true,
+        choices: ['m'],
+        correct_choice: ['m'],
+        stimulus: 'press to end',
+        extensions: [{
+            type: jsPsychExtensionTouchscreenButtons, params: {layout: 3}
+        }],
+        trial_duration: 0
+    }
+
+
+    /*** CREATE TIMELINE AND RUN THE EXPERIMENT ***/
+    timeline = [trial1, trial2, trial3, trial4];
+
+
+    jsPsych.run(timeline);
+</script>
+</body>
+</html>

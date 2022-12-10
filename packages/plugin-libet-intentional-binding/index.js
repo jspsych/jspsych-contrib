@@ -16,7 +16,7 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
         pretty_name: "Estimate of urge without button press",
         default: false,
         description:
-          'Specifies whether you want participants to report the urge if they did not press the button.',
+          "Specifies whether you want participants to report the urge if they did not press the button.",
       },
       tone_file: {
         type: jspsych.ParameterType.AUDIO,
@@ -34,7 +34,8 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
         type: jspsych.ParameterType.INT,
         pretty_name: "Tone delay",
         default: 250,
-        description: "The time after the key press or the beginning of the clock animation that the tone is played, if applicable.",
+        description:
+          "The time after the key press or the beginning of the clock animation that the tone is played, if applicable.",
       },
       hand_est: {
         type: jspsych.ParameterType.BOOL,
@@ -52,7 +53,8 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
         type: jspsych.ParameterType.HTML_STRING,
         pretty_name: "",
         default: "",
-        description: 'The instructions shown to the participant during estimation if they did not make a keypress. E.g., "When did you feel the urge to make a keypress?". Only applicable if hand_est and est_wo_keypress are set to true. If left undefined, the parameter takes on the same value as instructions.',
+        description:
+          'The instructions shown to the participant during estimation if they did not make a keypress. E.g., "When did you feel the urge to make a keypress?". Only applicable if hand_est and est_wo_keypress are set to true. If left undefined, the parameter takes on the same value as instructions.',
       },
       feedback: {
         type: jspsych.ParameterType.BOOL,
@@ -218,10 +220,10 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
    *
    * @author Isaac Kinley
    * @see {@link https://DOCUMENTATION_URL DOCUMENTATION LINK TEXT}
-   * 
+   *
    * Modification by Yu Hei Shum on 28/1/2022:
    * 1. the loading of the tone will be skipped if you don't specify the tone file name (for classical Libet task)
-   * 2. the urge reporting can be preserved if you specify the parameter skip urge as true, 
+   * 2. the urge reporting can be preserved if you specify the parameter skip urge as true,
    * the default is set as false for classical Libet and intentional blinding task
    */
   class jsPsychLibetIntentionalBindingPlugin {
@@ -231,37 +233,37 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
     trial(display_element, trial) {
       // If any parameters are functions, call those functions
       var func_params = [
-        'cond',
-        'est_wo_keypress',
-        'tone_file',
-        'choices',
-        'tone_delay_ms',
-        'hand_est',
-        'instructions',
-        'instructions_wo_keypress',
-        'feedback',
-        'feedback_ms',
-        'pre_estimation_ms',
-        'hand_inc',
-        'offset_range',
-        'fixation_ms',
-        'clock_period',
-        'early_ms',
+        "cond",
+        "est_wo_keypress",
+        "tone_file",
+        "choices",
+        "tone_delay_ms",
+        "hand_est",
+        "instructions",
+        "instructions_wo_keypress",
+        "feedback",
+        "feedback_ms",
+        "pre_estimation_ms",
+        "hand_inc",
+        "offset_range",
+        "fixation_ms",
+        "clock_period",
+        "early_ms",
         // 'early_fcn',
-        'timeout_ms',
-        'spin_continue_ms',
-        'clock_diam',
-        'n_maj_ticks',
-        'maj_tick_len',
-        'maj_tick_start',
-        'n_min_ticks',
-        'min_tick_len',
-        'min_tick_start',
-        'num',
-        'num_start',
-        'num_font',
-        'num_dist',
-        'hand_len'
+        "timeout_ms",
+        "spin_continue_ms",
+        "clock_diam",
+        "n_maj_ticks",
+        "maj_tick_len",
+        "maj_tick_start",
+        "n_min_ticks",
+        "min_tick_len",
+        "min_tick_start",
+        "num",
+        "num_start",
+        "num_font",
+        "num_dist",
+        "hand_len",
       ];
       var i, curr_param;
       for (i = 0; i < func_params.length; i++) {
@@ -455,7 +457,7 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
 
       // load audio
       // If you did not specify the tone file, the tone loading will be skipped.
-      if (trial.tone_file !=null) {
+      if (trial.tone_file != null) {
         var context = jsPsych.pluginAPI.audioContext();
         var audio;
         // load audio file
@@ -511,9 +513,9 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
                   // call user-defined timeout function
                   trial.timeout_fcn();
                   if (trial.est_wo_keypress) {
-                    ctrl_fcn('estimate');
+                    ctrl_fcn("estimate");
                   } else {
-                    ctrl_fcn('end');
+                    ctrl_fcn("end");
                   }
                 }, trial.timeout_ms);
               }
@@ -533,9 +535,9 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
                   if (info.rt < trial.early_ms) {
                     trial_data.early = true;
                     // call user-defined early keypress function and don't call out the estimate procedure twice if the participant skips the trial.
-                    trial.early_fcn(); 
+                    trial.early_fcn();
                     ctrl_fcn("end");
-                  } else { 
+                  } else {
                     if (trial_cfg.tone) {
                       ctrl_fcn("tone");
                     } else {

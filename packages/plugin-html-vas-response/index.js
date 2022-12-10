@@ -15,6 +15,11 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         default: [],
         array: true,
       },
+      resp_fcn: {
+        type: jspsych.ParameterType.FUNCTION,
+        pretty_name: "Response function",
+        default: null,
+      },
       ticks: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Ticks",
@@ -23,62 +28,62 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       scale_width: {
         type: jspsych.ParameterType.INT,
         pretty_name: "VAS width",
-        default: null
+        default: null,
       },
       scale_height: {
         type: jspsych.ParameterType.INT,
         pretty_name: "VAS height",
-        default: 40
+        default: 40,
       },
       scale_colour: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Scale colour",
-        default: 'black'
+        default: "black",
       },
       scale_cursor: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Scale cursor",
-        default: 'pointer'
+        default: "pointer",
       },
       marker_colour: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Marker colour",
-        default: 'rgba(0, 0, 0, 0.5)'
+        default: "rgba(0, 0, 0, 0.5)",
       },
       tick_colour: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "tick colour",
-        default: 'black'
+        default: "black",
       },
       prompt: {
         type: jspsych.ParameterType.HTML_STRING,
         pretty_name: "Prompt",
-        default: null
+        default: null,
       },
       button_label: {
         type: jspsych.ParameterType.HTML_STRING,
         pretty_name: "Buton label",
-        default: 'Continue'
+        default: "Continue",
       },
       required: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Response required",
-        default: false
+        default: false,
       },
       stimulus_duration: {
         type: jspsych.ParameterType.INT,
         pretty_name: "Stimulus duration",
-        default: null
+        default: null,
       },
       trial_duration: {
         type: jspsych.ParameterType.INT,
         pretty_name: "Trial duration",
-        default: null
+        default: null,
       },
       response_ends_trial: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Response ends trial",
-        default: true
+        default: true,
       },
     },
   };
@@ -100,12 +105,27 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       }
       html += '">';
       // Create clickable container for VAS
-      html += '<div id="jspsych-html-vas-response-vas" style="position: relative; left: 0px; top: 0px; height: ' + trial.scale_height + 'px; width: 100%; ' +
-        'cursor: ' + trial.scale_cursor + ';">';
+      html +=
+        '<div id="jspsych-html-vas-response-vas" style="position: relative; left: 0px; top: 0px; height: ' +
+        trial.scale_height +
+        "px; width: 100%; " +
+        "cursor: " +
+        trial.scale_cursor +
+        ';">';
       // Draw horizontal line in VAS container
-      html += '<div style="position: relative; background: ' + trial.scale_colour + '; width: 100%; height: 2px; top: ' + (trial.scale_height/2 - 1) + 'px"></div>'
+      html +=
+        '<div style="position: relative; background: ' +
+        trial.scale_colour +
+        "; width: 100%; height: 2px; top: " +
+        (trial.scale_height / 2 - 1) +
+        'px"></div>';
       // Draw vertical line, but hide it at first
-      html += '<div id="jspsych-html-vas-response-vline" style="visibility: hidden; position: absolute; left: 0px; background-color: ' + trial.marker_colour + '; height: ' + trial.scale_height + 'px; width: 2px; top: 0px"></div>'
+      html +=
+        '<div id="jspsych-html-vas-response-vline" style="visibility: hidden; position: absolute; left: 0px; background-color: ' +
+        trial.marker_colour +
+        "; height: " +
+        trial.scale_height +
+        'px; width: 2px; top: 0px"></div>';
       html += "</div>";
       html += "<div>";
       for (var j = 0; j < trial.labels.length; j++) {
@@ -145,45 +165,51 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
 
       display_element.innerHTML = html;
 
-      var vas = document.getElementById('jspsych-html-vas-response-vas');
+      var vas = document.getElementById("jspsych-html-vas-response-vas");
       // Add minor ticks
       for (var j = 0; j < trial.labels.length; j++) {
         var label_width_pct = 100 / (trial.labels.length - 1);
         var pct_of_range = j * (100 / (trial.labels.length - 1));
-        var mtick = document.createElement('div');
-        mtick.style.position = 'absolute';
-        mtick.style.height = (trial.scale_height/2) + 'px';
-        mtick.style.width = '2px';
-        mtick.style.top = (trial.scale_height/4) + 'px';
+        var mtick = document.createElement("div");
+        mtick.style.position = "absolute";
+        mtick.style.height = trial.scale_height / 2 + "px";
+        mtick.style.width = "2px";
+        mtick.style.top = trial.scale_height / 4 + "px";
         mtick.style.background = trial.tick_colour;
-        mtick.style.left = (pct_of_range/100 * vas.clientWidth - 1) + 'px';
+        mtick.style.left = (pct_of_range / 100) * vas.clientWidth - 1 + "px";
         vas.appendChild(mtick);
       }
 
       // Function to move vertical tick
       var pct_tick = null;
       var vas_enabled = true;
-      vas.onclick = function(e) {
+      var clicks = [];
+      vas.onclick = function (e) {
+        var clickTime = performance.now() - startTime;
         if (!vas_enabled) {
           return;
         }
-        var vas = document.getElementById('jspsych-html-vas-response-vas');
+        var vas = document.getElementById("jspsych-html-vas-response-vas");
         var vas_rect = vas.getBoundingClientRect();
         if (e.clientX <= vas_rect.right && e.clientX >= vas_rect.left) {
           var element = vas;
-          var vline = document.getElementById('jspsych-html-vas-response-vline');
+          var vline = document.getElementById("jspsych-html-vas-response-vline");
           var cx = Math.round(e.clientX);
-          vline.style.left = (e.clientX - vas_rect.left - 1) + 'px';
-          vline.style.visibility = 'visible';
-          console.log(pct_tick);
+          vline.style.left = e.clientX - vas_rect.left - 1 + "px";
+          vline.style.visibility = "visible";
           pct_tick = (e.clientX - vas_rect.left) / vas_rect.width;
-          console.log(pct_tick);
           vas.appendChild(vline);
-          var continue_button = document.getElementById('jspsych-html-vas-response-next');
+          var continue_button = document.getElementById("jspsych-html-vas-response-next");
           continue_button.disabled = false;
+          // record time series of clicks
+          clicks.push({ time: clickTime, location: pct_tick });
+          // call
+          if (trial.resp_fcn) {
+            trial.resp_fcn(pct_tick);
+          }
         }
-      }
-      
+      };
+
       var response = {
         rt: null,
         response: null,
@@ -197,16 +223,17 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
           rt: response.rt,
           stimulus: trial.stimulus,
           response: response.response,
+          clicks: clicks,
         };
 
         display_element.innerHTML = "";
 
         // next trial
         jsPsych.finishTrial(trialdata);
-      };
+      }
 
-      var continue_button = document.getElementById('jspsych-html-vas-response-next');
-      continue_button.onclick = function() {
+      var continue_button = document.getElementById("jspsych-html-vas-response-next");
+      continue_button.onclick = function () {
         // measure response time
         var endTime = performance.now();
         response.rt = Math.round(endTime - startTime);
@@ -216,13 +243,13 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         } else {
           vas_enabled = false;
         }
-      }
+      };
 
       // hide stimulus if stimulus_duration is set
       if (trial.stimulus_duration !== null) {
-        jspsych.pluginAPI.setTimeout(function() {
-          var stim = document.getElementById('jspsych-html-vas-response-stimulus');
-          stim.style.visibility = 'hidden';
+        jspsych.pluginAPI.setTimeout(function () {
+          var stim = document.getElementById("jspsych-html-vas-response-stimulus");
+          stim.style.visibility = "hidden";
         }, trial.stimulus_duration);
       }
 
