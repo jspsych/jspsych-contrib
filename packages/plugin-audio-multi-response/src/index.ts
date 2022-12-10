@@ -35,6 +35,12 @@ const info = <const>{
       pretty_name: "Prompt",
       default: null,
     },
+    /** Whether to display the prompt above the buttons. */
+    prompt_above_buttons: {
+      type: ParameterType.BOOL,
+      pretty_name: "Prompt above buttons",
+      default: false,
+    },
     /** How long to show trial before it ends. */
     trial_duration: {
       type: ParameterType.INT,
@@ -155,7 +161,8 @@ class AudioMultiResponsePlugin implements JsPsychPlugin<Info> {
         }
       }
 
-      var html = '<div id="jspsych-audio-multi-response-btngroup">';
+      let html = '<div id="jspsych-audio-multi-response-btngroup">';
+
       for (var i = 0; i < trial.button_choices.length; i++) {
         var str = buttons[i].replace(/%choice%/g, trial.button_choices[i]);
         html +=
@@ -175,7 +182,11 @@ class AudioMultiResponsePlugin implements JsPsychPlugin<Info> {
 
       //show prompt if there is one
       if (trial.prompt !== null) {
-        html += '<div id="jspsych-audio-multi-response-prompt">' + trial.prompt + "</div>";
+        if (trial.prompt_above_buttons) {
+          html = '<div id="jspsych-audio-multi-response-prompt">' + trial.prompt + "</div>" + html;
+        } else {
+          html += '<div id="jspsych-audio-multi-response-prompt">' + trial.prompt + "</div>";
+        }
       }
 
       display_element.innerHTML = html;
