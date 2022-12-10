@@ -11,12 +11,22 @@ const info = <const>{
       default: undefined,
     },
     /**
+     * The action to take. Can be `"save"`, `"saveBase64"`, or `"condition"`.
+     * If `"save"`, the data will be saved to the OSF.
+     * If `"saveBase64"`, the data should be a base64-encoded string and will be decoded to binary before being saved to the OSF.
+     * If `"condition"`, this will get the next condition for the experiment and save it in the data for this trial.
+     */
+    action: {
+      type: ParameterType.STRING,
+      default: undefined,
+    },
+    /**
      * Name of the file to create on the OSF. It should include the extension.
      * If the file already exists, no data will be saved.
      */
     filename: {
       type: ParameterType.STRING,
-      default: undefined,
+      default: null,
     },
     /**
      * A string-based representation of the data to save.
@@ -29,7 +39,7 @@ const info = <const>{
      */
     data: {
       type: ParameterType.STRING,
-      default: undefined,
+      default: null,
     },
   },
 };
@@ -39,8 +49,9 @@ type Info = typeof info;
 /**
  * **jsPsychPipe**
  *
- * This plugin facilitates communication with Pipe My Data (https://pipe.jspsych.org), a tool for
- * sending data from jsPsych experiments to the OSF (https://osf.io/).
+ * This plugin facilitates communication with DataPipe (https://pipe.jspsych.org), a tool for
+ * sending data from jsPsych experiments to the OSF (https://osf.io/). You will need an account
+ * on DataPipe to use this plugin.
  *
  * @author Josh de Leeuw
  * @see {@link https://DOCUMENTATION_URL DOCUMENTATION LINK TEXT}
@@ -104,7 +115,16 @@ class PipePlugin implements JsPsychPlugin<Info> {
 
     display_element.innerHTML = progressHTML;
 
-    const result = await this.sendDataToPipe(trial.experiment_id, trial.filename, trial.data);
+    let result: string;
+    if (trial.action === "save") {
+      result = await this.sendDataToPipe(trial.experiment_id, trial.filename, trial.data);
+    }
+    if (trial.action === "saveBase64") {
+      result = await this.sendBase64ToPipe(trial.experiment_id, trial.filename, trial.data);
+    }
+    if (trial.action === "condition") {
+      result = await this.getCondition(trial.experiment_id);
+    }
 
     display_element.innerHTML = "";
 
@@ -117,7 +137,10 @@ class PipePlugin implements JsPsychPlugin<Info> {
     this.jsPsych.finishTrial(trial_data);
   }
 
-  private async sendDataToPipe(expID: string, filename: string, data: string) {
+  private async sendDataToPipe(expID: string, filename: string, data: string): Promise<string> {
+    if (filename === null || data === null) {
+      return "not sent: the filename and data parameters must be defined";
+    }
     let response: Response;
     try {
       response = await fetch("https://pipe.jspsych.org/api/data/", {
@@ -130,6 +153,49 @@ class PipePlugin implements JsPsychPlugin<Info> {
           experimentID: expID,
           filename: filename,
           data: data,
+        }),
+      });
+    } catch (error) {
+      return error;
+    }
+    return await response.text();
+  }
+
+  private async sendBase64ToPipe(expID: string, filename: string, data: string): Promise<string> {
+    if (filename === null || data === null) {
+      return "not sent: the filename and data parameters must be defined";
+    }
+    let response: Response;
+    try {
+      response = await fetch("https://pipe.jspsych.org/api/base64/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+        body: JSON.stringify({
+          experimentID: expID,
+          filename: filename,
+          data: data,
+        }),
+      });
+    } catch (error) {
+      return error;
+    }
+    return await response.text();
+  }
+
+  private async getCondition(expID: string): Promise<string> {
+    let response: Response;
+    try {
+      response = await fetch("https://pipe.jspsych.org/api/condition/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+        body: JSON.stringify({
+          experimentID: expID,
         }),
       });
     } catch (error) {
