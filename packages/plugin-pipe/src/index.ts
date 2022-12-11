@@ -115,7 +115,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
 
     display_element.innerHTML = progressHTML;
 
-    let result: string;
+    let result: string | number;
     if (trial.action === "save") {
       result = await PipePlugin.saveData(trial.experiment_id, trial.filename, trial.data);
     }
@@ -137,6 +137,14 @@ class PipePlugin implements JsPsychPlugin<Info> {
     this.jsPsych.finishTrial(trial_data);
   }
 
+  /**
+   * Save data to the OSF using pipe.jspsych.org.
+   *
+   * @param expID The 12-character experiment ID provided by pipe.jspsych.org.
+   * @param filename A unique filename to save the data to. It should include the extension.
+   * @param data The data as a string. Any text-basd format (e.g., JSON, CSV, TXT) is acceptable.
+   * @returns The response from the server.
+   */
   static async saveData(expID: string, filename: string, data: string): Promise<string> {
     if (filename === null || data === null) {
       return "not sent: the filename and data parameters must be defined";
@@ -161,6 +169,14 @@ class PipePlugin implements JsPsychPlugin<Info> {
     return await response.text();
   }
 
+  /**
+   * Save base64-encoded data to the OSF using pipe.jspsych.org.
+   *
+   * @param expID The 12-character experiment ID provided by pipe.jspsych.org.
+   * @param filename A unique filename to save the data to. It should include the extension.
+   * @param data The data as a base64-encoded string. It will be decoded by the server before being stored in the OSF.
+   * @returns The response from the server.
+   */
   static async saveBase64Data(expID: string, filename: string, data: string): Promise<string> {
     if (filename === null || data === null) {
       return "not sent: the filename and data parameters must be defined";
@@ -185,7 +201,12 @@ class PipePlugin implements JsPsychPlugin<Info> {
     return await response.text();
   }
 
-  static async getCondition(expID: string): Promise<string> {
+  /**
+   *
+   * @param expID The 12-character experiment ID provided by pipe.jspsych.org.
+   * @returns The condition assignment as an integer.
+   */
+  static async getCondition(expID: string): Promise<string | number> {
     let response: Response;
     try {
       response = await fetch("https://pipe.jspsych.org/api/condition/", {
@@ -201,7 +222,9 @@ class PipePlugin implements JsPsychPlugin<Info> {
     } catch (error) {
       return error;
     }
-    return await response.text();
+    const result = await response.text();
+    return parseInt(result);
+    //return await response.text();
   }
 }
 
