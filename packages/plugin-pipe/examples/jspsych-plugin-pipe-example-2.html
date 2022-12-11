@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@7"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@7/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+
+    var jsPsych = initJsPsych({});
+
+    async function createExperiment(){
+      const condition = await jsPsychPipe.getCondition("FO50kUfhHenu");
+
+      const timeline_condition_1 = [
+        {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: 'Condition 1. Press any key to continue.',
+        }
+      ]
+
+      const timeline_condition_2 = [
+        {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: 'Condition 2. Press any key to continue.',
+        }
+      ]
+
+      if(condition==0){
+        jsPsych.run([timeline_condition_1])
+      } else {
+        jsPsych.run([timeline_condition_2])
+      }
+    }
+
+    createExperiment();
+  </script>
+</html>
