@@ -117,13 +117,13 @@ class PipePlugin implements JsPsychPlugin<Info> {
 
     let result: string;
     if (trial.action === "save") {
-      result = await this.sendDataToPipe(trial.experiment_id, trial.filename, trial.data);
+      result = await PipePlugin.saveData(trial.experiment_id, trial.filename, trial.data);
     }
     if (trial.action === "saveBase64") {
-      result = await this.sendBase64ToPipe(trial.experiment_id, trial.filename, trial.data);
+      result = await PipePlugin.saveBase64Data(trial.experiment_id, trial.filename, trial.data);
     }
     if (trial.action === "condition") {
-      result = await this.getCondition(trial.experiment_id);
+      result = await PipePlugin.getCondition(trial.experiment_id);
     }
 
     display_element.innerHTML = "";
@@ -137,7 +137,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
     this.jsPsych.finishTrial(trial_data);
   }
 
-  private async sendDataToPipe(expID: string, filename: string, data: string): Promise<string> {
+  static async saveData(expID: string, filename: string, data: string): Promise<string> {
     if (filename === null || data === null) {
       return "not sent: the filename and data parameters must be defined";
     }
@@ -161,7 +161,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
     return await response.text();
   }
 
-  private async sendBase64ToPipe(expID: string, filename: string, data: string): Promise<string> {
+  static async saveBase64Data(expID: string, filename: string, data: string): Promise<string> {
     if (filename === null || data === null) {
       return "not sent: the filename and data parameters must be defined";
     }
@@ -185,7 +185,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
     return await response.text();
   }
 
-  private async getCondition(expID: string): Promise<string> {
+  static async getCondition(expID: string): Promise<string> {
     let response: Response;
     try {
       response = await fetch("https://pipe.jspsych.org/api/condition/", {
