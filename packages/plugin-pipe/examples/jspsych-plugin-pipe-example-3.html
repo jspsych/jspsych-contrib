@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@7"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@7/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+
+    var jsPsych = initJsPsych({});
+
+    const subject_id = jsPsych.randomization.randomID(10);
+    jsPsych.data.addProperties({subject_id: subject_id});
+
+    var trial = {
+      type: jsPsychHtmlAudioResponse,
+      stimulus: `
+          <p>Please record a few seconds of audio and click the button when you are done.</p>
+      `,
+      recording_duration: 15000,
+      allow_playback: true,
+      on_finish: function(data){
+        const filename = `${subject_id}_${jsPsych.getProgress().current_trial_global}_audio.webm`;
+        jsPsychPipe.saveBase64Data("FO50kUfhHenu",  filename, data.response);
+        // delete the base64 data to save space. store the filename instead.
+        data.response = filename;
+      }
+    };
+
+    const finished = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: "Finished!",
+      choices: "NO_KEYS",
+    };
+
+    jsPsych.run([trial, finished])
+  </script>
+</html>
