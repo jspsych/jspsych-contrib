@@ -1,8 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-pipe",
-  "private": "true",
   "version": "0.0.1",
-  "description": "",
+  "description": "jsPsych plugin to faciliate communication with DataPipe (https://pipe.jspsych.org)",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
