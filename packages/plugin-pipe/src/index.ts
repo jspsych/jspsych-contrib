@@ -202,6 +202,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
   }
 
   /**
+   * Get the condition assignment for the current participant using pipe.jspsych.org.
    *
    * @param expID The 12-character experiment ID provided by pipe.jspsych.org.
    * @returns The condition assignment as an integer.
