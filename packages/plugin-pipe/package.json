@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-pipe",
   "private": "true",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "",
   "type": "module",
   "main": "dist/index.cjs",
