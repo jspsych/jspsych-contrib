@@ -9,6 +9,9 @@
   <body></body>
   <script>
 
+    // replace this with your experiment ID from pipe.jspsych.org
+    const expID = "ABCDEF123456";
+
     var jsPsych = initJsPsych({});
 
     const subject_id = jsPsych.randomization.randomID(10);
@@ -38,7 +41,7 @@
     const save_data = {
       type: jsPsychPipe,
       action: "save",
-      experiment_id: "FO50kUfhHenu",
+      experiment_id: expID,
       filename: `${subject_id}.csv`,
       data: ()=>jsPsych.data.get().csv()
     };

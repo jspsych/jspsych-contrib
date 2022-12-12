@@ -9,10 +9,13 @@
   <body></body>
   <script>
 
+    // replace this with your experiment ID from pipe.jspsych.org
+    const expID = "ABCDEF123456";
+
     var jsPsych = initJsPsych({});
 
     async function createExperiment(){
-      const condition = await jsPsychPipe.getCondition("FO50kUfhHenu");
+      const condition = await jsPsychPipe.getCondition(expID);
 
       const timeline_condition_1 = [
         {

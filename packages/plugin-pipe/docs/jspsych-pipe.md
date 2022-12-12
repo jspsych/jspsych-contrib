@@ -24,6 +24,35 @@ In addition to the [default data collected by all plugins](../overview/plugins.m
 | --------- | ------- | ---------------------------------------- |
 | response | string | The response from the server. |
 
+## Static Methods
+
+The pipe plugin provides three static methods that can be used to save data to DataPipe without using a trial. These methods are `save`, `saveBase64Data`, and `getCondition`.
+
+### save
+
+```js
+jsPsychPipe.save(experiment_id, filename, data)
+```
+
+### saveBase64Data
+
+```js
+jsPsychPipe.saveBase64Data(experiment_id, filename, data)
+```
+
+### getCondition
+
+#### using async/await
+```js
+const condition = await jsPsychPipe.getCondition(experiment_id)
+```
+
+#### using promises
+```js
+jsPsychPipe.getCondition(experiment_id).then(condition => {
+  // do something with the condition
+})
+```
 
 ## Examples
 

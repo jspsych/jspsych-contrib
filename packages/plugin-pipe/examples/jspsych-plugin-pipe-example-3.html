@@ -9,6 +9,9 @@
   <body></body>
   <script>
 
+    // replace this with your experiment ID from pipe.jspsych.org
+    const expID = "ABCDEF123456";
+
     var jsPsych = initJsPsych({});
 
     const subject_id = jsPsych.randomization.randomID(10);
@@ -23,7 +26,7 @@
       allow_playback: true,
       on_finish: function(data){
         const filename = `${subject_id}_${jsPsych.getProgress().current_trial_global}_audio.webm`;
-        jsPsychPipe.saveBase64Data("FO50kUfhHenu",  filename, data.response);
+        jsPsychPipe.saveBase64Data(expID,  filename, data.response);
         // delete the base64 data to save space. store the filename instead.
         data.response = filename;
       }
