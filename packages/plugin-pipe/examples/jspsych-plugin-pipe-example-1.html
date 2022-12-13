@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@7"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@7/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+
+    // replace this with your experiment ID from pipe.jspsych.org
+    const expID = "ABCDEF123456";
+
+    var jsPsych = initJsPsych({});
+
+    const subject_id = jsPsych.randomization.randomID(10);
+    jsPsych.data.addProperties({subject_id: subject_id});
+
+    const flanker_timeline = {
+      timeline: [{
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: jsPsych.timelineVariable('stimulus'),
+        choices: ['F', 'J'],
+        data: {
+          congruency: jsPsych.timelineVariable('congruency'),
+          direction: jsPsych.timelineVariable('direction'),
+          task: 'flanker'
+        }
+      }],
+      timeline_variables: [
+        {stimulus: '<<<<<', congruency: 'congruent', direction: 'left'},
+        {stimulus: '>>>>>', congruency: 'congruent', direction: 'right'},
+        {stimulus: '<<><<', congruency: 'incongruent', direction: 'right'},
+        {stimulus: '>><>>', congruency: 'incongruent', direction: 'left'}
+      ],
+      randomize_order: true,
+      repetitions: 5
+    }
+
+    const save_data = {
+      type: jsPsychPipe,
+      action: "save",
+      experiment_id: expID,
+      filename: `${subject_id}.csv`,
+      data: ()=>jsPsych.data.get().csv()
+    };
+
+    const finished = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: "Finished!",
+      choices: "NO_KEYS",
+      simulation_options: {
+        simulate: false
+      }
+    };
+
+    jsPsych.simulate([flanker_timeline, save_data]);
+  </script>
+</html>
