@@ -43,7 +43,7 @@
       action: "save",
       experiment_id: expID,
       filename: `${subject_id}.csv`,
-      data: ()=>jsPsych.data.get().csv()
+      data_string: ()=>jsPsych.data.get().csv()
     };
 
     const finished = {

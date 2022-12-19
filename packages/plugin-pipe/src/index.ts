@@ -37,7 +37,7 @@ const info = <const>{
      * The use of a function is necessary to get the updated data at
      * the time of saving.
      */
-    data: {
+    data_string: {
       type: ParameterType.STRING,
       default: null,
     },
@@ -117,10 +117,14 @@ class PipePlugin implements JsPsychPlugin<Info> {
 
     let result: string | number;
     if (trial.action === "save") {
-      result = await PipePlugin.saveData(trial.experiment_id, trial.filename, trial.data);
+      result = await PipePlugin.saveData(trial.experiment_id, trial.filename, trial.data_string);
     }
     if (trial.action === "saveBase64") {
-      result = await PipePlugin.saveBase64Data(trial.experiment_id, trial.filename, trial.data);
+      result = await PipePlugin.saveBase64Data(
+        trial.experiment_id,
+        trial.filename,
+        trial.data_string
+      );
     }
     if (trial.action === "condition") {
       result = await PipePlugin.getCondition(trial.experiment_id);
