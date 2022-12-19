@@ -13,7 +13,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | experiment_id | string | undefined | The ID of the experiment. This ID is provided by pipe.jspsych.org. |
 | action | string | undefined | The action to perform. Possible values are `save`, `saveBase64`, and `condition`. |
 | filename | null | undefined | The filename to use when saving data. It should be unique. If the file already exists, no data will be saved. |
-| data | string | null | The string of data to save. If action is `save` then this can be text data in any format (e.g., CSV, JSON, TXT, etc.). If `action` is `saveBase64`, then this should be a base64 encoded string and the `filename` should have the appropriate extension. | 
+| data_string | string | null | The string of data to save. If action is `save` then this can be text data in any format (e.g., CSV, JSON, TXT, etc.). If `action` is `saveBase64`, then this should be a base64 encoded string and the `filename` should have the appropriate extension. | 
 
 
 ## Data Generated
@@ -70,7 +70,7 @@ const save_data = {
   action: "save",
   experiment_id: expID,
   filename: `${subjectID}.csv`,
-  data: ()=>jsPsych.data.get().csv()
+  data_string: ()=>jsPsych.data.get().csv()
 };
 ```
 
