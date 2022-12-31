@@ -10,6 +10,7 @@ describe("image-array-keyboard-response", () => {
       {
         type: imageArrayKeyboardResponse,
         stimulus: ["../media/blue.png"],
+        stimulus_rect: [0, 0, 100, 100],
         render_on_canvas: false,
       },
     ]);
