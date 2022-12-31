@@ -5,8 +5,8 @@ import imageArrayKeyboardResponse from ".";
 jest.useFakeTimers();
 
 describe("image-array-keyboard-response", () => {
-  test("displays image stimulus", async () => {
-    const { getHTML, expectFinished } = await startTimeline([
+  test("end on press key", async () => {
+    const { expectFinished } = await startTimeline([
       {
         type: imageArrayKeyboardResponse,
         stimulus: ["../img/dot_green.png"],
