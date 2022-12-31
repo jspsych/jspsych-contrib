@@ -221,8 +221,11 @@ class ImageArrayKeyboardResponsePlugin implements JsPsychPlugin<Info> {
     var after_response = (info) => {
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded
-      display_element.querySelector("#jspsych-image-keyboard-response-stimulus").className +=
-        " responded";
+      for (let i; i < trial.stimulus.length; i++) {
+        display_element.querySelector(
+          "#jspsych-image-keyboard-response-stimulus-" + i.toString()
+        ).className += " responded";
+      }
 
       // only record the first response
       if (response.key == null) {
@@ -248,9 +251,11 @@ class ImageArrayKeyboardResponsePlugin implements JsPsychPlugin<Info> {
     // hide stimulus if stimulus_duration is set
     if (trial.stimulus_duration !== null) {
       this.jsPsych.pluginAPI.setTimeout(() => {
-        display_element.querySelector<HTMLElement>(
-          "#jspsych-image-keyboard-response-stimulus"
-        ).style.visibility = "hidden";
+        for (let i; i < trial.stimulus.length; i++) {
+          display_element.querySelector<HTMLElement>(
+            "#jspsych-image-keyboard-response-stimulus-" + i.toString()
+          ).style.visibility = "hidden";
+        }
       }, trial.stimulus_duration);
     }
 
