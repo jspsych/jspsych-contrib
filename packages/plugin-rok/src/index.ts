@@ -242,7 +242,7 @@ const info = <const>{
       default: 0,
     },
     /** Sets the main task when experiment is in congruency mode. The congruency of the other task then only" +
-         "applies to non random oobs of main task. */
+         "applies to non-random oobs of main task. */
     experiment_main_task: {
       type: ParameterType.INT,
       pretty_name:
