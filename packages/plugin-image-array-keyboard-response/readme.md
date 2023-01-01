@@ -33,4 +33,4 @@ See [documentation](docs/jspsych-image-array-keyboard-response.md)
 
 ## Author / Citation
 
-This plugin was created by the [Autonomous Empirical Research Group](https://musslick.github.io/AER_website) (developer: [Younes Strittmatter](https://github.com/younesStrittmatter), PI: [Sebastian Musslick](https://smusslick.com)) in collaboration with the [Center for Computation and Visualization](https://ccv.brown.edu) at Brown University. This research program is supported by Schmidt Science Fellows, in partnership with the Rhodes Trust, as well as the Carney BRAINSTORM program at Brown University.
+This plugin was created by the [Autonomous Empirical Research Group](https://musslick.github.io/AER_website) (developer: [Younes Strittmatter](https://github.com/younesStrittmatter), PI: [Sebastian Musslick](https://smusslick.com). This research program is supported by Schmidt Science Fellows, in partnership with the Rhodes Trust, as well as the Carney BRAINSTORM program at Brown University.
