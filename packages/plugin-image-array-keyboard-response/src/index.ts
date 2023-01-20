@@ -60,12 +60,12 @@ const info = <const>{
 type Info = typeof info;
 
 /**
- * **image-keyboard-response**
+ * **image-array-keyboard-response**
  *
- * jsPsych plugin for displaying an image stimulus and getting a keyboard response
+ * jsPsych plugin for displaying an image array and getting a keyboard response
  *
- * @author Josh de Leeuw
- * @see {@link https://www.jspsych.org/plugins/jspsych-image-keyboard-response/ image-keyboard-response plugin documentation on jspsych.org}
+ * @author Younes Strittmatter
+ * @see {@link https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-image-array-keyboard-response/README.md image-array-keyboard-response plugin documentation on github.com}
  */
 class ImageArrayKeyboardResponsePlugin implements JsPsychPlugin<Info> {
   static info = info;
