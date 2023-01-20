@@ -20,7 +20,7 @@ npm install @jspsych-contrib/plugin-image-array-keyboard-response
 ```
 
 ```js
-import jsPsychPluginName from '@jspsych-contrib/plugin-image-array-keyboard-response';
+import jsPsychImageArrayKeyboardResponse from '@jspsych-contrib/plugin-image-array-keyboard-response';
 ```
 
 ## Compatibility
