@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://unpkg.com/jspsych@7.0.0"></script>
+		<script src="../dist/index.browser.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@1.0.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.0.0"></script>
+		<link rel="stylesheet" href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css">
+	</head>
+	<body></body>
+	<script>
+
+		var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+		// Create arrays of hot dog / not hot dog images
+		const soundFiles = [
+			{ source: "./audio/hammer.mp3" },
+			{ source: "./audio/roar.mp3" },
+		];
+
+		const timeline = [];
+
+		/* preload images */
+		const preload = {
+			type: jsPsychPreload,
+			auto_preload: true,
+		};
+		timeline.push(preload);
+
+		//---------Create trials---------
+		// define welcome message trial
+		// Some browsers now require the user to interact with a page before it can play
+		// audio. This trial both explains the experiement and also supplies that interaction by having the user click on
+		// a button.
+		const welcome = {
+			type: jsPsychHtmlButtonResponse,
+			stimulus: `
+				<h3>Directions</h3>
+				<p>
+					Swipe right or press the right arrow key if you hear a hammer. 
+					Swipe left or press the left arrow key if you hear a roar.
+				</p>
+				`,
+			choices: ['Run demo']
+		};
+		timeline.push(welcome);
+		
+		const audioTrials = {
+			timeline: [
+				{
+					type: jsPsychAudioSwipeResponse,
+					stimulus: jsPsych.timelineVariable('source'),
+					prompt: `
+						<div style="border-style: solid; border-width: 3px; border-color: black; max-width: 20em;">
+							<p>What sound is this</p>
+							<p>If it's a hammer, swipe right or press the right arrow key.</p>
+							<p>If it's a roar, swipe left or press the left arrow key.</p>
+						</div>
+					`,
+				},
+			],
+			timeline_variables: soundFiles,
+			sample: {
+				type: "with-replacement",
+				size: 5,
+			},
+		};
+
+		timeline.push(audioTrials);
+
+		const endTrial = {
+			type: jsPsychHtmlButtonResponse,
+			stimulus: 'Great job! Press the button below to finish the assessment.',
+			choices: ["Finish"],
+			response_ends_trial: true,
+		};
+
+		timeline.push(endTrial);
+
+		//---------Run the experiment---------
+		jsPsych.run(timeline);
+
+	</script>
+</html>
