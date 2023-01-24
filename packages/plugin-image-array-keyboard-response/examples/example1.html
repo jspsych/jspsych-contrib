@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://unpkg.com/jspsych@7.0.0"></script>
+    <script src="../dist/index.browser.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@1.0.0"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css">
+
+</head>
+<body></body>
+<script>
+    var jsPsych = initJsPsych({
+        on_finish: function () {
+            jsPsych.data.displayData();
+        }
+    });
+
+    // create the timeline
+    let timeline = [];
+
+    // create a "preload trial". this is the first thing to run in the experiment. Every image that will be needed is loaded now
+    let preload = {
+        type: jsPsychPreload,
+        auto_preload: true
+    };
+    // push the preload trial into the timeline
+    timeline.push(preload);
+
+
+    // make a rok-trials
+
+    // minimal example --
+    let trial = {
+        type: jsPsychImageArrayKeyboardResponse, // plugin type to tell jsPsych witch trial-type to use
+        stimulus: ['./img/dot_green.png', './img/dot_yellow.png'],
+        stimulus_rect: [[1000,100,200, 50],[0, 100, null, 100]], // if null, then aspect ratio is preserved
+        choices: ['f'], // valid key presses
+        correct_choice: ['f'], // correct key press
+        trial_duration: 4000, // duration of stimulus presentation, 0 for infinite (valid key press ends the trial)
+        response_ends_trial: true,
+        render_on_canvas: true,
+    };
+    timeline.push(trial);
+
+        //---------Run the experiment---------
+
+    jsPsych.run(timeline);
+
+
+</script>
+</html>
