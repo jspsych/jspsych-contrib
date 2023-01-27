@@ -50,8 +50,8 @@ type Info = typeof info;
  * **jsPsychPipe**
  *
  * This plugin facilitates communication with DataPipe (https://pipe.jspsych.org), a tool for
- * sending data from jsPsych experiments to the OSF (https://osf.io/). You will need an account
- * on DataPipe to use this plugin.
+ * sending data from jsPsych experiments to the OSF (https://osf.io/). You will need a DataPipe
+ * account to use this plugin.
  *
  * @author Josh de Leeuw
  * @see {@link https://DOCUMENTATION_URL DOCUMENTATION LINK TEXT}
@@ -115,7 +115,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
 
     display_element.innerHTML = progressHTML;
 
-    let result: string | number;
+    let result: any;
     if (trial.action === "save") {
       result = await PipePlugin.saveData(trial.experiment_id, trial.filename, trial.data_string);
     }
@@ -135,6 +135,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
     // data saving
     var trial_data = {
       result: result,
+      success: result.error ? false : true,
     };
 
     // end trial
@@ -150,8 +151,8 @@ class PipePlugin implements JsPsychPlugin<Info> {
    * @returns The response from the server.
    */
   static async saveData(expID: string, filename: string, data: string): Promise<string> {
-    if (filename === null || data === null) {
-      return "not sent: the filename and data parameters must be defined";
+    if (!expID || !filename || !data) {
+      throw new Error("Missing required parameter(s).");
     }
     let response: Response;
     try {
@@ -170,7 +171,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
     } catch (error) {
       return error;
     }
-    return await response.text();
+    return await response.json();
   }
 
   /**
@@ -182,8 +183,8 @@ class PipePlugin implements JsPsychPlugin<Info> {
    * @returns The response from the server.
    */
   static async saveBase64Data(expID: string, filename: string, data: string): Promise<string> {
-    if (filename === null || data === null) {
-      return "not sent: the filename and data parameters must be defined";
+    if (!expID || !filename || !data) {
+      throw new Error("Missing required parameter(s).");
     }
     let response: Response;
     try {
@@ -202,7 +203,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
     } catch (error) {
       return error;
     }
-    return await response.text();
+    return await response.json();
   }
 
   /**
@@ -212,6 +213,9 @@ class PipePlugin implements JsPsychPlugin<Info> {
    * @returns The condition assignment as an integer.
    */
   static async getCondition(expID: string): Promise<string | number> {
+    if (!expID) {
+      throw new Error("Missing required parameter(s).");
+    }
     let response: Response;
     try {
       response = await fetch("https://pipe.jspsych.org/api/condition/", {
@@ -227,9 +231,8 @@ class PipePlugin implements JsPsychPlugin<Info> {
     } catch (error) {
       return error;
     }
-    const result = await response.text();
-    return parseInt(result);
-    //return await response.text();
+    const result = await response.json();
+    return result.condition;
   }
 }
 
