@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-pipe
 
+## 0.3.0
+
+### Minor Changes
+
+- [#63](https://github.com/jspsych/jspsych-contrib/pull/63) [`151f715`](https://github.com/jspsych/jspsych-contrib/commit/151f715bdee829fdf36cdbfbb6f25ba0ff56ff06) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Update to work with changes to the DataPipe API
+
 ## 0.2.0
 
 ### Minor Changes
