@@ -150,7 +150,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
    * @param data The data as a string. Any text-basd format (e.g., JSON, CSV, TXT) is acceptable.
    * @returns The response from the server.
    */
-  static async saveData(expID: string, filename: string, data: string): Promise<string> {
+  static async saveData(expID: string, filename: string, data: string): Promise<any> {
     if (!expID || !filename || !data) {
       throw new Error("Missing required parameter(s).");
     }
@@ -182,7 +182,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
    * @param data The data as a base64-encoded string. It will be decoded by the server before being stored in the OSF.
    * @returns The response from the server.
    */
-  static async saveBase64Data(expID: string, filename: string, data: string): Promise<string> {
+  static async saveBase64Data(expID: string, filename: string, data: string): Promise<any> {
     if (!expID || !filename || !data) {
       throw new Error("Missing required parameter(s).");
     }
@@ -212,7 +212,7 @@ class PipePlugin implements JsPsychPlugin<Info> {
    * @param expID The 12-character experiment ID provided by pipe.jspsych.org.
    * @returns The condition assignment as an integer.
    */
-  static async getCondition(expID: string): Promise<string | number> {
+  static async getCondition(expID: string): Promise<any> {
     if (!expID) {
       throw new Error("Missing required parameter(s).");
     }
