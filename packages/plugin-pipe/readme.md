@@ -30,7 +30,7 @@ jsPsych v7.0.
 
 ## Documentation
 
-See [documentation](docs/jspsych-pipe.md)
+See [documentation](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-pipe/docs/jspsych-pipe.md)
 
 ## Author / Citation
 
