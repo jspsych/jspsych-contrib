@@ -3,45 +3,105 @@
 	<head>
 		<script src="https://unpkg.com/jspsych@7.0.0"></script>
 		<script src="../dist/index.browser.js"></script>
+		<script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-fullscreen@1.1.2"></script>
 		<link rel="stylesheet" href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css">
-		<link rel="stylesheet" href="css/slot-machine.css">
+		<link rel="stylesheet" href="css/slot-machine.css"> <!-- Most of the visuals are created in here, you can use this or adapt for slot-machine like experiment/bandit tasks -->
 	</head>
 	<body></body>
 	<script>
 
+		// init jsPsych
 		var jsPsych = initJsPsych({
-      on_finish: function() {
-        jsPsych.data.displayData();
-      }
+        on_finish: function () {
+            jsPsych.data.displayData();
+        }
     });
 
+		// create timeline (enter fullscreen)
+    const timeline = [{
+        type: jsPsychFullscreen,
+        fullscreen_mode: true
+    }];
 
-		const timeline = [];
 
+    // create html divs
+    let sm_blue = '<div style="position: absolute; top:0; left:0" class="slotmachine blue"></div>'
+    let sm_red = '<div style="position: absolute; top:0; right:0" class="slotmachine red"></div>'
+    let sm_green = '<div style="position: absolute; bottom:0; left:0" class="slotmachine green"></div>'
+    let sm_yellow = '<div style="position: absolute; bottom:0; right:0" class="slotmachine yellow"></div>'
+		// create variable to keep track of score
+    let score = 0
+		// create trials with timeline
+    const test = {
+            timeline: [
+                {
+                    type: jsPsychHtmlChoice,
+                    html_array: [sm_blue, sm_red, sm_green, sm_yellow], // these are the four choices
+                    trial_duration: 2000, // the participant has 2000 ms to choose
+                    values: jsPsych.timelineVariable('values'), // the values of the choices are given in the timeline bellow
+                    response_ends_trial: true, // after a response the trial ends
+                    time_after_response: 3500, // the time after the response the timeline is still shown
+                    on_finish: (data) => {
+                        score += data.value
+                    }
+                },
+                {
+                    type: jsPsychHtmlKeyboardResponse,
+                    stimulus: '',
+                    trial_duration: 200
+                },
+                {
+                    type: jsPsychHtmlKeyboardResponse,
+                    stimulus: () => {
+                        return '<div style="font-size: 8vh; color:darkgoldenrod">Total points: ' + score + '</div>'
+                    },
+                    trial_duration: 2000,
+                },
+                {
+                    type: jsPsychHtmlKeyboardResponse,
+                    stimulus: '',
+                    trial_duration: 200
+                },],
+            timeline_variables: [
+                {'values': [100, 50, 200, 90]}, // these are the values for the trials (change over time)
+                {'values': [100, 100, 50, 90]},
+                {'values': [100, 100, 50, 90]},
+                {'values': [100, 50, 200, 90]},
+                {'values': [50, 50, 50, 90]},
+                {'values': [100, 100, 50, 90]},
+                {'values': [100, 50, 50, 90]},
+                {'values': [50, 50, 50, 90]},
+                {'values': [100, 50, 200, 90]},
+                {'values': [100, 100, 50, 90]},
+                {'values': [100, 100, 50, 90]},
+                {'values': [100, 50, 200, 90]},
+                {'values': [50, 50, 50, 90]},
+                {'values': [100, 100, 50, 90]},
+                {'values': [100, 50, 50, 90]},
+                {'values': [50, 50, 50, 90]},
+                {'values': [100, 50, 200, 90]},
+                {'values': [100, 100, 50, 90]},
+                {'values': [100, 100, 50, 90]},
+                {'values': [100, 50, 200, 90]},
+                {'values': [50, 50, 50, 90]},
+                {'values': [100, 100, 50, 90]},
+                {'values': [100, 50, 50, 90]},
+                {'values': [50, 50, 50, 90]},
+                {'values': [100, 50, 200, 90]},
+                {'values': [100, 100, 50, 90]},
+                {'values': [100, 100, 50, 90]},
+                {'values': [100, 50, 200, 90]},
+                {'values': [50, 50, 50, 90]},
+                {'values': [100, 100, 50, 90]},
+                {'values': [100, 50, 50, 90]},
+                {'values': [50, 50, 50, 90]},]
+        }
 
+    timeline.push(test)
 
-		//---------Create trials---------
-		// define welcome message trial
-		// Some browsers now require the user to interact with a page before it can play
-		// audio. This trial both explains the experiement and also supplies that interaction by having the user click on
-		// a button.
-		const test = {
-			type: jsPsychHtmlChoice,
-			html_array: [
-				'<div style="position: absolute; top:0; left:0" class="slotmachine blue"></div>',
-				'<div style="position: absolute; top:0; right:0" class="slotmachine red"></div>',
-				'<div style="position: absolute; bottom:0; left:0" class="slotmachine green"></div>',
-				'<div style="position: absolute; bottom:0; right:0" class="slotmachine yellow"></div>',
-			],
-			trial_duration: 2000,
-			values: [20, 100, 30, 40],
-			response_ends_trial: true,
-			time_after_response: 3000,
-		};
-		timeline.push(test)
-
-		//---------Run the experiment---------
-		jsPsych.run(timeline);
+    // run the experiment
+    jsPsych.run(timeline);
 
 	</script>
 </html>
