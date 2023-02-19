@@ -1,4 +1,4 @@
-import { startTimeline } from "@jspsych/test-utils";
+import { clickTarget, startTimeline } from "@jspsych/test-utils";
 
 import htmlChoice from ".";
 
@@ -9,10 +9,10 @@ describe("html-choice", () => {
     const { expectFinished } = await startTimeline([
       {
         type: htmlChoice,
-        html_array: [""],
-        trial_duration: 1000,
+        html_array: ["<div>Test-Div</div>"],
       },
     ]);
+    clickTarget(document.querySelector("#jspsych-html-choice-0"));
 
     await expectFinished();
   });
