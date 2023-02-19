@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://unpkg.com/jspsych@7.0.0"></script>
+		<script src="../dist/index.browser.js"></script>
+		<link rel="stylesheet" href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css">
+		<link rel="stylesheet" href="css/slot-machine.css">
+	</head>
+	<body></body>
+	<script>
+
+		var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+
+		const timeline = [];
+
+
+
+		//---------Create trials---------
+		// define welcome message trial
+		// Some browsers now require the user to interact with a page before it can play
+		// audio. This trial both explains the experiement and also supplies that interaction by having the user click on
+		// a button.
+		const test = {
+			type: jsPsychHtmlChoice,
+			html_array: [
+				'<div style="position: absolute; top:0; left:0" class="slotmachine blue"></div>',
+				'<div style="position: absolute; top:0; right:0" class="slotmachine red"></div>',
+				'<div style="position: absolute; bottom:0; left:0" class="slotmachine green"></div>',
+				'<div style="position: absolute; bottom:0; right:0" class="slotmachine yellow"></div>',
+			],
+			trial_duration: 2000,
+			values: [20, 100, 30, 40],
+			response_ends_trial: true,
+			time_after_response: 3000,
+		};
+		timeline.push(test)
+
+		//---------Run the experiment---------
+		jsPsych.run(timeline);
+
+	</script>
+</html>
