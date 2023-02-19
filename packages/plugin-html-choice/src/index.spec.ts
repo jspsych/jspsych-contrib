@@ -1,5 +1,4 @@
-import htmlMultiResponse from "@jspsych-contrib/plugin-html-multi-response";
-import { clickTarget, startTimeline } from "@jspsych/test-utils";
+import { startTimeline } from "@jspsych/test-utils";
 
 import htmlChoice from ".";
 
