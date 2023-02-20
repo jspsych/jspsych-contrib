@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://unpkg.com/jspsych@7.0.0"></script>
+  <script src="../dist/index.browser.js"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-fullscreen@1.1.2"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css">
+  <link rel="stylesheet" href="css/card.css">
+  <!-- Most of the visuals are created in here, you can use this or adapt for card set like tasks -->
+</head>
+<body></body>
+<script>
+
+  // init jsPsych
+  var jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData();
+    }
+  });
+
+  // create timeline (enter fullscreen)
+  const timeline = [{
+    type: jsPsychFullscreen,
+    message	: '<div style="font-size: 3vh; line-height: 5vh">Chose between two sets of cards.<br>' +
+        'As soon as the card is flipped, you see a colorized number.<br>' +
+        'If the number is <span style="color: #AB5555; font-weight: bold">red</span> call out wheather it is <b>odd</b> or <b>even</b>.<br>' +
+        'If the number is <span style="color: #398027; font-weight: bold">green</span> call out wheather it is <b>smaller</b> or <b>larger</b> than 5.<br>' +
+        'any key to continue</div>',
+    fullscreen_mode: true
+  }];
+
+
+
+  // create variable to keep track of score
+  let curr_color = 0;
+  // create trials with timeline
+  const test = {
+    timeline: [
+      {
+        type: jsPsychHtmlChoice,
+        html_array: () => {
+          return [
+            "<div class='card-wrapper-left'>" +
+            "<div class=\"card-set orange\"></div>" +
+            "<div style=\"color:" + jsPsych.timelineVariable("back_color_orange") + "\" class=\"card-back orange\">" + jsPsych.timelineVariable("back_number_orange") + "</div>" +
+            "</div>",
+            "<div class='card-wrapper-right'>" +
+            "<div class=\"card-set blue\"></div>" +
+            "<div style=\"color:" + jsPsych.timelineVariable("back_color_blue") + "\" class=\"card-back blue\">" + jsPsych.timelineVariable("back_number_blue") + "</div>" +
+            "</div>"
+          ];
+        }, // these are the two choices
+        //trial_duration: 2000, // the participant has 2000 ms to choose
+        response_ends_trial: true, // after a response the trial ends
+        time_after_response: 500,
+        values: [0, 1],// the time after the response the timeline is still shown
+        on_finish: (data) => {
+          curr_color = data.value;
+          console.log(data.value)
+          data['stim'] = [
+            "<div class='card-wrapper-left responded'>" +
+            "<div class=\"card-set orange\"></div>" +
+            "<div style=\"color:" + jsPsych.timelineVariable("back_color_orange") + "\" class=\"card-back orange\">" + jsPsych.timelineVariable("back_number_orange") + "</div>" +
+            "</div>",
+            "<div class='card-wrapper-right responded'>" +
+            "<div class=\"card-set blue\"></div>" +
+            "<div style=\"color:" + jsPsych.timelineVariable("back_color_blue") + "\" class=\"card-back blue\">" + jsPsych.timelineVariable("back_number_blue") + "</div>" +
+            "</div>"
+          ][data.value]
+        }
+      },
+      {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: () => {
+          return jsPsych.data.get().last(1).values()[0].stim;
+        },
+        trial_duration: 3000
+      },
+      {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "",
+        trial_duration: 200
+      }],
+    timeline_variables: [
+      { "back_color_orange": "#AB5555", "back_color_blue": "#398027", "back_number_orange": 1, "back_number_blue": 1 }, // these are the values for the trials (change over time)
+      { "back_color_orange": "#398027", "back_color_blue": "#398027", "back_number_orange": 3, "back_number_blue": 1 },
+      { "back_color_orange": "#398027", "back_color_blue": "#398027", "back_number_orange": 7, "back_number_blue": 8 },
+      { "back_color_orange": "#AB5555", "back_color_blue": "#AB5555", "back_number_orange": 2, "back_number_blue": 8 },
+      { "back_color_orange": "#398027", "back_color_blue": "#AB5555", "back_number_orange": 9, "back_number_blue": 8 },
+      { "back_color_orange": "#AB5555", "back_color_blue": "#AB5555", "back_number_orange": 3, "back_number_blue": 2 },
+      { "back_color_orange": "#398027", "back_color_blue": "#398027", "back_number_orange": 3, "back_number_blue": 3 },
+      { "back_color_orange": "#398027", "back_color_blue": "#398027", "back_number_orange": 6, "back_number_blue": 3 },
+      { "back_color_orange": "#AB5555", "back_color_blue": "#398027", "back_number_orange": 4, "back_number_blue": 4 },
+      { "back_color_orange": "#398027", "back_color_blue": "#398027", "back_number_orange": 2, "back_number_blue": 7 },
+      { "back_color_orange": "#398027", "back_color_blue": "#AB5555", "back_number_orange": 4, "back_number_blue": 7 },
+      { "back_color_orange": "#AB5555", "back_color_blue": "#AB5555", "back_number_orange": 2, "back_number_blue": 9 },
+      { "back_color_orange": "#AB5555", "back_color_blue": "#398027", "back_number_orange": 7, "back_number_blue": 1 },
+      { "back_color_orange": "#398027", "back_color_blue": "#398027", "back_number_orange": 9, "back_number_blue": 4 }
+    ]
+  };
+
+  timeline.push(test);
+
+  // run the experiment
+  jsPsych.run(timeline);
+
+</script>
+</html>

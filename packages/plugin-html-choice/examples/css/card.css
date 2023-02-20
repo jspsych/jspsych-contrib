@@ -1,0 +1,72 @@
+.card-wrapper-left {
+    position: absolute;
+    bottom: 10vh;
+    left: 10vw;
+    perspective: 2000px;
+}
+
+.card-wrapper-right {
+    position: absolute;
+    bottom: 10vh;
+    right: 10vw;
+    perspective: 2000px;
+}
+
+.card-set {
+    position: absolute;
+    border-radius: 1vw;
+    width: 15vw;
+    height: 40vh;
+    transition: transform 250ms;
+    backface-visibility: hidden;
+    transform-origin: 0 -10%;
+    transform: rotateX(0deg);
+    transform-style: preserve-3d;
+}
+
+.card-back {
+    position: relative;
+    border-radius: 1vw;
+    width: 15vw;
+    height: 40vh;
+    font-size: 25vh;
+    font-weight: lighter;
+    font-family: "Times New Roman", Serif;
+    text-shadow: 0 0 2pt black;
+    line-height: 40vh;
+    transition: transform 250ms;
+    background: linear-gradient(45deg, #eeeeee 12%, transparent 0, transparent 88%, #eeeeee 0),
+    linear-gradient(135deg, transparent 37%, #e9e9e9 0, #e9e9e9 63%, transparent 0),
+    linear-gradient(45deg, transparent 37%, #e2e2e2 0, #e2e2e2 63%, transparent 0) #eee;
+    background-size: 25px 25px;
+    transform-origin: 0 -10%;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    transform: rotateX(180deg) translateY(-100%);
+    outline: .5vw solid #222;
+
+}
+
+.responded .card-set {
+    transform: rotateX(180deg) translateY(-100%);
+}
+
+.responded .card-back {
+    transform: rotateX(360deg) translateY(-110%);
+}
+
+.card-set.orange {
+    background: linear-gradient(45deg, #dca 12%, transparent 0, transparent 88%, #dca 0),
+    linear-gradient(135deg, transparent 37%, #a85 0, #a85 63%, transparent 0),
+    linear-gradient(45deg, transparent 37%, #dca 0, #dca 63%, transparent 0) #753;
+    background-size: 25px 25px;
+    border: .5vw solid #753;
+}
+
+.card-set.blue {
+    background: linear-gradient(45deg, #acd 12%, transparent 0, transparent 88%, #acd 0),
+    linear-gradient(135deg, transparent 37%, #58a 0, #58a 63%, transparent 0),
+    linear-gradient(45deg, transparent 37%, #acd 0, #acd 63%, transparent 0) #357;
+    background-size: 25px 25px;
+    border: .5vw solid #357;
+}
