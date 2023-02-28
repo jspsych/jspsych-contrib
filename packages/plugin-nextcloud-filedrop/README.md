@@ -13,13 +13,15 @@ It may thus be neccessary to setup and host your own nextcloud instance.
 How a nextcloud docker container with the required permissions can be created is documentet [below](#nextcloud-docker-image).
 
 The plugin uses JSZip to create an in-memory zip file of the collected data, which will be uploaded.
+If you use the plugin, please make sure to also load the JSZip library as indicated below.
 
 ## Loading
 
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-nextcloud-filedrop@1.0.0">
+<script src="https://unpkg.com/jszip/dist/jszip.js"/>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-nextcloud-filedrop@1.0.0"/>
 ```
 
 ### Via NPM
