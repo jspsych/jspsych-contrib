@@ -1,6 +1,6 @@
 # jspsych-pipe plugin
 
-This plugin facilitates communication with DataPipe (https://pipe.jspsych.org), a service that enables sending data directly to an OSF component. This plugin is under v0.1 to reflect that the API of DataPipe is still under development.
+This plugin facilitates communication with DataPipe (https://pipe.jspsych.org), a service that enables sending data directly to an OSF component. This plugin is under v0.x to reflect that the API of DataPipe is still under development.
 
 The plugin enables sending data collected by the experiment to DataPipe, which is then routed to an OSF component. This allows hosting an experiment without using a backend server, such as through a free service like [GitHub Pages](https://pages.github.com/). DataPipe also allows sending base64 encoded files (such as audio or video recordings), which are decoded into their original form before being sent to the OSF component. It also supports a simple balanced condition assignment, which allows for sequential assignment to conditions without the need for a backend server.
 
@@ -22,7 +22,7 @@ In addition to the [default data collected by all plugins](../overview/plugins.m
 
 | Name      | Type    | Value                                    |
 | --------- | ------- | ---------------------------------------- |
-| response | string | The response from the server. |
+| response | JSON | The response from the server. |
 
 ## Static Methods
 

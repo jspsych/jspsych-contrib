@@ -4,16 +4,10 @@ import PluginPipe from ".";
 
 jest.useFakeTimers();
 
-describe("my plugin", () => {
-  it.skip("should load", async () => {
-    const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
-      {
-        type: PluginPipe,
-        parameter_name: 1,
-        parameter_name2: "img.png",
-      },
-    ]);
-
-    await expectFinished();
+describe.skip("jsPsychPipe.getCondition()", () => {
+  it("should return the correct condition", async () => {
+    const expID = "test";
+    const condition = await PluginPipe.getCondition(expID);
+    expect(condition).toBe(0);
   });
 });
