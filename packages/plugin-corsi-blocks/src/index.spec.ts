@@ -9,11 +9,27 @@ describe("corsi-blocks plugin", () => {
     const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
       {
         type: jsPsychCorsiBlocks,
-        parameter_name: 1,
-        parameter_name2: "img.png",
+        sequence: [0, 1, 2],
+        blocks: [
+          { x: 10, y: 10 },
+          { x: 20, y: 20 },
+          { x: 30, y: 30 },
+        ],
       },
     ]);
 
+    await jest.runAllTimers();
+
+    await expectFinished();
+  });
+  it("should work with default blocks", async () => {
+    const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
+      {
+        type: jsPsychCorsiBlocks,
+        sequence: [0, 1, 2],
+      },
+    ]);
+    await jest.runAllTimers();
     await expectFinished();
   });
 });

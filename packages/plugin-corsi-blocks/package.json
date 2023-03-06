@@ -35,11 +35,11 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-corsi-blocks",
   "peerDependencies": {
-    "jspsych": ">=7.0.0"
+    "jspsych": ">=7.3.2"
   },
   "devDependencies": {
     "@jspsych/config": "^1.0.0",
     "@jspsych/test-utils": "^1.0.0",
-    "jspsych": "^7.0.0"
+    "jspsych": "^7.3.2"
   }
 }

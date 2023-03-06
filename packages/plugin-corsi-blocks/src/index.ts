@@ -11,7 +11,13 @@ const info = <const>{
     blocks: {
       type: ParameterType.COMPLEX,
       array: true,
-      default: undefined,
+      default: [
+        { x: 0, y: 0 },
+        { x: 10, y: 10 },
+        { x: 20, y: 20 },
+        { x: 30, y: 30 },
+        { x: 40, y: 40 },
+      ],
       nested: {
         x: {
           type: ParameterType.INT,
@@ -149,6 +155,20 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
       this.jsPsych.finishTrial(trial_data);
     };
 
+    const wait = function (fn, t) {
+      const start = performance.now();
+
+      const _wait_help = (fn, t, s) => {
+        const duration = performance.now() - s;
+        if (duration >= t) {
+          fn();
+        } else {
+          window.requestAnimationFrame(() => _wait_help(fn, t, start));
+        }
+      };
+      window.requestAnimationFrame(() => _wait_help(fn, t, start));
+    };
+
     if (trial.mode == "display") {
       let sequence_location = 0;
       let display_phase = "pre-stim";
@@ -158,12 +178,11 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
           wait(update_display, trial.pre_stim_duration);
           display_phase = "sequence";
         } else if (display_phase == "sequence") {
+          const block: HTMLElement = display_element.querySelector(
+            `.jspsych-corsi-block[data-id="${trial.sequence[sequence_location]}"]`
+          );
           if (sequence_location < trial.sequence.length) {
-            (
-              document.querySelector(
-                `.jspsych-corsi-block[data-id="${trial.sequence[sequence_location]}"]`
-              ) as HTMLElement
-            ).style.backgroundColor = trial.highlight_color;
+            block.style.backgroundColor = trial.highlight_color;
             wait(update_display, trial.sequence_duration);
             display_phase = "iti";
           }
@@ -171,29 +190,14 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
             end_trial();
           }
         } else if (display_phase == "iti") {
-          (
-            document.querySelector(
-              `.jspsych-corsi-block[data-id="${trial.sequence[sequence_location]}"]`
-            ) as HTMLElement
-          ).style.backgroundColor = trial.block_color;
+          const block: HTMLElement = display_element.querySelector(
+            `.jspsych-corsi-block[data-id="${trial.sequence[sequence_location]}"]`
+          );
+          block.style.backgroundColor = trial.block_color;
           sequence_location++;
           wait(update_display, trial.sequence_iti);
           display_phase = "sequence";
         }
-      };
-
-      const wait = function (fn, t) {
-        const start = performance.now();
-
-        const _wait_help = (fn, t, s) => {
-          const duration = performance.now() - s;
-          if (duration >= t) {
-            fn();
-          } else {
-            window.requestAnimationFrame(() => _wait_help(fn, t, start));
-          }
-        };
-        window.requestAnimationFrame(() => _wait_help(fn, t, start));
       };
 
       window.requestAnimationFrame(update_display);
@@ -224,7 +228,7 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
         trial_data.response.push(parseInt(id));
         const correct = parseInt(id) == trial.sequence[trial_data.response.length - 1];
         if (correct) {
-          document
+          display_element
             .querySelector(`.jspsych-corsi-block[data-id="${id}"]`)
             .animate(correct_animation, animation_timing);
           if (trial_data.response.length == trial.sequence.length) {
@@ -232,7 +236,7 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
             setTimeout(end_trial, trial.response_animation_duration); // allows animation to finish
           }
         } else {
-          document
+          display_element
             .querySelector(`.jspsych-corsi-block[data-id="${id}"]`)
             .animate(incorrect_animation, animation_timing);
           trial_data.correct = false;
