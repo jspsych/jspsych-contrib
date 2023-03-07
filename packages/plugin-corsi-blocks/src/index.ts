@@ -146,7 +146,12 @@ type Info = typeof info;
 /**
  * **corsi-blocks**
  *
- * Plugin to run the Corsi blocks task.
+ * This plugin displays a sequence of blocks and then gets the
+ * subject's response. The sequence can be displayed in either
+ * 'display' mode or 'input' mode. In 'display' mode, the
+ * sequence is displayed and the trial ends after the sequence
+ * is complete. In 'input' mode, the subject must click on the
+ * blocks in the correct order.
  *
  * @author Josh de Leeuw
  * @see {@link https://DOCUMENTATION_URL DOCUMENTATION LINK TEXT}
