@@ -1,8 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-corsi-blocks",
-  "private": "true",
   "version": "0.1.0",
-  "description": "",
+  "description": "Corsi blocks task plugin for jsPsych",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
