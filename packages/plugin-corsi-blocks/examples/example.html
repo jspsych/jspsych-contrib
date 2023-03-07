@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@7.3.2"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@7.3.2/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    const corsi_original_config = [
+      {y: 80, x: 45},
+      {y: 85, x: 80},
+      {y: 70, x: 20},
+      {y: 60, x: 70},
+      {y: 50, x: 35},
+      {y: 40, x: 15},
+      {y: 45, x: 90},
+      {y: 35, x: 60},
+      {y: 25, x: 47}
+    ];
+
+    const timeline = [];
+
+    timeline.push({
+      type: jsPsychCorsiBlocks,
+      sequence: [3,1],
+      mode: 'display'
+    });
+
+    timeline.push({
+      type: jsPsychCorsiBlocks,
+      sequence: [3,1],
+      mode: 'input'
+    });
+
+    jsPsych.run(timeline);
+  </script>
+</html>
