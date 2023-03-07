@@ -19,7 +19,7 @@ npm install @jspsych-contrib/plugin-corsi-blocks
 ```
 
 ```js
-import jsPsychPluginName from '@jspsych-contrib/plugin-corsi-blocks';
+import jsPsychCorsiBlocks from '@jspsych-contrib/plugin-corsi-blocks';
 ```
 
 ## Compatibility
@@ -30,7 +30,7 @@ jsPsych 7.3.2.
 
 ## Documentation
 
-
+See [documentation](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-corsi-blocks/docs/jspsych-corsi-blocks.md)
 
 ## Author / Citation
 
