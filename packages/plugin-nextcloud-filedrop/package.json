@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-nextcloud-filedrop",
-  "private": "true",
+  "private": "false",
   "version": "0.1.0",
   "description": "",
   "unpkg": "dist/index.browser.min.js",
@@ -15,7 +15,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
-    "directory": "packages/plugin-moot"
+    "directory": "packages/plugin-nextcloud-filedrop"
   },
   "author": "C. Martin Grewe",
   "license": "MIT",
