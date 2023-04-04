@@ -1,0 +1,82 @@
+.slotmachine {
+    width: 30vw;
+    height: 36vh;
+    margin: calc(min(5vw, 5vh));
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 2vw;
+    border: 2vw solid;
+    background: repeating-linear-gradient(30deg, lightgray, lightgray 7vw, whitesmoke 7.1vw, whitesmoke 14vw);
+    background-size: 1000vw 1000vw;
+    background-position: 0 -100vw;
+
+
+}
+
+
+.slotmachine.blue {
+    border-color: blue;
+}
+
+.slotmachine.red {
+    border-color: red;
+}
+
+.slotmachine.green {
+    border-color: green;
+}
+
+.slotmachine.yellow {
+    border-color: yellow;
+}
+
+
+
+.responded .slotmachine {
+    animation: spin forwards ease-in-out;
+    animation-duration: 2s;
+}
+
+
+.responded::after {
+    content: attr(value);
+    color: transparent;
+    font-size: 7vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: show forwards ease-in-out;
+    animation-duration: 2s;
+}
+
+
+
+@keyframes show {
+    0% {
+        color: transparent;
+    }
+    89% {
+        color: transparent;
+        font-size: 7vh;
+    }
+    97% {
+        color: darkgoldenrod;
+        font-size: 10vh;
+    }
+    100% {
+        color: darkgoldenrod;
+        font-size: 10vh;
+    }
+}
+
+@keyframes spin {
+    0% {
+        background-position: 0 -100vw
+    }
+    89% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
