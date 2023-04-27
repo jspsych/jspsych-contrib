@@ -25,6 +25,11 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         pretty_name: "Ticks",
         default: true,
       },
+      n_scale_points: {
+        type: jspsych.ParameterType.BOOL,
+        pretty_name: "Number of scale points",
+        default: null,
+      },
       scale_width: {
         type: jspsych.ParameterType.INT,
         pretty_name: "VAS width",
@@ -167,17 +172,19 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
 
       var vas = document.getElementById("jspsych-html-vas-response-vas");
       // Add minor ticks
-      for (var j = 0; j < trial.labels.length; j++) {
-        var label_width_pct = 100 / (trial.labels.length - 1);
-        var pct_of_range = j * (100 / (trial.labels.length - 1));
-        var mtick = document.createElement("div");
-        mtick.style.position = "absolute";
-        mtick.style.height = trial.scale_height / 2 + "px";
-        mtick.style.width = "2px";
-        mtick.style.top = trial.scale_height / 4 + "px";
-        mtick.style.background = trial.tick_colour;
-        mtick.style.left = (pct_of_range / 100) * vas.clientWidth - 1 + "px";
-        vas.appendChild(mtick);
+      if (trial.ticks) {
+        for (var j = 0; j < trial.labels.length; j++) {
+          var label_width_pct = 100 / (trial.labels.length - 1);
+          var pct_of_range = j * (100 / (trial.labels.length - 1));
+          var mtick = document.createElement("div");
+          mtick.style.position = "absolute";
+          mtick.style.height = trial.scale_height / 2 + "px";
+          mtick.style.width = "2px";
+          mtick.style.top = trial.scale_height / 4 + "px";
+          mtick.style.background = trial.tick_colour;
+          mtick.style.left = (pct_of_range / 100) * vas.clientWidth - 1 + "px";
+          vas.appendChild(mtick);
+        }
       }
 
       // Function to move vertical tick
@@ -192,13 +199,16 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         var vas = document.getElementById("jspsych-html-vas-response-vas");
         var vas_rect = vas.getBoundingClientRect();
         if (e.clientX <= vas_rect.right && e.clientX >= vas_rect.left) {
-          var element = vas;
-          var vline = document.getElementById("jspsych-html-vas-response-vline");
-          var cx = Math.round(e.clientX);
-          vline.style.left = e.clientX - vas_rect.left - 1 + "px";
-          vline.style.visibility = "visible";
+          // Compute click location as a proportion of VAS line
           pct_tick = (e.clientX - vas_rect.left) / vas_rect.width;
-          vas.appendChild(vline);
+          // Round to nearest increment, if needed
+          if (trial.n_scale_points) {
+            pct_tick = Math.round(pct_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
+          }
+          var vline = document.getElementById("jspsych-html-vas-response-vline");
+          vline.style.left = pct_tick*vas_rect.width - 1 + "px";
+          vline.style.visibility = "visible";
+          // vas.appendChild(vline);
           var continue_button = document.getElementById("jspsych-html-vas-response-next");
           continue_button.disabled = false;
           // record time series of clicks
