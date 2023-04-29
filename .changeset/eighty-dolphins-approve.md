@@ -2,4 +2,4 @@
 "@jspsych-contrib/plugin-html-vas-response": patch
 ---
 
-html-vas-response: add option for discrete scale points
+Add option for discrete scale points
