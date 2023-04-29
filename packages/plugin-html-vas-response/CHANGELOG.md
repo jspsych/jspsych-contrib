@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-html-vas-response
 
+## 1.2.0
+
+### Minor Changes
+
+- [#69](https://github.com/jspsych/jspsych-contrib/pull/69) [`fec841b`](https://github.com/jspsych/jspsych-contrib/commit/fec841b24272c2d410c6d7c86af3add8a0a704a1) Thanks [@kinleyid](https://github.com/kinleyid)! - Add option for discrete scale points
+
 ## 1.1.0
 
 ### Minor Changes
