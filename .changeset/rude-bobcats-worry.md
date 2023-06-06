@@ -1,5 +1,5 @@
 ---
-"@jspsych-contrib/plugin-ios": patch
+"@jspsych-contrib/plugin-ios": major
 ---
 
 Adding IOS plugin
