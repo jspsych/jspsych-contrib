@@ -46,7 +46,7 @@ var trial = {
 };
 ```
 
-[Demonstration](examples/classic.html)
+[Demonstration](https://kinleyid.github.io/rsrch/jspsych-ios/examples/classic.html)
 
 ### Integration of self into group
 
@@ -63,4 +63,4 @@ var trial = {
 };
 ```
 
-[Demonstration](examples/group.html)
+[Demonstration](https://kinleyid.github.io/rsrch/jspsych-ios/examples/group.html)

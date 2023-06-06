@@ -270,8 +270,8 @@ var jsPsychIos = (function (jspsych) {
       }
 
       var clickable_area = document.getElementById('jspsych-ios-clickable');
-      var circles_movable = false;
-      if (true) {
+      var circles_movable;
+      if (trial.hide_initially) {
         circles_movable = true;
         // Hide both
         var side, container;
@@ -288,6 +288,8 @@ var jsPsychIos = (function (jspsych) {
           continue_button.disabled = false;
           clickable_area.onmouseenter = undefined;
         }
+      } else {
+        circles_movable = false;
       }
       // Handle mouse events
       clickable_area.onmousedown = function(e) {
