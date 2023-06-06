@@ -16,7 +16,7 @@ jsPsych v7.0
 
 ## Documentation
 
-See [documentation](docs/jspsych-html-vas-response.md)
+See [documentation](docs/jspsych-ios.md)
 
 ## Author
 
