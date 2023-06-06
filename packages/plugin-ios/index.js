@@ -116,7 +116,7 @@ var jsPsychIos = (function (jspsych) {
       }
     },
   };
-  class jsPsychHtmlVasResponsePlugin {
+  class jsPsychIosPlugin {
     constructor(jsPsych) {
       this.jsPsych = jsPsych;
     }
@@ -339,7 +339,7 @@ var jsPsychIos = (function (jspsych) {
       var startTime = performance.now();
     }
   }
-  jsPsychHtmlVasResponsePlugin.info = info;
+  jsPsychIosPlugin.info = info;
 
-  return jsPsychHtmlVasResponsePlugin;
+  return jsPsychIosPlugin;
 })(jsPsychModule);
