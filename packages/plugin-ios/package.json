@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-ios",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "unpkg": "dist/index.browser.min.js",
   "files": [
