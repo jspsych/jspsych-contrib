@@ -1,0 +1,29 @@
+{
+  "name": "@jspsych-contrib/plugin-ios",
+  "version": "0.0.1",
+  "description": "",
+  "unpkg": "dist/index.browser.min.js",
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "scripts": {
+    "build": "babel index.js --config-file @jspsych/config/babel --presets minify --source-maps --out-file dist/index.browser.min.js",
+    "build:watch": "npm run build -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/plugin-ios"
+  },
+  "author": "Isaac Kinley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-ios",
+  "devDependencies": {
+    "@jspsych/config": "^1.0.0",
+    "jspsych": "^7.0.0"
+  }
+}
