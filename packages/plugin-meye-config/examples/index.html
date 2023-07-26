@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://unpkg.com/jspsych@7.3.1"></script>
+	<script src="../dist/index.browser.min.js"></script>
+</head>
+
+<body>
+	<script>
+	/* initialize jsPsych */
+	var jsPsych = initJsPsych({
+		on_finish: function() {	  
+			jsPsych.data.displayData();
+			jsPsych.data.get().localSave('csv','TESTDATA.csv');
+		}
+	});
+
+	/* create timeline */
+	var timeline = [];
+	var participant_id = jsPsych.data.getURLVariable('ID');
+	jsPsych.data.addProperties({participant: participant_id});
+
+	var screen_width = window.screen.availHeight;
+	jsPsych.data.addProperties({screenW: screen_width});
+
+	var screen_height = window.screen.availWidth;
+	jsPsych.data.addProperties({screenH: screen_height});
+
+	var meyeCalibrate = {
+		type: jsPsychMeye
+	};
+
+	var test_procedure = {
+		timeline: [meyeCalibrate]
+	};
+
+	timeline.push(test_procedure);
+	jsPsych.run(timeline);
+	</script>
+</body>
+
+</html>
