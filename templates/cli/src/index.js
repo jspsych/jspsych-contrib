@@ -78,7 +78,26 @@ inquirer
           path.dirname = path.dirname.replace(templatePath, destPath);
         })
       )
-      .pipe(gulp.dest(`packages/${destPath}`));
+      .pipe(gulp.dest(`packages/${destPath}`))
+      .on("end", () => {
+        // edit package.json
+        gulp
+          .src(`packages/${destPath}/package.json`)
+          .pipe(replace("{name}", answers.name))
+          .pipe(replace("{description}", answers.description))
+          .pipe(replace("{author}", answers.author))
+          .pipe(replace(/"private": "true",?\r?\n/g, ""))
+          .pipe(gulp.dest(`packages/${destPath}`));
+
+        // if this is a typescript package, edit rollup config
+        if (answers.language === "ts") {
+          gulp
+            .src(`packages/${destPath}/rollup.config.mjs`)
+            .pipe(replace("{globalName}", globalName))
+            .pipe(gulp.dest(`packages/${destPath}`));
+        }
+      });
+
     /*
     gulp
       .src(`templates/${answers.type}-template-${answers.language}/`)
