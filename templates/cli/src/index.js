@@ -61,11 +61,12 @@ inquirer
     },
   ])
   .then((answers) => {
-    const globalName =
-      "jsPsych" +
-      (answers.type === "plugin" ? "Plugin" : "Extension") +
+    const camelCaseName =
       answers.name.charAt(0).toUpperCase() +
       answers.name.slice(1).replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+
+    const globalName =
+      "jsPsych" + (answers.type === "plugin" ? "Plugin" : "Extension") + camelCaseName;
 
     const templatePath = `${answers.type}-template-${answers.language}`;
 
@@ -95,6 +96,29 @@ inquirer
             .src(`packages/${destPath}/rollup.config.mjs`)
             .pipe(replace("{globalName}", globalName))
             .pipe(gulp.dest(`packages/${destPath}`));
+
+          // if this is a plugin, edit the index.ts file
+          if (answers.type === "plugin") {
+            gulp
+              .src(`packages/${destPath}/src/index.ts`)
+              .pipe(replace("{plugin-name}", answers.name))
+              .pipe(replace("{description}", answers.description))
+              .pipe(replace("{author}", answers.author))
+              .pipe(replace("PluginNamePlugin", `${camelCaseName}Plugin`))
+              .pipe(
+                replace(
+                  "{documentation-url}",
+                  `https://github.com/jspsych/jspsych-contrib/packages/${destPath}/README.md`
+                )
+              )
+              .pipe(gulp.dest(`packages/${destPath}/src`));
+          }
+
+          // and edit the index.spec.ts file
+          gulp
+            .src(`packages/${destPath}/src/index.spec.ts`)
+            .pipe(replace("{globalName}", globalName))
+            .pipe(gulp.dest(`packages/${destPath}/src`));
         }
       });
 
