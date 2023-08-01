@@ -66,6 +66,19 @@ inquirer
       (answers.type === "plugin" ? "Plugin" : "Extension") +
       answers.name.charAt(0).toUpperCase() +
       answers.name.slice(1).replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+
+    const templatePath = `${answers.type}-template-${answers.language}`;
+
+    const destPath = `${answers.type}-${answers.name}`;
+
+    gulp
+      .src(`templates/${templatePath}/**/*`)
+      .pipe(
+        rename((path) => {
+          path.dirname = path.dirname.replace(templatePath, destPath);
+        })
+      )
+      .pipe(gulp.dest(`packages/${destPath}`));
     /*
     gulp
       .src(`templates/${answers.type}-template-${answers.language}/`)
