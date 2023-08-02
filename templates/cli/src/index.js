@@ -1,4 +1,4 @@
-import gulp from "gulp";
+import gulp, { dest } from "gulp";
 import rename from "gulp-rename";
 import replace from "gulp-replace";
 import inquirer from "inquirer";
@@ -90,6 +90,16 @@ inquirer
           .pipe(replace(/"private": "true",?\r?\n/g, ""))
           .pipe(gulp.dest(`packages/${destPath}`));
 
+        // edit README.md
+        gulp
+          .src(`packages/${destPath}/README.md`)
+          .pipe(replace("{name}", answers.name))
+          .pipe(replace("{description}", answers.description))
+          .pipe(replace("{author}", answers.author))
+          .pipe(replace("{full-name}", destPath))
+          .pipe(replace("{camelCaseName}", camelCaseName))
+          .pipe(gulp.dest(`packages/${destPath}`));
+
         // if this is a typescript package, edit rollup config
         if (answers.language === "ts") {
           gulp
@@ -143,38 +153,43 @@ inquirer
               .pipe(gulp.dest(`packages/${destPath}/src`));
           }
         }
+
+        if (answers.language === "js") {
+          // if this is a plugin, edit the index.js file
+          if (answers.type === "plugin") {
+            gulp
+              .src(`packages/${destPath}/index.js`)
+              .pipe(replace("{plugin-name}", answers.name))
+              .pipe(replace("{description}", answers.description))
+              .pipe(replace("{author}", answers.author))
+              .pipe(replace("PluginNamePlugin", `${camelCaseName}Plugin`))
+              .pipe(replace("globalName", globalName))
+              .pipe(
+                replace(
+                  "{documentation-url}",
+                  `https://github.com/jspsych/jspsych-contrib/packages/${destPath}/README.md`
+                )
+              )
+              .pipe(gulp.dest(`packages/${destPath}`));
+          }
+
+          // if this is an extension, edit the index.js file
+          if (answers.type === "extension") {
+            gulp
+              .src(`packages/${destPath}/index.js`)
+              .pipe(replace("{extension-name}", answers.name))
+              .pipe(replace("{description}", answers.description))
+              .pipe(replace("{author}", answers.author))
+              .pipe(replace("ExtensionNameExtension", `${camelCaseName}Extension`))
+              .pipe(replace("globalName", globalName))
+              .pipe(
+                replace(
+                  "{documentation-url}",
+                  `https://github.com/jspsych/jspsych-contrib/packages/${destPath}/README.md`
+                )
+              )
+              .pipe(gulp.dest(`packages/${destPath}`));
+          }
+        }
       });
-
-    /*
-    gulp
-      .src(`templates/${answers.type}-template-${answers.language}/`)
-      .pipe(
-        rename((path) => {
-          path.dirname = path.dirname.replace("template-ts", answers.name);
-        })
-      )
-      .pipe(gulp.dest(`packages/${answers.name}`))
-      .on("end", () => {
-        gulp
-          .src(`packages/${answers.type}-${answers.name}/package.json`)
-          .pipe(replace("{name}", answers.name))
-          .pipe(replace("{description}", answers.description))
-          .pipe(replace("{author}", answers.author))
-          .pipe(replace("{globalName}", globalName))
-          .pipe(gulp.dest(`packages/${answers.name}`));
-
-        gulp
-          .src(`packages/${answers.type}-${answers.name}/README.md`)
-          .pipe(replace("{name}", answers.name))
-          .pipe(replace("{description}", answers.description))
-          .pipe(replace("{author}", answers.author))
-          .pipe(replace("{globalName}", globalName))
-          .pipe(gulp.dest(`packages/${answers.name}`));
-
-        gulp
-          .src(`packages/${answers.type}-${answers.name}/examples/index.html`)
-          .pipe(replace("{globalName}", globalName))
-          .pipe(gulp.dest(`packages/${answers.name}/examples/`));
-      });
-      */
   });
