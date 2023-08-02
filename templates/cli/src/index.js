@@ -65,8 +65,7 @@ inquirer
       answers.name.charAt(0).toUpperCase() +
       answers.name.slice(1).replace(/-([a-z])/g, (g) => g[1].toUpperCase());
 
-    const globalName =
-      "jsPsych" + (answers.type === "plugin" ? "Plugin" : "Extension") + camelCaseName;
+    const globalName = "jsPsych" + camelCaseName;
 
     const templatePath = `${answers.type}-template-${answers.language}`;
 
@@ -97,7 +96,7 @@ inquirer
           .pipe(replace("{description}", answers.description))
           .pipe(replace("{author}", answers.author))
           .pipe(replace("{full-name}", destPath))
-          .pipe(replace("{camelCaseName}", camelCaseName))
+          .pipe(replace("{globalName}", globalName))
           .pipe(gulp.dest(`packages/${destPath}`));
 
         // if this is a typescript package, edit rollup config

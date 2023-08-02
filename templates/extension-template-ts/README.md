@@ -19,7 +19,7 @@ npm install @jspsych-contrib/{full-name}
 ```
 
 ```js
-import {camelCaseName} from '@jspsych-contrib/{full-name}';
+import {globalName} from '@jspsych-contrib/{full-name}';
 ```
 
 ## Compatibility

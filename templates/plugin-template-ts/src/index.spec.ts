@@ -8,7 +8,7 @@ describe("my plugin", () => {
   it("should load", async () => {
     const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
       {
-        type: { globalName },
+        type: globalName,
         parameter_name: 1,
         parameter_name2: "img.png",
       },
