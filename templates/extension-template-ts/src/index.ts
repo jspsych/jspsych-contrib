@@ -9,16 +9,16 @@ interface OnLoadParameters {}
 interface OnFinishParameters {}
 
 /**
- * **EXTENSION-NAME**
+ * **{extension-name}**
  *
- * SHORT PLUGIN DESCRIPTION
+ * {description}
  *
- * @author YOUR NAME
- * @see {@link https://DOCUMENTATION_URL DOCUMENTATION LINK TEXT}
+ * @author {author}
+ * @see {@link {documentation-url}}}
  */
 class ExtensionNameExtension implements JsPsychExtension {
   static info: JsPsychExtensionInfo = {
-    name: "extension-name",
+    name: "{extension-name}",
   };
 
   constructor(private jsPsych: JsPsych) {}

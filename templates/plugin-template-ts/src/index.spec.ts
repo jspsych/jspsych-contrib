@@ -1,6 +1,6 @@
 import { startTimeline } from "@jspsych/test-utils";
 
-import { globalName } from ".";
+import globalName from ".";
 
 jest.useFakeTimers();
 

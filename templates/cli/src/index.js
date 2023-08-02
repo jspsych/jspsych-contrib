@@ -112,13 +112,36 @@ inquirer
                 )
               )
               .pipe(gulp.dest(`packages/${destPath}/src`));
+
+            // and edit the index.spec.ts file
+            gulp
+              .src(`packages/${destPath}/src/index.spec.ts`)
+              .pipe(replace("globalName", globalName))
+              .pipe(gulp.dest(`packages/${destPath}/src`));
           }
 
-          // and edit the index.spec.ts file
-          gulp
-            .src(`packages/${destPath}/src/index.spec.ts`)
-            .pipe(replace("{globalName}", globalName))
-            .pipe(gulp.dest(`packages/${destPath}/src`));
+          // if this is an extension, edit the index.ts file
+          if (answers.type === "extension") {
+            gulp
+              .src(`packages/${destPath}/src/index.ts`)
+              .pipe(replace("{extension-name}", answers.name))
+              .pipe(replace("{description}", answers.description))
+              .pipe(replace("{author}", answers.author))
+              .pipe(replace("ExtensionNameExtension", `${camelCaseName}Extension`))
+              .pipe(
+                replace(
+                  "{documentation-url}",
+                  `https://github.com/jspsych/jspsych-contrib/packages/${destPath}/README.md`
+                )
+              )
+              .pipe(gulp.dest(`packages/${destPath}/src`));
+
+            // and edit the index.spec.ts file
+            gulp
+              .src(`packages/${destPath}/src/index.spec.ts`)
+              .pipe(replace("globalName", globalName))
+              .pipe(gulp.dest(`packages/${destPath}/src`));
+          }
         }
       });
 
