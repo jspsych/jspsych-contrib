@@ -1,4 +1,4 @@
-import gulp, { dest } from "gulp";
+import gulp from "gulp";
 import rename from "gulp-rename";
 import replace from "gulp-replace";
 import inquirer from "inquirer";
