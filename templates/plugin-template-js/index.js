@@ -1,8 +1,8 @@
-var jsPluginName = (function (jspsych) {
+var globalName = (function (jspsych) {
   "use strict";
 
   const info = {
-    name: "PLUGIN-NAME",
+    name: "{plugin-name}",
     parameters: {
       parameter_name: {
         type: jspsych.ParameterType.INT,
@@ -16,12 +16,12 @@ var jsPluginName = (function (jspsych) {
   };
 
   /**
-   * **PLUGIN-NAME**
+   * **{plugin-name}**
    *
-   * SHORT PLUGIN DESCRIPTION
+   * {description}
    *
-   * @author YOUR NAME
-   * @see {@link https://DOCUMENTATION_URL DOCUMENTATION LINK TEXT}
+   * @author {author}
+   * @see {@link {documentation-url}}
    */
   class PluginNamePlugin {
     constructor(jsPsych) {

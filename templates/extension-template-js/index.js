@@ -1,13 +1,13 @@
-var jsPsychExtensionName = (function (jspsych) {
+var globalName = (function (jspsych) {
   "use strict";
 
   /**
-   * **EXTENSION-NAME**
+   * **{extension-name}**
    *
-   * SHORT EXTENSION DESCRIPTION
+   * {description}
    *
-   * @author YOUR NAME
-   * @see {@link https://DOCUMENTATION_URL DOCUMENTATION LINK TEXT}
+   * @author {author}
+   * @see {@link {documentation-url}}}
    */
   class ExtensionNameExtension {
     constructor(jsPsych) {
@@ -31,7 +31,7 @@ var jsPsychExtensionName = (function (jspsych) {
     }
   }
   ExtensionNameExtension.info = {
-    name: "extension-name",
+    name: "{extension-name}",
   };
 
   return ExtensionNameExtension;
