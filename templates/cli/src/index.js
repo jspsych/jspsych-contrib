@@ -70,6 +70,9 @@ inquirer
       answers.name.charAt(0).toUpperCase() +
       answers.name.slice(1).replace(/-([a-z])/g, (g) => g[1].toUpperCase());
 
+    const globalName =
+      "jsPsych" + (answers.type === "extension" ? "Extension" : "") + camelCaseName;
+
     const destPath = `${answers.type}-${answers.name}`;
 
     gulp
@@ -84,7 +87,7 @@ inquirer
         )
       )
       .pipe(replace("{description}", answers.description))
-      .pipe(replace("_globalName_", "jsPsych" + camelCaseName))
+      .pipe(replace("_globalName_", globalName))
       .pipe(replace("PluginNamePlugin", `${camelCaseName}Plugin`))
       .pipe(replace("ExtensionNameExtension", `${camelCaseName}Extension`))
       .pipe(gulp.dest(`${repoRoot}/packages/${destPath}`));
