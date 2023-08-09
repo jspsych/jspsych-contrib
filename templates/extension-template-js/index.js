@@ -1,8 +1,8 @@
-var globalName = (function (jspsych) {
+var _globalName_ = (function (jspsych) {
   "use strict";
 
   /**
-   * **{extension-name}**
+   * **{name}**
    *
    * {description}
    *
@@ -31,7 +31,7 @@ var globalName = (function (jspsych) {
     }
   }
   ExtensionNameExtension.info = {
-    name: "{extension-name}",
+    name: "{name}",
   };
 
   return ExtensionNameExtension;

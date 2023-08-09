@@ -1,8 +1,8 @@
-var globalName = (function (jspsych) {
+var _globalName_ = (function (jspsych) {
   "use strict";
 
   const info = {
-    name: "{plugin-name}",
+    name: "{name}",
     parameters: {
       parameter_name: {
         type: jspsych.ParameterType.INT,
@@ -16,7 +16,7 @@ var globalName = (function (jspsych) {
   };
 
   /**
-   * **{plugin-name}**
+   * **{name}**
    *
    * {description}
    *

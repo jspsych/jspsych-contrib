@@ -9,7 +9,7 @@ interface OnLoadParameters {}
 interface OnFinishParameters {}
 
 /**
- * **{extension-name}**
+ * **{name}**
  *
  * {description}
  *
@@ -18,7 +18,7 @@ interface OnFinishParameters {}
  */
 class ExtensionNameExtension implements JsPsychExtension {
   static info: JsPsychExtensionInfo = {
-    name: "{extension-name}",
+    name: "{name}",
   };
 
   constructor(private jsPsych: JsPsych) {}

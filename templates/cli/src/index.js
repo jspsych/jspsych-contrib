@@ -1,7 +1,12 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import gulp from "gulp";
-import rename from "gulp-rename";
 import replace from "gulp-replace";
 import inquirer from "inquirer";
+import slash from "slash";
+
+const repoRoot = slash(path.resolve(fileURLToPath(import.meta.url), "../../../.."));
 
 inquirer
   .prompt([
@@ -65,130 +70,23 @@ inquirer
       answers.name.charAt(0).toUpperCase() +
       answers.name.slice(1).replace(/-([a-z])/g, (g) => g[1].toUpperCase());
 
-    const globalName = "jsPsych" + camelCaseName;
-
-    const templatePath = `${answers.type}-template-${answers.language}`;
-
     const destPath = `${answers.type}-${answers.name}`;
 
     gulp
-      .src(`templates/${templatePath}/**/*`)
+      .src(`${repoRoot}/templates/${answers.type}-template-${answers.language}/**/*`)
+      .pipe(replace("{name}", answers.name))
+      .pipe(replace("{full-name}", destPath))
+      .pipe(replace("{author}", answers.author))
       .pipe(
-        rename((path) => {
-          path.dirname = path.dirname.replace(templatePath, destPath);
-        })
+        replace(
+          "{documentation-url}",
+          `https://github.com/jspsych/jspsych-contrib/packages/${destPath}/README.md`
+        )
       )
-      .pipe(gulp.dest(`packages/${destPath}`))
-      .on("end", () => {
-        // edit package.json
-        gulp
-          .src(`packages/${destPath}/package.json`)
-          .pipe(replace("{name}", answers.name))
-          .pipe(replace("{description}", answers.description))
-          .pipe(replace("{author}", answers.author))
-          .pipe(replace(/"private": "true",?\r?\n/g, ""))
-          .pipe(gulp.dest(`packages/${destPath}`));
-
-        // edit README.md
-        gulp
-          .src(`packages/${destPath}/README.md`)
-          .pipe(replace("{name}", answers.name))
-          .pipe(replace("{description}", answers.description))
-          .pipe(replace("{author}", answers.author))
-          .pipe(replace("{full-name}", destPath))
-          .pipe(replace("{globalName}", globalName))
-          .pipe(gulp.dest(`packages/${destPath}`));
-
-        // if this is a typescript package, edit rollup config
-        if (answers.language === "ts") {
-          gulp
-            .src(`packages/${destPath}/rollup.config.mjs`)
-            .pipe(replace("{globalName}", globalName))
-            .pipe(gulp.dest(`packages/${destPath}`));
-
-          // if this is a plugin, edit the index.ts file
-          if (answers.type === "plugin") {
-            gulp
-              .src(`packages/${destPath}/src/index.ts`)
-              .pipe(replace("{plugin-name}", answers.name))
-              .pipe(replace("{description}", answers.description))
-              .pipe(replace("{author}", answers.author))
-              .pipe(replace("PluginNamePlugin", `${camelCaseName}Plugin`))
-              .pipe(
-                replace(
-                  "{documentation-url}",
-                  `https://github.com/jspsych/jspsych-contrib/packages/${destPath}/README.md`
-                )
-              )
-              .pipe(gulp.dest(`packages/${destPath}/src`));
-
-            // and edit the index.spec.ts file
-            gulp
-              .src(`packages/${destPath}/src/index.spec.ts`)
-              .pipe(replace("globalName", globalName))
-              .pipe(gulp.dest(`packages/${destPath}/src`));
-          }
-
-          // if this is an extension, edit the index.ts file
-          if (answers.type === "extension") {
-            gulp
-              .src(`packages/${destPath}/src/index.ts`)
-              .pipe(replace("{extension-name}", answers.name))
-              .pipe(replace("{description}", answers.description))
-              .pipe(replace("{author}", answers.author))
-              .pipe(replace("ExtensionNameExtension", `${camelCaseName}Extension`))
-              .pipe(
-                replace(
-                  "{documentation-url}",
-                  `https://github.com/jspsych/jspsych-contrib/packages/${destPath}/README.md`
-                )
-              )
-              .pipe(gulp.dest(`packages/${destPath}/src`));
-
-            // and edit the index.spec.ts file
-            gulp
-              .src(`packages/${destPath}/src/index.spec.ts`)
-              .pipe(replace("globalName", globalName))
-              .pipe(gulp.dest(`packages/${destPath}/src`));
-          }
-        }
-
-        if (answers.language === "js") {
-          // if this is a plugin, edit the index.js file
-          if (answers.type === "plugin") {
-            gulp
-              .src(`packages/${destPath}/index.js`)
-              .pipe(replace("{plugin-name}", answers.name))
-              .pipe(replace("{description}", answers.description))
-              .pipe(replace("{author}", answers.author))
-              .pipe(replace("PluginNamePlugin", `${camelCaseName}Plugin`))
-              .pipe(replace("globalName", globalName))
-              .pipe(
-                replace(
-                  "{documentation-url}",
-                  `https://github.com/jspsych/jspsych-contrib/packages/${destPath}/README.md`
-                )
-              )
-              .pipe(gulp.dest(`packages/${destPath}`));
-          }
-
-          // if this is an extension, edit the index.js file
-          if (answers.type === "extension") {
-            gulp
-              .src(`packages/${destPath}/index.js`)
-              .pipe(replace("{extension-name}", answers.name))
-              .pipe(replace("{description}", answers.description))
-              .pipe(replace("{author}", answers.author))
-              .pipe(replace("ExtensionNameExtension", `${camelCaseName}Extension`))
-              .pipe(replace("globalName", globalName))
-              .pipe(
-                replace(
-                  "{documentation-url}",
-                  `https://github.com/jspsych/jspsych-contrib/packages/${destPath}/README.md`
-                )
-              )
-              .pipe(gulp.dest(`packages/${destPath}`));
-          }
-        }
-      });
+      .pipe(replace("{description}", answers.description))
+      .pipe(replace("_globalName_", "jsPsych" + camelCaseName))
+      .pipe(replace(/"private": "true",?\r?\n/g, ""))
+      .pipe(replace("PluginNamePlugin", `${camelCaseName}Plugin`))
+      .pipe(replace("ExtensionNameExtension", `${camelCaseName}Extension`))
+      .pipe(gulp.dest(`${repoRoot}/packages/${destPath}`));
   });

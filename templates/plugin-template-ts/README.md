@@ -19,7 +19,7 @@ npm install @jspsych-contrib/{full-name}
 ```
 
 ```js
-import {globalName} from '@jspsych-contrib/{full-name}';
+import _globalName_ from '@jspsych-contrib/{full-name}';
 ```
 
 ## Compatibility

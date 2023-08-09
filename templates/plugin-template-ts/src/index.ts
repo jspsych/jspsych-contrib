@@ -1,7 +1,7 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 const info = <const>{
-  name: "{plugin-name}",
+  name: "{name}",
   parameters: {
     parameter_name: {
       type: ParameterType.INT, // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
@@ -17,7 +17,7 @@ const info = <const>{
 type Info = typeof info;
 
 /**
- * **{plugin-name}**
+ * **{name}**
  *
  * {description}
  *
