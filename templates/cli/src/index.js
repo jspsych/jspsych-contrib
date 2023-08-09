@@ -85,7 +85,6 @@ inquirer
       )
       .pipe(replace("{description}", answers.description))
       .pipe(replace("_globalName_", "jsPsych" + camelCaseName))
-      .pipe(replace(/"private": "true",?\r?\n/g, ""))
       .pipe(replace("PluginNamePlugin", `${camelCaseName}Plugin`))
       .pipe(replace("ExtensionNameExtension", `${camelCaseName}Extension`))
       .pipe(gulp.dest(`${repoRoot}/packages/${destPath}`));

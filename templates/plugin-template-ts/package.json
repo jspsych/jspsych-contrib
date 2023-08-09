@@ -1,6 +1,5 @@
 {
   "name": "@jspsych-contrib/plugin-{name}",
-  "private": "true",
   "version": "0.0.1",
   "description": "{description}",
   "type": "module",
