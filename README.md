@@ -62,6 +62,18 @@ In the pull request comments, please make it clear how we can verify that the co
 This could be accomplished with a link to a demonstration experiment, the inclusion of an example file and/or testing files, or through some other means.
 We try to review pull requests quickly and add new contributions as soon as the minimal standards are met.
 
+## M1, M2 chip issues
+
+To do any development on arm64 architectures, you'll need to run 
+
+```
+brew install pkg-config cairo pango libpng jpeg giflib librsvg
+```
+
+before running `npm|yarn install`.
+
+If you don't have homebrew, first install [homebrew](https://brew.sh/).
+
 ## Plugin templates
 
 There are two plugin template directories inside the `/packages` directory that you can use as a reference when creating a directory for your plugin contribution. 
