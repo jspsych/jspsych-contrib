@@ -128,7 +128,7 @@ class SurveyGridPlugin {
     html += ".jspsych-survey-grid-row {display: contents;}";
     html += `.jspsych-survey-grid-row:hover div {background-color: ${trial.hover_color};}`;
     html +=
-      ".jspsych-survey-grid-label {padding: 18px 0 0 0; text-align: center; font-size: 16px; line-height: 1.1em;}";
+      ".jspsych-survey-grid-label {padding: 18px 0 0 0; text-align: center; font-size: 15px; line-height: 1.1em;}";
     html +=
       ".jspsych-survey-grid-prompt {padding: 12px 0 12px 15px; text-align: left; font-size: 16px; line-height: 1.1em; justify-items: center;}";
     html +=
@@ -368,7 +368,7 @@ class SurveyGridPlugin {
 
       // count number of instances per response option
       question_data.forEach((q) => {
-        counts[q["item_pos"]]++;
+        counts[q["resp_pos"]]++;
       });
 
       // compute and return maximum fraction
@@ -387,8 +387,8 @@ class SurveyGridPlugin {
 
       // compute distance between adjacent responses
       for (let i = 0; i < question_data.length - 1; i++) {
-        let a = parseInt(question_data[i]["item_pos"]);
-        let b = parseInt(question_data[i + 1]["item_pos"]);
+        let a = parseInt(question_data[i]["resp_pos"]);
+        let b = parseInt(question_data[i + 1]["resp_pos"]);
         let delta = Math.abs(a - b);
         if (delta == 1 || delta == trial.labels.length - 1) {
           score++;
