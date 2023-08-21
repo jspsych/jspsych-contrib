@@ -22,10 +22,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    console.log(getData());
-    console.log(JSON.stringify(getData()));
-    expect(getData().last(1).values()[0].word).toBe("dog.");
-    expect(getData().last(1).values()[0].word_number).toBe(9);
+    expect(getData().last(1).values()[0]["9"].word).toBe("dog.");
+    expect(getData().last(1).values()[0]["9"].word_number).toBe(9);
   });
 
   test("Click through sentence: Mask 1", async () => {
@@ -45,8 +43,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].word).toBe("five");
-    expect(getData().last(1).values()[0].word_number).toBe(5);
+    expect(getData().last(1).values()[0]["5"].word).toBe("five");
+    expect(getData().last(1).values()[0]["5"].word_number).toBe(5);
   });
 
   test("Click through sentence: Mask 2", async () => {
@@ -67,8 +65,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].word).toBe("dog.");
-    expect(getData().last(1).values()[0].word_number).toBe(9);
+    expect(getData().last(1).values()[0]["9"].word).toBe("dog.");
+    expect(getData().last(1).values()[0]["9"].word_number).toBe(9);
   });
 
   test("Click through sentence: Mask 2", async () => {
@@ -89,8 +87,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].word).toBe("five");
-    expect(getData().last(1).values()[0].word_number).toBe(5);
+    expect(getData().last(1).values()[0]["5"].word).toBe("five");
+    expect(getData().last(1).values()[0]["5"].word_number).toBe(5);
   });
 
   test("Click through sentence: Mask 3", async () => {
@@ -111,8 +109,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].word).toBe("dog.");
-    expect(getData().last(1).values()[0].word_number).toBe(9);
+    expect(getData().last(1).values()[0]["9"].word).toBe("dog.");
+    expect(getData().last(1).values()[0]["9"].word_number).toBe(9);
   });
 
   test("Click through sentence: Mask 3", async () => {
@@ -133,7 +131,7 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].word).toBe("five");
-    expect(getData().last(1).values()[0].word_number).toBe(5);
+    expect(getData().last(1).values()[0]["5"].word).toBe("five");
+    expect(getData().last(1).values()[0]["5"].word_number).toBe(5);
   });
 });

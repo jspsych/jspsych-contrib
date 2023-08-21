@@ -371,7 +371,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
         if (trial.save_sentence) {
           response.sentence = sentence;
         }
-        if (word_number < sentence_length - 1) {
+        if (word_number <= sentence_length - 1) {
           trial_data.push(Object.assign({}, response));
         }
         // keep drawing until words in sentence complete
