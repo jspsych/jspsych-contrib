@@ -22,6 +22,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
+    console.log(getData());
+    console.log(JSON.stringify(getData()));
     expect(getData().last(1).values()[0].word).toBe("dog.");
     expect(getData().last(1).values()[0].word_number).toBe(9);
   });
