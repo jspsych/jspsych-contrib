@@ -322,6 +322,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     }
 
     // store response
+    let trial_data = []; // array of response objects
     let response = {
       rt_sentence: null,
       rt_word: null,
@@ -348,7 +349,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
 
       // move on to the next trial
-      this.jsPsych.finishTrial(response);
+      this.jsPsych.finishTrial(trial_data);
     };
 
     // function to handle responses by the subject
@@ -371,7 +372,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
           response.sentence = sentence;
         }
         if (word_number < sentence_length - 1) {
-          this.jsPsych.data.write(response);
+          trial_data.push(Object.assign({}, response));
         }
         // keep drawing until words in sentence complete
         word_number++;
