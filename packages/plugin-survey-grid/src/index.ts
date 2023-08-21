@@ -30,7 +30,7 @@ const info = <const>{
         /** Name of the question in the trial data. If no name is given, the questions are named Q1, Q2, etc. */
         name: {
           type: ParameterType.STRING,
-          pretty_name: "Question Name",
+          pretty_name: "Question name",
           default: "",
         },
       },
@@ -38,7 +38,7 @@ const info = <const>{
     /** If true, the order of the questions in the 'questions' array will be randomized. */
     randomize_question_order: {
       type: ParameterType.BOOL,
-      pretty_name: "Randomize Question Order",
+      pretty_name: "Randomize question order",
       default: false,
     },
     /** The response options associated with the survey. */
@@ -57,25 +57,26 @@ const info = <const>{
     /** Whether the response scale starts with zero (true = 0) or one (false = 0). */
     zero_indexed: {
       type: ParameterType.BOOL,
-      pretty_name: "Zero indexed",
+      pretty_name: "Zero-indexed",
       default: true,
     },
-    scale_repeat: {
+    /** Width of the likert scales in pixels. */
+    scale_width: {
       type: ParameterType.INT,
-      pretty_name: "Scale repeat",
-      default: 10,
+      pretty_name: "Scale width",
+      default: 960,
     },
-    /** The number of pixels occupied by the survey  */
-    survey_width: {
-      type: ParameterType.INT,
-      pretty_name: "Survey width",
-      default: 900,
-    },
-    /** The percentage of a row occupied by an item text */
-    item_width: {
+    /** The percentage of the scale width dedicated to the items of the scale */
+    prompt_width: {
       type: ParameterType.FLOAT,
       pretty_name: "Item width",
       default: 50,
+    },
+    /** The number of items after which the scale labels repeat */
+    labels_repeat: {
+      type: ParameterType.INT,
+      pretty_name: "Scale repeat",
+      default: 10,
     },
     /** Label of the button to submit responses. */
     button_label: {
@@ -94,7 +95,7 @@ type Info = typeof info;
  * jsPsych plugin for gathering responses to questions on a likert scale in a grid format
  *
  * @author Sam Zorowitz
- * @see {@link https://www.jspsych.org/plugins/jspsych-vsl-grid-scene/ vsl-grid-scene plugin documentation on jspsych.org}
+ * @see {@link https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-survey-grid/docs/jspsych-survey-grid.md}
  */
 class SurveyGridPlugin {
   static info = info;
@@ -106,18 +107,18 @@ class SurveyGridPlugin {
     // Section 1: Define plugin HTML / CSS
     //---------------------------------------//
 
-    // Initialize HTML
+    // initialize HTML
     var html = "";
 
-    // Define CSS constants
+    // define CSS constants
     const n = trial.labels.length; // Number of response options
-    const x1 = trial.item_width; // Width of item prompt (percentage)
-    const x2 = (100 - trial.item_width) / n; // Width of item response (percentage)
+    const x1 = trial.prompt_width; // Width of item prompt (percentage)
+    const x2 = (100 - trial.prompt_width) / n; // Width of item response (percentage)
 
     // inject CSS for trial
     html += `<style>
     .jspsych-survey-grid-preamble {
-      width: ${trial.survey_width}px;
+      width: ${trial.scale_width}px;
       margin: auto;
       font-size: 16px;
       line-height: 1.5em;
@@ -126,7 +127,7 @@ class SurveyGridPlugin {
       display: grid;
       grid-template-columns: ${x1}% repeat(${n}, ${x2}%);
       grid-template-rows: auto;
-      width: ${trial.survey_width}px;
+      width: ${trial.scale_width}px;
       margin: auto;
       background-color: #F8F8F8;
       border-radius: 8px;
@@ -173,7 +174,7 @@ class SurveyGridPlugin {
       left: 6.5px;
       top: -6px;
       height: 2px;
-      width: calc(${trial.survey_width}px * ${x2 / 100} - 100%);
+      width: calc(${trial.scale_width}px * ${x2 / 100} - 100%);
       background: #d8dcd6;
       content: "";
     }
@@ -182,7 +183,7 @@ class SurveyGridPlugin {
     }
     .jspsych-survey-grid-footer {
       margin: auto;
-      width: ${trial.survey_width}px;
+      width: ${trial.scale_width}px;
       padding: 0 0 0 0;
       text-align: right;
     }
@@ -197,7 +198,7 @@ class SurveyGridPlugin {
       font-size: 13px;
       color: black;
     }
-    .jspsych-survey-grid-block {
+    .jspsych-survey-grid-contact {
       position: absolute;
       top: 0%;
       -webkit-transform: translate3d(0, -100%, 0);
@@ -227,8 +228,8 @@ class SurveyGridPlugin {
 
     // iteratively add items
     for (var i = 0; i < trial.questions.length; i++) {
-      // add response header (every `trial.scale_repeat` items)
-      if (i % trial.scale_repeat == 0) {
+      // add response header (every `trial.labels_repeat` items)
+      if (i % trial.labels_repeat == 0) {
         html += '<div class="jspsych-survey-grid-header"></div>';
         for (var j = 0; j < trial.labels.length; j++) {
           html += '<div class="jspsych-survey-grid-header">' + trial.labels[j] + "</div>";
@@ -242,7 +243,7 @@ class SurveyGridPlugin {
       var id = question_order[i];
       var question = trial.questions[id];
 
-      // define question name
+      // define question name (prepend zeros based on number of items)
       if (!question.name) {
         question["name"] =
           "q" + (id + 1 + "").padStart(Math.ceil(Math.log10(trial.questions.length)), "0");
@@ -283,8 +284,8 @@ class SurveyGridPlugin {
     html += `<input type="submit" value="${trial.button_label}"></input>`;
     html += "</div>";
 
-    // add final item
-    html += '<div class="jspsych-survey-grid-block" tabindex="-1">';
+    // add final item (not real)
+    html += '<div class="jspsych-survey-grid-contact" tabindex="-1">';
     for (var j = 0; j < trial.labels.length; j++) {
       html += `<input type="radio" name="q${trial.questions.length + 1}" order="${
         trial.questions.length + 1
@@ -295,31 +296,31 @@ class SurveyGridPlugin {
     // end form
     html += "</form>";
 
-    // Display HTML
+    // display HTML
     display_element.innerHTML = html;
 
     //---------------------------------------//
     // Section 2: Response handling
     //---------------------------------------//
 
-    // Scroll to top of screen.
+    // scroll to top of screen.
     window.onbeforeunload = function () {
       window.scrollTo(0, 0);
     };
 
-    // add event listeners
+    // add radio event listeners (required to log all radio button events)
     document
       .querySelectorAll('#jspsych-survey-grid-form .jspsych-survey-grid-opt input[type="radio"]')
       .forEach((radio) => {
         radio.addEventListener("click", recordPageEvent);
       });
 
+    // add submit event listener (required to process responses on submission)
     display_element.querySelector("#jspsych-survey-grid-form").addEventListener("submit", (e) => {
       // Wait for response
       e.preventDefault();
 
       // Remove event listeners
-      // document.removeEventListener("click", recordPageEvent);
       document
         .querySelectorAll('#jspsych-survey-grid-form .jspsych-survey-grid-opt input[type="radio"]')
         .forEach((radio) => {
@@ -330,7 +331,7 @@ class SurveyGridPlugin {
       var end_time = performance.now();
       var page_time = Math.round(end_time - start_time);
 
-      // create object to hold responses
+      // store repsonses
       var question_data = [];
       document
         .querySelectorAll(
@@ -338,10 +339,15 @@ class SurveyGridPlugin {
         )
         .forEach((radio) => {
           const name = radio.getAttribute("name");
-          const order = parseInt(radio.getAttribute("order"));
-          const pos = parseInt(radio.getAttribute("pos"));
+          const item_pos = parseInt(radio.getAttribute("order"));
+          const resp_pos = parseInt(radio.getAttribute("pos"));
           const response = parseInt(radio.getAttribute("value"));
-          question_data.push({ name: name, order: order, pos: pos, response: response });
+          question_data.push({
+            name: name,
+            item_pos: item_pos,
+            resp_pos: resp_pos,
+            response: response,
+          });
         });
 
       // define diagnostic data
@@ -360,7 +366,7 @@ class SurveyGridPlugin {
         diagnostics: diagnostics,
       };
 
-      // Update screen
+      // update screen
       display_element.innerHTML = "";
 
       // next trial
@@ -377,6 +383,7 @@ class SurveyGridPlugin {
     // Section 3: Convenience functions
     //---------------------------------------//
 
+    /* Records the identity and timing of any radio button event on the page. */
     function recordPageEvent(event) {
       // record event time
       var event_time = Math.round(performance.now() - start_time);
@@ -392,51 +399,61 @@ class SurveyGridPlugin {
       });
     }
 
+    /*
+    A survey honeypot is a hidden question that legitimate participants will not
+    see, but a bot or script user will complete. The honeypot question is designed
+    to look like a genuine item but, if answered, will reveal a participant as
+    using undesirable methods (e.g., form-filling software).
+    */
     function detectHoneyPot() {
       // detect checked hidden radio buttons
       var checked_radios = document.querySelectorAll(
-        '#jspsych-survey-grid-form .jspsych-survey-grid-block input[type="radio"]:checked'
+        '#jspsych-survey-grid-form .jspsych-survey-grid-contact input[type="radio"]:checked'
       );
 
       // return number of checked buttons
       return checked_radios.length;
     }
 
-    // Straight-lining is defined as choosing the same response option (by position)
-    // across the entire survey. We detect this pattern by identifying the maximum
-    // percentage of responses loading onto the same item position.
+    /*
+    Straight-lining is defined as choosing the same response option (by position)
+    across the entire survey. We detect this pattern by identifying the maximum
+    fraction of responses of the same response option position.
+    */
     function detectStraightLining(trial, question_data) {
-      // Initialize counts
+      // initialize counts
       let counts = trial.labels.map((x) => 0);
 
-      // Count number of instances per response option
+      // count number of instances per response option
       question_data.forEach((q) => {
-        counts[q["pos"]]++;
+        counts[q["item_pos"]]++;
       });
 
-      // Compute and return maximum fraction
+      // compute and return maximum fraction
       return Math.max(...counts) / question_data.length;
     }
 
-    // Zig-zagging is defined as choosing adjacent response options (by position)
-    // such that a diagonal pattern emerges across responses (i.e. the zig-zag).
-    // We detect this pattern by identifying the fraction of responses that exhibit
-    // response adjacency (including wrapping).
+    /*
+    Zig-zagging is defined as choosing adjacent response options (by position)
+    such that a diagonal pattern emerges across responses (i.e., the zig-zag).
+    We detect this pattern by identifying the fraction of responses that exhibit
+    response adjacency (including wrapping).
+    */
     function detectZigZagging(trial, question_data) {
-      // Initialize score
+      // initialize score
       let score = 0;
 
-      // Compute distance between adjacent responses
+      // compute distance between adjacent responses
       for (let i = 0; i < question_data.length - 1; i++) {
-        let a = parseInt(question_data[i]["pos"]);
-        let b = parseInt(question_data[i + 1]["pos"]);
+        let a = parseInt(question_data[i]["item_pos"]);
+        let b = parseInt(question_data[i + 1]["item_pos"]);
         let delta = Math.abs(a - b);
         if (delta == 1 || delta == trial.labels.length - 1) {
           score++;
         }
       }
 
-      // Compute and return fraction
+      // compute and return fraction
       return score / (question_data.length - 1);
     }
   }
