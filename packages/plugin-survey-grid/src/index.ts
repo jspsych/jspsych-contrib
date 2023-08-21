@@ -78,6 +78,12 @@ const info = <const>{
       pretty_name: "Scale repeat",
       default: 10,
     },
+    /** Color of question background on hover (hex or rgb(r,g,b)) */
+    hover_color: {
+      type: ParameterType.STRING,
+      pretty_name: "Hover color",
+      default: "#DEE8EB",
+    },
     /** Label of the button to submit responses. */
     button_label: {
       type: ParameterType.STRING,
@@ -111,100 +117,36 @@ class SurveyGridPlugin {
     var html = "";
 
     // define CSS constants
-    const n = trial.labels.length; // Number of response options
-    const x1 = trial.prompt_width; // Width of item prompt (percentage)
-    const x2 = (100 - trial.prompt_width) / n; // Width of item response (percentage)
+    const n_labels = trial.labels.length; // Number of response options
+    const w1 = trial.prompt_width; // Width of item prompt (percentage)
+    const w2 = (100 - trial.prompt_width) / n_labels; // Width of item response (percentage)
 
     // inject CSS for trial
-    html += `<style>
-    .jspsych-survey-grid-preamble {
-      width: ${trial.scale_width}px;
-      margin: auto;
-      font-size: 16px;
-      line-height: 1.5em;
-    }
-    .jspsych-survey-grid-container {
-      display: grid;
-      grid-template-columns: ${x1}% repeat(${n}, ${x2}%);
-      grid-template-rows: auto;
-      width: ${trial.scale_width}px;
-      margin: auto;
-      background-color: #F8F8F8;
-      border-radius: 8px;
-    }
-    .jspsych-survey-grid-row {
-      display: contents;
-    }
-    .jspsych-survey-grid-row:hover div {
-      background-color: #dee8eb;
-    }
-    .jspsych-survey-grid-header {
-      padding: 18px 0 0px 0;
-      text-align: center;
-      font-size: 14px;
-      line-height: 1.15em;
-    }
-    .jspsych-survey-grid-prompt {
-      padding: 12px 0 12px 15px;
-      text-align: left;
-      font-size: 15px;
-      line-height: 1.15em;
-      justify-items: center;
-    }
-    .jspsych-survey-grid-opt {
-      padding: 12px 0 12px 0;
-      font-size: 13px;
-      text-align: center;
-      line-height: 1.15em;
-      justify-items: center;
-    }
-    .jspsych-survey-grid-opt input[type='radio'] {
-      position: relative;
-      width: 16px;
-      height: 16px;
-    }
-    .jspsych-survey-grid-opt .pseudo-input {
-      position: relative;
-      height: 0px;
-      width: 0px;
-      display: inline-block;
-    }
-    .jspsych-survey-grid-opt .pseudo-input:after {
-      position: absolute;
-      left: 6.5px;
-      top: -6px;
-      height: 2px;
-      width: calc(${trial.scale_width}px * ${x2 / 100} - 100%);
-      background: #d8dcd6;
-      content: "";
-    }
-    .jspsych-survey-grid-opt:last-child .pseudo-input:after {
-      display: none;
-    }
-    .jspsych-survey-grid-footer {
-      margin: auto;
-      width: ${trial.scale_width}px;
-      padding: 0 0 0 0;
-      text-align: right;
-    }
-    .jspsych-survey-grid-footer input[type=submit] {
-      background-color: #F0F0F0;
-      padding: 8px 20px;
-      border: none;
-      border-radius: 4px;
-      margin-top: 5px;
-      margin-bottom: 20px;
-      margin-right: 0px;
-      font-size: 13px;
-      color: black;
-    }
-    .jspsych-survey-grid-contact {
-      position: absolute;
-      top: 0%;
-      -webkit-transform: translate3d(0, -100%, 0);
-      transform: translate3d(0, -100%, 0);
-    }
-    </style>`;
+    html += '<style id="jspsych-survey-grid-css">';
+    html += `.jspsych-survey-grid-preamble {display: block; width: ${trial.scale_width}px; font-size: 16px; padding-top: 40px; margin-bottom: 10px;}`;
+    html += `.jspsych-survey-grid-container {display: grid; grid-template-columns: ${w1}% repeat(${n_labels}, ${w2}%); grid-template-rows: auto; width: ${trial.scale_width}px; background-color: #F8F8F8; border-radius: 8px;}`;
+    html += ".jspsych-survey-grid-row {display: contents;}";
+    html += `.jspsych-survey-grid-row:hover div {background-color: ${trial.hover_color};}`;
+    html +=
+      ".jspsych-survey-grid-label {padding: 18px 0 0 0; text-align: center; font-size: 16px; line-height: 1.1em;}";
+    html +=
+      ".jspsych-survey-grid-prompt {padding: 12px 0 12px 15px; text-align: left; font-size: 16px; line-height: 1.1em; justify-items: center;}";
+    html +=
+      ".jspsych-survey-grid-opt {padding: 12px 0 12px 0; text-align: center; line-height: 1.15em; justify-items: center;}";
+    html +=
+      '.jspsych-survey-grid-opt input[type="radio"] {position: relative; width: 18px; height: 18px}';
+    html +=
+      ".jspsych-survey-grid-opt .pseudo-input {position: relative; height: 0px; width: 0px; display: inline-block;}";
+    html += `.jspsych-survey-grid-opt .pseudo-input:after {position: absolute; left: 6.5px; top: -6px; height: 2px; width: calc(${
+      trial.scale_width
+    }px * ${w2 / 100} - 100%); background: #d8dcd6; content: "";}`;
+    html += ".jspsych-survey-grid-opt:last-child .pseudo-input:after {display: none;}";
+    html += `.jspsych-survey-grid-footer {width: ${trial.scale_width}px; text-align: right;}`;
+    html +=
+      ".jspsych-survey-grid-footer input[type=submit] {background-color: #F0F0F0; padding: 8px 20px; margin: 5px 0px 20px 0px; border: none; border-radius: 4px; font-size: 13px; color: black;}";
+    html +=
+      ".jspsych-survey-grid-contact {position: absolute; top: 0%; -webkit-transform: translate3d(0, -100%, 0); transform: translate3d(0, -100%, 0);}";
+    html += "</style>";
 
     // add preamble
     html += '<div class="jspsych-survey-grid-preamble">';
@@ -230,9 +172,9 @@ class SurveyGridPlugin {
     for (var i = 0; i < trial.questions.length; i++) {
       // add response header (every `trial.labels_repeat` items)
       if (i % trial.labels_repeat == 0) {
-        html += '<div class="jspsych-survey-grid-header"></div>';
+        html += '<div class="jspsych-survey-grid-label"></div>';
         for (var j = 0; j < trial.labels.length; j++) {
-          html += '<div class="jspsych-survey-grid-header">' + trial.labels[j] + "</div>";
+          html += '<div class="jspsych-survey-grid-label">' + trial.labels[j] + "</div>";
         }
       }
 
