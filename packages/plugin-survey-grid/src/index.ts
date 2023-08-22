@@ -78,12 +78,6 @@ const info = <const>{
       pretty_name: "Scale repeat",
       default: 10,
     },
-    /** Color of question background on hover (hex or rgb(r,g,b)). */
-    hover_color: {
-      type: ParameterType.STRING,
-      pretty_name: "Hover color",
-      default: "#DEE8EB",
-    },
     /** Label of the button to submit responses. */
     button_label: {
       type: ParameterType.STRING,
@@ -126,7 +120,7 @@ class SurveyGridPlugin {
     html += `.jspsych-survey-grid-preamble {display: block; width: ${trial.scale_width}px; font-size: 16px; padding-top: 40px; margin-bottom: 10px;}`;
     html += `.jspsych-survey-grid-container {display: grid; grid-template-columns: ${w1}% repeat(${n_labels}, ${w2}%); grid-template-rows: auto; width: ${trial.scale_width}px; background-color: #F8F8F8; border-radius: 8px;}`;
     html += ".jspsych-survey-grid-row {display: contents;}";
-    html += `.jspsych-survey-grid-row:hover div {background-color: ${trial.hover_color};}`;
+    html += `.jspsych-survey-grid-row:hover div {background-color: #DEE8EB;}`;
     html +=
       ".jspsych-survey-grid-label {padding: 18px 0 0 0; text-align: center; font-size: 15px; line-height: 1.1em;}";
     html +=

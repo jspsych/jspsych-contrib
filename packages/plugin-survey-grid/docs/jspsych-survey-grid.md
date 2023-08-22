@@ -23,7 +23,6 @@ Note: The use of additional attention checks, such as infrequency items (Huang e
 | scale_width | numeric | 960 | The width of the survey grid in pixels. |
 | prompt_width | numeric | 50 | The percentage of the scale width allocated to the question prompts |
 | labels_repeat | numeric | 10 | The number of items after which the scale labels are repeated. |
-| hover_color | string | '#DEE8EB' | The background color of a question when hovered over. Should be specified as a _hex_ or `rgb(r,g,b)` value. |
 | button_label | string | 'Continue' | Label of the button. |
 
 ## Data Generated
