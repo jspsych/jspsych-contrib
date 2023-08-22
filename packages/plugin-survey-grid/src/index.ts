@@ -54,7 +54,7 @@ const info = <const>{
       pretty_name: "Preamble",
       default: null,
     },
-    /** Whether the response scale starts with zero (true = 0) or one (false = 0). */
+    /** Whether the lowest response anchor is scored as zero (if true) or one (if false). */
     zero_indexed: {
       type: ParameterType.BOOL,
       pretty_name: "Zero-indexed",
