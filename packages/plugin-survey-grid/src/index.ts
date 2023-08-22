@@ -318,7 +318,13 @@ class SurveyGridPlugin {
     // Section 3: Convenience functions
     //---------------------------------------//
 
-    /* Records the identity and timing of any radio button event on the page. */
+    /** Round to specified decimal place */
+    function round(a, decimals = 0) {
+      const b = 10 ** decimals;
+      return Math.round(a * b) / b;
+    }
+
+    /** Records the identity and timing of any radio button event on the page. */
     function recordPageEvent(event) {
       // record event time
       var event_time = Math.round(performance.now() - start_time);
@@ -365,7 +371,7 @@ class SurveyGridPlugin {
       });
 
       // compute and return maximum fraction
-      return Math.max(...counts) / question_data.length;
+      return round(Math.max(...counts) / question_data.length, 6);
     }
 
     /*
@@ -389,7 +395,7 @@ class SurveyGridPlugin {
       }
 
       // compute and return fraction
-      return score / (question_data.length - 1);
+      return round(score / (question_data.length - 1), 6);
     }
   }
 }
