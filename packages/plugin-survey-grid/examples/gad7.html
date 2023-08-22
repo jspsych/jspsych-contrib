@@ -22,22 +22,22 @@
       {prompt: "Feeling nervous, anxious, or on edge",              reverse: false, required: true},
       {prompt: "Not being able to stop or control worrying",        reverse: false, required: true},
       {prompt: "Worrying too much about different things",          reverse: false, required: true},
-      // {prompt: "Trouble relaxing",                                  reverse: false, required: true},
-      // {prompt: "Being so restless that it's hard to sit still",     reverse: false, required: true},
-      // {prompt: "Becoming easily annoyed or irritable",              reverse: false, required: true},
-      // {prompt: "Feeling afraid as if something awful might happen", reverse: false, required: true},
+      {prompt: "Trouble relaxing",                                  reverse: false, required: true},
+      {prompt: "Being so restless that it's hard to sit still",     reverse: false, required: true},
+      {prompt: "Becoming easily annoyed or irritable",              reverse: false, required: true},
+      {prompt: "Feeling afraid as if something awful might happen", reverse: false, required: true},
     ],
     labels: [
-      "Not at all",
-      "Several days",
-      "Over half the days",
-      "Nearly every day"
+      "Not at<br>all",
+      "Several<br>days",
+      "Over half the<br>days",
+      "Nearly every<br>day"
     ],
-    preamble: 'Over the last 2 weeks, how often have you been bothered by the following problems?',
-    survey_width: 950,
-    item_width: 40,
-    scale_repeat: 7,
-    randomize_question_order: true
+    preamble: 'Over the <b>last 2 weeks</b>, how often have you been bothered by the following problems?',
+    randomize_question_order: true,
+    scale_width: 900,
+    prompt_width: 40,
+    labels_repeat: 7,
   }
 
   // Run experiment

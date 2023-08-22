@@ -58,7 +58,7 @@ const info = <const>{
     zero_indexed: {
       type: ParameterType.BOOL,
       pretty_name: "Zero-indexed",
-      default: true,
+      default: false,
     },
     /** Width of the likert scales in pixels. */
     scale_width: {
@@ -66,19 +66,19 @@ const info = <const>{
       pretty_name: "Scale width",
       default: 960,
     },
-    /** The percentage of the scale width dedicated to the items of the scale */
+    /** The percentage of the scale width allocated to the question prompts. */
     prompt_width: {
       type: ParameterType.FLOAT,
       pretty_name: "Item width",
       default: 50,
     },
-    /** The number of items after which the scale labels repeat */
+    /** The number of items after which the scale labels are repeated. */
     labels_repeat: {
       type: ParameterType.INT,
       pretty_name: "Scale repeat",
       default: 10,
     },
-    /** Color of question background on hover (hex or rgb(r,g,b)) */
+    /** Color of question background on hover (hex or rgb(r,g,b)). */
     hover_color: {
       type: ParameterType.STRING,
       pretty_name: "Hover color",
@@ -303,7 +303,6 @@ class SurveyGridPlugin {
       // save data
       var trial_data = {
         responses: question_data,
-        page_time: page_time,
         page_events: page_events,
         diagnostics: diagnostics,
       };
