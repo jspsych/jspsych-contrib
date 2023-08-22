@@ -2,7 +2,7 @@
 
 The survey-grid plugin displays a set of questions with Likert scale responses on a grid. The participant responds by selecting a radio button.
 
-The plugin provides multiple passive methods for detecting carless and/or insufficient effort (C/IE) responding:
+The plugin provides multiple passive methods for detecting carless/insufficient effort (C/IE) responding:
 
 - It records the target and timing of every radio button event during the trial. This can be used to detect unusually fast or large numbers of radio events, which may indicate a bot or script user.
 - It has a honeypot question (i.e., a question hidden from humans but "visible" to bots) embedded in it. Responses to this item may indicate a bot or script user.
