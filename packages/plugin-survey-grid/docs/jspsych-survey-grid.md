@@ -1,5 +1,16 @@
 # jspsych-survey-grid
 
+The survey-grid plugin displays a set of questions with Likert scale responses on a grid. The participant responds by selecting a radio button.
+
+The plugin provides multiple passive methods for detecting carless and/or insufficient effort (C/IE) responding:
+
+- It records the target and timing of every radio button event during the trial. This can be used to detect unusually fast or large numbers of radio events, which may indicate a bot or script user.
+- It has a honeypot question (i.e., a question hidden from humans but "visible" to bots) embedded in it. Responses to this item may indicate a bot or script user.
+- It records page time, or the time from when the questions first appear on the screen until the participant's response(s) are submitted. Unusually fast page times may indicate low-quality responses.
+- It scores participants' responses for "straightlining" and "zigzagging", two forms of C/IE responding (see references below). Scores closer to 1 on either metric may indicate low-quality responses.
+
+Note: The use of additional attention checks, such as infrequency items (Huang et al., 2015), may further aid in detecting C/IE responding.
+
 ## Parameters
 
 | Parameter | Type | Default Value | Description |
@@ -54,3 +65,50 @@ var gad7 = {
   labels_repeat: 7,
 }
 ```
+
+### State-Trait Anxiety Inventory (STAI)
+
+```javascript
+var stai = {
+  type: jsPsychSurveyGrid,
+  questions: [
+    {prompt: "I feel pleasant.",                                                                        reverse: true},
+    {prompt: "I feel nervous and restless.",                                                            reverse: false},
+    {prompt: "I feel satisfied with myself.",                                                           reverse: true},
+    {prompt: "I wish I could be as happy as others seem to be.",                                        reverse: false},
+    {prompt: "I feel like a failure.",                                                                  reverse: false},
+    {prompt: "I feel rested.",                                                                          reverse: true},
+    {prompt: 'I am "calm, cool, and collected".',                                                       reverse: true},
+    {prompt: "I feel that difficulties are piling up so that I cannot overcome them.",                  reverse: false},
+    {prompt: "I worry too much over something that doesn't really matter.",                             reverse: false},
+    {prompt: "I am happy.",                                                                             reverse: true},
+    {prompt: "I have disturbing thoughts.",                                                             reverse: false},
+    {prompt: "I lack self-confidence.",                                                                 reverse: false},
+    {prompt: "I feel secure.",                                                                          reverse: true},
+    {prompt: "I make decisions easily.",                                                                reverse: true},
+    {prompt: "I feel inadequate.",                                                                      reverse: false},
+    {prompt: "I am content.",                                                                           reverse: true},
+    {prompt: "Some unimportant thought runs through my mind and bothers me.",                           reverse: false},
+    {prompt: "I take disappointments so keenly that I can't put them out of my mind.",                  reverse: false},
+    {prompt: "I am a steady person.",                                                                   reverse: true},
+    {prompt: "I get in a state of tension or turmoil as I think over my recent concerns and interest.", reverse: false},
+  ],
+  labels: [
+    "Almost never",
+    "Sometimes",
+    "Often",
+    "Almost always"
+  ],
+  preamble: 'Read each statement and then choose the answer to indicate how you generally feel.',
+  randomize_question_order: true,
+  scale_width: 960,
+  prompt_width: 45,
+  labels_repeat: 5,
+}
+```
+
+## References
+- Huang JL, Bowling NA, Liu M, Li Y (2015). Detecting Insufficient Effort Responding with an Infrequency Scale: Evaluating Validity and Participant Reactions. J Bus Psychol 30:299–311.
+- Curran, P. G. (2016). Methods for the detection of carelessly invalid responses in survey data. Journal of Experimental Social Psychology, 66, 4-19.
+- Moss, A., & Litman, L. (2018). After the bot scare: Understanding what’s been happening with data collection on MTurk and how to stop it.
+- Leiner, D. J. (2019). Too fast, too straight, too weird: Non-reactive indicators for meaningless data in internet surveys. In Survey Research Methods (Vol. 13, No. 3, pp. 229-248).

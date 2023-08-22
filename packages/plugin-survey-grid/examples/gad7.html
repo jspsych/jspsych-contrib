@@ -8,14 +8,19 @@
 <body></body>
 <script>
 
-  // Initialize jsPsych
+  // initialize jsPsych
   var jsPsych = initJsPsych({
     on_finish: function() {
       jsPsych.data.displayData();
     }
   });
 
-  // Define GAD-7 scale
+  /*
+  define GAD-7 scale
+  - Spitzer, R. L., Kroenke, K., Williams, J. B., & Löwe, B. (2006). A brief
+    measure for assessing generalized anxiety disorder: the GAD-7. Archives of
+    internal medicine, 166(10), 1092-1097.
+  */
   var gad7 = {
     type: jsPsychSurveyGrid,
     questions: [
@@ -40,7 +45,7 @@
     labels_repeat: 7,
   }
 
-  // Run experiment
+  // run experiment
   jsPsych.run([gad7]);
 
 </script>

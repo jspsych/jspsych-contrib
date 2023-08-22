@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://unpkg.com/jspsych@7.3.0"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@7.3.0/css/jspsych.css" />
+</head>
+<body></body>
+<script>
+
+  // initialize jsPsych
+  var jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData();
+    }
+  });
+
+  /*
+  define STAI
+  - Spielberger, C. D. (1983). State-trait anxiety inventory for adults.
+  */
+  var stai = {
+    type: jsPsychSurveyGrid,
+    questions: [
+      {prompt: "I feel pleasant.", reverse: true},
+      {prompt: "I feel nervous and restless.", reverse: false},
+      {prompt: "I feel satisfied with myself.", reverse: true},
+      {prompt: "I wish I could be as happy as others seem to be.", reverse: false},
+      {prompt: "I feel like a failure.", reverse: false},
+      {prompt: "I feel rested.", reverse: true},
+      {prompt: 'I am "calm, cool, and collected".', reverse: true},
+      {prompt: "I feel that difficulties are piling up so that I cannot overcome them.", reverse: false},
+      {prompt: "I worry too much over something that doesn't really matter.", reverse: false},
+      {prompt: "I am happy.", reverse: true},
+      {prompt: "I have disturbing thoughts.", reverse: false},
+      {prompt: "I lack self-confidence.", reverse: false},
+      {prompt: "I feel secure.", reverse: true},
+      {prompt: "I make decisions easily.", reverse: true},
+      {prompt: "I feel inadequate.", reverse: false},
+      {prompt: "I am content.", reverse: true},
+      {prompt: "Some unimportant thought runs through my mind and bothers me.", reverse: false},
+      {prompt: "I take disappointments so keenly that I can't put them out of my mind.", reverse: false},
+      {prompt: "I am a steady person.", reverse: true},
+      {prompt: "I get in a state of tension or turmoil as I think over my recent concerns and interest.", reverse: false},
+    ],
+    labels: [
+      "Almost never",
+      "Sometimes",
+      "Often",
+      "Almost always"
+    ],
+    preamble: 'Read each statement and then choose the answer to indicate how you generally feel.',
+    randomize_question_order: true,
+    scale_width: 960,
+    prompt_width: 45,
+    labels_repeat: 5,
+  }
+
+  // run experiment
+  jsPsych.run([stai]);
+
+</script>
+</html>
