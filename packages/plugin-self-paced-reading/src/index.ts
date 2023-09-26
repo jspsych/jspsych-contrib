@@ -376,7 +376,8 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       }
 
       //if (response.rt_word > 0) {
-      if (trial_data.spr_rts[word_number] > 0) {
+      // This seems wrong, but need to see if it will write data
+      if (trial_data.spr_rts[word_number + 1] > 0) {
         // valid rts
 
         // add the current word to the array of words
