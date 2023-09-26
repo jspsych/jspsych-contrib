@@ -322,13 +322,20 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     }
 
     // store response
-    let trial_data = []; // array of response objects
-    let response = {
-      rt_sentence: null,
-      rt_word: null,
-      word: null,
-      word_number: null,
-      sentence: null,
+    // let trial_data = []; // array of response objects
+    // let response = {
+    //   rt_sentence: null,
+    //   rt_word: null,
+    //   word: null,
+    //   word_number: null,
+    //   sentence: null,
+    // };
+    
+    // trial_data must be an object, as this is what jsPsych.finishTrial() expects
+    let trial_data = {
+      spr_words: [],
+      spr_rts: [],
+      spr_sentence: trial.save_sentence ? sentence : null,
     };
 
     // initial draw
@@ -355,25 +362,30 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     // function to handle responses by the subject
     const after_response = (info: { rt: any }) => {
       // gather/store data
-      response.rt_sentence = info.rt;
+      //response.rt_sentence = info.rt;
       rts.push(info.rt);
 
       if (word_number === 0) {
-        response.rt_word = rts[rts.length - 1] - rts[rts.length - 2];
+        //response.rt_word = rts[rts.length - 1] - rts[rts.length - 2];
+        // rts is initialized with first element 0, so rts[rts.length - 1] is
+        // the cumulative response time up to the current word
+        trial_data.spr_rts.push(rts[rts.length - 1] - rts[rts.length - 2]);
       } else {
-        response.rt_word = rts[rts.length - 1] - rts[rts.length - 2] - trial.inter_word_interval;
+        //response.rt_word = rts[rts.length - 1] - rts[rts.length - 2] - trial.inter_word_interval;
+        trial_data.spr_rts.push(rts[rts.length - 1] - rts[rts.length - 2] - trial.inter_word_interval);
       }
 
-      if (response.rt_word > 0) {
+      //if (response.rt_word > 0) {
+      if (trial_data.spr_rts[word_number] > 0) {
         // valid rts
-        response.word = words_concat[word_number];
-        response.word_number = word_number + 1;
-        if (trial.save_sentence) {
-          response.sentence = sentence;
-        }
-        if (word_number <= sentence_length - 1) {
-          trial_data.push(Object.assign({}, response));
-        }
+
+        // add the current word to the array of words
+        trial_data.spr_words.push(words_concat[word_number]);
+        //response.word_number = word_number + 1;
+        
+        // if (word_number <= sentence_length - 1) {
+        //   trial_data.push(Object.assign({}, response));
+        // }
         // keep drawing until words in sentence complete
         word_number++;
         this.jsPsych.pluginAPI.setTimeout(function () {
