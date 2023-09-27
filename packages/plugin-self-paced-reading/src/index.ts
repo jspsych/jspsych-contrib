@@ -118,7 +118,7 @@ const info = <const>{
     inter_word_interval: {
       type: ParameterType.INT,
       pretty_name: "inter-word-interval",
-      default: 0,
+      default: 1000, // Testing
     },
     save_sentence: {
       type: ParameterType.BOOL,
@@ -365,15 +365,20 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       // gather/store data
       //response.rt_sentence = info.rt;
       rts.push(info.rt);
+      
+      // Testing
+      console.log(word_number);
 
       if (word_number === 0) {
         //response.rt_word = rts[rts.length - 1] - rts[rts.length - 2];
         // rts is initialized with first element 0, so rts[rts.length - 1] is
         // the cumulative response time up to the current word
         trial_data.spr_rts.push(rts[rts.length - 1] - rts[rts.length - 2]);
+        console.log("first word");
       } else {
         //response.rt_word = rts[rts.length - 1] - rts[rts.length - 2] - trial.inter_word_interval;
         trial_data.spr_rts.push(rts[rts.length - 1] - rts[rts.length - 2] - trial.inter_word_interval);
+        console.log("not first word");
       }
 
       //if (response.rt_word > 0) {
