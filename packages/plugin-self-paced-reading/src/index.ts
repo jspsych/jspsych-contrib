@@ -336,6 +336,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       spr_words: [],
       spr_rts: [],
       spr_sentence: trial.save_sentence ? sentence : null,
+      stimulus: trial.sentence,
     };
 
     // initial draw
