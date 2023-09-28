@@ -118,7 +118,7 @@ const info = <const>{
     inter_word_interval: {
       type: ParameterType.INT,
       pretty_name: "inter-word-interval",
-      default: 1000, // Testing
+      default: 0,
     },
     save_sentence: {
       type: ParameterType.BOOL,
