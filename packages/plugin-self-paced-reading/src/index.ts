@@ -220,7 +220,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     let words = [];
     let line_length = [];
     let sentence_length = 0;
-    let word_number = -1;
+    let word_number = -1; // initialized to -1 because trial begins with no words displayed
     let word_number_line = -1;
     let line_number = 0;
     let sentence = trial.sentence.replace(/(\r\n|\n|\r)/gm, "");
@@ -321,22 +321,12 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       }
     }
 
-    // store response
-    // let trial_data = []; // array of response objects
-    // let response = {
-    //   rt_sentence: null,
-    //   rt_word: null,
-    //   word: null,
-    //   word_number: null,
-    //   sentence: null,
-    // };
-    
-    // trial_data must be an object, as this is what jsPsych.finishTrial() expects
+    // store responses
+    // must be an object, as this is what jsPsych.finishTrial() expects
     let trial_data = {
       spr_words: [],
       spr_rts: [],
       spr_sentence: trial.save_sentence ? sentence : null,
-      stimulus: trial.sentence,
     };
 
     // initial draw
@@ -363,39 +353,22 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     // function to handle responses by the subject
     const after_response = (info: { rt: any }) => {
       // gather/store data
-      //response.rt_sentence = info.rt;
       rts.push(info.rt);
-      
-      // Testing
-      console.log(word_number);
 
-      if (word_number === 0) {
-        //response.rt_word = rts[rts.length - 1] - rts[rts.length - 2];
-        // rts is initialized with first element 0, so rts[rts.length - 1] is
-        // the cumulative response time up to the current word
-        trial_data.spr_rts.push(rts[rts.length - 1] - rts[rts.length - 2]);
-        console.log("first word");
-      } else {
-        //response.rt_word = rts[rts.length - 1] - rts[rts.length - 2] - trial.inter_word_interval;
-        trial_data.spr_rts.push(rts[rts.length - 1] - rts[rts.length - 2] - trial.inter_word_interval);
-        console.log("not first word");
-      }
+      // trial.inter_word_interval not relevant for initial rt
+      let iwi = word_number === -1 ? 0 : trial.inter_word_interval;
+      // rts[rts.length - 1] is the cumulative rt for the trial
+      let current_rt = rts[rts.length - 1] - rts[rts.length - 2] - iwi;
+      // no words displayed at the start of trial
+      let current_word = word_number === -1 ? null : words_concat[word_number];
 
-      //if (response.rt_word > 0) {
-      // This seems wrong, but need to see if it will write data
-      if (trial_data.spr_rts[word_number + 1] > 0) {
-        // valid rts
-
-        // add the current word to the array of words
-        trial_data.spr_words.push(words_concat[word_number]);
-        //response.word_number = word_number + 1;
-        
-        // if (word_number <= sentence_length - 1) {
-        //   trial_data.push(Object.assign({}, response));
-        // }
-        // keep drawing until words in sentence complete
+      if (current_rt > 0) { // valid rts
+        trial_data.spr_rts.push(current_rt);
+        trial_data.spr_words.push(current_word);
         word_number++;
         this.jsPsych.pluginAPI.setTimeout(function () {
+          // keep drawing until words in sentence complete
+          // word_number will equal sentence_length after (valid) keypress on last word
           if (word_number < sentence_length) {
             clear_canvas();
             draw_mask();
@@ -404,10 +377,10 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
             end_trial();
           }
         }, trial.inter_word_interval);
-      } else {
-        rts.pop(); // invalid rt possible when trial.inter_word_interval is > 0
+      } else { // invalid (i.e. negative) rts possible when trial.inter_word_interval is > 0
+        rts.pop();
       }
-    };
+    }
 
     let keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
       callback_function: after_response,
