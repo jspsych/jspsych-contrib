@@ -37,12 +37,12 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 
 In addition to the [default data collected by all plugins](https://www.jspsych.org/overview/plugins#data-collected-by-all-plugins), this plugin collects the following data for each trial.
 
-| Name          | Type        | Value                                                      |
-| ------------- | ----------- | ---------------------------------------------------------- |
-| spr_words     | array       | List of words in the sentence                              |
-| spr_rts       | array       | List of reading times for each word (ms)                   |
-| spr_rts_total | array       | List of reading times for sentence through each word (ms)  |
-| spr_sentence  | string      | Item sentence (can be omitted with `save_sentence: false`) |
+| Name          | Type     | Value                                                      |
+| ------------- | -------- | ---------------------------------------------------------- |
+| spr_words     | string[] | Array of words in the sentence                             |
+| spr_rts       | number[] | Array of reading times for each word (ms)                  |
+| spr_rts_total | number[] | Array of reading times for sentence through each word (ms) |
+| spr_sentence  | string   | Item sentence (can be omitted with `save_sentence: false`) |
 
 ## Example 
 
