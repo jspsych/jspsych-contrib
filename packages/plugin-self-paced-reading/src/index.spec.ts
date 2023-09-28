@@ -22,8 +22,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0]["9"].word).toBe("dog.");
-    expect(getData().last(1).values()[0]["9"].word_number).toBe(9);
+    expect(getData().last(1).spr_words[9]).toBe("dog.");
+    expect(getData().last(1).spr_words.length).toBe(10);
   });
 
   test("Click through sentence: Mask 1", async () => {
@@ -43,8 +43,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0]["5"].word).toBe("five");
-    expect(getData().last(1).values()[0]["5"].word_number).toBe(5);
+    expect(getData().last(1).spr_words[5]).toBe("five");
+    expect(getData().last(1).spr_words.length).toBe(6);
   });
 
   test("Click through sentence: Mask 2", async () => {
@@ -65,8 +65,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0]["9"].word).toBe("dog.");
-    expect(getData().last(1).values()[0]["9"].word_number).toBe(9);
+    expect(getData().last(1).spr_words[9]).toBe("dog.");
+    expect(getData().last(1).spr_words.length).toBe(10);
   });
 
   test("Click through sentence: Mask 2", async () => {
@@ -87,8 +87,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0]["5"].word).toBe("five");
-    expect(getData().last(1).values()[0]["5"].word_number).toBe(5);
+    expect(getData().last(1).spr_words[5]).toBe("five");
+    expect(getData().last(1).spr_words.length).toBe(6);
   });
 
   test("Click through sentence: Mask 3", async () => {
@@ -109,8 +109,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0]["9"].word).toBe("dog.");
-    expect(getData().last(1).values()[0]["9"].word_number).toBe(9);
+    expect(getData().last(1).spr_words[9]).toBe("dog.");
+    expect(getData().last(1).spr_words.length).toBe(10);
   });
 
   test("Click through sentence: Mask 3", async () => {
@@ -131,7 +131,7 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0]["5"].word).toBe("five");
-    expect(getData().last(1).values()[0]["5"].word_number).toBe(5);
+    expect(getData().last(1).spr_words[5]).toBe("five");
+    expect(getData().last(1).spr_words.length).toBe(6);
   });
 });
