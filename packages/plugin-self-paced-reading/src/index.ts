@@ -326,6 +326,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     let trial_data = {
       spr_words: [],
       spr_rts: [],
+      spr_rts_total: [],
       spr_sentence: trial.save_sentence ? sentence : null,
     };
 
@@ -364,6 +365,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
 
       if (current_rt > 0) { // valid rts
         trial_data.spr_rts.push(current_rt);
+        trial_data.spr_rts_total.push(rts[rts.length - 1]);
         trial_data.spr_words.push(current_word);
         // keep drawing until words in sentence complete
         word_number++;
