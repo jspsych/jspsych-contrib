@@ -365,9 +365,9 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       if (current_rt > 0) { // valid rts
         trial_data.spr_rts.push(current_rt);
         trial_data.spr_words.push(current_word);
+        // keep drawing until words in sentence complete
         word_number++;
         this.jsPsych.pluginAPI.setTimeout(function () {
-          // keep drawing until words in sentence complete
           // word_number will equal sentence_length after (valid) keypress on last word
           if (word_number < sentence_length) {
             clear_canvas();
@@ -378,7 +378,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
           }
         }, trial.inter_word_interval);
       } else { // invalid (i.e. negative) rts possible when trial.inter_word_interval is > 0
-        rts.pop();
+        rts.pop(); // throw out invalid rt
       }
     }
 
