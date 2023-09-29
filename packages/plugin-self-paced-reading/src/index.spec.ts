@@ -98,7 +98,7 @@ describe("self-paced-reading plugin", () => {
 
     expect(getData().last(1).values()[0].spr_words[5]).toBe("five");
     expect(getData().last(1).values()[0].spr_words.length).toBe(6);
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 6; i++) {
       expect(getData().select('spr_rts').values[0][i]).toBe(100);
     }
   });
