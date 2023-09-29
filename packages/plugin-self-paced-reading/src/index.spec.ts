@@ -15,7 +15,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i <= 10; i++) {
       pressKey(" ");
       jest.advanceTimersByTime(100);
     }
@@ -39,7 +39,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i <= 6; i++) {
       pressKey("ArrowRight");
       jest.advanceTimersByTime(100);
     }
@@ -64,7 +64,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i <= 10; i++) {
       pressKey(" ");
       jest.advanceTimersByTime(100);
     }
@@ -89,7 +89,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i <= 6; i++) {
       pressKey("ArrowRight");
       jest.advanceTimersByTime(100);
     }
@@ -114,7 +114,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i <= 10; i++) {
       pressKey(" ");
       jest.advanceTimersByTime(100);
     }
@@ -139,7 +139,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i <= 6; i++) {
       pressKey("ArrowRight");
       jest.advanceTimersByTime(100);
     }
@@ -164,7 +164,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i <= 10; i++) {
       pressKey(" ");
       jest.advanceTimersByTime(100);
     }
@@ -190,7 +190,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i <= 6; i++) {
       pressKey("ArrowRight");
       jest.advanceTimersByTime(100);
     }
