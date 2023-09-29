@@ -24,7 +24,7 @@ describe("self-paced-reading plugin", () => {
 
     expect(getData().last(1).values()[0].spr_words[9]).toBe("dog.");
     expect(getData().last(1).values()[0].spr_words.length).toBe(10);
-    expect(getData().last(1).values()[0].spr_rts.mean).toBe(200); // should fail
+    expect(getData().last(1).values()[0].spr_rts.mean()).toBe(200); // should fail
   });
 
   test("Click through sentence: Mask 1", async () => {
