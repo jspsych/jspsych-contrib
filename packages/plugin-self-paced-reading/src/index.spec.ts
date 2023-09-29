@@ -15,7 +15,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 10; i++) {
+    for (let i = 0; i < 10; i++) {
       pressKey(" ");
       jest.advanceTimersByTime(100);
     }
@@ -24,7 +24,7 @@ describe("self-paced-reading plugin", () => {
 
     expect(getData().last(1).values()[0].spr_words[9]).toBe("dog.");
     expect(getData().last(1).values()[0].spr_words.length).toBe(10);
-    for (let i = 0; i <= 10; i++) {
+    for (let i = 0; i < 10; i++) {
       expect(getData().select('spr_rts').values[0][i]).toBe(100);
     }
   });
@@ -39,7 +39,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 6; i++) {
+    for (let i = 0; i < 6; i++) {
       pressKey("ArrowRight");
       jest.advanceTimersByTime(100);
     }
@@ -48,7 +48,7 @@ describe("self-paced-reading plugin", () => {
 
     expect(getData().last(1).values()[0].spr_words[5]).toBe("five");
     expect(getData().last(1).values()[0].spr_words.length).toBe(6);
-    for (let i = 0; i <= 6; i++) {
+    for (let i = 0; i < 6; i++) {
       expect(getData().select('spr_rts').values[0][i]).toBe(100);
     }
   });
@@ -64,7 +64,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 10; i++) {
+    for (let i = 0; i < 10; i++) {
       pressKey(" ");
       jest.advanceTimersByTime(100);
     }
@@ -73,7 +73,7 @@ describe("self-paced-reading plugin", () => {
 
     expect(getData().last(1).values()[0].spr_words[9]).toBe("dog.");
     expect(getData().last(1).values()[0].spr_words.length).toBe(10);
-    for (let i = 0; i <= 10; i++) {
+    for (let i = 0; i < 10; i++) {
       expect(getData().select('spr_rts').values[0][i]).toBe(100);
     }
   });
@@ -89,7 +89,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 6; i++) {
+    for (let i = 0; i < 6; i++) {
       pressKey("ArrowRight");
       jest.advanceTimersByTime(100);
     }
@@ -98,7 +98,7 @@ describe("self-paced-reading plugin", () => {
 
     expect(getData().last(1).values()[0].spr_words[5]).toBe("five");
     expect(getData().last(1).values()[0].spr_words.length).toBe(6);
-    for (let i = 0; i <= 10; i++) {
+    for (let i = 0; i < 10; i++) {
       expect(getData().select('spr_rts').values[0][i]).toBe(100);
     }
   });
@@ -114,7 +114,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 10; i++) {
+    for (let i = 0; i < 10; i++) {
       pressKey(" ");
       jest.advanceTimersByTime(100);
     }
@@ -123,7 +123,7 @@ describe("self-paced-reading plugin", () => {
 
     expect(getData().last(1).values()[0].spr_words[9]).toBe("dog.");
     expect(getData().last(1).values()[0].spr_words.length).toBe(10);
-    for (let i = 0; i <= 10; i++) {
+    for (let i = 0; i < 10; i++) {
       expect(getData().select('spr_rts').values[0][i]).toBe(100);
     }
   });
@@ -139,7 +139,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 6; i++) {
+    for (let i = 0; i < 6; i++) {
       pressKey("ArrowRight");
       jest.advanceTimersByTime(100);
     }
@@ -148,7 +148,7 @@ describe("self-paced-reading plugin", () => {
 
     expect(getData().last(1).values()[0].spr_words[5]).toBe("five");
     expect(getData().last(1).values()[0].spr_words.length).toBe(6);
-    for (let i = 0; i <= 6; i++) {
+    for (let i = 0; i < 6; i++) {
       expect(getData().select('spr_rts').values[0][i]).toBe(100);
     }
   });
@@ -164,7 +164,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 10; i++) {
+    for (let i = 0; i < 10; i++) {
       pressKey(" ");
       jest.advanceTimersByTime(100);
     }
@@ -174,7 +174,7 @@ describe("self-paced-reading plugin", () => {
     // First keypress should have rt of 100ms
     expect(getData().select('spr_rts').values[0][0]).toBe(100);
     // Because of IWI, subsequent keypresses should have rt of 50ms
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i < 10; i++) {
       expect(getData().select('spr_rts').values[0][i]).toBe(50);
     }
   });
@@ -190,7 +190,7 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 6; i++) {
+    for (let i = 0; i < 6; i++) {
       pressKey("ArrowRight");
       jest.advanceTimersByTime(100);
     }
@@ -200,7 +200,7 @@ describe("self-paced-reading plugin", () => {
     // First keypress should have rt of 100ms
     expect(getData().select('spr_rts').values[0][0]).toBe(100);
     // Because of IWI, subsequent keypresses should have rt of 50ms
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 1; i < 6; i++) {
       expect(getData().select('spr_rts').values[0][i]).toBe(50);
     }
   });
