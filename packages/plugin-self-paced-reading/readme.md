@@ -9,7 +9,7 @@ A jsPsych plugin for self-paced-reading paradigms.
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-self-paced-reading@1.1.0">
+<script src="https://unpkg.com/@jspsych-contrib/plugin-self-paced-reading@2.0.0">
 ```
 
 ### Via NPM
@@ -29,7 +29,6 @@ jsPsych v7.0.0
 ## Documentation
 
 See [documentation](docs/jspsych-self-paced-reading.md)
-
 
 ## Author / Citation
 
