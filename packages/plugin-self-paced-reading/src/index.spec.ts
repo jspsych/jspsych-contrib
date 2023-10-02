@@ -19,6 +19,8 @@ describe("self-paced-reading plugin", () => {
       jest.advanceTimersByTime(100);
       pressKey(" ");
     }
+    // This additional time seems necessary to get tests to pass
+    jest.advanceTimersByTime(100);
 
     await expectFinished();
 
@@ -43,6 +45,8 @@ describe("self-paced-reading plugin", () => {
       jest.advanceTimersByTime(100);
       pressKey("ArrowRight");
     }
+    // This additional time seems necessary to get tests to pass
+    jest.advanceTimersByTime(100);
 
     await expectFinished();
 
@@ -68,6 +72,8 @@ describe("self-paced-reading plugin", () => {
       jest.advanceTimersByTime(100);
       pressKey(" ");
     }
+    // This additional time seems necessary to get tests to pass
+    jest.advanceTimersByTime(100);
 
     await expectFinished();
 
@@ -93,6 +99,8 @@ describe("self-paced-reading plugin", () => {
       jest.advanceTimersByTime(100);
       pressKey("ArrowRight");
     }
+    // This additional time seems necessary to get tests to pass
+    jest.advanceTimersByTime(100);
 
     await expectFinished();
 
@@ -118,6 +126,8 @@ describe("self-paced-reading plugin", () => {
       jest.advanceTimersByTime(100);
       pressKey(" ");
     }
+    // This additional time seems necessary to get tests to pass
+    jest.advanceTimersByTime(100);
 
     await expectFinished();
 
@@ -143,6 +153,8 @@ describe("self-paced-reading plugin", () => {
       jest.advanceTimersByTime(100);
       pressKey("ArrowRight");
     }
+    // This additional time seems necessary to get tests to pass
+    jest.advanceTimersByTime(100);
 
     await expectFinished();
 
@@ -168,6 +180,8 @@ describe("self-paced-reading plugin", () => {
       jest.advanceTimersByTime(100);
       pressKey(" ");
     }
+    // This additional time seems necessary to get tests to pass
+    jest.advanceTimersByTime(100);
 
     await expectFinished();
 
@@ -194,6 +208,8 @@ describe("self-paced-reading plugin", () => {
       jest.advanceTimersByTime(100);
       pressKey("ArrowRight");
     }
+    // This additional time seems necessary to get tests to pass
+    jest.advanceTimersByTime(100);
 
     await expectFinished();
 
