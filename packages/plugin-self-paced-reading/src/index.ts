@@ -324,10 +324,10 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     // store responses
     // must be an object, as this is what jsPsych.finishTrial() expects
     let trial_data = {
-      spr_words: [],
-      spr_rts: [],
-      spr_rts_total: [],
-      spr_sentence: trial.save_sentence ? sentence : null,
+      words: [],
+      rts: [],
+      rts_total: [],
+      sentence: trial.save_sentence ? sentence : null,
     };
 
     // initial draw
@@ -363,10 +363,11 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       // no words displayed at the start of trial
       let current_word = word_number === -1 ? null : words_concat[word_number];
 
-      if (current_rt > 0) { // valid rts
-        trial_data.spr_rts.push(current_rt);
-        trial_data.spr_rts_total.push(rts[rts.length - 1]);
-        trial_data.spr_words.push(current_word);
+      if (current_rt > 0) {
+        // valid rts
+        trial_data.rts.push(current_rt);
+        trial_data.rts_total.push(rts[rts.length - 1]);
+        trial_data.words.push(current_word);
         // keep drawing until words in sentence complete
         word_number++;
         this.jsPsych.pluginAPI.setTimeout(function () {
@@ -379,10 +380,11 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
             end_trial();
           }
         }, trial.inter_word_interval);
-      } else { // invalid (i.e. negative) rts possible when trial.inter_word_interval is > 0
+      } else {
+        // invalid (i.e. negative) rts possible when trial.inter_word_interval is > 0
         rts.pop(); // throw out invalid rt
       }
-    }
+    };
 
     let keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
       callback_function: after_response,
