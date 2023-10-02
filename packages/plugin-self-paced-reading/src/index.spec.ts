@@ -15,9 +15,9 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 10; i++) {
-      pressKey(" ");
+    for (let i = 0; i < 10; i++) {
       jest.advanceTimersByTime(100);
+      pressKey(" ");
     }
 
     await expectFinished();
@@ -39,9 +39,9 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 6; i++) {
-      pressKey("ArrowRight");
+    for (let i = 0; i < 6; i++) {
       jest.advanceTimersByTime(100);
+      pressKey("ArrowRight");
     }
 
     await expectFinished();
@@ -64,9 +64,9 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 10; i++) {
-      pressKey(" ");
+    for (let i = 0; i < 10; i++) {
       jest.advanceTimersByTime(100);
+      pressKey(" ");
     }
 
     await expectFinished();
@@ -89,9 +89,9 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 6; i++) {
-      pressKey("ArrowRight");
+    for (let i = 0; i < 6; i++) {
       jest.advanceTimersByTime(100);
+      pressKey("ArrowRight");
     }
 
     await expectFinished();
@@ -114,9 +114,9 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 10; i++) {
-      pressKey(" ");
+    for (let i = 0; i < 10; i++) {
       jest.advanceTimersByTime(100);
+      pressKey(" ");
     }
 
     await expectFinished();
@@ -139,9 +139,9 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 6; i++) {
-      pressKey("ArrowRight");
+    for (let i = 0; i < 6; i++) {
       jest.advanceTimersByTime(100);
+      pressKey("ArrowRight");
     }
 
     await expectFinished();
@@ -164,9 +164,9 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 10; i++) {
-      pressKey(" ");
+    for (let i = 0; i < 10; i++) {
       jest.advanceTimersByTime(100);
+      pressKey(" ");
     }
 
     await expectFinished();
@@ -190,9 +190,9 @@ describe("self-paced-reading plugin", () => {
     ]);
 
     // number of key presses needed to complete trial
-    for (let i = 0; i <= 6; i++) {
-      pressKey("ArrowRight");
+    for (let i = 0; i < 6; i++) {
       jest.advanceTimersByTime(100);
+      pressKey("ArrowRight");
     }
 
     await expectFinished();
