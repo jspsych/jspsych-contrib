@@ -31,7 +31,6 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | x_align             | string   | "center"         | X alignment                                     |
 | y_align             | string   | "top"            | Y alignment                                     |
 | inter_word_interval | number   | 0                | Interval (in ms) between succesive words        |
-| save_sentence       | bool     | true             | Keep sentence in results file                   |
 
 ## Data Generated
 
@@ -42,7 +41,7 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 | word     | string[] | Array of words in the sentence                             |
 | rt       | number[] | Array of reading times for each word (ms)                  |
 | rt_total | number[] | Array of reading times for sentence through each word (ms) |
-| sentence | string   | Item sentence (can be omitted with `save_sentence: false`) |
+| sentence | string   | Item sentence                                              |
 
 ## Example
 

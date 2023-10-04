@@ -120,11 +120,6 @@ const info = <const>{
       pretty_name: "inter-word-interval",
       default: 0,
     },
-    save_sentence: {
-      type: ParameterType.BOOL,
-      pretty_name: "Save sentence",
-      default: true,
-    },
   },
 };
 
@@ -327,7 +322,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       word: [],
       rt: [],
       rt_total: [],
-      sentence: trial.save_sentence ? sentence : null,
+      sentence: sentence,
     };
 
     // initial draw
