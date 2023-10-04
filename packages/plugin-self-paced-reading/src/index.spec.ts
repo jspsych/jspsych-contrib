@@ -24,8 +24,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].word[9]).toBe("dog.");
-    expect(getData().last(1).values()[0].word.length).toBe(10);
+    expect(getData().values()[0].word[9]).toBe("dog.");
+    expect(getData().values()[0].word.length).toBe(10);
     for (let i = 0; i < 10; i++) {
       expect(getData().select("rt").values[0][i]).toBe(100);
     }
@@ -50,8 +50,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].word[5]).toBe("five");
-    expect(getData().last(1).values()[0].word.length).toBe(6);
+    expect(getData().values()[0].word[5]).toBe("five");
+    expect(getData().values()[0].word.length).toBe(6);
     for (let i = 0; i < 6; i++) {
       expect(getData().select("rt").values[0][i]).toBe(100);
     }
@@ -77,8 +77,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].word[9]).toBe("dog.");
-    expect(getData().last(1).values()[0].word.length).toBe(10);
+    expect(getData().values()[0].word[9]).toBe("dog.");
+    expect(getData().values()[0].word.length).toBe(10);
     for (let i = 0; i < 10; i++) {
       expect(getData().select("rt").values[0][i]).toBe(100);
     }
@@ -104,8 +104,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].word[5]).toBe("five");
-    expect(getData().last(1).values()[0].word.length).toBe(6);
+    expect(getData().values()[0].word[5]).toBe("five");
+    expect(getData().values()[0].word.length).toBe(6);
     for (let i = 0; i < 6; i++) {
       expect(getData().select("rt").values[0][i]).toBe(100);
     }
@@ -131,8 +131,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].word[9]).toBe("dog.");
-    expect(getData().last(1).values()[0].word.length).toBe(10);
+    expect(getData().values()[0].word[9]).toBe("dog.");
+    expect(getData().values()[0].word.length).toBe(10);
     for (let i = 0; i < 10; i++) {
       expect(getData().select("rt").values[0][i]).toBe(100);
     }
@@ -158,8 +158,8 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].word[5]).toBe("five");
-    expect(getData().last(1).values()[0].word.length).toBe(6);
+    expect(getData().values()[0].word[5]).toBe("five");
+    expect(getData().values()[0].word.length).toBe(6);
     for (let i = 0; i < 6; i++) {
       expect(getData().select("rt").values[0][i]).toBe(100);
     }
