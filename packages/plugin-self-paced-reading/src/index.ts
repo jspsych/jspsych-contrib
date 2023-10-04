@@ -324,9 +324,9 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     // store responses
     // must be an object, as this is what jsPsych.finishTrial() expects
     let trial_data = {
-      words: [],
-      rts: [],
-      rts_total: [],
+      word: [],
+      rt: [],
+      rt_total: [],
       sentence: trial.save_sentence ? sentence : null,
     };
 
@@ -365,9 +365,9 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
 
       if (current_rt > 0) {
         // valid rts
-        trial_data.rts.push(current_rt);
-        trial_data.rts_total.push(rts[rts.length - 1]);
-        trial_data.words.push(current_word);
+        trial_data.rt.push(current_rt);
+        trial_data.rt_total.push(rts[rts.length - 1]);
+        trial_data.word.push(current_word);
         // keep drawing until words in sentence complete
         word_number++;
         this.jsPsych.pluginAPI.setTimeout(function () {

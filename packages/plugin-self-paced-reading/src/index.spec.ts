@@ -24,10 +24,10 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].words[9]).toBe("dog.");
-    expect(getData().last(1).values()[0].words.length).toBe(10);
+    expect(getData().last(1).values()[0].word[9]).toBe("dog.");
+    expect(getData().last(1).values()[0].word.length).toBe(10);
     for (let i = 0; i < 10; i++) {
-      expect(getData().select("rts").values[0][i]).toBe(100);
+      expect(getData().select("rt").values[0][i]).toBe(100);
     }
   });
 
@@ -50,10 +50,10 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].words[5]).toBe("five");
-    expect(getData().last(1).values()[0].words.length).toBe(6);
+    expect(getData().last(1).values()[0].word[5]).toBe("five");
+    expect(getData().last(1).values()[0].word.length).toBe(6);
     for (let i = 0; i < 6; i++) {
-      expect(getData().select("rts").values[0][i]).toBe(100);
+      expect(getData().select("rt").values[0][i]).toBe(100);
     }
   });
 
@@ -77,10 +77,10 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].words[9]).toBe("dog.");
-    expect(getData().last(1).values()[0].words.length).toBe(10);
+    expect(getData().last(1).values()[0].word[9]).toBe("dog.");
+    expect(getData().last(1).values()[0].word.length).toBe(10);
     for (let i = 0; i < 10; i++) {
-      expect(getData().select("rts").values[0][i]).toBe(100);
+      expect(getData().select("rt").values[0][i]).toBe(100);
     }
   });
 
@@ -104,10 +104,10 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].words[5]).toBe("five");
-    expect(getData().last(1).values()[0].words.length).toBe(6);
+    expect(getData().last(1).values()[0].word[5]).toBe("five");
+    expect(getData().last(1).values()[0].word.length).toBe(6);
     for (let i = 0; i < 6; i++) {
-      expect(getData().select("rts").values[0][i]).toBe(100);
+      expect(getData().select("rt").values[0][i]).toBe(100);
     }
   });
 
@@ -131,10 +131,10 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].words[9]).toBe("dog.");
-    expect(getData().last(1).values()[0].words.length).toBe(10);
+    expect(getData().last(1).values()[0].word[9]).toBe("dog.");
+    expect(getData().last(1).values()[0].word.length).toBe(10);
     for (let i = 0; i < 10; i++) {
-      expect(getData().select("rts").values[0][i]).toBe(100);
+      expect(getData().select("rt").values[0][i]).toBe(100);
     }
   });
 
@@ -158,10 +158,10 @@ describe("self-paced-reading plugin", () => {
 
     await expectFinished();
 
-    expect(getData().last(1).values()[0].words[5]).toBe("five");
-    expect(getData().last(1).values()[0].words.length).toBe(6);
+    expect(getData().last(1).values()[0].word[5]).toBe("five");
+    expect(getData().last(1).values()[0].word.length).toBe(6);
     for (let i = 0; i < 6; i++) {
-      expect(getData().select("rts").values[0][i]).toBe(100);
+      expect(getData().select("rt").values[0][i]).toBe(100);
     }
   });
 
@@ -186,10 +186,10 @@ describe("self-paced-reading plugin", () => {
     await expectFinished();
 
     // First keypress should have rt of 100ms
-    expect(getData().select("rts").values[0][0]).toBe(100);
+    expect(getData().select("rt").values[0][0]).toBe(100);
     // Because of IWI, subsequent keypresses should have rt of 50ms
     for (let i = 1; i < 10; i++) {
-      expect(getData().select("rts").values[0][i]).toBe(50);
+      expect(getData().select("rt").values[0][i]).toBe(50);
     }
   });
 
@@ -214,10 +214,10 @@ describe("self-paced-reading plugin", () => {
     await expectFinished();
 
     // First keypress should have rt of 100ms
-    expect(getData().select("rts").values[0][0]).toBe(100);
+    expect(getData().select("rt").values[0][0]).toBe(100);
     // Because of IWI, subsequent keypresses should have rt of 50ms
     for (let i = 1; i < 6; i++) {
-      expect(getData().select("rts").values[0][i]).toBe(50);
+      expect(getData().select("rt").values[0][i]).toBe(50);
     }
   });
 });
