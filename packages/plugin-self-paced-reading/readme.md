@@ -32,4 +32,6 @@ See [documentation](docs/jspsych-self-paced-reading.md)
 
 ## Author / Citation
 
-igmmgi
+[igmmgi](https://github.com/igmmgi)  
+[jessestorbeck](https://github.com/jessestorbeck)  
+[jkhartshorne](https://github.com/jkhartshorne)

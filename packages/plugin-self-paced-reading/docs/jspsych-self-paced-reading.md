@@ -30,7 +30,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | xy_position         | number[] | [0, 0]           | X and Y position                                |
 | x_align             | string   | "center"         | X alignment                                     |
 | y_align             | string   | "top"            | Y alignment                                     |
-| inter_word_interval | number   | 0                | Interval (in ms) between succesive words        |
+| inter_word_interval | number   | 0                | Delay (in ms) between keypress and next word    |
 
 ## Data Generated
 
