@@ -1,5 +1,5 @@
 {
-  "name": "@Shaobin-Jiang/jspsych-gamepad",
+  "name": "@jspsych-contrib/jspsych-gamepad",
   "version": "0.1.0",
   "description": "A jsPsych plugin for using gamepad in behavioral experiments",
   "type": "module",
