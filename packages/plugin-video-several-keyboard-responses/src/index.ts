@@ -381,6 +381,7 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
       stimulus: trial.stimulus,
       rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
       response: this.jsPsych.pluginAPI.getValidKey(trial.choices),
+      video_time: 0,
     };
 
     const data = this.jsPsych.pluginAPI.mergeSimulationData(default_data, simulation_options);

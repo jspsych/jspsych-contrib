@@ -70,8 +70,12 @@ describe("video-several-keyboard-responses simulation", () => {
     jest.runAllTimers();
 
     await expectFinished();
-
-    expect(getData().values()[0].rt).toBeGreaterThan(0);
-    expect(typeof getData().values()[0].response).toBe("string");
+    
+    const rt = getData().values()[0].rt;
+    const response = getData().values()[0].response;
+    const video_time = getData().values()[0].video_time;
+    expect(rt.every(value => value > 0)).toBe(true);
+    expect(response.every(value => typeof value === "string")).toBe(true);
+    expect(video_time.every(value => typeof value === "number")).toBe(true);
   });
 });
