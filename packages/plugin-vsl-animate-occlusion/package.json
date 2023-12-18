@@ -40,7 +40,7 @@
     "snapsvg": "^0.5.1"
   },
   "devDependencies": {
-    "@jspsych/config": "^1.0.0",
+    "@jspsych/config": "^2.0.0",
     "@jspsych/test-utils": "^1.0.0",
     "@types/snapsvg": "^0.5.1",
     "jspsych": "^7.0.0"

@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "babel index.js --config-file @jspsych/config/babel --presets minify --source-maps --out-file dist/index.browser.min.js",
+    "build": "babel index.js --presets @babel/preset-env,minify --source-maps --out-file dist/index.browser.min.js",
     "build:watch": "npm run build -- --watch"
   },
   "repository": {
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-libet-intentional-binding",
   "devDependencies": {
-    "@jspsych/config": "^1.0.0",
+    "@jspsych/config": "^2.0.0",
     "jspsych": "^7.0.0"
   }
 }
