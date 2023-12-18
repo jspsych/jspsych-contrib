@@ -53,6 +53,7 @@ describe("video-several-keyboard-responses simulation", () => {
         type: videoSeveralKeyboardResponses,
         stimulus: ["foo.mp4"],
         prompt: "foo",
+        trial_duration: 1000,
       },
     ];
 
