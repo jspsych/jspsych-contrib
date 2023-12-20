@@ -252,7 +252,7 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
     var response = {
       rt: null,
       key: null,
-      video_time: null
+      video_time: null,
     };
 
     // function to end trial when it is time
@@ -291,18 +291,19 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
     var after_response = (info) => {
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded
-      display_element.querySelector("#jspsych-video-several-keyboard-responses-stimulus").className +=
-        " responded";
+      display_element.querySelector(
+        "#jspsych-video-several-keyboard-responses-stimulus"
+      ).className += " responded";
 
       // by default only record the first response
       if (response.key == null) {
-        if(!trial.multiple_responses_allowed){
+        if (!trial.multiple_responses_allowed) {
           // Would make sense to add it to a list, but then it would not be backwards compatible?
-          response = {rt: info.rt, key: info.key, video_time: video_element.currentTime,};
-        }else{
-          response = {rt: [info.rt], key: [info.key], video_time: [video_element.currentTime]};
+          response = { rt: info.rt, key: info.key, video_time: video_element.currentTime };
+        } else {
+          response = { rt: [info.rt], key: [info.key], video_time: [video_element.currentTime] };
         }
-      }else if (trial.multiple_responses_allowed){
+      } else if (trial.multiple_responses_allowed) {
         response.rt.push(info.rt);
         response.key.push(info.key);
         response.video_time.push(video_element.currentTime);
