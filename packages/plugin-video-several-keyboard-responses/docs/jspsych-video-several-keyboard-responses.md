@@ -1,4 +1,4 @@
-# jspsych-self-paced-reading plugin
+# jspsych-video-several-keyboard-responses plugin
 
 Based on [video-keyboard-response](https://github.com/jspsych/jsPsych/tree/main/packages/plugin-video-keyboard-response) plugin, this plugin allows playing video and recording multiple responses together with video timestamps.
 
@@ -22,7 +22,7 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 ```javascript
 const trial = {
-  type: VideoSeveralKeyboardResponsesPlugin,
+  type: jsPsychVideoSeveralKeyboardResponses,
   stimulus: ['video/sample_video.mp4'],
   choices: "ALL_KEYS",
   prompt: "Press any keys",
