@@ -1,5 +1,5 @@
 {
-  "name": "@jspsych/plugin-video-several-keyboard-responses",
+  "name": "@jspsych-contrib/plugin-video-several-keyboard-responses",
   "version": "0.1.0",
   "description": "jsPsych plugin for playing a video file and getting several keyboard responses",
   "type": "module",
