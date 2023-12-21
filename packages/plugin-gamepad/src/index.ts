@@ -30,16 +30,16 @@ const info = <const>{
      *
      * @param {CanvasRenderingContext2D} context: The context to draw upon
      * @param {Gamepad} gamepad: The gamepad object connected
-     * @param {Number} time_stamp: The milliseconds that have elapsed since the first frame
-     * @param {Number} delta_time: The milliseconds that have elapsed since the last frame
+     * @param {number} time_stamp: The milliseconds that have elapsed since the first frame
+     * @param {number} delta_time: The milliseconds that have elapsed since the last frame
      */
     end_trial: {
       type: ParameterType.FUNCTION,
       default: (
         _context: CanvasRenderingContext2D,
         _gamepad: Gamepad,
-        _time_stamp: Number,
-        _delta_time: Number
+        _time_stamp: number,
+        _delta_time: number
       ) => {
         return _time_stamp > 2000;
       },
@@ -56,16 +56,16 @@ const info = <const>{
      *
      * @param {CanvasRenderingContext2D} context: The context to draw upon
      * @param {Gamepad} gamepad: The gamepad object connected
-     * @param {Number} time_stamp: The milliseconds that have elapsed since the first frame
-     * @param {Number} delta_time: The milliseconds that have elapsed since the last frame
+     * @param {number} time_stamp: The milliseconds that have elapsed since the first frame
+     * @param {number} delta_time: The milliseconds that have elapsed since the last frame
      */
     on_frame_update: {
       type: ParameterType.FUNCTION,
       default: (
         _context: CanvasRenderingContext2D,
         _gamepad: Gamepad,
-        _time_stamp: Number,
-        _delta_time: Number
+        _time_stamp: number,
+        _delta_time: number
       ) => {},
     },
     /**

@@ -10,7 +10,7 @@ describe("jsPsychGamepad", () => {
     await startTimeline([
       {
         type: PluginGamepad,
-        end_trial: (_c: CanvasRenderingContext2D, _g: Gamepad, time_stamp: Number, _d: Number) => {
+        end_trial: (_c: CanvasRenderingContext2D, _g: Gamepad, time_stamp: number, _d: number) => {
           return time_stamp > 10000;
         },
       },
