@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/jspsych-gamepad",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A jsPsych plugin for using gamepad in behavioral experiments",
   "type": "module",
   "main": "dist/index.cjs",

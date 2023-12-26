@@ -1,5 +1,11 @@
 # @jspsych-contrib/jspsych-gamepad
 
+## 1.0.1
+
+### Patch Changes
+
+- [#88](https://github.com/jspsych/jspsych-contrib/pull/88) [`86b4642`](https://github.com/jspsych/jspsych-contrib/commit/86b4642cbd2ae60cd2f2d1851505a618870792e9) Thanks [@Shaobin-Jiang](https://github.com/Shaobin-Jiang)! - Fix package.json homepage url
+
 ## 1.0.0
 
 ### Major Changes
