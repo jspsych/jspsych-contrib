@@ -32,7 +32,7 @@
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-pipe",
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-gamepad",
   "peerDependencies": {
     "jspsych": ">=7.0.0"
   },
