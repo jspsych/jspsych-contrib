@@ -27,7 +27,7 @@ var htmlWrittenRecall = (function (jspsych) {
       next_word_key: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "key for next word",
-        default: "Space",
+        default: " ",
       },
       button_string: {
         type: jspsych.ParameterType.HTML_STRING,
@@ -42,6 +42,11 @@ var htmlWrittenRecall = (function (jspsych) {
       block_time_start: {
         type: jspsych.ParameterType.INT,
         pretty_name: "The time the recall block began",
+        default: null,
+      },
+      total_block_duration: {
+        type: jspsych.ParameterType.INT,
+        pretty_name: "The total duration of the recall block",
         default: null,
       },
     },
@@ -88,14 +93,14 @@ var htmlWrittenRecall = (function (jspsych) {
           end_trial();
         });
         var buttonDisplayTime;
-        if (typeof trial.blockTimeStart !== "undefined") {
+        if (trial.block_time_start !== null) {
           // Dynamic button delay calculation
           var currentTime = performance.now();
-          var elapsedTime = currentTime - trial.blockTimeStart;
-          buttonDisplayTime = Math.max(trial.totalBlockDuration - elapsedTime, 0);
+          var elapsedTime = currentTime - trial.block_time_start;
+          buttonDisplayTime = Math.max(trial.total_block_duration - elapsedTime, 0);
         } else {
           // Static button delay
-          buttonDisplayTime = trial.buttonDelay;
+          buttonDisplayTime = trial.button_delay;
         }
         this.jsPsych.pluginAPI.setTimeout(() => {
           button.style.display = "initial"; // Show the button after the delay
@@ -117,7 +122,10 @@ var htmlWrittenRecall = (function (jspsych) {
 
         this.jsPsych.finishTrial(trial_data);
       };
-
+      // if the next_word_key is "Spacebar" convert it to " " for comparison
+      if (trial.next_word_key.toLowerCase() === "spacebar") {
+        trial.next_word_key = " ";
+      }
       // Function to check for space key press in the textbox
       const checkForNextWordKey = (event) => {
         if (textbox.value.trim() !== "" && event.key === trial.next_word_key) {
