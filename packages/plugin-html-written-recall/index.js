@@ -17,7 +17,7 @@ var htmlWrittenRecall = (function (jspsych) {
       stimulus_duration: {
         type: jspsych.ParameterType.INT,
         pretty_name: "Stimulus duration",
-        default: null,
+        default: null, // might add a stimulus or prompt repeat where it only shows for first word in a block and then disappears
       },
       trial_duration: {
         type: jspsych.ParameterType.INT,

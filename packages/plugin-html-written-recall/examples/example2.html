@@ -8,25 +8,28 @@
 	<body></body>
 	<script>
     // Example where a participant gives as many words as possible in time of 10 seconds
-    // The participant is given a cue word and they have to give as many words as possible
+    // 
     var jsPsych = initJsPsych({
       on_finish: function() {
         jsPsych.data.displayData();
       }
     });
-    var free_association_trial = {
+    const total_block_duration = 10000 // 10 seconds
+    var free_recall_trial = {
       type: 'html-written-recall',
-      stimulus: 'Dog',
-      prompt: 'Write the first word that comes to mind.',
-      stimulus_duration: 500, // the word disappears after 500 ms
+      prompt: 'Write down as many words as you can remember from the previous list.',
+      stimulus_duration: 500, // the word disappears after 500 ms (this is repeated after each subsequent press)
       button_string: 'Next task', // Button displayed to finish the block
-      button_delay: 5000 // button appears after 5 seconds, though this timer resets after each word submitted (so 5 seconds from final submission they can move on)
+      block_time_start: begin_block_time,
+      total_block_duration: total_block_duration // button appears based on global clock
     }
-
-    var free_association_block = {
-      timeline: [free_association_trial],
+    var free_recall_block = {
+      timeline: [free_recall_trial],
+      on_start: function() {
+        begin_block_time = performance.now();
+      }, // set the initial block time so that participants have 30 seconds before the button appears
       loop_function() {
-        // Loop until 10 trials are completed
+        // Loop until button pressed (not shown until 30 seconds)
         if (jsPsych.data.get().last(1).values()[0].button_pressed) {
           return false;
         } else {
@@ -34,7 +37,7 @@
         }
       }
     }
-    jsPsych.run([free_association_block]);
+    jsPsych.run([free_recall_block]);
 
 </script>
 </html>
