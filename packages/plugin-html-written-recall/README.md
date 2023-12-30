@@ -32,4 +32,4 @@ See [documentation](docs/jspsych-html-written-recall.md)
 
 ## Author / Citation
 
-[atakaragoz](https://www.github.com/atakaragoz)
+[Ata Karagoz](https://www.github.com/atakaragoz)

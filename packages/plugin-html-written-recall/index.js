@@ -9,15 +9,25 @@ var htmlWrittenRecall = (function (jspsych) {
         pretty_name: "Stimulus",
         default: undefined,
       },
+      stimulus_duration: {
+        type: jspsych.ParameterType.INT,
+        pretty_name: "Stimulus duration",
+        default: null, // might add a stimulus or prompt repeat where it only shows for first word in a block and then disappears
+      },
+      stimulus_only_first: {
+        type: jspsych.ParameterType.BOOL,
+        pretty_name: "Stimulus only first",
+        default: false,
+      },
       prompt: {
         type: jspsych.ParameterType.HTML_STRING,
         pretty_name: "Prompt",
         default: null,
       },
-      stimulus_duration: {
-        type: jspsych.ParameterType.INT,
-        pretty_name: "Stimulus duration",
-        default: null, // might add a stimulus or prompt repeat where it only shows for first word in a block and then disappears
+      prompt_only_first: {
+        type: jspsych.ParameterType.BOOL,
+        pretty_name: "Prompt only first",
+        default: false,
       },
       trial_duration: {
         type: jspsych.ParameterType.INT,
@@ -58,6 +68,16 @@ var htmlWrittenRecall = (function (jspsych) {
     }
 
     trial(display_element, trial) {
+
+      // if the stimulus should only be displayed for the first word, check the block_time_start and if the block has been going for more than 100ms, don't show the stimulus
+      if (trial.stimulus_only_first && trial.block_time_start !== null) {
+        var currentTime = performance.now();
+        var elapsedTime = currentTime - trial.block_time_start;
+        if (elapsedTime > 100) {
+          trial.stimulus = "";
+        }
+      }
+
       var new_html =
         '<div id="jspsych-html-keyboard-response-stimulus">' + trial.stimulus + "</div>";
 
@@ -65,8 +85,14 @@ var htmlWrittenRecall = (function (jspsych) {
       new_html +=
         '<div><input type="text" id="jspsych-html-keyboard-response-textbox" autocomplete="off" /></div>'; // need to make sure autocomplete is off
 
-      if (trial.prompt !== null) {
+      if (trial.prompt !== null && !trial.prompt_only_first) {
         new_html += trial.prompt;
+      } else if (trial.prompt !== null && trial.prompt_only_first && trial.block_time_start !== null) {
+        var currentTime = performance.now();
+        var elapsedTime = currentTime - trial.block_time_start;
+        if (elapsedTime < 100) {
+          new_html += trial.prompt;
+        }
       }
 
       if (trial.button_string !== null) {
