@@ -1,6 +1,6 @@
 # countdown
 
-This extension adds a countdown for a trial.
+This extension adds a countdown during a trial.
 
 ## Parameters
 
