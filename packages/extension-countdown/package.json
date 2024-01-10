@@ -2,7 +2,7 @@
   "name": "@jspsych-contrib/extension-countdown",
   "private": "true",
   "version": "1.0.0",
-  "description": "jsPsych extension for adding a countdown for a trial",
+  "description": "jsPsych extension for adding a countdown during a trial",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
