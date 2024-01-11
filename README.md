@@ -64,32 +64,26 @@ In the pull request comments, please make it clear how we can verify that the co
 This could be accomplished with a link to a demonstration experiment, the inclusion of an example file and/or testing files, or through some other means.
 We try to review pull requests quickly and add new contributions as soon as the minimal standards are met.
 
-## Plugin templates
+## Creating a new plugin or extension
 
-There are two plugin template directories inside the `/packages` directory that you can use as a reference when creating a directory for your plugin contribution. 
-Both templates are compatible with jsPsych v7+.
+After cloning this repository, run `npm install` and then `npm run new`. 
+This will prompt you through the process of creating a new plugin or extension. 
+The tool will create a new directory in the `/packages` directory with the appropriate files and names. 
 
-Regardless of which template you use, you can get started by creating a copy of the template folder in `/packages` and renaming it according to your plugin/extension name. 
-You may also want to read the jsPsych documentation on [plugin development](https://www.jspsych.org/latest/developers/plugin-development/) to understand how to work with the `index.ts`file (in `plugin-template-ts`) and `index.js` file (in `plugin-template`).
-In your plugin/extension folder, be sure that you also:
-* Edit the `package.json` file
-* Add a readme.md file to your plugin/extension directory, based on the [readme template](readme-template.md)
+You may want to read the jsPsych documentation on [plugin development](https://www.jspsych.org/latest/developers/plugin-development/) to understand how to work with the `index.ts`file (for TypeScript development) and `index.js` file (for JavaScript development).
 
-### `plugin-template-ts`
+### TypeScript template
 
 This template uses TypeScript source files that are complied into JavaScript using Node.js and npm.
 This is the format used for plugins in the main jsPsych repo.
-To use this template, you should edit the `src/index.ts` file, keeping the overall structure but changing the details as appropriate (plugin name, parameters, trial method, etc.).
+To use this template, you should edit the `src/index.ts` file, keeping the overall structure but changing the details as appropriate (parameters, trial method, etc.).
 You can then use the `npm run build` command to compile your `index.ts` code into JavaScript files, which will appear in a `/dist` directory.
-This format also allows you to add a Jest test file (optional), which you can create based on the `src/index.spec.ts` template file.
-
-In the `rollup.config.mjs` file, replace "jsPsychPluginName" with your plugin name.
-You do not need to edit the other config files in this template directory.
+This format also allows you to add a Jest test file (optional).
 
 For more details, including setup instructions and detailed explanations of files, please see the jsPsych documentation page: [Configuring the jsPsych development environment](https://www.jspsych.org/latest/developers/configuration).
 You can also read the [plugin development documentation](https://www.jspsych.org/latest/developers/plugin-development/) and look at the plugin/extension folders in the main jsPsych repository `/packages` directory for more examples.
 
-### `plugin-template`
+### JavaScript template
 
 This template allows you to put your plugin's JavaScript code directly into a JavaScript template file, rather than using TypeScript and Node.js/npm. 
 To use this template, you should keep the overall structure of the `index.js` file, but change the details as appropriate for your plugin (plugin name, parameters, etc.).
@@ -103,7 +97,7 @@ At the same time, we realize that there may be jsPsych users who have created ve
 Therefore we welcome contributions that are compatible with v6 as well as v7+. 
 
 If you'd like to contribute a **jsPsych v6 plugin**, please do the following:
-* Use the `plugin-template` directory as a reference
+* Use the `templates/plugin-template-js` directory as a reference
 * Delete everything inside of the `index.js` template file and replace it with your v6-compatible plugin code
 * In the `package.json` file, change the "jspsych" version field in "devDependencies" to "6.3.1"
 
