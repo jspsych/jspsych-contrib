@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Countdown Extension Example</title>
+    <script src="https://unpkg.com/jspsych@7.3.4"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.3"></script>
+    <script src="../dist/index.browser.min.js"></script>
+    <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" />
+  </head>
+  <body>
+    <script>
+      let jsPsych = initJsPsych({
+        extensions: [{ type: jsPsychExtensionCountdown }],
+      });
+
+      let trial = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "Hello world",
+        extensions: [
+          {
+            type: jsPsychExtensionCountdown,
+            params: {
+              time: 5000,
+              update_time: 20,
+              // Change the format of the countdown string
+              format: (time) => {
+                if (time < 3000) {
+                  document.querySelector(".jspsych-extension-countdown").style.color = "red";
+                }
+
+                let time_in_seconds = time / 1000;
+
+                let minutes = Math.floor(time_in_seconds / 60);
+                time_in_seconds -= minutes * 60;
+
+                let seconds = Math.floor(time_in_seconds);
+
+                let format_number = (number) => {
+                  let temp_str = `0${number}`;
+                  return temp_str.substring(temp_str.length - 2);
+                };
+
+                return `${format_number(minutes)}:${format_number(seconds)}`;
+              },
+            },
+          },
+        ],
+        // Pause / Resume midway
+        on_load: function () {
+          setTimeout(() => {
+            jsPsych.extensions.countdown.pause();
+            setTimeout(() => {
+              jsPsych.extensions.countdown.resume();
+            }, 2000);
+          }, 1000);
+        },
+      };
+
+      jsPsych.run([trial]);
+    </script>
+  </body>
+</html>
