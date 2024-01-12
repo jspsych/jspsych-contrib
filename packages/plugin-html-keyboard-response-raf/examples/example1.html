@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/jspsych"></script>
+        <script src="../dist/index.browser.js"></script>
+        <link href="https://unpkg.com/jspsych/css/jspsych.css" rel="stylesheet" type="text/css">
+    </head>
+    <body></body>
+    <script>
+        const jsPsych = initJsPsych();
+
+        const trial = {
+            type: jsPsychHtmlKeyboardResponseRaf,
+            stimulus: 'Hello world!',
+            stimulus_duration: 16.6,
+            trial_duration: 50,
+            choices: ['a', 'b', 'c'],
+        }
+
+        const loop = {
+            timeline: [trial],
+            loop_function: () => true,
+        }
+
+        jsPsych.run([loop]);
+    </script>
+</html>
