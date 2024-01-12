@@ -1,8 +1,7 @@
 {
-  "name": "@jspsych-contrib/extension-template-ts",
-  "private": "true",
-  "version": "0.1.0",
-  "description": "",
+  "name": "@jspsych-contrib/plugin-{name}",
+  "version": "0.0.1",
+  "description": "{description}",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -26,14 +25,14 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
-    "directory": "packages/extension-template-ts"
+    "directory": "packages/plugin-{name}"
   },
-  "author": "Josh de Leeuw",
+  "author": "{author}",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-template-ts",
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-{name}",
   "peerDependencies": {
     "jspsych": ">=7.0.0"
   },
