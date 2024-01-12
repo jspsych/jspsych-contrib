@@ -9,10 +9,12 @@ describe("my plugin", () => {
     const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
       {
         type: jsPsychHtmlKeyboardResponseRaf,
-        parameter_name: 1,
-        parameter_name2: "img.png",
+        stimulus: "Hello world!",
+        trial_duration: 1000,
       },
     ]);
+
+    jest.runAllTimers();
 
     await expectFinished();
   });
