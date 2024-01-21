@@ -84,6 +84,10 @@ class CountdownExtension implements JsPsychExtension {
   resume = (): void => {
     this.is_running = true;
   };
+
+  get_time_left = (): number => {
+    return this.time - this.time_elapsed;
+  };
 }
 
 export default CountdownExtension;
