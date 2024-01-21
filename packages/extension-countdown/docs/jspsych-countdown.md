@@ -43,6 +43,10 @@ Pauses the countdown.
 
 Resumes the countdown.
 
+### `get_time_left()`
+
+Gets how much time there is still left in milliseconds.
+
 ## Example
 
 ```javascript
