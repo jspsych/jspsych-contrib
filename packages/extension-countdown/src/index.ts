@@ -45,6 +45,8 @@ class CountdownExtension implements JsPsychExtension {
     this.time = time;
     this.update_time = update_time;
 
+    this.time_elapsed = 0;
+
     this.countdown_element = document.createElement("div");
     this.countdown_element.innerHTML = this.format(time);
     this.countdown_element.className = "jspsych-extension-countdown";
@@ -81,6 +83,10 @@ class CountdownExtension implements JsPsychExtension {
 
   resume = (): void => {
     this.is_running = true;
+  };
+
+  get_time_left = (): number => {
+    return this.time - this.time_elapsed;
   };
 }
 

@@ -1,4 +1,4 @@
-# countdown
+# jsPsych Countdown Extension
 
 This extension adds a countdown during a trial.
 
