@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://unpkg.com/jspsych@7.3.0"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@7.3.0/css/jspsych.css" />
+</head>
+<body></body>
+<script>
+
+  // initialize jsPsych
+  var jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData();
+    }
+  });
+
+  /*
+  define GAD-7 scale
+  - Spitzer, R. L., Kroenke, K., Williams, J. B., & Löwe, B. (2006). A brief
+    measure for assessing generalized anxiety disorder: the GAD-7. Archives of
+    internal medicine, 166(10), 1092-1097.
+  */
+  var gad7 = {
+    type: jsPsychSurveyGrid,
+    questions: [
+      {prompt: "Feeling nervous, anxious, or on edge",              reverse: false, required: true},
+      {prompt: "Not being able to stop or control worrying",        reverse: false, required: true},
+      {prompt: "Worrying too much about different things",          reverse: false, required: true},
+      {prompt: "Trouble relaxing",                                  reverse: false, required: true},
+      {prompt: "Being so restless that it's hard to sit still",     reverse: false, required: true},
+      {prompt: "Becoming easily annoyed or irritable",              reverse: false, required: true},
+      {prompt: "Feeling afraid as if something awful might happen", reverse: false, required: true},
+    ],
+    labels: [
+      "Not at<br>all",
+      "Several<br>days",
+      "Over half the<br>days",
+      "Nearly every<br>day"
+    ],
+    preamble: 'Over the <b>last 2 weeks</b>, how often have you been bothered by the following problems?',
+    randomize_question_order: true,
+    scale_width: 900,
+    prompt_width: 40,
+    labels_repeat: 7,
+  }
+
+  // run experiment
+  jsPsych.run([gad7]);
+
+</script>
+</html>
