@@ -51,6 +51,14 @@ const info = <const>{
       pretty_name: "Response ends trial",
       default: true,
     },
+    /**
+     * FPS for requestAnimationFrame
+     */
+    fps: {
+      type: ParameterType.INT,
+      pretty_name: "FPS",
+      default: 60,
+    },
   },
 };
 
@@ -67,8 +75,8 @@ class HtmlKeyboardResponseRafPlugin implements JsPsychPlugin<Info> {
   static info = info;
 
   private keyboardListener;
-  private hideStimulusTime: number = Infinity;
-  private endTrialTime: number = Infinity;
+  private hideStimulusFrameCount: number = Infinity;
+  private endTrialFrameCount: number = Infinity;
   private stimulusIsHidden = false;
   private currAnimationFrameHandler: number;
 
@@ -87,6 +95,8 @@ class HtmlKeyboardResponseRafPlugin implements JsPsychPlugin<Info> {
       rt: null,
       key: null,
     };
+
+    var frame_counter = 0;
 
     // draw
     this.currAnimationFrameHandler = requestAnimationFrame(() => {
@@ -107,28 +117,29 @@ class HtmlKeyboardResponseRafPlugin implements JsPsychPlugin<Info> {
 
       // hide stimulus if stimulus_duration is set
       if (trial.stimulus_duration !== null) {
-        this.hideStimulusTime = initialDisplayTime + trial.stimulus_duration;
+        this.hideStimulusFrameCount = Math.round(trial.stimulus_duration / (1000 / trial.fps));
       }
 
       // end trial if trial_duration is set
       if (trial.trial_duration !== null) {
-        this.endTrialTime = initialDisplayTime + trial.trial_duration;
+        this.endTrialFrameCount = Math.round(trial.trial_duration / (1000 / trial.fps));
       }
 
+      console.log(performance.now());
       this.currAnimationFrameHandler = requestAnimationFrame(checkForEnd);
     });
 
     const checkForEnd = () => {
-      const currTime = performance.now();
-      if (currTime >= this.hideStimulusTime && !this.stimulusIsHidden) {
+      frame_counter++;
+      if (frame_counter >= this.hideStimulusFrameCount && !this.stimulusIsHidden) {
         this.stimulusIsHidden = true;
         display_element.querySelector<HTMLElement>(
           "#jspsych-html-keyboard-response-stimulus"
         ).style.visibility = "hidden";
-        console.log(currTime - this.hideStimulusTime);
+        console.log(frame_counter, performance.now());
       }
-      if (currTime >= this.endTrialTime) {
-        console.log(currTime - this.endTrialTime);
+      if (frame_counter >= this.endTrialFrameCount) {
+        console.log(frame_counter, performance.now());
         end_trial();
       } else {
         this.currAnimationFrameHandler = requestAnimationFrame(checkForEnd);
