@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-survey-number",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Collects a number response in a text box",
   "type": "module",
   "main": "dist/index.cjs",
