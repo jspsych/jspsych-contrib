@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-html-keyboard-response-raf",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This plugin uses the same functionality as the html-keyboard-response plugin, but uses requestAnimationFrame internally for timing",
   "type": "module",
   "main": "dist/index.cjs",
