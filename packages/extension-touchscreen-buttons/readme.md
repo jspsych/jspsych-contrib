@@ -25,7 +25,7 @@ See [documentation](docs/jspsych-touchscreen-buttons.md)
 
 Created by [Younes Strittmatter](https://github.com/younesStrittmatter).
 
-We would appreciate it if you cited this paper when you use the touchscreen-buttons extension plugin.
+We would appreciate it if you cited this paper when you use the touchscreen-buttons extension.
 
 Strittmatter, Y., Spitzer, M., Ging-Jehli, N., & Musslick, S. (2023, November 7). A jsPsych Touchscreen Extension for Behavioral Research on Touch-Enabled Interface. https://doi.org/10.31234/osf.io/akzwj
 
