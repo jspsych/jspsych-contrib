@@ -1,0 +1,17 @@
+{
+  "name": "js-meye-extension",
+  "version": "1.0.0",
+  "description": "This extension collects pupillometric data using mEye, a deep-learning model developed by Fabio Carrara. He made it to run on a website \r for public use at https://www.pupillometry.it/, and this a JsPsych adaptation to make it viable for use in research. After calibration, the extension runs behind the scenes just like any other extension. Webcam quality >= 720p and >= 30fps is recommended.",
+  "type": "module",
+  "main": "dist/index.browser.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"build": "rollup --config"
+  },
+  "keywords": [],
+  "author": "Adam Vasarhelyi",
+  "license": "ISC",
+  "dependencies": {
+	"@tensorflow/tfjs": ""
+  }
+}
