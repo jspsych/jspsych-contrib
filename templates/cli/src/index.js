@@ -100,7 +100,7 @@ inquirer
     gulp.task("renameDocsTemplate", function () {
       return gulp
         .src(`${repoRoot}/packages/${destPath}/docs/docs-template.md`)
-        .pipe(rename(`${answers.name}.md`))
+        .pipe(rename(`jspsych-${answers.name}.md`))
         .pipe(gulp.dest(`${repoRoot}/packages/${destPath}/docs`))
         .on("end", function () {
           deleteSync(`${repoRoot}/packages/${destPath}/docs/docs-template.md`);
