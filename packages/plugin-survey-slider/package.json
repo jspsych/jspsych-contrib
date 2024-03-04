@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-survey-slider",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Add several analogue scales on the same page for use in questionnaires",
   "type": "module",
   "main": "dist/index.cjs",
