@@ -1,7 +1,7 @@
 {
-  "name": "@jspsych-contrib/extension-touchscreen-buttons",
-  "version": "2.0.0",
-  "description": "",
+  "name": "@jspsych-contrib/extension-{name}",
+  "version": "0.0.1",
+  "description": "{description}",
   "unpkg": "dist/index.browser.min.js",
   "files": [
     "index.js",
@@ -14,14 +14,14 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
-    "directory": "packages/extension-touchscreen-buttons"
+    "directory": "packages/extension-{name}"
   },
-  "author": "Younes Strittmatter",
+  "author": "{author}",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-touchscreen-buttons",
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-{name}",
   "devDependencies": {
     "@jspsych/config": "^2.0.0",
     "jspsych": "^7.0.0"
