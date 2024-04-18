@@ -11,7 +11,7 @@ The plugin enables sending data collected by the experiment to DataPipe, which i
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-pipe@0.3">
+<script src="https://unpkg.com/@jspsych-contrib/plugin-pipe@0.3"></script>
 ```
 
 ### Via NPM

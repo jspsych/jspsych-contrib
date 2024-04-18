@@ -11,7 +11,7 @@ Fiser, J., & Aslin, R. N. (2001). Unsupervised statistical learning of higher-or
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-vsl-grid-scene@1.0.0">
+<script src="https://unpkg.com/@jspsych-contrib/plugin-vsl-grid-scene@1.0.0"></script>
 ```
 
 ### Via NPM
