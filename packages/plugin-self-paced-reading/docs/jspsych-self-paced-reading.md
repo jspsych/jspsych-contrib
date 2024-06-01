@@ -22,7 +22,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | mask_colour         | string   | "black"          | Mask colour                                     |
 | line_height         | number   | 80               | Line height for multiline text                  |
 | canvas_colour       | string   | "white"          | Canvas colour                                   |
-| canvas_size         | number[] | [1280 960]       | Canvas size                                     |
+| canvas_size         | number[] | [1280, 960]      | Canvas size                                     |
 | canvas_border       | string   | "0px solid black | Canvas border                                   |
 | canvas_clear_border | bool     | true             | Clear screen following final word in sentence   |
 | translate_origin    | bool     | false            | Translate coordinates to [0,0] at centre        |
