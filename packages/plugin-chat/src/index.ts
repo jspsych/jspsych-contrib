@@ -27,9 +27,19 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     // data saving
-    var trial_data = {
-      parameter_name: "parameter value",
-    };
+
+    let startTime = performance.now();
+
+    /*function getResponseTime(){
+      if (startTime) {
+        var endTime = performance.now();
+        var difference = endTime - startTime;
+        return difference;
+      }
+      else {
+        startTime = performance.now();
+      }
+    }*/
 
     this.jsPsych.pluginAPI.setTimeout(() => {
       display_element.querySelector<HTMLElement>(
@@ -68,22 +78,44 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       chatbotMessage.textContent = message;
       chatBox.appendChild(chatbotMessage);
       chatBox.scrollTop = chatBox.scrollHeight;
+      return message;
     }
 
-    // Function to handle sending user message
-    function sendMessage() {
+    // Function to handle sending user message, and recording times
+    const sendMessage = () => {
       const message = userInput.value.trim();
+
+      var subtrialDataParticipant = {
+        interlocutor: "Participant",
+        response: message,
+        rt: performance.now() - startTime,
+      };
+
+      var subtrialDataBot = {};
+
       if (message !== "") {
         addUserMessage(message);
-        // Here you would typically send the user message to your backend server for processing
-        // and receive a response from the chatbot, then call addChatbotMessage with the response
-        // For demonstration purposes, let's just mimic a simple response from the chatbot
-        setTimeout(function () {
-          addChatbotMessage("This is a response from the chatbot.");
-        }, 500);
+
+        startTime = performance.now();
+
+        var botMessage = addChatbotMessage(`I reject ${message}! You are wrong!`);
+
+        subtrialDataBot = {
+          interlocutor: "Bot",
+          response: botMessage,
+          rt: performance.now() - startTime,
+        };
+
         userInput.value = "";
       }
-    }
+
+      //jumps over the finishTrial function to write data for each response for better readability.
+      this.jsPsych.data.write(subtrialDataParticipant);
+      this.jsPsych.data.write(subtrialDataBot);
+
+      //resets startTime to mark the beginning of the participant's response period.
+      startTime = performance.now();
+    };
 
     // Event listener for send button click
     sendButton.addEventListener("click", sendMessage);
@@ -96,7 +128,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     });
 
     submitButton.addEventListener("click", () => {
-      this.jsPsych.finishTrial(trial_data);
+      this.jsPsych.finishTrial({ endOfTrial: true });
     });
   }
 }
