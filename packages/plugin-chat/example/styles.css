@@ -17,9 +17,11 @@
 .chat-box {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 10px 20px 20px 20px; /* Reduced top padding to 10px */
+  margin-top: 10px; /* Add top margin to create space */
   overflow-y: auto;
   max-height: 90vh; /* Set a maximum height relative to the viewport height */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 /* Chat fields */

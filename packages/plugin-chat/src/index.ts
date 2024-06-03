@@ -59,7 +59,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     function addUserMessage(message) {
       const userMessage = document.createElement("div");
       userMessage.className = "user-message";
-      userMessage.textContent = message;
+      userMessage.innerHTML = message.replace(/\n/g, "<br>"); // Replace newline characters with <br> tags
       chatBox.appendChild(userMessage);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
@@ -68,11 +68,10 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     function addChatbotMessage(message) {
       const chatbotMessage = document.createElement("div");
       chatbotMessage.className = "chatbot-message";
-      chatbotMessage.textContent = message;
+      chatbotMessage.innerHTML = message.replace(/\n/g, "<br>"); // Replace newline characters with <br> tags
       chatBox.appendChild(chatbotMessage);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
-
     // Function to handle sending user message
     function sendMessage() {
       const message = userInput.value.trim();
