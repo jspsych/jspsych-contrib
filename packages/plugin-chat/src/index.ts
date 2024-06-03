@@ -84,39 +84,37 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       return message;
     }
 
+    function getResponseData(message, interlocutorName, startTimeData) {
+      return {
+        interlocutor: interlocutorName,
+        response: message,
+        rt: Math.round(performance.now() - startTimeData),
+      };
+    }
+
     // Function to handle sending user message, and recording times
     const sendMessage = () => {
       const message = userInput.value.trim();
 
-      var subtrialDataParticipant = {
-        interlocutor: "Participant",
-        response: message,
-        rt: performance.now() - startTime,
-      };
-
-      var subtrialDataBot = {};
+      //jumps over the finishTrial function to write data for each response for better readability.
+      this.jsPsych.data.write(getResponseData(message, "Participant", startTime));
 
       if (message !== "") {
         addUserMessage(message);
 
+        //resets startTime reference point for bot.
         startTime = performance.now();
 
+        //updates html text while also returning the bot message
         var botMessage = addChatbotMessage(`I reject ${message}! You are wrong!`);
 
-        subtrialDataBot = {
-          interlocutor: "Bot",
-          response: botMessage,
-          rt: performance.now() - startTime,
-        };
+        //jumps over the finishTrial function to write data for each response for better readability.
+        this.jsPsych.data.write(getResponseData(botMessage, "Bot", startTime));
 
         userInput.value = "";
       }
 
-      //jumps over the finishTrial function to write data for each response for better readability.
-      this.jsPsych.data.write(subtrialDataParticipant);
-      this.jsPsych.data.write(subtrialDataBot);
-
-      //resets startTime to mark the beginning of the participant's response period.
+      //resets startTime reference point to mark the beginning of the participant's next response period.
       startTime = performance.now();
     };
 
