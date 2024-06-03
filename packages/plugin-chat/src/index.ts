@@ -7,6 +7,18 @@ const info = <const>{
       type: ParameterType.INT, // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
       default: undefined,
     },
+    open_ai_api_key: {
+      type: ParameterType.KEY,
+      default: undefined,
+    },
+    subject_prompt: {
+      type: ParameterType.STRING,
+      default: "",
+    },
+    ai_prompt: {
+      type: ParameterType.STRING,
+      default: "",
+    },
   },
 };
 
