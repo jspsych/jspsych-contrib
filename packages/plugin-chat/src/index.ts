@@ -49,11 +49,14 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     var transcript = [];
     var html = `<div class="chat-container">
-    <div class="chat-box" id="chat-box"></div>
-    <input type="text" id="user-input" placeholder="Type your message...">
-    <button id="send-btn">Send</button>
-    <button id="submit-btn">Submit</button>
-</div>`;
+      <div class="chat-box" id="chat-box"></div>
+
+      <div class="chat-fields">
+        <textarea type="text" id="user-input" placeholder="Type your message..."></textarea>
+        <button id="send-btn">Send</button>
+        <button id="submit-btn">Submit</button>
+      </div>
+    </div>`;
 
     display_element.innerHTML = html;
 
@@ -66,7 +69,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     function addUserMessage(message) {
       const userMessage = document.createElement("div");
       userMessage.className = "user-message";
-      userMessage.textContent = message;
+      userMessage.innerHTML = message.replace(/\n/g, "<br>"); // Replace newline characters with <br> tags
       chatBox.appendChild(userMessage);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
@@ -75,7 +78,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     function addChatbotMessage(message) {
       const chatbotMessage = document.createElement("div");
       chatbotMessage.className = "chatbot-message";
-      chatbotMessage.textContent = message;
+      chatbotMessage.innerHTML = message.replace(/\n/g, "<br>"); // Replace newline characters with <br> tags
       chatBox.appendChild(chatbotMessage);
       chatBox.scrollTop = chatBox.scrollHeight;
       return message;
@@ -121,9 +124,12 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     sendButton.addEventListener("click", sendMessage);
 
     // Event listener for Enter key press
-    userInput.addEventListener("keypress", function (event) {
+    userInput.addEventListener("keydown", function (event) {
       if (event.key === "Enter") {
-        sendMessage();
+        if (!event.shiftKey) {
+          event.preventDefault(); // Prevent default behavior of adding new line
+          sendMessage();
+        }
       }
     });
 
