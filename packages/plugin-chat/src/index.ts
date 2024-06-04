@@ -1,5 +1,5 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
-import OpenAI from "openai";
+// import OpenAI from "openai"; archived backend server
 
 const info = <const>{
   name: "chat",
@@ -56,7 +56,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     // Setting up Variables
     let startTime = performance.now();
     let messages_sent = 0;
-    const openai = new OpenAI({ apiKey: trial.openai_key, dangerouslyAllowBrowser: true });
+    // const openai = new OpenAI({ apiKey: trial.openai_key, dangerouslyAllowBrowser: true }); ARCHIVED - backend server
     // Setting up HTML
     // might want to fix the chat page backgrond to stay similar
     // include a prompting feature that displays a prompt in the middle of the page
@@ -101,7 +101,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         const botResponse = `Responding to ${message}, I think...`;
         const gptPrompt = trial.ai_prompt + message;
         try {
-          const response = await this.fetchGPT(gptPrompt, openai, trial.ai_model);
+          const response = await this.fetchGPT(gptPrompt, trial.ai_model);
           const responseContent = response.message.content;
           this.addMessage("chatbot", responseContent, chatBox);
         } catch (error) {
@@ -143,14 +143,30 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     this.addMessage("prompt", trial.subject_prompt, chatBox);
   }
 
-  async fetchGPT(prompt, openai, ai_model) {
-    const completion = await openai.chat.completions.create({
-      messages: [{ role: "system", content: prompt }],
-      model: ai_model,
+  // ARCHIVED - no backend server code
+  // async fetchGPT(prompt, openai, ai_model) {
+  //   const completion = await openai.chat.completions.create({
+  //     messages: [{ role: "system", content: prompt }],
+  //     model: ai_model,
+  //   });
+
+  //   console.log(completion.choices[0]);
+  //   return completion.choices[0];
+  // }
+
+  async fetchGPT(prompt, ai_model) {
+    // do nothing with openai
+    const response = await fetch("http://localhost:3000/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt, ai_model }),
     });
 
-    console.log(completion.choices[0]);
-    return completion.choices[0];
+    const data = await response.json();
+    console.log(data);
+    return data;
   }
 
   // user, chatbot, prompt
