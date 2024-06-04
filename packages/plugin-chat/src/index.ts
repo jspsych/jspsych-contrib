@@ -1,16 +1,21 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
+import OpenAI from "openai";
 
 const info = <const>{
   name: "chat",
   parameters: {
     // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
-    open_ai_api_key: {
+    openai_key: {
       type: ParameterType.KEY,
       default: undefined,
     },
     ai_prompt: {
       type: ParameterType.STRING,
       default: "",
+    },
+    ai_model: {
+      type: ParameterType.STRING,
+      default: "gpt-3.5-turbo-16k",
     },
     subject_prompt: {
       type: ParameterType.STRING,
@@ -51,6 +56,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     // Setting up Variables
     let startTime = performance.now();
     let messages_sent = 0;
+    const openai = new OpenAI({ apiKey: trial.openai_key, dangerouslyAllowBrowser: true });
     // Setting up HTML
     // might want to fix the chat page backgrond to stay similar
     // include a prompting feature that displays a prompt in the middle of the page
@@ -71,7 +77,6 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     </div>`;
 
     display_element.innerHTML = html;
-
     const chatBox = display_element.querySelector("#chat-box") as HTMLElement;
     const userInput = display_element.querySelector("#user-input") as HTMLInputElement;
     const sendButton = display_element.querySelector("#send-btn") as HTMLButtonElement;
@@ -79,7 +84,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     // Setting up Trial Logic
     // Function to handle logic of sending user message, and data collection
-    const sendMessage = () => {
+    const sendMessage = async () => {
       const message = userInput.value.trim();
 
       //jumps over the finishTrial function to write data for each response for better readability.
@@ -87,18 +92,25 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
       if (message !== "") {
         this.addMessage("user", message, chatBox);
+        userInput.value = "";
 
         //resets startTime reference point for bot.
         startTime = performance.now();
 
         //updates html text while also returning the bot message
         const botResponse = `Responding to ${message}, I think...`;
-        this.addMessage("chatbot", botResponse, chatBox);
+        const gptPrompt = trial.ai_prompt + message;
+        try {
+          const response = await this.fetchGPT(gptPrompt, openai, trial.ai_model);
+          const responseContent = response.message.content;
+          this.addMessage("chatbot", responseContent, chatBox);
+        } catch (error) {
+          console.error("Error:", error);
+          this.addMessage("chatbot", "Error: Failed to get response from ChatGPT", chatBox);
+        }
 
         //jumps over the finishTrial function to write data for each response for better readability.
         this.jsPsych.data.write(this.getResponseData(botResponse, "Bot", startTime));
-
-        userInput.value = "";
 
         messages_sent++; // testing one possible implementation, will need to adjust how this is implemented
         if (messages_sent === trial.additional_prompt_trigger) {
@@ -129,6 +141,16 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     // Setting up Trial
     this.addMessage("prompt", trial.subject_prompt, chatBox);
+  }
+
+  async fetchGPT(prompt, openai, ai_model) {
+    const completion = await openai.chat.completions.create({
+      messages: [{ role: "system", content: prompt }],
+      model: ai_model,
+    });
+
+    console.log(completion.choices[0]);
+    return completion.choices[0];
   }
 
   // user, chatbot, prompt
