@@ -42,24 +42,6 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     let startTime = performance.now();
 
-    /*function getResponseTime(){
-      if (startTime) {
-        var endTime = performance.now();
-        var difference = endTime - startTime;
-        return difference;
-      }
-      else {
-        startTime = performance.now();
-      }
-    }*/
-
-    this.jsPsych.pluginAPI.setTimeout(() => {
-      display_element.querySelector<HTMLElement>(
-        "#jspsych-html-keyboard-response-stimulus"
-      ).style.visibility = "hidden";
-    }, 5000);
-
-    var transcript = [];
     var html = `<div class="chat-container">
       <div class="chat-box" id="chat-box"></div>
 
@@ -118,7 +100,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         startTime = performance.now();
 
         //updates html text while also returning the bot message
-        var botMessage = addChatbotMessage(`I reject ${message}! You are wrong!`);
+        var botMessage = addChatbotMessage(`Responding to ${message}, I think...`);
 
         //jumps over the finishTrial function to write data for each response for better readability.
         this.jsPsych.data.write(getResponseData(botMessage, "Bot", startTime));
