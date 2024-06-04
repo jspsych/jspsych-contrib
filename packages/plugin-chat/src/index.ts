@@ -3,21 +3,31 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 const info = <const>{
   name: "chat",
   parameters: {
-    parameter_name: {
-      type: ParameterType.INT, // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
-      default: undefined,
-    },
+    // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
     open_ai_api_key: {
       type: ParameterType.KEY,
       default: undefined,
+    },
+    ai_prompt: {
+      type: ParameterType.STRING,
+      default: "",
     },
     subject_prompt: {
       type: ParameterType.STRING,
       default: "",
     },
-    ai_prompt: {
+    chat_field_placeholder: {
+      type: ParameterType.STRING,
+      default: "Type your message...",
+    },
+    additional_prompts: {
+      // need to figure out how to implement this
       type: ParameterType.STRING,
       default: "",
+    },
+    additional_prompt_trigger: {
+      type: ParameterType.INT,
+      default: 10000,
     },
   },
 };
@@ -38,17 +48,25 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    // data saving
-
+    // Setting up Variables
     let startTime = performance.now();
+    let messages_sent = 0;
+    // Setting up HTML
+    // might want to fix the chat page backgrond to stay similar
+    // include a prompting feature that displays a prompt in the middle of the page
+    // create a chat buble around the other message from bot
+    var html =
+      `<div class="chat-page">
+      <div class="chat-container">
+        <div class="chat-box" id="chat-box"></div>
 
-    var html = `<div class="chat-container">
-      <div class="chat-box" id="chat-box"></div>
-
-      <div class="chat-fields">
-        <textarea type="text" id="user-input" placeholder="Type your message..."></textarea>
-        <button id="send-btn">Send</button>
-        <button id="submit-btn">Submit</button>
+        <div class="chat-fields">
+          <textarea type="text" id="user-input" placeholder="` +
+      trial.chat_field_placeholder +
+      `"></textarea>
+          <button id="send-btn">Send</button>
+          <button id="submit-btn">Submit</button>
+        </div>
       </div>
     </div>`;
 
@@ -59,53 +77,33 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     const sendButton = display_element.querySelector("#send-btn") as HTMLButtonElement;
     const submitButton = display_element.querySelector("#submit-btn") as HTMLButtonElement;
 
-    // Function to add user message to the chat box
-    function addUserMessage(message) {
-      const userMessage = document.createElement("div");
-      userMessage.className = "user-message";
-      userMessage.innerHTML = message.replace(/\n/g, "<br>"); // Replace newline characters with <br> tags
-      chatBox.appendChild(userMessage);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    // Function to add chatbot message to the chat box
-    function addChatbotMessage(message) {
-      const chatbotMessage = document.createElement("div");
-      chatbotMessage.className = "chatbot-message";
-      chatbotMessage.innerHTML = message.replace(/\n/g, "<br>"); // Replace newline characters with <br> tags
-      chatBox.appendChild(chatbotMessage);
-      chatBox.scrollTop = chatBox.scrollHeight;
-      return message;
-    }
-
-    function getResponseData(message, interlocutorName, startTimeData) {
-      return {
-        interlocutor: interlocutorName,
-        response: message,
-        rt: Math.round(performance.now() - startTimeData),
-      };
-    }
-
-    // Function to handle sending user message, and recording times
+    // Setting up Trial Logic
+    // Function to handle logic of sending user message, and data collection
     const sendMessage = () => {
       const message = userInput.value.trim();
 
       //jumps over the finishTrial function to write data for each response for better readability.
-      this.jsPsych.data.write(getResponseData(message, "Participant", startTime));
+      this.jsPsych.data.write(this.getResponseData(message, "Participant", startTime));
 
       if (message !== "") {
-        addUserMessage(message);
+        this.addMessage("user", message, chatBox);
 
         //resets startTime reference point for bot.
         startTime = performance.now();
 
         //updates html text while also returning the bot message
-        var botMessage = addChatbotMessage(`Responding to ${message}, I think...`);
+        const botResponse = `Responding to ${message}, I think...`;
+        this.addMessage("chatbot", botResponse, chatBox);
 
         //jumps over the finishTrial function to write data for each response for better readability.
-        this.jsPsych.data.write(getResponseData(botMessage, "Bot", startTime));
+        this.jsPsych.data.write(this.getResponseData(botResponse, "Bot", startTime));
 
         userInput.value = "";
+
+        messages_sent++; // testing one possible implementation, will need to adjust how this is implemented
+        if (messages_sent === trial.additional_prompt_trigger) {
+          this.addMessage("prompt", trial.additional_prompts, chatBox);
+        }
       }
 
       //resets startTime reference point to mark the beginning of the participant's next response period.
@@ -128,6 +126,26 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     submitButton.addEventListener("click", () => {
       this.jsPsych.finishTrial({ endOfTrial: true });
     });
+
+    // Setting up Trial
+    this.addMessage("prompt", trial.subject_prompt, chatBox);
+  }
+
+  // user, chatbot, prompt
+  addMessage(sender, message, chatBox) {
+    const newMessage = document.createElement("div");
+    newMessage.className = sender + "-message";
+    newMessage.innerHTML = message.replace(/\n/g, "<br>"); // Replace newline characters with <br> tags
+    chatBox.appendChild(newMessage);
+    chatBox.scrollTop = chatBox.scrollHeight; // scroll a little bit higher
+  }
+
+  getResponseData(message, interlocutorName, startTimeData) {
+    return {
+      interlocutor: interlocutorName,
+      response: message,
+      rt: Math.round(performance.now() - startTimeData),
+    };
   }
 }
 

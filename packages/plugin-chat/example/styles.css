@@ -1,5 +1,12 @@
 /* styles.css */
 
+
+/* .chat-page {
+  background-color: #f7f7f7;
+  width: 100vh;
+  height: 100vh;
+} */
+
 /* Chat container */
 .chat-container {
   position: fixed;
@@ -89,4 +96,11 @@
   max-width: 70%; 
   word-wrap: break-word; 
   text-align: left; 
+}
+
+.prompt-message {
+  border-radius: 10px;
+  background-color: #faf39d; 
+  padding: 10px;
+  margin: 5px;
 }

@@ -16,9 +16,10 @@
 
     const trial = {
       type: jsPsychChat,
-      parameter_name: "TESTING",
-      parameter_name2: "abc",
-
+      chat_field_placeholder: "be nice...",
+      subject_prompt: "Welcome to this trial.",
+      additional_prompts: "Now do this...",
+      additional_prompt_trigger: 4,
     }
 
     jsPsych.run([trial]);
