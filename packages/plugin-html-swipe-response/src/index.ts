@@ -216,14 +216,22 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
         trial.swipe_animation_duration / 1000
       }s ease-in`;
-      setPosition({ x: -trial.swipe_offscreen_coordinate, y: position.y, rotation: 0 });
+      setPosition({
+        x: -trial.swipe_offscreen_coordinate,
+        y: position.y,
+        rotation: -trial.swipe_animation_max_rotation,
+      });
     };
 
     const sendCardToRight = async () => {
       stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
         trial.swipe_animation_duration / 1000
       }s ease-in`;
-      setPosition({ x: trial.swipe_offscreen_coordinate, y: position.y, rotation: 0 });
+      setPosition({
+        x: trial.swipe_offscreen_coordinate,
+        y: position.y,
+        rotation: trial.swipe_animation_max_rotation,
+      });
     };
 
     // after a valid response, the stimulus will have the CSS class 'responded'
@@ -344,7 +352,7 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
           end_trial();
         }
       }
-    }
+    };
 
     let keyboardListener;
 
