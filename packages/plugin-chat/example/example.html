@@ -14,13 +14,25 @@
       },
     });
 
+    // Declaring the prompts necessary
+    prompts = [
+      {
+        prompt: "Welcome to this trial",
+        role: "prompt",
+        message_trigger: 0,
+      },
+      {
+        prompt: "Triggers on 10000 timer_trigger",
+        message_trigger: 10000,
+        timer_trigger: 10000,
+      }
+    ]
+
     const trial = {
       type: jsPsychChat,
       ai_prompt: "Pretend you are a baby and say googoo gaga when responding to this plebian: ",
       chat_field_placeholder: "be nice...",
-      subject_prompt: "Welcome to this trial.",
-      additional_prompts: "Now do this...",
-      additional_prompt_trigger: 4,
+      additional_prompts: prompts,
     }
 
     jsPsych.run([trial]);

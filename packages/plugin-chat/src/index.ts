@@ -1,5 +1,7 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
-// import OpenAI from "openai"; archived backend server
+
+// thinking about using an enum to define
+// -> system, user, bot
 
 const info = <const>{
   name: "chat",
@@ -13,22 +15,35 @@ const info = <const>{
       type: ParameterType.STRING,
       default: "gpt-3.5-turbo-16k",
     },
-    subject_prompt: {
-      type: ParameterType.STRING,
-      default: "",
-    },
     chat_field_placeholder: {
       type: ParameterType.STRING,
       default: "Type your message...",
     },
     additional_prompts: {
-      // need to figure out how to implement this
-      type: ParameterType.STRING,
-      default: "",
-    },
-    additional_prompt_trigger: {
-      type: ParameterType.INT,
-      default: 10000,
+      type: ParameterType.COMPLEX,
+      array: true,
+      pretty_name: "Additional Prompts",
+      default: undefined,
+      nested: {
+        prompt: {
+          // prompt to pass into
+          type: ParameterType.STRING,
+          default: "",
+        },
+        role: {
+          // "prompt", "bot", "bot-fetch"
+          type: ParameterType.STRING,
+          default: "prompt",
+        },
+        message_trigger: {
+          type: ParameterType.INT,
+          default: undefined,
+        },
+        timer_trigger: {
+          type: ParameterType.INT,
+          default: undefined,
+        },
+      },
     },
   },
 };
@@ -46,19 +61,22 @@ type Info = typeof info;
 class ChatPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private prompt: {}[];
+  private researcher_prompts: {}[];
+  private messages_sent: number;
+  private timer_start: number;
 
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     // Setting up Variables
     let startTime = performance.now();
-    let messages_sent = 0;
+    this.timer_start = performance.now();
     this.prompt = [{ role: "system", content: trial.ai_prompt }];
+    this.researcher_prompts = trial.additional_prompts;
+    this.messages_sent = 0;
 
-    // const openai = new OpenAI({ apiKey: trial.openai_key, dangerouslyAllowBrowser: true }); ARCHIVED - backend server
     // Setting up HTML
     // might want to fix the chat page backgrond to stay similar
-    // include a prompting feature that displays a prompt in the middle of the page
     // create a chat buble around the other message from bot
     var html =
       `<div class="chat-page">
@@ -95,6 +113,8 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
         //resets startTime reference point for bot.
         startTime = performance.now();
+
+        // Error catching for chatGPT response
         try {
           const response = await this.fetchGPT(this.prompt, trial.ai_model);
           const responseContent = response.message.content;
@@ -107,10 +127,9 @@ class ChatPlugin implements JsPsychPlugin<Info> {
           this.addMessage("chatbot", "Error: Failed to get response from ChatGPT", chatBox);
         }
 
-        messages_sent++; // testing one possible implementation, will need to adjust how this is implemented
-        if (messages_sent === trial.additional_prompt_trigger) {
-          this.addMessage("prompt", trial.additional_prompts, chatBox);
-        }
+        // inc messages and check researcher prompts
+        this.messages_sent += 1;
+        this.checkResearcherPrompts(chatBox);
       }
 
       //resets startTime reference point to mark the beginning of the participant's next response period.
@@ -135,7 +154,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     });
 
     // Setting up Trial
-    this.addMessage("prompt", trial.subject_prompt, chatBox);
+    this.checkResearcherPrompts(chatBox);
   }
 
   // Call to backend
@@ -182,6 +201,26 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     newMessage.innerHTML = message.replace(/\n/g, "<br>");
     chatBox.appendChild(newMessage);
     chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  checkResearcherPrompts(chatBox): void {
+    this.researcher_prompts = this.researcher_prompts.filter((researcher_prompt) => {
+      const time_elapsed = performance.now() - this.timer_start;
+      if (!("message_trigger" in researcher_prompt) && !("timer_trigger" in researcher_prompt)) {
+        console.error("Missing required property in researcher prompt:", researcher_prompt);
+        return false; // Remove this item from the array to prevent future errors
+      }
+
+      if (
+        this.messages_sent >= researcher_prompt["message_trigger"] ||
+        time_elapsed >= researcher_prompt["timer_trigger"]
+      ) {
+        // if case to check if it's equal to bot or prompt or bot_fetch
+        this.addMessage(researcher_prompt["role"], researcher_prompt["prompt"], chatBox);
+        return false; // Remove this item from the array
+      }
+      return true; // Keep this item in the array
+    });
   }
 
   getResponseData(message, interlocutorName, startTimeData) {
