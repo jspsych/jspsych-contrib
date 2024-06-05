@@ -120,7 +120,7 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
         buttons = trial.button_html;
       } else {
         console.error(
-          "Error in html-multi-response plugin. The length of the button_html array does not equal the length of the button_choices array"
+          "Error in html-swipe-response plugin. The length of the button_html array does not equal the length of the button_choices array"
         );
       }
     } else {
@@ -129,15 +129,15 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       }
     }
 
-    html += '<div id="jspsych-html-multi-response-btngroup">';
+    html += '<div id="jspsych-html-swipe-response-btngroup">';
     for (var i = 0; i < trial.button_choices.length; i++) {
       var str = buttons[i].replace(/%choice%/g, trial.button_choices[i]);
       html +=
-        '<div class="jspsych-html-multi-response-button" style="display: inline-block; margin:' +
+        '<div class="jspsych-html-swipe-response-button" style="display: inline-block; margin:' +
         trial.margin_vertical +
         " " +
         trial.margin_horizontal +
-        '" id="jspsych-html-multi-response-button-' +
+        '" id="jspsych-html-swipe-response-button-' +
         i +
         '" data-choice="' +
         i +
