@@ -5,7 +5,9 @@ const info = <const>{
   name: "chat",
   parameters: {
     // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
+
     openai_key: {
+      // unnecessary parameter because need to include within
       type: ParameterType.KEY,
       default: undefined,
     },
@@ -49,6 +51,7 @@ type Info = typeof info;
  */
 class ChatPlugin implements JsPsychPlugin<Info> {
   static info = info;
+  private messages: {}[];
 
   constructor(private jsPsych: JsPsych) {}
 
@@ -56,6 +59,8 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     // Setting up Variables
     let startTime = performance.now();
     let messages_sent = 0;
+    this.messages = [{ role: "system", content: trial.ai_prompt }];
+
     // const openai = new OpenAI({ apiKey: trial.openai_key, dangerouslyAllowBrowser: true }); ARCHIVED - backend server
     // Setting up HTML
     // might want to fix the chat page backgrond to stay similar
@@ -93,24 +98,22 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       if (message !== "") {
         this.addMessage("user", message, chatBox);
         userInput.value = "";
+        this.updatePrompt(message, "user");
 
         //resets startTime reference point for bot.
         startTime = performance.now();
-
-        //updates html text while also returning the bot message
-        const botResponse = `Responding to ${message}, I think...`;
-        const gptPrompt = trial.ai_prompt + message;
         try {
-          const response = await this.fetchGPT(gptPrompt, trial.ai_model);
+          const response = await this.fetchGPT(this.messages, trial.ai_model);
           const responseContent = response.message.content;
+
           this.addMessage("chatbot", responseContent, chatBox);
+          this.updatePrompt(responseContent, "assistant");
+          //jumps over the finishTrial function to write data for each response for better readability.
+          this.jsPsych.data.write(this.getResponseData(responseContent, "Bot", startTime));
         } catch (error) {
           console.error("Error:", error);
           this.addMessage("chatbot", "Error: Failed to get response from ChatGPT", chatBox);
         }
-
-        //jumps over the finishTrial function to write data for each response for better readability.
-        this.jsPsych.data.write(this.getResponseData(botResponse, "Bot", startTime));
 
         messages_sent++; // testing one possible implementation, will need to adjust how this is implemented
         if (messages_sent === trial.additional_prompt_trigger) {
@@ -143,29 +146,21 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     this.addMessage("prompt", trial.subject_prompt, chatBox);
   }
 
-  // ARCHIVED - no backend server code
-  // async fetchGPT(prompt, openai, ai_model) {
-  //   const completion = await openai.chat.completions.create({
-  //     messages: [{ role: "system", content: prompt }],
-  //     model: ai_model,
-  //   });
+  updatePrompt(message, role): void {
+    const newMessage = { role: role, content: message };
+    this.messages.push(newMessage);
+  }
 
-  //   console.log(completion.choices[0]);
-  //   return completion.choices[0];
-  // }
-
-  async fetchGPT(prompt, ai_model) {
-    // do nothing with openai
+  async fetchGPT(messages, ai_model) {
     const response = await fetch("http://localhost:3000/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ prompt, ai_model }),
+      body: JSON.stringify({ messages, ai_model }),
     });
 
     const data = await response.json();
-    console.log(data);
     return data;
   }
 
