@@ -22,15 +22,21 @@
         message_trigger: 0,
       },
       {
-        prompt: "Triggers on 10000 timer_trigger",
+        prompt: "Triggers on 100 'timer_trigger'",
+        role: "chatbot",
         message_trigger: 10000,
-        timer_trigger: 10000,
+        timer_trigger: 100,
+      },
+      {
+        prompt: "YELL AT ME AND SAY SOMETHING MEAN",
+        role: "chatbot-fetch",
+        message_trigger: 3,
       }
     ]
 
     const trial = {
       type: jsPsychChat,
-      ai_prompt: "Pretend you are a baby and say googoo gaga when responding to this plebian: ",
+      ai_prompt: "Pretend to be a comedian and include a joke at the end of every response",
       chat_field_placeholder: "be nice...",
       additional_prompts: prompts,
     }

@@ -9,7 +9,7 @@ const info = <const>{
     // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
     ai_prompt: {
       type: ParameterType.STRING,
-      default: "",
+      default: undefined,
     },
     ai_model: {
       type: ParameterType.STRING,
@@ -17,7 +17,7 @@ const info = <const>{
     },
     chat_field_placeholder: {
       type: ParameterType.STRING,
-      default: "Type your message...",
+      default: "Type your message here...",
     },
     additional_prompts: {
       type: ParameterType.COMPLEX,
@@ -60,10 +60,11 @@ type Info = typeof info;
  */
 class ChatPlugin implements JsPsychPlugin<Info> {
   static info = info;
-  private prompt: {}[];
-  private researcher_prompts: {}[];
-  private messages_sent: number;
-  private timer_start: number;
+  private prompt: {}[]; // keeps track of prompt to send to GPT
+  private researcher_prompts: {}[]; // keeps track of researcher's prompts that need to be displayed
+  private messages_sent: number; // notes number of messages sent to calculate prompts
+  private timer_start: number; // notes beginning of session in order to calculate prompts
+  private ai_model: string; // keeps track of model
 
   constructor(private jsPsych: JsPsych) {}
 
@@ -74,6 +75,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     this.prompt = [{ role: "system", content: trial.ai_prompt }];
     this.researcher_prompts = trial.additional_prompts;
     this.messages_sent = 0;
+    this.ai_model = trial.ai_model;
 
     // Setting up HTML
     // might want to fix the chat page backgrond to stay similar
@@ -116,10 +118,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
         // Error catching for chatGPT response
         try {
-          const response = await this.fetchGPT(this.prompt, trial.ai_model);
-          const responseContent = response.message.content;
-
-          this.addMessage("chatbot", responseContent, chatBox);
+          const responseContent = await this.updateAndProcessGPT(chatBox);
           //jumps over the finishTrial function to write data for each response for better readability.
           this.jsPsych.data.write(this.getResponseData(responseContent, "Bot", startTime));
         } catch (error) {
@@ -158,17 +157,26 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   }
 
   // Call to backend
-  async fetchGPT(messages, ai_model) {
-    const response = await fetch("http://localhost:3000/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ messages, ai_model }),
-    });
+  async fetchGPT(messages) {
+    try {
+      const response = await fetch("http://localhost:3000/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages, ai_model: this.ai_model }), // Corrected JSON structure
+      });
 
-    const data = await response.json();
-    return data;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching GPT data:", error);
+      throw error; // Rethrow the error after logging it
+    }
   }
 
   // updates prompts behind the scenes when we add messages to the screen
@@ -203,20 +211,42 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
+  async updateAndProcessGPT(chatBox) {
+    const response = await this.fetchGPT(this.prompt);
+    const responseContent = response.message.content;
+    console.log(responseContent);
+    this.addMessage("chatbot", responseContent, chatBox);
+    return responseContent;
+  }
+
   checkResearcherPrompts(chatBox): void {
     this.researcher_prompts = this.researcher_prompts.filter((researcher_prompt) => {
-      const time_elapsed = performance.now() - this.timer_start;
+      // Removes prompts with no possibility of triggering
       if (!("message_trigger" in researcher_prompt) && !("timer_trigger" in researcher_prompt)) {
         console.error("Missing required property in researcher prompt:", researcher_prompt);
-        return false; // Remove this item from the array to prevent future errors
+        return false;
       }
 
+      // Checking conditions to trigger the prompt
+      const time_elapsed = performance.now() - this.timer_start;
       if (
         this.messages_sent >= researcher_prompt["message_trigger"] ||
         time_elapsed >= researcher_prompt["timer_trigger"]
       ) {
-        // if case to check if it's equal to bot or prompt or bot_fetch
-        this.addMessage(researcher_prompt["role"], researcher_prompt["prompt"], chatBox);
+        // Checking with prompt to trigger
+        switch (researcher_prompt["role"]) {
+          case "chatbot":
+          case "prompt": // want these cases to have the same functionality
+            this.addMessage(researcher_prompt["role"], researcher_prompt["prompt"], chatBox);
+            break;
+          case "chatbot-fetch":
+            this.addMessage("user", researcher_prompt["prompt"], chatBox);
+            this.updateAndProcessGPT(chatBox);
+            break;
+          default:
+            console.error("Incorrect role for prompting");
+        }
+
         return false; // Remove this item from the array
       }
       return true; // Keep this item in the array

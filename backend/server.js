@@ -20,7 +20,6 @@ app.post("/api/chat", async (req, res) => {
       {
         model: ai_model,
         messages: messages,
-        // messages: [{ role: "system", content: prompt }],
       },
       {
         headers: {
