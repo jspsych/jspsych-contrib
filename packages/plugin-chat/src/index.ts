@@ -5,12 +5,6 @@ const info = <const>{
   name: "chat",
   parameters: {
     // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
-
-    openai_key: {
-      // unnecessary parameter because need to include within
-      type: ParameterType.KEY,
-      default: undefined,
-    },
     ai_prompt: {
       type: ParameterType.STRING,
       default: "",
@@ -51,7 +45,7 @@ type Info = typeof info;
  */
 class ChatPlugin implements JsPsychPlugin<Info> {
   static info = info;
-  private messages: {}[];
+  private prompt: {}[];
 
   constructor(private jsPsych: JsPsych) {}
 
@@ -59,7 +53,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     // Setting up Variables
     let startTime = performance.now();
     let messages_sent = 0;
-    this.messages = [{ role: "system", content: trial.ai_prompt }];
+    this.prompt = [{ role: "system", content: trial.ai_prompt }];
 
     // const openai = new OpenAI({ apiKey: trial.openai_key, dangerouslyAllowBrowser: true }); ARCHIVED - backend server
     // Setting up HTML
@@ -98,16 +92,14 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       if (message !== "") {
         this.addMessage("user", message, chatBox);
         userInput.value = "";
-        this.updatePrompt(message, "user");
 
         //resets startTime reference point for bot.
         startTime = performance.now();
         try {
-          const response = await this.fetchGPT(this.messages, trial.ai_model);
+          const response = await this.fetchGPT(this.prompt, trial.ai_model);
           const responseContent = response.message.content;
 
           this.addMessage("chatbot", responseContent, chatBox);
-          this.updatePrompt(responseContent, "assistant");
           //jumps over the finishTrial function to write data for each response for better readability.
           this.jsPsych.data.write(this.getResponseData(responseContent, "Bot", startTime));
         } catch (error) {
@@ -146,11 +138,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     this.addMessage("prompt", trial.subject_prompt, chatBox);
   }
 
-  updatePrompt(message, role): void {
-    const newMessage = { role: role, content: message };
-    this.messages.push(newMessage);
-  }
-
+  // Call to backend
   async fetchGPT(messages, ai_model) {
     const response = await fetch("http://localhost:3000/api/chat", {
       method: "POST",
@@ -164,13 +152,36 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     return data;
   }
 
-  // user, chatbot, prompt
-  addMessage(sender, message, chatBox) {
+  // updates prompts behind the scenes when we add messages to the screen
+  private updatePrompt(message, role): void {
+    const newMessage = { role: role, content: message };
+    this.prompt.push(newMessage);
+  }
+
+  // Handles updates to system with the prompt and to the screen
+  addMessage(role, message, chatBox) {
     const newMessage = document.createElement("div");
-    newMessage.className = sender + "-message";
-    newMessage.innerHTML = message.replace(/\n/g, "<br>"); // Replace newline characters with <br> tags
+
+    // Handles logic of updating prompts and error checking
+    switch (role) {
+      case "user":
+        this.updatePrompt(message, "user");
+        break;
+      case "chatbot":
+        this.updatePrompt(message, "assistant");
+        break;
+      case "prompt": // no need to update prompt
+        break;
+      default:
+        console.error("Incorrect role");
+        return;
+    }
+
+    // Handles shared logic of printing to screen
+    newMessage.className = role + "-message";
+    newMessage.innerHTML = message.replace(/\n/g, "<br>");
     chatBox.appendChild(newMessage);
-    chatBox.scrollTop = chatBox.scrollHeight; // scroll a little bit higher
+    chatBox.scrollTop = chatBox.scrollHeight;
   }
 
   getResponseData(message, interlocutorName, startTimeData) {
