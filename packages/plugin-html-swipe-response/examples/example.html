@@ -45,8 +45,8 @@
 			stimulus: `
 				<h3>Directions</h3>
 				<p>
-					Swipe right or press the right arrow key if the displayed image is a hot dog.
-					Swipe left or press the left arrow key otherwise.
+					Swipe right, press the Yes button, or press the right arrow key if the displayed image is a hot dog.
+					Swipe left, press the No button, or press the left arrow key otherwise.
 				</p>
 				<p>Press any key to continue</p>
 				`
@@ -66,9 +66,10 @@
 					stimulus: jsPsych.timelineVariable('target'),
 					prompt: `
 						<p>Is this a hot dog?</p>
-						<p>If yes, swipe right or press the right arrow key.</p>
-						<p>If no, swipe left or press the left arrow key.</p>
+						<p>If yes, swipe right, press the right arrow key, or click the Yes button.</p>
+						<p>If no, swipe left, press the left arrow key, or click the No button.</p>
 					`,
+					button_choices: ["No", "Yes"],
 				},
 			],
 			timeline_variables: allTargets,

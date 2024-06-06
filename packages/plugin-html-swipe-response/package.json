@@ -42,6 +42,7 @@
     "jspsych": "^7.0.0"
   },
   "dependencies": {
+    "canvas": "^2.11.2",
     "interactjs": "^1.10.17"
   }
 }
