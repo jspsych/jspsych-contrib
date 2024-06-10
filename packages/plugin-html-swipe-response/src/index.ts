@@ -383,6 +383,7 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       const trial_data = {
         rt: response.rt,
         stimulus: trial.stimulus,
+        button_response: response.button,
         keyboard_response: response.key,
         swipe_response: response.swipe,
         response_source: response.source,
@@ -429,6 +430,7 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     const keyboard_data = {
       stimulus: trial.stimulus,
       rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
+      button_response: null,
       keyboard_response: this.jsPsych.pluginAPI.getValidKey(trial.keyboard_choices),
       swipe_response: null,
       response_source: "keyboard",
@@ -437,12 +439,30 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     const swipe_data = {
       stimulus: trial.stimulus,
       rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
+      button_response: null,
       swipe_response: Math.random() < 0.5 ? "left" : "right",
       keyboard_response: null,
       response_source: "swipe",
     };
 
-    const default_data = Math.random() < 0.5 ? keyboard_data : swipe_data;
+    const button_data = {
+      stimulus: trial.stimulus,
+      rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
+      button_response: this.jsPsych.randomization.randomInt(0, trial.button_choices.length - 1),
+      swipe_response: null,
+      keyboard_response: null,
+      response_source: "button",
+    };
+
+    let default_data;
+
+    if (Math.random() < 0.33) {
+      default_data = keyboard_data;
+    } else if (Math.random() < 0.5) {
+      default_data = swipe_data;
+    } else {
+      default_data = button_data;
+    }
 
     const data = this.jsPsych.pluginAPI.mergeSimulationData(default_data, simulation_options);
 
@@ -492,8 +512,13 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
             delta: { x: pageX, y: 0 },
           });
         }, data.rt);
-      } else {
+      } else if (data.keyboard_response !== null) {
         this.jsPsych.pluginAPI.pressKey(data.keyboard_response, data.rt);
+      } else {
+        this.jsPsych.pluginAPI.clickTarget(
+          display_element.querySelector(`div[data-choice="${data.button_response}"] button`),
+          data.rt
+        );
       }
     }
   }
