@@ -9,7 +9,7 @@ This plugin implements the same functionality as the html-keyboard-response plug
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-html-keyboard-response-raf@1.0.1">
+<script src="https://unpkg.com/@jspsych-contrib/plugin-html-keyboard-response-raf@1.0.1"></script>
 ```
 
 ### Via NPM

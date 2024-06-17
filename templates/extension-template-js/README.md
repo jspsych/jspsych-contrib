@@ -9,7 +9,7 @@
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/{full-name}@1.0.0">
+<script src="https://unpkg.com/@jspsych-contrib/{full-name}@1.0.0"></script>
 ```
 
 ## Compatibility

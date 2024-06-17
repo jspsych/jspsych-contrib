@@ -20,8 +20,8 @@ If you use the plugin, please make sure to also load the JSZip library as indica
 ### In browser
 
 ```js
-<script src="https://unpkg.com/jszip/dist/jszip.js"/>
-<script src="https://unpkg.com/@jspsych-contrib/plugin-nextcloud-filedrop@1.0.0"/>
+<script src="https://unpkg.com/jszip/dist/jszip.js"/></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-nextcloud-filedrop@1.0.0"/></script>
 ```
 
 ### Via NPM

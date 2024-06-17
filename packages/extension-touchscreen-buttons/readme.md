@@ -10,7 +10,7 @@ This extension displays touch buttons that allow the subject to respond to stimu
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/extension-touchscreen-buttons@2.0.0">
+<script src="https://unpkg.com/@jspsych-contrib/extension-touchscreen-buttons@2.0.0"></script>
 ```
 
 ## Compatibility
