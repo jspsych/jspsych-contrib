@@ -2,6 +2,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 // thinking about using an enum to define
 // -> system, user, bot
+// naming convention a little weird because of chatGPT calling models "assistants"
 
 const info = <const>{
   name: "chat",
@@ -31,7 +32,7 @@ const info = <const>{
           default: "",
         },
         role: {
-          // "prompt", "bot", "bot-fetch"
+          // "prompt", "chatbot", "chatbot-fetch"
           type: ParameterType.STRING,
           default: "prompt",
         },
@@ -41,7 +42,7 @@ const info = <const>{
         },
         timer_trigger: {
           type: ParameterType.INT,
-          default: undefined,
+          default: 1000000,
         },
       },
     },

@@ -42,5 +42,9 @@
     "projects": [
       "<rootDir>/packages/*"
     ]
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "openai": "^4.47.3"
   }
 }
