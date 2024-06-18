@@ -208,6 +208,12 @@ describe("plugin-html-swipe-response", () => {
       " responded"
     );
 
+    document
+      .querySelectorAll("#jspsych-html-swipe-response-button-0 > button")
+      .forEach((element) => {
+        expect(element.className).toBe(" responded");
+      });
+
     await expectRunning();
   });
 
@@ -248,6 +254,40 @@ describe("plugin-html-swipe-response", () => {
     jest.advanceTimersByTime(500);
 
     await expectFinished();
+  });
+
+  test("should disable buttons on keyboard response", async () => {
+    await startTimeline([
+      {
+        type: htmlSwipeResponse,
+        stimulus: "this is html",
+        keyboard_choices: ["f", "j"],
+        swipe_animation_duration: 500,
+      },
+    ]);
+
+    pressKey("f");
+
+    document.querySelectorAll(".jspsych-html-swipe-response-button button").forEach((element) => {
+      expect(element.getAttribute("disabled")).toBe("disabled");
+    });
+  });
+
+  test("should disable buttons on click response", async () => {
+    await startTimeline([
+      {
+        type: htmlSwipeResponse,
+        stimulus: "this is html",
+        button_choices: ["button-choice-0", "button-choice-1"],
+        response_ends_trial: false,
+      },
+    ]);
+
+    clickTarget(document.querySelector("#jspsych-html-swipe-response-button-0"));
+
+    document.querySelectorAll(".jspsych-html-swipe-response-button button").forEach((element) => {
+      expect(element.getAttribute("disabled")).toBe("disabled");
+    });
   });
 });
 

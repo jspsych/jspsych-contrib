@@ -236,15 +236,28 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
 
     // after a valid response, the stimulus will have the CSS class 'responded'
     // which can be used to provide visual feedback that a response was recorded
-    const toggle_css_respond = () => {
+    const toggle_css_respond = (idx: number) => {
+      //responded class for stimulus
       display_element.querySelector("#jspsych-html-swipe-response-stimulus").className +=
         " responded";
+
+      //responded class for button
+      document
+        .querySelectorAll(`#jspsych-html-swipe-response-button-${idx} > button`)
+        .forEach((element) => {
+          element.className += " responded";
+        });
+    };
+
+    // disable all the buttons after a response
+    const disable_buttons = () => {
+      document.querySelectorAll(".jspsych-html-swipe-response-button button").forEach((element) => {
+        element.setAttribute("disabled", "disabled");
+      });
     };
 
     // function to handle swipe responses by the subject
     const after_swipe_response = (left_or_right) => {
-      toggle_css_respond();
-
       if (left_or_right !== null) {
         // measure rt
         const end_time = performance.now();
@@ -257,6 +270,10 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
           swipe: left_or_right,
           source: "swipe",
         };
+
+        const idx = left_or_right === "left" ? 0 : 1;
+        toggle_css_respond(idx);
+        disable_buttons();
       }
 
       if (trial.response_ends_trial) {
@@ -294,8 +311,6 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
 
     // function to handle responses by the subject
     const after_keyboard_response = (info) => {
-      toggle_css_respond();
-
       // only record the first response
       if (response.key == null) {
         response = {
@@ -307,10 +322,13 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       }
 
       if (response.key.toLowerCase() == trial.keyboard_choices[0].toLowerCase()) {
+        toggle_css_respond(0);
         sendCardToLeft();
       } else if (response.key.toLowerCase() == trial.keyboard_choices[1].toLowerCase()) {
+        toggle_css_respond(1);
         sendCardToRight();
       }
+      disable_buttons();
 
       if (trial.response_ends_trial) {
         if (trial.swipe_animation_duration > 0) {
@@ -323,8 +341,6 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
 
     // function to handle responses by the subject
     const after_button_response = (choice) => {
-      toggle_css_respond();
-
       // measure rt
       var end_time = performance.now();
       var rt = Math.round(end_time - start_time);
@@ -332,12 +348,8 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       response.rt = rt;
       response.source = "button";
 
-      // disable all the buttons after a response
-      var btns = document.querySelectorAll(".jspsych-html-swipe-response-button button");
-      for (var i = 0; i < btns.length; i++) {
-        //btns[i].removeEventListener('click');
-        btns[i].setAttribute("disabled", "disabled");
-      }
+      toggle_css_respond(parseInt(choice));
+      disable_buttons();
 
       if (response.button === 0) {
         sendCardToLeft();
@@ -383,6 +395,7 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       const trial_data = {
         rt: response.rt,
         stimulus: trial.stimulus,
+        button_response: response.button,
         keyboard_response: response.key,
         swipe_response: response.swipe,
         response_source: response.source,
@@ -429,6 +442,7 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     const keyboard_data = {
       stimulus: trial.stimulus,
       rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
+      button_response: null,
       keyboard_response: this.jsPsych.pluginAPI.getValidKey(trial.keyboard_choices),
       swipe_response: null,
       response_source: "keyboard",
@@ -437,12 +451,30 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     const swipe_data = {
       stimulus: trial.stimulus,
       rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
+      button_response: null,
       swipe_response: Math.random() < 0.5 ? "left" : "right",
       keyboard_response: null,
       response_source: "swipe",
     };
 
-    const default_data = Math.random() < 0.5 ? keyboard_data : swipe_data;
+    const button_data = {
+      stimulus: trial.stimulus,
+      rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
+      button_response: this.jsPsych.randomization.randomInt(0, trial.button_choices.length - 1),
+      swipe_response: null,
+      keyboard_response: null,
+      response_source: "button",
+    };
+
+    let default_data;
+
+    if (Math.random() < 0.33) {
+      default_data = keyboard_data;
+    } else if (Math.random() < 0.5) {
+      default_data = swipe_data;
+    } else {
+      default_data = button_data;
+    }
 
     const data = this.jsPsych.pluginAPI.mergeSimulationData(default_data, simulation_options);
 
@@ -492,8 +524,13 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
             delta: { x: pageX, y: 0 },
           });
         }, data.rt);
-      } else {
+      } else if (data.keyboard_response !== null) {
         this.jsPsych.pluginAPI.pressKey(data.keyboard_response, data.rt);
+      } else {
+        this.jsPsych.pluginAPI.clickTarget(
+          display_element.querySelector(`div[data-choice="${data.button_response}"] button`),
+          data.rt
+        );
       }
     }
   }
