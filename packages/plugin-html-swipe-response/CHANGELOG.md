@@ -1,5 +1,13 @@
 # @jspsych-contrib/plugin-html-swipe-response
 
+## 1.1.1
+
+### Patch Changes
+
+- [#112](https://github.com/jspsych/jspsych-contrib/pull/112) [`a5753c8fc0921a959ca4d6c2b60290fad7fdc668`](https://github.com/jspsych/jspsych-contrib/commit/a5753c8fc0921a959ca4d6c2b60290fad7fdc668) Thanks [@KruttikaBhat](https://github.com/KruttikaBhat)! - Bug fix: Added button response value to trial data.
+  Bug fix: Disabled buttons for all response modalities. Added tests for this (keyboard and button).
+  Additional feature: Added responded css class to the buttons based on the choice. Modified test to include this.
+
 ## 1.1.0
 
 ### Minor Changes
