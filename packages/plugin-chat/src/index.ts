@@ -91,7 +91,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       trial.chat_field_placeholder +
       `"></textarea>
           <button id="send-btn">Send</button>
-          <button id="submit-btn">Submit</button>
+          <button id="submit-btn">Continue</button>
         </div>
       </div>
     </div>`;

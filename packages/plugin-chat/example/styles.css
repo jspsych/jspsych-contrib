@@ -1,15 +1,27 @@
 /* styles.css */
 
-
-/* .chat-page {
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Arial, sans-serif;
   background-color: #f7f7f7;
-  width: 100vh;
-  height: 100vh;
-} */
+  overflow-x: hidden;
+}
+
+.chat-page {
+  /* width: 100vw;
+  height: 100vh; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Ensure no overflow */
+}
 
 /* Chat container */
 .chat-container {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
@@ -18,28 +30,42 @@
   background-color: #f7f7f7;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Prevent overflow */
+  padding: 20px;
+
 }
 
 /* Chat box */
 .chat-box {
   display: flex;
   flex-direction: column;
-  padding: 10px 20px 20px 20px; 
+  padding: 10px 30px 20px 20px; /* Not sure about the direction of these */
   margin-top: 10px; 
   overflow-y: auto;
   max-height: 90vh; 
   box-sizing: border-box; 
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-box::before {
+  content: '';
+  display: block;
+  height: 20px; /* Adjust this value to control the extra space */
+  width: 100%;
+  flex-shrink: 0; /* Ensure the space doesn't collapse */
 }
 
 /* Chat fields */
 .chat-fields {
   padding: 10px;
-  border-top: 1px solid #ddd;
   display: flex;
-  max-height: 10vh;
-  margin-bottom: 20px;
-  margin-left: 20px;
-  margin-right: 20px;
+  /* overflow: hidden; 
+  width: calc(100% - 40px); 
+  box-sizing: border-box;  */
+  width: 100%; /* Occupy full width of .chat-box */
+  box-sizing: border-box;
+  align-items: center; /* Center items vertically */
 }
 
 /* User input */
@@ -88,7 +114,7 @@
 /* Chatbot message */
 .chatbot-message {
   align-self: flex-start; 
-  background-color: #f7f7f7; 
+  background-color: #d1e7dd; /* Change this color to something contrasting */
   color: black; 
   padding: 10px;
   margin: 5px;
