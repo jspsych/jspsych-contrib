@@ -96,6 +96,33 @@ html, body {
   width: auto; 
   font-family: inherit;
   font-size: inherit;
+  transition: background-color 0.3s ease; /* Add a transition for hover effect */
+}
+
+/* Hover effect for send button */
+#send-btn:hover {
+  background-color: #45A049; /* Slightly darker shade on hover */
+}
+
+/* Submit button */
+#continue-btn {
+  background-color: #FF5722; /* Different background color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-left: 10px;
+  width: auto; 
+  font-family: inherit;
+  font-size: inherit;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow for distinction */
+  transition: background-color 0.3s ease; /* Add a transition for hover effect */
+}
+
+/* Hover effect for submit button */
+#continue-btn:hover {
+  background-color: #E64A19; /* Darker shade on hover */
 }
 
 /* User message */

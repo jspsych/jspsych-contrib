@@ -27,6 +27,9 @@ const info = <const>{
         timer_trigger: {
           type: ParameterType.INT,
         },
+        message_trigger: {
+          type: ParameterType.INT,
+        },
         prompt: {
           type: ParameterType.STRING,
         },
@@ -95,7 +98,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       trial.chat_field_placeholder +
       `"></textarea>
           <button id="send-btn">Send</button>
-          <button id="submit-btn" style="display: none;">Continue</button>
+          <button id="continue-btn" style="display: none;">Continue</button>
         </div>
       </div>
     </div>`;
@@ -104,7 +107,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     const chatBox = display_element.querySelector("#chat-box") as HTMLElement;
     const userInput = display_element.querySelector("#user-input") as HTMLInputElement;
     const sendButton = display_element.querySelector("#send-btn") as HTMLButtonElement;
-    const submitButton = display_element.querySelector("#submit-btn") as HTMLButtonElement;
+    const continueButton = display_element.querySelector("#continue-btn") as HTMLButtonElement;
 
     // Setting up Trial Logic
     // Function to handle logic of sending user message, and data collection
@@ -118,7 +121,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         await this.updateAndProcessGPT(chatBox);
         // inc messages and check researcher prompts
         this.messages_sent += 1;
-        this.checkResearcherPrompts(chatBox);
+        this.checkResearcherPrompts(chatBox, continueButton);
       }
     };
 
@@ -135,17 +138,12 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       }
     });
 
-    setTimeout(() => {
-      console.log("timeout passes");
-      submitButton.style.display = "block";
-    }, trial.continue_button.timer_trigger);
-
-    submitButton.addEventListener("click", () => {
+    continueButton.addEventListener("click", () => {
       this.jsPsych.finishTrial({ chatLogs: this.prompt });
     });
 
     // Setting up Trial
-    this.checkResearcherPrompts(chatBox);
+    this.checkResearcherPrompts(chatBox, continueButton);
   }
 
   initializeTrialVariables(trial: TrialType<Info>) {
@@ -156,10 +154,20 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     // sets prompt
     this.prompt = [];
     this.updatePrompt(trial.ai_prompt, "system");
-    // sets researcher prompts
-    this.researcher_prompts = trial.additional_prompts;
+    // sets researcher prompts and removes any that can't trigger
+    this.researcher_prompts = trial.additional_prompts.filter((researcher_prompt) => {
+      if (!("message_trigger" in researcher_prompt) && !("timer_trigger" in researcher_prompt)) {
+        console.error("Missing required property in researcher prompt:", researcher_prompt);
+        return false;
+      }
+      return true;
+    });
+
     const continue_button = trial.continue_button;
-    continue_button["role"] = "prompt";
+    if (!("message_trigger" in continue_button) && !("timer_trigger" in continue_button)) {
+      console.error("Missing required property in continue prompt, will never display");
+    }
+    continue_button["role"] = "continue";
     this.researcher_prompts.push(continue_button);
   }
 
@@ -194,9 +202,8 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   }
 
   // Handles updates to system with the prompt and to the screen
-  addMessage(role, message, chatBox) {
+  addMessage(role, message, chatBox, continueButton?) {
     const newMessage = document.createElement("div");
-
     // Handles logic of updating prompts and error checking
     switch (role) {
       case "user":
@@ -205,8 +212,15 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       case "chatbot":
         this.updatePrompt(message, "assistant");
         break;
-      case "prompt": // no need to update prompt
-        // this.updatePrompt(message, "researcher"); not sure if this would mess up logs
+      case "continue":
+        if (!continueButton) {
+          console.error("No continue button to display");
+          return;
+        }
+        role = "prompt"; // use same style as promp
+        continueButton.style.display = "block";
+        break;
+      case "prompt":
         break;
       default:
         console.error("Incorrect role");
@@ -231,14 +245,8 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     }
   }
 
-  checkResearcherPrompts(chatBox): void {
+  checkResearcherPrompts(chatBox, continueButton): void {
     this.researcher_prompts = this.researcher_prompts.filter((researcher_prompt) => {
-      // Removes prompts with no possibility of triggering
-      if (!("message_trigger" in researcher_prompt) && !("timer_trigger" in researcher_prompt)) {
-        console.error("Missing required property in researcher prompt:", researcher_prompt);
-        return false;
-      }
-
       // Checking conditions to trigger the prompt
       const time_elapsed = performance.now() - this.timer_start; // could instead keep subtracting from time_elapsed
       if (
@@ -254,6 +262,9 @@ class ChatPlugin implements JsPsychPlugin<Info> {
           case "chatbot-fetch":
             this.addMessage("user", researcher_prompt["prompt"], chatBox);
             this.updateAndProcessGPT(chatBox);
+            break;
+          case "continue":
+            this.addMessage("continue", researcher_prompt["prompt"], chatBox, continueButton);
             break;
           default:
             console.error("Incorrect role for prompting");
