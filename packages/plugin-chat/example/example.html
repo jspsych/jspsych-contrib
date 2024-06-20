@@ -22,12 +22,7 @@
         message_trigger: 0,
         timer_trigger: 1000000,
       },
-      // {
-      //   prompt: "Triggers on 100 'timer_trigger'",
-      //   role: "chatbot",
-      //   message_trigger: 10000,
-      //   timer_trigger: 100,
-      // },
+
       {
         prompt: "YELL AT ME AND SAY SOMETHING MEAN",
         role: "chatbot-fetch",
@@ -36,10 +31,16 @@
       }
     ]
 
+    continue_button = {
+      timer_trigger: 5000,
+      prompt: "does this work?",
+    }
+
     const trial = {
       type: jsPsychChat,
       ai_prompt: "Pretend to be a comedian and include a joke at the end of every response",
       chat_field_placeholder: "be nice...",
+      continue_button: continue_button,
       additional_prompts: prompts,
     }
 

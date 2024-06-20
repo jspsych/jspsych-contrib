@@ -20,12 +20,25 @@ const info = <const>{
       type: ParameterType.STRING,
       default: "Type your message here...",
     },
+    continue_button: {
+      type: ParameterType.COMPLEX,
+      default: {},
+      nested: {
+        timer_trigger: {
+          type: ParameterType.INT,
+        },
+        prompt: {
+          type: ParameterType.STRING,
+        },
+      },
+    },
     additional_prompts: {
       type: ParameterType.COMPLEX,
       array: true,
       pretty_name: "Additional Prompts",
       default: undefined,
       nested: {
+        // at one point used nested others used parameters
         prompt: {
           // prompt to pass into
           type: ParameterType.STRING,
@@ -70,28 +83,19 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    // Setting up Variables
-    let startTime = performance.now();
-    this.timer_start = performance.now();
-    this.prompt = [{ role: "system", content: trial.ai_prompt }];
-    this.researcher_prompts = trial.additional_prompts;
-    this.messages_sent = 0;
-    this.ai_model = trial.ai_model;
+    this.initializeTrialVariables(trial);
 
-    // Setting up HTML
-    // might want to fix the chat page backgrond to stay similar
-    // create a chat buble around the other message from bot
     var html =
       `<div class="chat-page">
       <div class="chat-container">
         <div class="chat-box" id="chat-box"></div>
 
-        <div class="chat-fields">
+        <div class="chat-fields"> 
           <textarea type="text" id="user-input" placeholder="` +
       trial.chat_field_placeholder +
       `"></textarea>
           <button id="send-btn">Send</button>
-          <button id="submit-btn">Continue</button>
+          <button id="submit-btn" style="display: none;">Continue</button>
         </div>
       </div>
     </div>`;
@@ -107,33 +111,15 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     const sendMessage = async () => {
       const message = userInput.value.trim();
 
-      //jumps over the finishTrial function to write data for each response for better readability.
-      this.jsPsych.data.write(this.getResponseData(message, "Participant", startTime));
-
       if (message !== "") {
         this.addMessage("user", message, chatBox);
         userInput.value = "";
 
-        //resets startTime reference point for bot.
-        startTime = performance.now();
-
-        // Error catching for chatGPT response
-        try {
-          const responseContent = await this.updateAndProcessGPT(chatBox);
-          //jumps over the finishTrial function to write data for each response for better readability.
-          this.jsPsych.data.write(this.getResponseData(responseContent, "Bot", startTime));
-        } catch (error) {
-          console.error("Error:", error);
-          this.addMessage("chatbot", "Error: Failed to get response from ChatGPT", chatBox);
-        }
-
+        await this.updateAndProcessGPT(chatBox);
         // inc messages and check researcher prompts
         this.messages_sent += 1;
         this.checkResearcherPrompts(chatBox);
       }
-
-      //resets startTime reference point to mark the beginning of the participant's next response period.
-      startTime = performance.now();
     };
 
     // Event listener for send button click
@@ -149,12 +135,32 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       }
     });
 
+    setTimeout(() => {
+      console.log("timeout passes");
+      submitButton.style.display = "block";
+    }, trial.continue_button.timer_trigger);
+
     submitButton.addEventListener("click", () => {
-      this.jsPsych.finishTrial({ endOfTrial: true });
+      this.jsPsych.finishTrial({ chatLogs: this.prompt });
     });
 
     // Setting up Trial
     this.checkResearcherPrompts(chatBox);
+  }
+
+  initializeTrialVariables(trial: TrialType<Info>) {
+    this.timer_start = performance.now();
+    this.messages_sent = 0;
+    this.ai_model = trial.ai_model;
+
+    // sets prompt
+    this.prompt = [];
+    this.updatePrompt(trial.ai_prompt, "system");
+    // sets researcher prompts
+    this.researcher_prompts = trial.additional_prompts;
+    const continue_button = trial.continue_button;
+    continue_button["role"] = "prompt";
+    this.researcher_prompts.push(continue_button);
   }
 
   // Call to backend
@@ -182,7 +188,8 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
   // updates prompts behind the scenes when we add messages to the screen
   private updatePrompt(message, role): void {
-    const newMessage = { role: role, content: message };
+    const time = Math.round(performance.now());
+    const newMessage = { role: role, content: message, time: time };
     this.prompt.push(newMessage);
   }
 
@@ -199,6 +206,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         this.updatePrompt(message, "assistant");
         break;
       case "prompt": // no need to update prompt
+        // this.updatePrompt(message, "researcher"); not sure if this would mess up logs
         break;
       default:
         console.error("Incorrect role");
@@ -213,11 +221,14 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   }
 
   async updateAndProcessGPT(chatBox) {
-    const response = await this.fetchGPT(this.prompt);
-    const responseContent = response.message.content;
-    console.log(responseContent);
-    this.addMessage("chatbot", responseContent, chatBox);
-    return responseContent;
+    try {
+      const response = await this.fetchGPT(this.prompt);
+      const responseContent = response.message.content;
+      this.addMessage("chatbot", responseContent, chatBox);
+      return responseContent;
+    } catch (error) {
+      this.addMessage("chatbot", "error fetching bot response", chatBox);
+    }
   }
 
   checkResearcherPrompts(chatBox): void {
@@ -229,7 +240,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       }
 
       // Checking conditions to trigger the prompt
-      const time_elapsed = performance.now() - this.timer_start;
+      const time_elapsed = performance.now() - this.timer_start; // could instead keep subtracting from time_elapsed
       if (
         this.messages_sent >= researcher_prompt["message_trigger"] ||
         time_elapsed >= researcher_prompt["timer_trigger"]
@@ -252,14 +263,6 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       }
       return true; // Keep this item in the array
     });
-  }
-
-  getResponseData(message, interlocutorName, startTimeData) {
-    return {
-      interlocutor: interlocutorName,
-      response: message,
-      rt: Math.round(performance.now() - startTimeData),
-    };
   }
 }
 
