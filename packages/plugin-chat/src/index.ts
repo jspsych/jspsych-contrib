@@ -90,6 +90,9 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     var html =
       `<div class="chat-page">
+      <div class="bot-title">
+        <h1 class="bot-title-text">Adorabot</h1>
+      </div>
       <div class="chat-container">
         <div class="chat-box" id="chat-box"></div>
 

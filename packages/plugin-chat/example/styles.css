@@ -17,7 +17,28 @@ html, body {
   justify-content: center;
   align-items: center;
   overflow: hidden; /* Ensure no overflow */
+  padding-top: 60px; /* Adjust based on the height of .bot-title */
 }
+
+
+.bot-title {
+  height: 80px;
+  width: 100%;
+  background-color: #706EA0;
+  padding: 10px;
+  position: fixed; /* Fix the position to the top */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Ensure it stays above other content */
+}
+
+.bot-title-text {
+  color: black;
+  font-weight: 1000;
+  font-size: 40px;
+  text-align: center;
+}
+
 
 /* Chat container */
 .chat-container {
@@ -32,7 +53,7 @@ html, body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   overflow: hidden; /* Prevent overflow */
   padding: 20px;
-
+  box-sizing: border-box;
 }
 
 /* Chat box */
@@ -106,8 +127,8 @@ html, body {
 
 /* Submit button */
 #continue-btn {
-  background-color: #FF5722; /* Different background color */
-  color: white;
+  background-color: #FF914D; /* Different background color */
+  color: black;
   padding: 10px 20px;
   border: none;
   border-radius: 30px;
@@ -118,11 +139,12 @@ html, body {
   font-size: inherit;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow for distinction */
   transition: background-color 0.3s ease; /* Add a transition for hover effect */
+  font-style: italic;
 }
 
 /* Hover effect for submit button */
 #continue-btn:hover {
-  background-color: #E64A19; /* Darker shade on hover */
+  background-color: #e28043; /* Darker shade on hover */
 }
 
 /* User message */
@@ -154,6 +176,7 @@ html, body {
 .prompt-message {
   border-radius: 10px;
   background-color: #faf39d; 
+  color: #6B503F;
   padding: 10px;
   margin: 5px;
 }
