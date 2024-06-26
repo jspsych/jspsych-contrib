@@ -205,15 +205,16 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   }
 
   // Handles updates to system with the prompt and to the screen
-  addMessage(role, message, chatBox, continueButton?) {
-    const newMessage = document.createElement("div");
+  async addMessage(role, message, chatBox, continueButton?) {
     // Handles logic of updating prompts and error checking
     switch (role) {
       case "user":
         this.updatePrompt(message, "user");
         break;
-      case "chatbot":
+      case "chatbot": // make this appear a bit at a time
         this.updatePrompt(message, "assistant");
+        break;
+      case "prompt": // same with this
         break;
       case "continue":
         if (!continueButton) {
@@ -223,28 +224,52 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         role = "prompt"; // use same style as promp
         continueButton.style.display = "block";
         break;
-      case "prompt":
-        break;
       default:
         console.error("Incorrect role");
         return;
     }
 
-    // Handles shared logic of printing to screen
-    newMessage.className = role + "-message";
-    newMessage.innerHTML = message.replace(/\n/g, "<br>");
-    chatBox.appendChild(newMessage);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    await this.typeMessage(role, message, chatBox);
+  }
+
+  private typeMessage(role, message, chatBox): Promise<void> {
+    return new Promise((resolve) => {
+      const newMessage = document.createElement("div");
+      newMessage.className = role + "-message";
+      newMessage.innerHTML = "";
+      chatBox.appendChild(newMessage);
+
+      if (role === "continue" || role === "user" || role === "prompt") {
+        newMessage.innerHTML = message.replace(/\n/g, "<br>");
+        chatBox.scrollTop = chatBox.scrollHeight;
+        resolve();
+      } else {
+        const sentences = message.split(/(?<=[.!?])\s+/); // Split message into sentences
+        let index = 0;
+
+        const interval = setInterval(() => {
+          if (index < sentences.length) {
+            newMessage.innerHTML +=
+              (index > 0 ? " " : "") + sentences[index].replace(/\n/g, "<br>");
+            chatBox.scrollTop = chatBox.scrollHeight;
+            index++;
+          } else {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 1000); // Adjust the interval time (in milliseconds) as needed
+      }
+    });
   }
 
   async updateAndProcessGPT(chatBox) {
     try {
       const response = await this.fetchGPT(this.prompt);
       const responseContent = response.message.content;
-      this.addMessage("chatbot", responseContent, chatBox);
+      await this.addMessage("chatbot", responseContent, chatBox);
       return responseContent;
     } catch (error) {
-      this.addMessage("chatbot", "error fetching bot response", chatBox);
+      await this.addMessage("chatbot", "error fetching bot response", chatBox);
     }
   }
 
