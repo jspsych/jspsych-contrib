@@ -18,14 +18,14 @@
     // Declaring the prompts necessary
     prompts = [
       {
-        prompt: "Welcome to this trial",
+        message: "Welcome to this trial",
         role: "prompt",
         message_trigger: 0,
         timer_trigger: 1000000,
       },
 
       {
-        prompt: "YELL AT ME AND SAY SOMETHING MEAN",
+        message: "YELL AT ME AND SAY SOMETHING MEAN",
         role: "chatbot-fetch",
         message_trigger: 3,
         timer_trigger: 1000000,
@@ -35,7 +35,12 @@
     continue_button = {
       timer_trigger: 1000000,
       message_trigger: 1,
-      prompt: "The continue button will appear in the bottom right corner, please continue when you feel ready",
+      message: "The continue button will appear in the bottom right corner, please continue when you feel ready",
+    }
+
+    prompt_chain = {
+      message_trigger: 1,
+      prompts: ["Summarize this response in Spanish", "Switch half of the sentences to English", "Add another paragraph onto the output explaining why you like bananas"],
     }
 
     const trial = {
@@ -43,6 +48,7 @@
       ai_prompt: "Pretend to be a comedian and include a joke at the end of every response",
       chat_field_placeholder: "be nice...",
       continue_button: continue_button,
+      prompt_chain: prompt_chain,
       additional_prompts: prompts,
     }
 

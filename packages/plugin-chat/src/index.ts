@@ -1,5 +1,7 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
+import { deepCopy } from "jspsych/dist/modules/utils";
 import { ChatCompletionStream } from "openai/lib/ChatCompletionStream";
+import { MessagesPage } from "openai/resources/beta/threads/messages";
 
 // thinking about using an enum to define
 // -> system, user, bot
@@ -31,7 +33,7 @@ const info = <const>{
         message_trigger: {
           type: ParameterType.INT,
         },
-        prompt: {
+        message: {
           type: ParameterType.STRING,
         },
       },
@@ -39,11 +41,10 @@ const info = <const>{
     additional_prompts: {
       type: ParameterType.COMPLEX,
       array: true,
-      pretty_name: "Additional Prompts",
       default: undefined,
       nested: {
         // at one point used nested others used parameters
-        prompt: {
+        message: {
           // prompt to pass into
           type: ParameterType.STRING,
           default: "",
@@ -60,6 +61,25 @@ const info = <const>{
         timer_trigger: {
           type: ParameterType.INT,
           default: 1000000,
+        },
+      },
+    },
+    prompt_chain: {
+      type: ParameterType.COMPLEX,
+      default: undefined,
+      nested: {
+        prompts: {
+          type: ParameterType.STRING,
+          array: true,
+          default: [],
+        },
+        message_trigger: {
+          type: ParameterType.INT,
+          default: undefined,
+        },
+        timer_trigger: {
+          type: ParameterType.INT,
+          default: 10000000,
         },
       },
     },
@@ -80,6 +100,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private prompt: {}[]; // keeps track of prompt to send to GPT
   private researcher_prompts: {}[]; // keeps track of researcher's prompts that need to be displayed
+  private prompt_chain: {};
   private messages_sent: number; // notes number of messages sent to calculate prompts
   private timer_start: number; // notes beginning of session in order to calculate prompts
   private ai_model: string; // keeps track of model
@@ -118,7 +139,13 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     const sendMessage = async () => {
       const message = userInput.value.trim();
 
-      if (message !== "") {
+      if (this.chainCondition() && message !== "") {
+        this.addMessage("user", message, chatBox);
+        userInput.value = "";
+        await this.chainPrompts(message, chatBox);
+        this.messages_sent += 1;
+        this.checkResearcherPrompts(chatBox, continueButton);
+      } else if (message !== "") {
         this.addMessage("user", message, chatBox);
         userInput.value = "";
 
@@ -173,16 +200,12 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     }
     continue_button["role"] = "continue";
     this.researcher_prompts.push(continue_button);
-  }
 
-  private waitForFiveSeconds() {
-    return new Promise((resolve) => {
-      setTimeout(resolve, 5000); // Resolve the promise after 5 seconds
-    });
+    this.prompt_chain = trial.prompt_chain;
   }
 
   // Call to backend
-  async fetchGPT(messages, newMessage) {
+  async fetchGPT(messages, newMessage?) {
     try {
       const response = await fetch("http://localhost:3000/api/chat", {
         method: "POST",
@@ -198,9 +221,12 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
       const runner = ChatCompletionStream.fromReadableStream(response.body);
 
-      runner.on("content", (delta, snapshot) => {
-        newMessage.innerHTML = snapshot.replace(/\n/g, "<br>");
-      });
+      if (newMessage) {
+        // prints to screen if specified, otherwise only fetch
+        runner.on("content", (delta, snapshot) => {
+          newMessage.innerHTML = snapshot.replace(/\n/g, "<br>");
+        });
+      }
 
       await runner.finalChatCompletion(); // waits before returning the actual content
       return runner["messages"][0]["content"];
@@ -250,18 +276,25 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  async updateAndProcessGPT(chatBox) {
+  // updates and processes to the screen
+  async updateAndProcessGPT(chatBox, prompt?) {
     const newMessage = document.createElement("div");
     newMessage.className = "chatbot" + "-message";
     newMessage.innerHTML = "";
     chatBox.appendChild(newMessage);
 
     try {
-      const response = await this.fetchGPT(this.prompt, newMessage);
+      var response = undefined;
+      if (prompt) response = await this.fetchGPT(prompt, newMessage);
+      // special case when wanting to prompt with own thing
+      else response = await this.fetchGPT(this.prompt, newMessage);
+
       chatBox.scrollTop = chatBox.scrollHeight;
       this.addMessage("chatbot", response, chatBox); // saves to prompt
+      return response;
     } catch (error) {
       this.addMessage("chatbot", "error fetching bot response", chatBox);
+      return "error fetching response";
     }
   }
 
@@ -277,14 +310,14 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         switch (researcher_prompt["role"]) {
           case "chatbot":
           case "prompt": // want these cases to have the same functionality
-            this.addMessage(researcher_prompt["role"], researcher_prompt["prompt"], chatBox);
+            this.addMessage(researcher_prompt["role"], researcher_prompt["message"], chatBox);
             break;
           case "chatbot-fetch":
-            this.addMessage("user", researcher_prompt["prompt"], chatBox);
+            this.addMessage("user", researcher_prompt["message"], chatBox);
             this.updateAndProcessGPT(chatBox);
             break;
           case "continue":
-            this.addMessage("continue", researcher_prompt["prompt"], chatBox, continueButton);
+            this.addMessage("continue", researcher_prompt["message"], chatBox, continueButton);
             break;
           default:
             console.error("Incorrect role for prompting");
@@ -294,6 +327,42 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       }
       return true; // Keep this item in the array
     });
+  }
+
+  private chainCondition() {
+    const time_elapsed = performance.now() - this.timer_start; // could instead keep subtracting from time_elapsed
+    if (
+      this.messages_sent >= this.prompt_chain["message_trigger"] ||
+      time_elapsed >= this.prompt_chain["timer_trigger"]
+    ) {
+      return true;
+    } else return false;
+  }
+
+  private async chainPrompts(message, chatBox) {
+    for (let i = 0; i < this.prompt_chain["prompts"].length; i++) {
+      var temp_prompt = [];
+
+      const prompt = this.prompt_chain["prompts"][i];
+      console.log("prompt", prompt);
+      const new_sys = {
+        role: "system",
+        content: prompt,
+      };
+      temp_prompt.push(new_sys);
+
+      const user_message = {
+        role: "user",
+        content: message,
+      };
+      temp_prompt.push(user_message);
+
+      if (i === this.prompt_chain["prompts"].length - 1) {
+        await this.updateAndProcessGPT(chatBox, temp_prompt);
+      } else message = await this.fetchGPT(temp_prompt); // Ensure to await if fetchGPT is asynchronous
+
+      console.log("asssistant message:", message);
+    }
   }
 }
 
