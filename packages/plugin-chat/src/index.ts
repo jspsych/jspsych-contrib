@@ -182,7 +182,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   }
 
   // Call to backend
-  async fetchGPT(messages) {
+  async fetchGPT(messages, newMessage) {
     try {
       const response = await fetch("http://localhost:3000/api/chat", {
         method: "POST",
@@ -197,21 +197,13 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       }
 
       const runner = ChatCompletionStream.fromReadableStream(response.body);
-      console.log(runner);
 
       runner.on("content", (delta, snapshot) => {
-        console.log(delta);
-        // or, in a browser, you might display like this:
-        // document.body.innerText += delta; // or:
-        // document.body.innerText = snapshot;
+        newMessage.innerHTML = snapshot.replace(/\n/g, "<br>");
       });
-      await this.waitForFiveSeconds();
-      console.log(runner);
-      console.dir(await runner.finalChatCompletion(), { depth: null });
 
-      // const data = await response.json();
-      // return data;
-      return "";
+      await runner.finalChatCompletion(); // waits before returning the actual content
+      return runner["messages"][0]["content"];
     } catch (error) {
       console.error("Error fetching GPT data:", error);
       throw error; // Rethrow the error after logging it
@@ -226,14 +218,15 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   }
 
   // Handles updates to system with the prompt and to the screen
-  async addMessage(role, message, chatBox, continueButton?) {
+  addMessage(role, message, chatBox, continueButton?) {
+    const newMessage = document.createElement("div");
     // Handles logic of updating prompts and error checking
     switch (role) {
+      case "chatbot": // writing to screen handled caller function
+        this.updatePrompt(message, "assistant");
+        return;
       case "user":
         this.updatePrompt(message, "user");
-        break;
-      case "chatbot": // make this appear a bit at a time
-        this.updatePrompt(message, "assistant");
         break;
       case "prompt": // same with this
         break;
@@ -250,50 +243,25 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         return;
     }
 
-    await this.typeMessage(role, message, chatBox);
-  }
-
-  private typeMessage(role, message, chatBox): Promise<void> {
-    return new Promise((resolve) => {
-      const newMessage = document.createElement("div");
-      newMessage.className = role + "-message";
-      newMessage.innerHTML = "";
-      chatBox.appendChild(newMessage);
-
-      if (role === "continue" || role === "user" || role === "prompt") {
-        newMessage.innerHTML = message.replace(/\n/g, "<br>");
-        chatBox.scrollTop = chatBox.scrollHeight;
-        resolve();
-      } else {
-        const sentences = message.split(/(?<=[.!?])\s+/); // Split message into sentences
-        let index = 0;
-
-        const interval = setInterval(() => {
-          if (index < sentences.length) {
-            newMessage.innerHTML +=
-              (index > 0 ? " " : "") + sentences[index].replace(/\n/g, "<br>");
-            chatBox.scrollTop = chatBox.scrollHeight;
-            index++;
-          } else {
-            clearInterval(interval);
-            resolve();
-          }
-        }, 1000); // Adjust the interval time (in milliseconds) as needed
-      }
-    });
+    newMessage.className = role + "-message";
+    newMessage.innerHTML = "";
+    chatBox.appendChild(newMessage);
+    newMessage.innerHTML = message.replace(/\n/g, "<br>");
+    chatBox.scrollTop = chatBox.scrollHeight;
   }
 
   async updateAndProcessGPT(chatBox) {
+    const newMessage = document.createElement("div");
+    newMessage.className = "chatbot" + "-message";
+    newMessage.innerHTML = "";
+    chatBox.appendChild(newMessage);
+
     try {
-      const response = await this.fetchGPT(this.prompt);
-      console.log(response);
-      // const responseContent = response.message.content;
-      const responseContent = "filling while testing";
-      await this.addMessage("chatbot", responseContent, chatBox);
-      return responseContent;
+      const response = await this.fetchGPT(this.prompt, newMessage);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      this.addMessage("chatbot", response, chatBox); // saves to prompt
     } catch (error) {
-      await this.addMessage("chatbot", "error fetching bot response", chatBox);
-      return "failing";
+      this.addMessage("chatbot", "error fetching bot response", chatBox);
     }
   }
 

@@ -28,22 +28,6 @@ app.post("/api/chat", async (req, res) => {
       res.write(chunk);
     }
     res.end();
-
-    // const response = await axios.post(
-    //   "https://api.openai.com/v1/chat/completions",
-    //   {
-    //     model: ai_model,
-    //     messages: messages,
-    //   },
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${OPENAI_API_KEY}`,
-    //       "Content-Type": "application/json",
-    //     },
-    //   }
-    // );
-
-    // res.json(response.data.choices[0]);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error processing request");
