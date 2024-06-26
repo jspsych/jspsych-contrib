@@ -1,4 +1,5 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
+import { ChatCompletionStream } from "openai/lib/ChatCompletionStream";
 
 // thinking about using an enum to define
 // -> system, user, bot
@@ -174,6 +175,12 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     this.researcher_prompts.push(continue_button);
   }
 
+  private waitForFiveSeconds() {
+    return new Promise((resolve) => {
+      setTimeout(resolve, 5000); // Resolve the promise after 5 seconds
+    });
+  }
+
   // Call to backend
   async fetchGPT(messages) {
     try {
@@ -189,8 +196,22 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      return data;
+      const runner = ChatCompletionStream.fromReadableStream(response.body);
+      console.log(runner);
+
+      runner.on("content", (delta, snapshot) => {
+        console.log(delta);
+        // or, in a browser, you might display like this:
+        // document.body.innerText += delta; // or:
+        // document.body.innerText = snapshot;
+      });
+      await this.waitForFiveSeconds();
+      console.log(runner);
+      console.dir(await runner.finalChatCompletion(), { depth: null });
+
+      // const data = await response.json();
+      // return data;
+      return "";
     } catch (error) {
       console.error("Error fetching GPT data:", error);
       throw error; // Rethrow the error after logging it
@@ -265,11 +286,14 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   async updateAndProcessGPT(chatBox) {
     try {
       const response = await this.fetchGPT(this.prompt);
-      const responseContent = response.message.content;
+      console.log(response);
+      // const responseContent = response.message.content;
+      const responseContent = "filling while testing";
       await this.addMessage("chatbot", responseContent, chatBox);
       return responseContent;
     } catch (error) {
       await this.addMessage("chatbot", "error fetching bot response", chatBox);
+      return "failing";
     }
   }
 
