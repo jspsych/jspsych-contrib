@@ -153,10 +153,12 @@ html, body {
 }
 
 .user-message, .chatbot-message, .system-prompt-message {
-  padding: 10px;
+  padding: 10px 15px;
   margin: 5px;
   margin-top: 15px;
-  border-radius: 10px;
+  border-radius: 15px;
+  position: relative;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .user-message, .chatbot-message {
@@ -182,4 +184,33 @@ html, body {
 .system-prompt-message {
   background-color: #faf39d; 
   color: #6B503F;
+}
+
+/* Add pseudo-elements for the speech bubble tails */
+.user-message::after, .chatbot-message::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+}
+
+/* Tail for user message */
+.user-message::after {
+  right: -10px;
+  bottom: 1px; /* Adjust this value to align the tail */
+  border-left-color: #4CAF50;
+  border-right: 0;
+  border-bottom: 0;
+  border-top: 20px solid transparent;
+}
+
+/* Tail for chatbot message */
+.chatbot-message::after {
+  left: -10px;
+  bottom: 1px; /* Adjust this value to align the tail */
+  border-right-color: #d1e7dd;
+  border-left: 0;
+  border-bottom: 0;
 }

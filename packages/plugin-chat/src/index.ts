@@ -6,6 +6,7 @@ import { ChatCompletionStream } from "openai/lib/ChatCompletionStream";
 // deleted chatbot-fetch
 // fixed error checking for null values message/timer_trigger, implemented null checking within trigger methods that check prompts
 // implementing dynamic prompting
+// bot naming feature
 
 const info = <const>{
   name: "chat",
@@ -22,6 +23,10 @@ const info = <const>{
     chat_field_placeholder: {
       type: ParameterType.STRING,
       default: "Type your message here...",
+    },
+    bot_name: {
+      type: ParameterType.STRING,
+      default: "Adora-bot",
     },
     continue_button: {
       type: ParameterType.COMPLEX,
@@ -118,7 +123,9 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     var html =
       `<div class="chat-page">
       <div class="bot-title">
-        <h1 class="bot-title-text">Adorabot</h1>
+        <h1 class="bot-title-text">` +
+      trial.bot_name +
+      `</h1>
       </div>
       <div class="chat-container">
         <div class="chat-box" id="chat-box"></div>
@@ -295,11 +302,8 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     try {
       var response = undefined;
       // allows to pass in non defined prompts
-      if (prompt)
-        response = await this.fetchGPT(
-          prompt,
-          newMessage
-        ); // special case when wanting to prompt with own thing
+      if (prompt) response = await this.fetchGPT(prompt, newMessage);
+      // special case when wanting to prompt with own thing
       else response = await this.fetchGPT(this.prompt, newMessage);
 
       chatBox.scrollTop = chatBox.scrollHeight;
