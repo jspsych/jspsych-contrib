@@ -48,7 +48,7 @@ const info = <const>{
           default: "",
         },
         role: {
-          // "prompt", "chatbot", "chatbot-fetch"
+          // "prompt", "chatbot-message", "chatbot-fetch"
           type: ParameterType.STRING,
           default: "prompt",
         },
@@ -252,6 +252,9 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       case "user":
         this.updatePrompt(message, "user");
         break;
+      case "chatbot-message":
+        role = "chatbot";
+        break;
       case "prompt": // same with this
         break;
       case "continue":
@@ -306,11 +309,11 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       ) {
         // Checking with prompt to trigger
         switch (researcher_prompt["role"]) {
-          case "chatbot":
+          case "chatbot-message":
           case "prompt": // want these cases to have the same functionality
             this.addMessage(researcher_prompt["role"], researcher_prompt["message"], chatBox);
             break;
-          case "chatbot-fetch":
+          case "chatbot-fetch": // want to phase it out
             this.addMessage("user", researcher_prompt["message"], chatBox);
             this.updateAndProcessGPT(chatBox);
             break;
@@ -342,7 +345,6 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       var temp_prompt = [];
 
       const prompt = this.prompt_chain["prompts"][i];
-      console.log("prompt", prompt);
       const new_sys = {
         role: "system",
         content: prompt,
@@ -355,11 +357,13 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       };
       temp_prompt.push(user_message);
 
+      console.log("current prompt and input:", temp_prompt);
+
       if (i === this.prompt_chain["prompts"].length - 1) {
         await this.updateAndProcessGPT(chatBox, temp_prompt);
       } else message = await this.fetchGPT(temp_prompt); // Ensure to await if fetchGPT is asynchronous
 
-      console.log("asssistant message:", message);
+      console.log("assistant message:", message);
     }
   }
 }
