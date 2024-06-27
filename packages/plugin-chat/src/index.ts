@@ -1,7 +1,5 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
-import { deepCopy } from "jspsych/dist/modules/utils";
 import { ChatCompletionStream } from "openai/lib/ChatCompletionStream";
-import { MessagesPage } from "openai/resources/beta/threads/messages";
 
 // thinking about using an enum to define
 // -> system, user, bot
