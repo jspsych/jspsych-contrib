@@ -30,7 +30,7 @@ const info = <const>{
     },
     continue_button: {
       type: ParameterType.COMPLEX,
-      default: {},
+      default: { message_trigger: 0 },
       nested: {
         timer_trigger: {
           type: ParameterType.INT,
@@ -194,16 +194,18 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     this.prompt = [];
     this.updatePrompt(trial.ai_prompt, "system");
     // sets researcher prompts and removes any that can't trigger
-    this.researcher_prompts = trial.additional_prompts.filter((researcher_prompt) => {
-      if (
-        researcher_prompt["message_trigger"] === null &&
-        researcher_prompt["timer_trigger"] === null
-      ) {
-        console.error("Missing required property in researcher prompt:", researcher_prompt);
-        return false;
-      }
-      return true;
-    });
+    this.researcher_prompts = trial.additional_prompts
+      ? trial.additional_prompts.filter((researcher_prompt) => {
+          if (
+            researcher_prompt["message_trigger"] === null &&
+            researcher_prompt["timer_trigger"] === null
+          ) {
+            console.error("Missing required property in researcher prompt:", researcher_prompt);
+            return false;
+          }
+          return true;
+        })
+      : [];
 
     // sets continue button and removes any that can't trigger
     const continue_button = trial.continue_button;
@@ -216,6 +218,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     // sets prompt chain and removes any that can't trigger
     if (
+      trial.prompt_chain &&
       trial.prompt_chain["message_trigger"] === null &&
       trial.prompt_chain["timer_trigger"] === null
     ) {
@@ -310,7 +313,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       this.addMessage("chatbot", response, chatBox); // saves to prompt
       return response;
     } catch (error) {
-      this.addMessage("chatbot", "error fetching bot response", chatBox);
+      newMessage.innerHTML = "error fetching bot response";
       return "error fetching response";
     }
   }
@@ -353,6 +356,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
               return false;
             }
             continueButton.style.display = "block";
+            // implement check here
             this.addMessage("system-prompt", researcher_prompt["message"], chatBox);
             break;
           default:
