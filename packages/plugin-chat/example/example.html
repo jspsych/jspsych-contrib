@@ -19,7 +19,7 @@
     prompts = [
       {
         message: "Welcome to this trial",
-        role: "prompt",
+        role: "system-prompt",
         message_trigger: 0,
         timer_trigger: 1000000,
       },
@@ -29,10 +29,10 @@
         message_trigger: 0
       },
       {
-        message: "YELL AT ME AND SAY SOMETHING MEAN",
-        role: "chatbot-fetch",
-        message_trigger: 3,
-        timer_trigger: 1000000,
+        message: "This is new prompt - do this now",
+        prompt: "Stop telling jokes and act very serious. Do not make any more jokes.",
+        role: "chatbot-prompt",
+        message_trigger: 2,
       }
     ]
 
@@ -43,7 +43,8 @@
     }
 
     prompt_chain = {
-      message_trigger: 1,
+      message_trigger: 100,
+      // timer_trigger: 1,
       prompts: ["Summarize this response in Spanish", "Switch half of the sentences to English", "Add another paragraph onto the output explaining why you like bananas"],
     }
 

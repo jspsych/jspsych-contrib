@@ -152,7 +152,7 @@ html, body {
   background-color: #e28043; /* Darker shade on hover */
 }
 
-.user-message, .chatbot-message, .prompt-message {
+.user-message, .chatbot-message, .system-prompt-message {
   padding: 10px;
   margin: 5px;
   margin-top: 15px;
@@ -179,7 +179,7 @@ html, body {
   color: black; 
 }
 
-.prompt-message {
+.system-prompt-message {
   background-color: #faf39d; 
   color: #6B503F;
 }
