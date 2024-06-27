@@ -339,6 +339,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
             const message = researcher_prompt["message"];
 
             if (prompt !== null && typeof prompt === "string") {
+              this.prompt = this.cleanConversation();
               this.updatePrompt(prompt, "system");
             } else
               console.error(
@@ -405,13 +406,6 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       } else message = await this.fetchGPT(temp_prompt); // Ensure to await if fetchGPT is asynchronous
 
       console.log("current prompt and input:", temp_prompt);
-
-      // temp_prompt.splice(temp_prompt.length - 2, 1);
-
-      // const assistant_response = {
-      //   role: "assistant",
-      //   content: message,
-      // };
     }
   }
 
@@ -428,6 +422,16 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     });
 
     return res;
+  }
+
+  private cleanPrompt() {
+    for (let i = 0; i < this.prompt.length; i++) {
+      const message = this.prompt[i];
+
+      if (message["role"] === "system") {
+        delete message["role"];
+      }
+    }
   }
 }
 
