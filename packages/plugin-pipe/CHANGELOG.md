@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-pipe
 
+## 0.4.0
+
+### Minor Changes
+
+- [#114](https://github.com/jspsych/jspsych-contrib/pull/114) [`4af83c6f77f0b48af1ddf0b7cab794e57a82500d`](https://github.com/jspsych/jspsych-contrib/commit/4af83c6f77f0b48af1ddf0b7cab794e57a82500d) Thanks [@Bankminer78](https://github.com/Bankminer78)! - Added ability to display wait message above loading graphics during upload.
+
 ## 0.3.0
 
 ### Minor Changes
