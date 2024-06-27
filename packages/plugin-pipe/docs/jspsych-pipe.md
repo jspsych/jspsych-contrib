@@ -14,6 +14,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | action | string | undefined | The action to perform. Possible values are `save`, `saveBase64`, and `condition`. |
 | filename | null | undefined | The filename to use when saving data. It should be unique. If the file already exists, no data will be saved. |
 | data_string | string | null | The string of data to save. If action is `save` then this can be text data in any format (e.g., CSV, JSON, TXT, etc.). If `action` is `saveBase64`, then this should be a base64 encoded string and the `filename` should have the appropriate extension. | 
+| wait_message | HTML_string | `<p>Saving data. Please do not close this page.</p>` | An HTML message to be displayed above the loading graphics in the experiment during data upload. | 
 
 
 ## Data Generated

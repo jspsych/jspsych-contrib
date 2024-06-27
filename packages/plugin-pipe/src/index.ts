@@ -42,7 +42,7 @@ const info = <const>{
       default: null,
     },
     /**
-     * An html message to be displayed above the loading graphics in the experiment during data save.
+     * An HTML message to be displayed above the loading graphics in the experiment during data upload.
      */
     wait_message: {
       type: ParameterType.HTML_STRING,
