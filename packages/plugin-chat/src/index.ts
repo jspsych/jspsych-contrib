@@ -383,9 +383,10 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   }
 
   private async chainPrompts(message, chatBox) {
-    for (let i = 0; i < this.prompt_chain["prompts"].length; i++) {
-      var temp_prompt = [];
+    const cleaned_prompt = this.cleanConversation();
 
+    for (let i = 0; i < this.prompt_chain["prompts"].length; i++) {
+      const temp_prompt = [...cleaned_prompt];
       const prompt = this.prompt_chain["prompts"][i];
       const new_sys = {
         role: "system",
@@ -399,14 +400,34 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       };
       temp_prompt.push(user_message);
 
-      console.log("current prompt and input:", temp_prompt);
-
       if (i === this.prompt_chain["prompts"].length - 1) {
         await this.updateAndProcessGPT(chatBox, temp_prompt);
       } else message = await this.fetchGPT(temp_prompt); // Ensure to await if fetchGPT is asynchronous
 
-      console.log("assistant message:", message);
+      console.log("current prompt and input:", temp_prompt);
+
+      // temp_prompt.splice(temp_prompt.length - 2, 1);
+
+      // const assistant_response = {
+      //   role: "assistant",
+      //   content: message,
+      // };
     }
+  }
+
+  private cleanConversation(): {}[] {
+    const res = this.prompt.filter((message: any, index: number, array: any[]) => {
+      if ("role" in message && message["role"] === "system") {
+        return false;
+      }
+      // Exclude the last message
+      if (index === array.length - 1) {
+        return false;
+      }
+      return true;
+    });
+
+    return res;
   }
 }
 
