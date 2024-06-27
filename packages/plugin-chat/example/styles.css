@@ -6,7 +6,7 @@ html, body {
   width: 100%;
   height: 100%;
   font-family: Arial, sans-serif;
-  background-color: #f7f7f7;
+  background-color: #d1d0e5;
   overflow-x: hidden;
 }
 
@@ -17,7 +17,33 @@ html, body {
   justify-content: center;
   align-items: center;
   overflow: hidden; /* Ensure no overflow */
+  padding-top: 60px; /* Adjust based on the height of .bot-title */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow*/
 }
+
+
+.bot-title {
+  /* height: 80px; */
+  height: 8vh;
+  width: 100%;
+  background-color: #706EA0;
+  padding: 10px;
+  position: fixed; /* Fix the position to the top */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Ensure it stays above other content */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.bot-title-text {
+  color: black;
+  font-weight: 1000;
+  font-size: 40px;
+  text-align: center;
+}
+
 
 /* Chat container */
 .chat-container {
@@ -25,14 +51,14 @@ html, body {
   bottom: 0;
   left: 0;
   right: 0;
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
   background-color: #f7f7f7;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   overflow: hidden; /* Prevent overflow */
   padding: 20px;
-
+  box-sizing: border-box;
 }
 
 /* Chat box */
@@ -42,7 +68,7 @@ html, body {
   padding: 10px 30px 20px 20px; /* Not sure about the direction of these */
   margin-top: 10px; 
   overflow-y: auto;
-  max-height: 90vh; 
+  max-height: 80vh; 
   box-sizing: border-box; 
   display: flex;
   flex-direction: column;
@@ -106,8 +132,8 @@ html, body {
 
 /* Submit button */
 #continue-btn {
-  background-color: #FF5722; /* Different background color */
-  color: white;
+  background-color: #FF914D; /* Different background color */
+  color: black;
   padding: 10px 20px;
   border: none;
   border-radius: 30px;
@@ -118,11 +144,25 @@ html, body {
   font-size: inherit;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow for distinction */
   transition: background-color 0.3s ease; /* Add a transition for hover effect */
+  font-style: italic;
 }
 
 /* Hover effect for submit button */
 #continue-btn:hover {
-  background-color: #E64A19; /* Darker shade on hover */
+  background-color: #e28043; /* Darker shade on hover */
+}
+
+.user-message, .chatbot-message, .system-prompt-message {
+  padding: 10px;
+  margin: 5px;
+  margin-top: 15px;
+  border-radius: 10px;
+}
+
+.user-message, .chatbot-message {
+  max-width: 70%;
+  word-wrap: break-word; 
+  text-align: left; 
 }
 
 /* User message */
@@ -130,12 +170,6 @@ html, body {
   align-self: flex-end; 
   background-color: #4CAF50; 
   color: white;
-  padding: 10px;
-  margin: 5px;
-  border-radius: 10px;
-  max-width: 70%;
-  word-wrap: break-word; 
-  text-align: left; 
 }
 
 /* Chatbot message */
@@ -143,17 +177,9 @@ html, body {
   align-self: flex-start; 
   background-color: #d1e7dd; /* Change this color to something contrasting */
   color: black; 
-  padding: 10px;
-  margin: 5px;
-  border-radius: 10px;
-  max-width: 70%; 
-  word-wrap: break-word; 
-  text-align: left; 
 }
 
-.prompt-message {
-  border-radius: 10px;
+.system-prompt-message {
   background-color: #faf39d; 
-  padding: 10px;
-  margin: 5px;
+  color: #6B503F;
 }

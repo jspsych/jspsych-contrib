@@ -11,30 +11,41 @@
     const jsPsych = initJsPsych({
       on_finish: function() {
         jsPsych.data.displayData();
+        // jsPsych.data.get().localSave('csv','mydata.csv');      
       },
     });
 
     // Declaring the prompts necessary
     prompts = [
       {
-        prompt: "Welcome to this trial",
-        role: "prompt",
+        message: "Welcome to this trial",
+        role: "system-prompt",
         message_trigger: 0,
         timer_trigger: 1000000,
       },
-
       {
-        prompt: "YELL AT ME AND SAY SOMETHING MEAN",
-        role: "chatbot-fetch",
-        message_trigger: 3,
-        timer_trigger: 1000000,
+        message: "Hey there! I'm Adorabot, here to chat about a disputed topic in the U.S. Which topic would you like to discuss: human euthanasia, gender inequality, the role of government in healthcare, the atomic bombing of Hiroshima and Nagasaki, mandating vaccines, criminal justice reforms, or same- sex marriage. Let me know what you want to talk about!",
+        role: "chatbot-message",
+        message_trigger: 0
+      },
+      {
+        message: "This is new prompt - do this now",
+        prompt: "Stop telling jokes and act very serious. Do not make any more jokes.",
+        role: "chatbot-prompt",
+        message_trigger: 2,
       }
     ]
 
     continue_button = {
       timer_trigger: 1000000,
       message_trigger: 1,
-      prompt: "The continue button will appear in the bottom right corner, please continue when you feel ready",
+      message: "The continue button will appear in the bottom right corner, please continue when you feel ready",
+    }
+
+    prompt_chain = {
+      message_trigger: 100,
+      // timer_trigger: 1,
+      prompts: ["Summarize this response in Spanish", "Switch half of the sentences to English", "Add another paragraph onto the output explaining why you like bananas"],
     }
 
     const trial = {
@@ -42,6 +53,7 @@
       ai_prompt: "Pretend to be a comedian and include a joke at the end of every response",
       chat_field_placeholder: "be nice...",
       continue_button: continue_button,
+      prompt_chain: prompt_chain,
       additional_prompts: prompts,
     }
 

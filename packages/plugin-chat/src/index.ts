@@ -1,8 +1,11 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
+import { ChatCompletionStream } from "openai/lib/ChatCompletionStream";
 
-// thinking about using an enum to define
-// -> system, user, bot
-// naming convention a little weird because of chatGPT calling models "assistants"
+// CHANGES FOR IAN
+// system-prompt instead of prompt for the prompts that want to display in yellow
+// deleted chatbot-fetch
+// fixed error checking for null values message/timer_trigger, implemented null checking within trigger methods that check prompts
+// implementing dynamic prompting
 
 const info = <const>{
   name: "chat",
@@ -30,7 +33,7 @@ const info = <const>{
         message_trigger: {
           type: ParameterType.INT,
         },
-        prompt: {
+        message: {
           type: ParameterType.STRING,
         },
       },
@@ -38,27 +41,50 @@ const info = <const>{
     additional_prompts: {
       type: ParameterType.COMPLEX,
       array: true,
-      pretty_name: "Additional Prompts",
       default: undefined,
       nested: {
-        // at one point used nested others used parameters
-        prompt: {
-          // prompt to pass into
+        message: {
+          // messages to display on screen
           type: ParameterType.STRING,
           default: "",
         },
-        role: {
-          // "prompt", "chatbot", "chatbot-fetch"
+        prompt: {
+          // prompting to pass in
           type: ParameterType.STRING,
-          default: "prompt",
+          default: null,
+        },
+        role: {
+          // "prompt" ("system-prompt"), "chatbot-message","chatbot-prompt"
+          type: ParameterType.STRING,
+          default: "system-prompt",
         },
         message_trigger: {
           type: ParameterType.INT,
-          default: undefined,
+          default: null,
         },
         timer_trigger: {
           type: ParameterType.INT,
-          default: 1000000,
+          default: null,
+        },
+      },
+    },
+    // when triggers it doesn't stop, do we want to give it a stop?
+    prompt_chain: {
+      type: ParameterType.COMPLEX,
+      default: undefined,
+      nested: {
+        prompts: {
+          type: ParameterType.STRING,
+          array: true,
+          default: [],
+        },
+        message_trigger: {
+          type: ParameterType.INT,
+          default: null,
+        },
+        timer_trigger: {
+          type: ParameterType.INT,
+          default: null,
         },
       },
     },
@@ -79,6 +105,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private prompt: {}[]; // keeps track of prompt to send to GPT
   private researcher_prompts: {}[]; // keeps track of researcher's prompts that need to be displayed
+  private prompt_chain: {};
   private messages_sent: number; // notes number of messages sent to calculate prompts
   private timer_start: number; // notes beginning of session in order to calculate prompts
   private ai_model: string; // keeps track of model
@@ -90,6 +117,9 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     var html =
       `<div class="chat-page">
+      <div class="bot-title">
+        <h1 class="bot-title-text">Adorabot</h1>
+      </div>
       <div class="chat-container">
         <div class="chat-box" id="chat-box"></div>
 
@@ -113,16 +143,18 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     // Function to handle logic of sending user message, and data collection
     const sendMessage = async () => {
       const message = userInput.value.trim();
+      this.addMessage("user", message, chatBox);
+      userInput.value = "";
 
-      if (message !== "") {
-        this.addMessage("user", message, chatBox);
-        userInput.value = "";
-
+      // prompt chaining or simple requests
+      if (message !== "" && this.prompt_chain && this.chainCondition()) {
+        await this.chainPrompts(message, chatBox);
+      } else if (message !== "") {
         await this.updateAndProcessGPT(chatBox);
-        // inc messages and check researcher prompts
-        this.messages_sent += 1;
-        this.checkResearcherPrompts(chatBox, continueButton);
       }
+      // inc messages and check researcher prompts
+      this.messages_sent += 1;
+      this.checkResearcherPrompts(chatBox, continueButton);
     };
 
     // Event listener for send button click
@@ -156,23 +188,38 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     this.updatePrompt(trial.ai_prompt, "system");
     // sets researcher prompts and removes any that can't trigger
     this.researcher_prompts = trial.additional_prompts.filter((researcher_prompt) => {
-      if (!("message_trigger" in researcher_prompt) && !("timer_trigger" in researcher_prompt)) {
+      if (
+        researcher_prompt["message_trigger"] === null &&
+        researcher_prompt["timer_trigger"] === null
+      ) {
         console.error("Missing required property in researcher prompt:", researcher_prompt);
         return false;
       }
       return true;
     });
 
+    // sets continue button and removes any that can't trigger
     const continue_button = trial.continue_button;
-    if (!("message_trigger" in continue_button) && !("timer_trigger" in continue_button)) {
+    if (continue_button["message_trigger"] === null && continue_button["timer_trigger"] === null) {
       console.error("Missing required property in continue prompt, will never display");
+    } else {
+      continue_button["role"] = "continue";
+      this.researcher_prompts.push(continue_button);
     }
-    continue_button["role"] = "continue";
-    this.researcher_prompts.push(continue_button);
+
+    // sets prompt chain and removes any that can't trigger
+    if (
+      trial.prompt_chain["message_trigger"] === null &&
+      trial.prompt_chain["timer_trigger"] === null
+    ) {
+      console.error("Missing required property in prompt_chain, will never trigger");
+    } else {
+      this.prompt_chain = trial.prompt_chain;
+    }
   }
 
-  // Call to backend
-  async fetchGPT(messages) {
+  // Call to backend, newMessage is the document item to print (optional because when chaining don't want them to display)
+  async fetchGPT(messages, newMessage?) {
     try {
       const response = await fetch("http://localhost:3000/api/chat", {
         method: "POST",
@@ -186,8 +233,17 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      return data;
+      const runner = ChatCompletionStream.fromReadableStream(response.body);
+
+      if (newMessage) {
+        // prints to screen if specified, otherwise only fetch
+        runner.on("content", (delta, snapshot) => {
+          newMessage.innerHTML = snapshot.replace(/\n/g, "<br>");
+        });
+      }
+
+      await runner.finalChatCompletion(); // waits before returning the actual content
+      return runner["messages"][0]["content"];
     } catch (error) {
       console.error("Error fetching GPT data:", error);
       throw error; // Rethrow the error after logging it
@@ -202,69 +258,98 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   }
 
   // Handles updates to system with the prompt and to the screen
-  addMessage(role, message, chatBox, continueButton?) {
+  addMessage(role, message, chatBox) {
     const newMessage = document.createElement("div");
     // Handles logic of updating prompts and error checking
     switch (role) {
+      case "chatbot": // writing to screen handled caller function
+        this.updatePrompt(message, "assistant");
+        return;
       case "user":
         this.updatePrompt(message, "user");
         break;
-      case "chatbot":
-        this.updatePrompt(message, "assistant");
+      case "chatbot-message": // set by researcher, needs be seperate case because doesn't update prompts
+        role = "chatbot";
         break;
-      case "continue":
-        if (!continueButton) {
-          console.error("No continue button to display");
-          return;
-        }
-        role = "prompt"; // use same style as promp
-        continueButton.style.display = "block";
-        break;
-      case "prompt":
+      case "system-prompt": // set by researcher
         break;
       default:
         console.error("Incorrect role");
         return;
     }
 
-    // Handles shared logic of printing to screen
     newMessage.className = role + "-message";
-    newMessage.innerHTML = message.replace(/\n/g, "<br>");
+    newMessage.innerHTML = "";
     chatBox.appendChild(newMessage);
+    newMessage.innerHTML = message.replace(/\n/g, "<br>");
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  async updateAndProcessGPT(chatBox) {
+  // updates and processes to the screen, workflow for one message (can be used in the process of workflow for mulitple messages)
+  async updateAndProcessGPT(chatBox, prompt?) {
+    const newMessage = document.createElement("div");
+    newMessage.className = "chatbot" + "-message";
+    newMessage.innerHTML = "";
+    chatBox.appendChild(newMessage);
+
     try {
-      const response = await this.fetchGPT(this.prompt);
-      const responseContent = response.message.content;
-      this.addMessage("chatbot", responseContent, chatBox);
-      return responseContent;
+      var response = undefined;
+      // allows to pass in non defined prompts
+      if (prompt)
+        response = await this.fetchGPT(
+          prompt,
+          newMessage
+        ); // special case when wanting to prompt with own thing
+      else response = await this.fetchGPT(this.prompt, newMessage);
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+      this.addMessage("chatbot", response, chatBox); // saves to prompt
+      return response;
     } catch (error) {
       this.addMessage("chatbot", "error fetching bot response", chatBox);
+      return "error fetching response";
     }
   }
 
   checkResearcherPrompts(chatBox, continueButton): void {
     this.researcher_prompts = this.researcher_prompts.filter((researcher_prompt) => {
-      // Checking conditions to trigger the prompt
+      const message_trigger = researcher_prompt["message_trigger"];
+      const timer_trigger = researcher_prompt["timer_trigger"];
       const time_elapsed = performance.now() - this.timer_start; // could instead keep subtracting from time_elapsed
+
       if (
-        this.messages_sent >= researcher_prompt["message_trigger"] ||
-        time_elapsed >= researcher_prompt["timer_trigger"]
+        (message_trigger !== null && this.messages_sent >= message_trigger) ||
+        (timer_trigger !== null && time_elapsed >= timer_trigger)
       ) {
         // Checking with prompt to trigger
         switch (researcher_prompt["role"]) {
-          case "chatbot":
-          case "prompt": // want these cases to have the same functionality
-            this.addMessage(researcher_prompt["role"], researcher_prompt["prompt"], chatBox);
+          case "chatbot-message": // case is needed because of chatbot updating prompt
+          case "system-prompt": // want these cases to have the same functionality
+            this.addMessage(researcher_prompt["role"], researcher_prompt["message"], chatBox);
             break;
-          case "chatbot-fetch":
-            this.addMessage("user", researcher_prompt["prompt"], chatBox);
-            this.updateAndProcessGPT(chatBox);
+          case "chatbot-prompt": // checkes messages, updates prompt and prints sytem message if exists
+            const prompt = researcher_prompt["prompt"];
+            const message = researcher_prompt["message"];
+
+            if (prompt !== null && typeof prompt === "string") {
+              this.updatePrompt(prompt, "system");
+            } else
+              console.error(
+                researcher_prompt,
+                "is missing prompt field or it isn't in the correct format"
+              );
+
+            if (message !== null && typeof prompt === "string") {
+              this.addMessage("system-prompt", message, chatBox);
+            }
             break;
-          case "continue":
-            this.addMessage("continue", researcher_prompt["prompt"], chatBox, continueButton);
+          case "continue": // displays continue button, error checking that pipelining is working
+            if (!continueButton) {
+              console.error("No continue button to display");
+              return false;
+            }
+            continueButton.style.display = "block";
+            this.addMessage("system-prompt", researcher_prompt["message"], chatBox);
             break;
           default:
             console.error("Incorrect role for prompting");
@@ -274,6 +359,46 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       }
       return true; // Keep this item in the array
     });
+  }
+
+  private chainCondition() {
+    const time_elapsed = performance.now() - this.timer_start; // could instead keep subtracting from time_elapsed
+    const message_trigger = this.prompt_chain["message_trigger"];
+    const timer_trigger = this.prompt_chain["timer_trigger"];
+
+    if (
+      (message_trigger !== null && this.messages_sent >= message_trigger) ||
+      (timer_trigger !== null && time_elapsed >= timer_trigger)
+    ) {
+      return true;
+    } else return false;
+  }
+
+  private async chainPrompts(message, chatBox) {
+    for (let i = 0; i < this.prompt_chain["prompts"].length; i++) {
+      var temp_prompt = [];
+
+      const prompt = this.prompt_chain["prompts"][i];
+      const new_sys = {
+        role: "system",
+        content: prompt,
+      };
+      temp_prompt.push(new_sys);
+
+      const user_message = {
+        role: "user",
+        content: message,
+      };
+      temp_prompt.push(user_message);
+
+      console.log("current prompt and input:", temp_prompt);
+
+      if (i === this.prompt_chain["prompts"].length - 1) {
+        await this.updateAndProcessGPT(chatBox, temp_prompt);
+      } else message = await this.fetchGPT(temp_prompt); // Ensure to await if fetchGPT is asynchronous
+
+      console.log("assistant message:", message);
+    }
   }
 }
 
