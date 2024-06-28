@@ -1,12 +1,8 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import { ChatCompletionStream } from "openai/lib/ChatCompletionStream";
 
-// CHANGES FOR IAN
-// system-prompt instead of prompt for the prompts that want to display in yellow
-// deleted chatbot-fetch
-// fixed error checking for null values message/timer_trigger, implemented null checking within trigger methods that check prompts
-// implementing dynamic prompting
-// bot naming feature
+// NEED TO FIX
+// if prompting bot but not message shoudl not pop up with message
 
 const info = <const>{
   name: "chat",
@@ -145,12 +141,14 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     const userInput = display_element.querySelector("#user-input") as HTMLInputElement;
     const sendButton = display_element.querySelector("#send-btn") as HTMLButtonElement;
     const continueButton = display_element.querySelector("#continue-btn") as HTMLButtonElement;
+    var keyPressLog = [];
 
     // Setting up Trial Logic
     // Function to handle logic of sending user message, and data collection
     const sendMessage = async () => {
       const message = userInput.value.trim();
-      this.addMessage("user", message, chatBox);
+      this.addMessage("user", message, chatBox, keyPressLog);
+      keyPressLog = [];
       userInput.value = "";
 
       // prompt chaining or simple requests
@@ -177,8 +175,19 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       }
     });
 
+    // Function to log all keypresses
+    const logKeypress = (event) => {
+      console.log(`Key pressed: ${event.key}`);
+      keyPressLog.push(event.key);
+    };
+
+    // Event listener for all keypresses on userInput
+    userInput.addEventListener("keydown", logKeypress);
+
     continueButton.addEventListener("click", () => {
-      this.jsPsych.finishTrial({ chatLogs: this.prompt });
+      this.jsPsych.finishTrial({
+        chatLogs: this.prompt,
+      });
     });
 
     // Setting up Trial
@@ -261,14 +270,14 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   }
 
   // updates prompts behind the scenes when we add messages to the screen
-  private updatePrompt(message, role): void {
+  private updatePrompt(message, role, keyPressLog?): void {
     const time = Math.round(performance.now());
-    const newMessage = { role: role, content: message, time: time };
+    const newMessage = { role: role, content: message, time: time, keyPressLog: keyPressLog };
     this.prompt.push(newMessage);
   }
 
   // Handles updates to system with the prompt and to the screen
-  addMessage(role, message, chatBox) {
+  addMessage(role, message, chatBox, keyPressLog?) {
     const newMessage = document.createElement("div");
     // Handles logic of updating prompts and error checking
     switch (role) {
@@ -276,7 +285,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         this.updatePrompt(message, "assistant");
         return;
       case "user":
-        this.updatePrompt(message, "user");
+        this.updatePrompt(message, "user", keyPressLog);
         break;
       case "chatbot-message": // set by researcher, needs be seperate case because doesn't update prompts
         role = "chatbot";
@@ -422,16 +431,6 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     });
 
     return res;
-  }
-
-  private cleanPrompt() {
-    for (let i = 0; i < this.prompt.length; i++) {
-      const message = this.prompt[i];
-
-      if (message["role"] === "system") {
-        delete message["role"];
-      }
-    }
   }
 }
 
