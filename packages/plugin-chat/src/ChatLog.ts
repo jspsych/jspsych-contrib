@@ -45,7 +45,6 @@ export class ChatLog {
   }
 
   // Chain Condition -- have it be a list of the chain and what happens before and after
-
   // called when temporary chainPrompting
   cleanConversation(): {}[] {
     const res = this.prompt.filter((message: any, index: number, array: any[]) => {

@@ -3,9 +3,6 @@ import { ChatCompletionStream } from "openai/lib/ChatCompletionStream";
 
 import { ChatLog } from "./ChatLog";
 
-// NEED TO FIX
-// if prompting bot but not message shoudl not pop up with message
-
 const info = <const>{
   name: "chat",
   parameters: {
@@ -184,7 +181,6 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     continueButton.addEventListener("click", () => {
       this.jsPsych.finishTrial({
-        prompt: this.chatLog.getPrompt(),
         logs: this.chatLog.getChatLogs(),
       });
     });
@@ -324,6 +320,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     }
   }
 
+  // logic for triggering logic
   checkResearcherPrompts(chatBox, continueButton): void {
     this.researcher_prompts = this.researcher_prompts.filter((researcher_prompt) => {
       const message_trigger = researcher_prompt["message_trigger"];
@@ -375,6 +372,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     });
   }
 
+  // checking whether chain prompts can trigger
   private chainCondition() {
     const time_elapsed = performance.now() - this.timer_start; // could instead keep subtracting from time_elapsed
     const message_trigger = this.prompt_chain["message_trigger"];
@@ -388,6 +386,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     } else return false;
   }
 
+  // triggering prompts in chain and prompting/logging logic
   private async chainPrompts(message, chatBox) {
     const cleaned_prompt = this.chatLog.cleanConversation();
     const logChain = [];
