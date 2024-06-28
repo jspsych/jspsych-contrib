@@ -15,16 +15,17 @@ export class ChatLog {
     return this.chatLogs;
   }
 
-  // replaces current update prompt
-  updatePrompt(message, role, keyPressLog?): void {
+  // replaces current update prompt, possibly replace to pass in objct
+  updatePrompt(content, role, keyPressLog?, message?): void {
     const time = Math.round(performance.now());
-    const newPrompt = { role: role, content: message };
+    const newPrompt = { role: role, content: content };
     this.prompt.push(newPrompt);
 
     const newMessage = {
       role: role,
-      content: message,
+      content: content,
       time: time,
+      ...(message ? { message: message } : {}),
       ...(keyPressLog ? { keyPressLog: keyPressLog } : {}),
     };
     this.chatLogs.push(newMessage);
@@ -62,7 +63,8 @@ export class ChatLog {
   }
 
   // call when adding a new prompt
-  cleanSystem(prompt): {}[] {
+  cleanSystem(prompt, message?): {}[] {
+    // cleans existing prompts
     const res = this.prompt.filter((message: any) => {
       if ("role" in message && message["role"] === "system") {
         return false;
@@ -70,8 +72,9 @@ export class ChatLog {
       return true;
     });
 
+    // sets the prompts equal to the new one
     this.prompt = res;
-    this.updatePrompt(prompt, "system");
+    this.updatePrompt(prompt, "system", undefined, message);
     return this.prompt;
   }
 }

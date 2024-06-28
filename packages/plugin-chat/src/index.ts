@@ -149,7 +149,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     // Function to handle logic of sending user message, and data collection
     const sendMessage = async () => {
       const message = userInput.value.trim();
-      this.addMessage("user", message, chatBox, keyPressLog);
+      this.addMessage("user", message, chatBox, (keyPressLog = keyPressLog));
       keyPressLog = [];
       userInput.value = "";
 
@@ -202,7 +202,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     this.messages_sent = 0;
     this.ai_model = trial.ai_model;
 
-    this.updatePrompt(trial.ai_prompt, "system");
+    this.chatLog.updatePrompt(trial.ai_prompt, "system");
     // sets researcher prompts and removes any that can't trigger
     this.researcher_prompts = trial.additional_prompts
       ? trial.additional_prompts.filter((researcher_prompt) => {
@@ -270,21 +270,16 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     }
   }
 
-  // updates prompts behind the scenes when we add messages to the screen
-  private updatePrompt(message, role, keyPressLog?): void {
-    this.chatLog.updatePrompt(message, role, keyPressLog);
-  }
-
   // Handles updates to system with the prompt and to the screen
   addMessage(role, message, chatBox, keyPressLog?) {
     const newMessage = document.createElement("div");
     // Handles logic of updating prompts and error checking
     switch (role) {
       case "chatbot": // writing to screen handled caller function
-        this.updatePrompt(message, "assistant");
+        this.chatLog.updatePrompt(message, "assistant");
         return;
       case "user":
-        this.updatePrompt(message, "user", keyPressLog);
+        this.chatLog.updatePrompt(message, "user", keyPressLog);
         break;
       case "chatbot-message": // set by researcher, needs be seperate case because doesn't update prompts
         role = "chatbot";
@@ -292,6 +287,9 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         break;
       case "system-prompt": // set by researcher
         this.chatLog.logMessage(message, role);
+        break;
+      case "chatbot-prompt": // logging already handled by "cleanSystem"
+        role = "system-prompt";
         break;
       default:
         console.error("Incorrect role");
@@ -349,7 +347,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
             const message = researcher_prompt["message"];
 
             if (prompt !== null && typeof prompt === "string") {
-              this.chatLog.cleanSystem(prompt);
+              this.chatLog.cleanSystem(prompt, message);
             } else
               console.error(
                 researcher_prompt,
@@ -357,7 +355,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
               );
 
             if (message !== null && typeof prompt === "string" && message !== "") {
-              this.addMessage("system-prompt", message, chatBox);
+              this.addMessage(researcher_prompt["role"], message, chatBox);
             }
             break;
           case "continue": // displays continue button, error checking that pipelining is working
