@@ -395,6 +395,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
   private async chainPrompts(message, chatBox) {
     const cleaned_prompt = this.chatLog.cleanConversation();
+    const logChain = [];
 
     for (let i = 0; i < this.prompt_chain["prompts"].length; i++) {
       const temp_prompt = [...cleaned_prompt];
@@ -404,19 +405,25 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         content: prompt,
       };
       temp_prompt.push(new_sys);
+      logChain.push(new_sys);
 
       const user_message = {
         role: "user",
         content: message,
       };
       temp_prompt.push(user_message);
+      logChain.push(user_message);
 
       if (i === this.prompt_chain["prompts"].length - 1) {
-        await this.updateAndProcessGPT(chatBox, temp_prompt);
-      } else message = await this.fetchGPT(temp_prompt); // Ensure to await if fetchGPT is asynchronous
-
-      console.log("current prompt and input:", temp_prompt);
+        message = await this.updateAndProcessGPT(chatBox, temp_prompt);
+        logChain.push({ role: "assistant", content: message });
+      } else {
+        message = await this.fetchGPT(temp_prompt); // Ensure to await if fetchGPT is asynchronous
+        logChain.push({ role: "assistant", content: message });
+      }
     }
+
+    this.chatLog.logMessage(logChain, "chain-prompt");
   }
 }
 
