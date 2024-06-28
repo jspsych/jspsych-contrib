@@ -1,5 +1,8 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import { ChatCompletionStream } from "openai/lib/ChatCompletionStream";
+import { Chat } from "openai/resources";
+
+import { ChatLog } from "./ChatLog";
 
 // NEED TO FIX
 // if prompting bot but not message shoudl not pop up with message
@@ -104,12 +107,12 @@ type Info = typeof info;
  */
 class ChatPlugin implements JsPsychPlugin<Info> {
   static info = info;
-  private prompt: {}[]; // keeps track of prompt to send to GPT
   private researcher_prompts: {}[]; // keeps track of researcher's prompts that need to be displayed
   private prompt_chain: {};
   private messages_sent: number; // notes number of messages sent to calculate prompts
   private timer_start: number; // notes beginning of session in order to calculate prompts
   private ai_model: string; // keeps track of model
+  private chatLog: ChatLog;
 
   constructor(private jsPsych: JsPsych) {}
 
@@ -177,7 +180,6 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     // Function to log all keypresses
     const logKeypress = (event) => {
-      console.log(`Key pressed: ${event.key}`);
       keyPressLog.push(event.key);
     };
 
@@ -186,7 +188,8 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     continueButton.addEventListener("click", () => {
       this.jsPsych.finishTrial({
-        chatLogs: this.prompt,
+        prompt: this.chatLog.getPrompt(),
+        logs: this.chatLog.getChatLogs(),
       });
     });
 
@@ -196,11 +199,10 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
   initializeTrialVariables(trial: TrialType<Info>) {
     this.timer_start = performance.now();
+    this.chatLog = new ChatLog();
     this.messages_sent = 0;
     this.ai_model = trial.ai_model;
 
-    // sets prompt
-    this.prompt = [];
     this.updatePrompt(trial.ai_prompt, "system");
     // sets researcher prompts and removes any that can't trigger
     this.researcher_prompts = trial.additional_prompts
@@ -271,9 +273,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
   // updates prompts behind the scenes when we add messages to the screen
   private updatePrompt(message, role, keyPressLog?): void {
-    const time = Math.round(performance.now());
-    const newMessage = { role: role, content: message, time: time, keyPressLog: keyPressLog };
-    this.prompt.push(newMessage);
+    this.chatLog.updatePrompt(message, role, keyPressLog);
   }
 
   // Handles updates to system with the prompt and to the screen
@@ -289,8 +289,10 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         break;
       case "chatbot-message": // set by researcher, needs be seperate case because doesn't update prompts
         role = "chatbot";
+        this.chatLog.logMessage(message, role);
         break;
       case "system-prompt": // set by researcher
+        this.chatLog.logMessage(message, role);
         break;
       default:
         console.error("Incorrect role");
@@ -316,7 +318,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       // allows to pass in non defined prompts
       if (prompt) response = await this.fetchGPT(prompt, newMessage);
       // special case when wanting to prompt with own thing
-      else response = await this.fetchGPT(this.prompt, newMessage);
+      else response = await this.fetchGPT(this.chatLog.getPrompt(), newMessage);
 
       chatBox.scrollTop = chatBox.scrollHeight;
       this.addMessage("chatbot", response, chatBox); // saves to prompt
@@ -348,15 +350,14 @@ class ChatPlugin implements JsPsychPlugin<Info> {
             const message = researcher_prompt["message"];
 
             if (prompt !== null && typeof prompt === "string") {
-              this.prompt = this.cleanConversation();
-              this.updatePrompt(prompt, "system");
+              this.chatLog.cleanSystem(prompt);
             } else
               console.error(
                 researcher_prompt,
                 "is missing prompt field or it isn't in the correct format"
               );
 
-            if (message !== null && typeof prompt === "string") {
+            if (message !== null && typeof prompt === "string" && message !== "") {
               this.addMessage("system-prompt", message, chatBox);
             }
             break;
@@ -393,7 +394,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   }
 
   private async chainPrompts(message, chatBox) {
-    const cleaned_prompt = this.cleanConversation();
+    const cleaned_prompt = this.chatLog.cleanConversation();
 
     for (let i = 0; i < this.prompt_chain["prompts"].length; i++) {
       const temp_prompt = [...cleaned_prompt];
@@ -416,21 +417,6 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
       console.log("current prompt and input:", temp_prompt);
     }
-  }
-
-  private cleanConversation(): {}[] {
-    const res = this.prompt.filter((message: any, index: number, array: any[]) => {
-      if ("role" in message && message["role"] === "system") {
-        return false;
-      }
-      // Exclude the last message
-      if (index === array.length - 1) {
-        return false;
-      }
-      return true;
-    });
-
-    return res;
   }
 }
 
