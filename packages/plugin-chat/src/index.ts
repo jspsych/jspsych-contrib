@@ -177,13 +177,10 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       }
     });
 
-    // Function to log all keypresses
-    const logKeypress = (event) => {
-      keyPressLog.push(event.key);
-    };
-
     // Event listener for all keypresses on userInput
-    userInput.addEventListener("keydown", logKeypress);
+    userInput.addEventListener("keydown", function (event) {
+      keyPressLog.push(event.key);
+    });
 
     continueButton.addEventListener("click", () => {
       this.jsPsych.finishTrial({
@@ -196,6 +193,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     this.checkResearcherPrompts(chatBox, continueButton);
   }
 
+  // includes error checking to minimize error checking later
   initializeTrialVariables(trial: TrialType<Info>) {
     this.timer_start = performance.now();
     this.chatLog = new ChatLog();
