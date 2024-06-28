@@ -51,7 +51,7 @@ export class ChatLog {
       if ("role" in message && message["role"] === "system") {
         return false;
       }
-      // Exclude the last message, why? - only called when needed
+      // Exclude the last message because will be user message - only want existing conversation
       if (index === array.length - 1) {
         return false;
       }
