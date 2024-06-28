@@ -29,7 +29,7 @@
         message_trigger: 0
       },
       {
-        message: "This is new prompt - do this now",
+        // message: "This is new prompt - do this now",
         prompt: "Stop telling jokes and act very serious. Do not make any more jokes.",
         role: "chatbot-prompt",
         message_trigger: 2,
@@ -59,8 +59,8 @@
       ai_prompt: "Pretend to be a comedian and include a joke at the end of every response",
       chat_field_placeholder: "be nice...",
       continue_button: continue_button,
-      prompt_chain: prompt_chain,
-      // additional_prompts: prompts,
+      // prompt_chain: prompt_chain,
+      additional_prompts: prompts,
     }
 
     jsPsych.run([trial]);

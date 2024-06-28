@@ -1,6 +1,5 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import { ChatCompletionStream } from "openai/lib/ChatCompletionStream";
-import { Chat } from "openai/resources";
 
 import { ChatLog } from "./ChatLog";
 
