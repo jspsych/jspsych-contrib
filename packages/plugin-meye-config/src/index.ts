@@ -2,7 +2,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import * as tf from "@tensorflow/tfjs";
 
 const info = <const>{
-  name: "meye-calibration",
+  name: "meye-config",
   parameters: {},
 };
 
@@ -16,7 +16,7 @@ type Info = typeof info;
  * @author Adam Vasarhelyi
  * @see {@link https://../docs/extension-meye}
  */
-class meyePlugin implements JsPsychPlugin<Info> {
+class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 	static info = info;
 
 	constructor(private jsPsych: JsPsych) {	}
@@ -896,4 +896,4 @@ class meyePlugin implements JsPsychPlugin<Info> {
 	}
 }
 
-export default meyePlugin;
+export default MeyeConfigPlugin;
