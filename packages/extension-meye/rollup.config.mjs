@@ -1,3 +1,3 @@
 import { makeRollupConfig } from "../../node_modules/@jspsych/config/rollup.js";
 
-export default makeRollupConfig("jsPsychMeyeExtension");
+export default makeRollupConfig("jsPsychExtensionMeye");
