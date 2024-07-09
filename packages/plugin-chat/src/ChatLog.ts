@@ -9,6 +9,8 @@ export class ChatLog {
   }
 
   setPrompt(prompt) {
+    const newElement = { role: "system", content: this.prompt };
+    this.conversationLog.push(newElement);
     this.prompt = prompt;
   }
 
