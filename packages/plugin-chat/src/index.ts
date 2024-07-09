@@ -196,8 +196,9 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     this.messages_sent = 0;
     this.ai_model = trial.ai_model;
 
-    this.chatLog.updatePrompt(trial.ai_prompt, "system");
-    // sets researcher prompts and removes any that can't trigger
+    // this.chatLog.updateConversationLog(trial.ai_prompt, "system");
+    this.chatLog.setPrompt(trial.ai_prompt); // sets researcher prompts and removes any that can't trigger
+
     this.researcher_prompts = trial.additional_prompts
       ? trial.additional_prompts.filter((researcher_prompt) => {
           if (
@@ -270,10 +271,10 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     // Handles logic of updating prompts and error checking
     switch (role) {
       case "chatbot": // writing to screen handled caller function
-        this.chatLog.updatePrompt(message, "assistant");
+        this.chatLog.updateConversationLog(message, "assistant");
         return;
       case "user":
-        this.chatLog.updatePrompt(message, "user", keyPressLog);
+        this.chatLog.updateConversationLog(message, "user", keyPressLog);
         break;
       case "chatbot-message": // set by researcher, needs be seperate case because doesn't update prompts
         role = "chatbot";
@@ -306,10 +307,16 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     try {
       var response = undefined;
-      // allows to pass in non defined prompts
-      if (prompt) response = await this.fetchGPT(prompt, newMessage);
-      // special case when wanting to prompt with own thing
-      else response = await this.fetchGPT(this.chatLog.getPrompt(), newMessage);
+
+      if (prompt) {
+        // allows to pass in non defined prompts
+        response = await this.fetchGPT(prompt, newMessage);
+        console.log(prompt);
+      } else {
+        // special case when wanting to prompt with own thing
+        response = await this.fetchGPT(this.chatLog.getPrompt(), newMessage);
+        console.log(this.chatLog.getPrompt());
+      }
 
       chatBox.scrollTop = chatBox.scrollHeight;
       this.addMessage("chatbot", response, chatBox); // saves to prompt
@@ -337,7 +344,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
           case "system-prompt": // want these cases to have the same functionality
             this.addMessage(researcher_prompt["role"], researcher_prompt["message"], chatBox);
             break;
-          case "chatbot-prompt": // checkes messages, updates prompt and prints sytem message if exists
+          case "chatbot-prompt": // checks messages, updates prompt and prints sytem message if exists
             const prompt = researcher_prompt["prompt"];
             const message = researcher_prompt["message"];
 

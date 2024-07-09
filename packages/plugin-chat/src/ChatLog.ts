@@ -1,14 +1,21 @@
 export class ChatLog {
-  private prompt: { role: string; content: string }[]; // keeps track of prompt to send to GPT
+  private conversationLog: { role: string; content: string }[]; // keeps track of prompt to send to GPT
   private chatLogs: { role: string; content: string; time: number; keyPressLog?: any }[]; // keeps track of all the chat logs
+  private prompt: string;
 
   constructor() {
-    this.prompt = [];
+    this.conversationLog = [];
     this.chatLogs = [];
   }
 
+  setPrompt(prompt) {
+    this.prompt = prompt;
+  }
+
   getPrompt() {
-    return this.prompt;
+    const newElement = { role: "system", content: this.prompt };
+    const tempConversationLog = [...this.conversationLog, newElement];
+    return tempConversationLog;
   }
 
   getChatLogs() {
@@ -16,10 +23,19 @@ export class ChatLog {
   }
 
   // replaces current update prompt, possibly replace to pass in objct
-  updatePrompt(content, role, keyPressLog?, message?): void {
+  updateConversationLog(content, role, keyPressLog?, message?): void {
+    if (role === "system")
+      console.log(
+        "WARNING: this case is not caught and is incorrectly trigerring outadated method",
+        "content:",
+        content,
+        "role:",
+        role
+      );
+
     const time = Math.round(performance.now());
     const newPrompt = { role: role, content: content };
-    this.prompt.push(newPrompt);
+    this.conversationLog.push(newPrompt);
 
     const newMessage = {
       role: role,
@@ -47,7 +63,7 @@ export class ChatLog {
   // Chain Condition -- have it be a list of the chain and what happens before and after
   // called when temporary chainPrompting
   cleanConversation(): {}[] {
-    const res = this.prompt.filter((message: any, index: number, array: any[]) => {
+    const res = this.conversationLog.filter((message: any, index: number, array: any[]) => {
       if ("role" in message && message["role"] === "system") {
         return false;
       }
@@ -62,9 +78,9 @@ export class ChatLog {
   }
 
   // call when adding a new prompt
-  cleanSystem(prompt, message?): {}[] {
+  cleanSystem(prompt, message?) {
     // cleans existing prompts
-    const res = this.prompt.filter((message: any) => {
+    const res = this.conversationLog.filter((message: any) => {
       if ("role" in message && message["role"] === "system") {
         return false;
       }
@@ -72,8 +88,10 @@ export class ChatLog {
     });
 
     // sets the prompts equal to the new one
-    this.prompt = res;
-    this.updatePrompt(prompt, "system", undefined, message);
-    return this.prompt;
+    this.conversationLog = res;
+    // this.updateConversationLog(prompt, "system", undefined, message);
+    this.prompt = prompt;
+
+    return this.getPrompt();
   }
 }
