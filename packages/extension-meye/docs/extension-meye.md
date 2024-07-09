@@ -38,7 +38,7 @@ Ensure that the **plugin** is a trial in the timeline before adding the extensio
 
 ```javascript
 var meyeCalibrate = {
-	type: jsPsychMeye,
+	type: jsPsychMeyeConfig,
 };
 		
 var useExtension = {
@@ -47,6 +47,6 @@ var useExtension = {
 	trial_duration: 600,
 	response_ends_trial: false,
 	data: { task: 'webcam1', US: 'no'},
-	extensions: [{ type: jsPsychMeyeExtension, params: {detection_interval: 100} }]
+	extensions: [{ type: jsPsychExtensionMeye, params: {detection_interval: 100} }]
 }
 ```
