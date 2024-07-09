@@ -18,7 +18,7 @@ interface OnFinishParameters {}
  * @author Adam Vasarhelyi
  * @see {@link https://../docs/extension-meye}
  */
-class meyeExtension implements JsPsychExtension {
+class MeyeExtension implements JsPsychExtension {
 	static info: JsPsychExtensionInfo = {
 		name: "meye-extension",
 	};
@@ -580,4 +580,4 @@ class meyeExtension implements JsPsychExtension {
 	};
 }
 
-export default meyeExtension;
+export default MeyeExtension;
