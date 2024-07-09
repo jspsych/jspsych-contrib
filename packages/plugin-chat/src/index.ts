@@ -236,7 +236,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   // Call to backend, newMessage is the document item to print (optional because when chaining don't want them to display)
   async fetchGPT(messages, newMessage?) {
     try {
-      const response = await fetch("http://localhost:3000/api/chat", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
