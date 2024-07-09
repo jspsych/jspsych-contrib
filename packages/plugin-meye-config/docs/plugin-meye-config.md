@@ -36,6 +36,6 @@ Using the downloaded jspsych-contrib folder:
 
 ```javascript
 var meyeCalibrate = {
-	type: jsPsychMeye,
+	type: jsPsychMeyeConfig,
 };
 ```
