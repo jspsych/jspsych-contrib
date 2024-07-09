@@ -17,7 +17,7 @@
 	<script>
 	/* initialize jsPsych */
 	var jsPsych = initJsPsych({
-		extensions: [{type: jsPsychMeyeExtension}],
+		extensions: [{type: jsPsychExtensionMeye}],
 		on_finish: function() {	  
 			jsPsych.data.displayData();
 			jsPsych.data.get().localSave('csv','TESTDATA.csv');
@@ -44,7 +44,7 @@
 	timeline.push(preload);
 
 	var meyeCalibrate = {
-		type: jsPsychMeye
+		type: jsPsychMeyeConfig
 	};
 
 	const orientblue36 = {
@@ -54,14 +54,14 @@
 				stimulus: '<img src="../../plugin-meye-config/img/cross.png" width="50" height="50"/>',
 				trial_duration: 600, 
 				response_ends_trial: false,
-				extensions: [{ type: jsPsychMeyeExtension, params: {detection_interval: 100} }]
+				extensions: [{ type: jsPsychExtensionMeye, params: {detection_interval: 100} }]
 			},
 			{
 				type: jsPsychHtmlKeyboardResponse,
 				stimulus: '<div><img id="Blue" src="../../plugin-meye-config/img/Picture2.png" height="9%" style="position:absolute; top:46%; left:64%"/></div>',
 				trial_duration: 2000,
 				data: { task: 'webcam1', US: 'no'},
-				extensions: [{ type: jsPsychMeyeExtension, params: {detection_interval: 200} }]
+				extensions: [{ type: jsPsychExtensionMeye, params: {detection_interval: 200} }]
 			}
 		]
 	}
