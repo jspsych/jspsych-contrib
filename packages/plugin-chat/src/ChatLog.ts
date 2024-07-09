@@ -1,27 +1,34 @@
 export class ChatLog {
-  private conversationLog: { role: string; content: string }[]; // keeps track of prompt to send to GPT
-  private chatLogs: { role: string; content: string; time: number; keyPressLog?: any }[]; // keeps track of all the chat logs
+  private conversation_log: { role: string; content: string }[]; // keeps track of previous conversation to send to GPT
+  private final_data: { role: string; content: string; time: number; keyPressLog?: any }[]; // keeps track of data to print
   private prompt: string;
 
   constructor() {
-    this.conversationLog = [];
-    this.chatLogs = [];
+    this.conversation_log = [];
+    this.final_data = [];
   }
 
   setPrompt(prompt) {
-    const newElement = { role: "system", content: this.prompt };
-    this.conversationLog.push(newElement);
+    const time = Math.round(performance.now());
+
+    const newMessage = {
+      role: "system",
+      content: prompt,
+      time: time,
+    };
+
+    this.final_data.push(newMessage);
     this.prompt = prompt;
   }
 
   getPrompt() {
     const newElement = { role: "system", content: this.prompt };
-    const tempConversationLog = [...this.conversationLog, newElement];
+    const tempConversationLog = [...this.conversation_log, newElement];
     return tempConversationLog;
   }
 
   getChatLogs() {
-    return this.chatLogs;
+    return this.final_data;
   }
 
   // replaces current update prompt, possibly replace to pass in objct
@@ -37,7 +44,7 @@ export class ChatLog {
 
     const time = Math.round(performance.now());
     const newPrompt = { role: role, content: content };
-    this.conversationLog.push(newPrompt);
+    this.conversation_log.push(newPrompt);
 
     const newMessage = {
       role: role,
@@ -46,7 +53,7 @@ export class ChatLog {
       ...(message ? { message: message } : {}),
       ...(keyPressLog ? { keyPressLog: keyPressLog } : {}),
     };
-    this.chatLogs.push(newMessage);
+    this.final_data.push(newMessage);
   }
 
   // addMessage, can ahve this replace updatePrompt
@@ -59,13 +66,13 @@ export class ChatLog {
       content: message,
       time: time,
     };
-    this.chatLogs.push(newMessage);
+    this.final_data.push(newMessage);
   }
 
   // Chain Condition -- have it be a list of the chain and what happens before and after
   // called when temporary chainPrompting
   cleanConversation(): {}[] {
-    const res = this.conversationLog.filter((message: any, index: number, array: any[]) => {
+    const res = this.conversation_log.filter((message: any, index: number, array: any[]) => {
       if ("role" in message && message["role"] === "system") {
         return false;
       }
@@ -82,18 +89,16 @@ export class ChatLog {
   // call when adding a new prompt
   cleanSystem(prompt, message?) {
     // cleans existing prompts
-    const res = this.conversationLog.filter((message: any) => {
+    const res = this.conversation_log.filter((message: any) => {
       if ("role" in message && message["role"] === "system") {
         return false;
       }
       return true;
     });
 
-    // sets the prompts equal to the new one
-    this.conversationLog = res;
-    // this.updateConversationLog(prompt, "system", undefined, message);
-    this.prompt = prompt;
+    this.conversation_log = res;
 
+    this.setPrompt(prompt);
     return this.getPrompt();
   }
 }
