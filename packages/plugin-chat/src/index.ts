@@ -159,13 +159,19 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       } else if (message !== "") {
         await this.updateAndProcessGPT(chatBox);
       }
+
+      chatBox.scrollTop = chatBox.scrollHeight;
       // inc messages and check researcher prompts
       this.messages_sent += 1;
       this.checkResearcherPrompts(chatBox, continueButton);
     };
 
     // Event listener for send button click
-    sendButton.addEventListener("click", sendMessage);
+    sendButton.addEventListener("click", function (event) {
+      if (userInput.value.trim() != "") {
+        sendMessage();
+      }
+    });
 
     // Event listener for Enter key press
     userInput.addEventListener("keydown", function (event) {
@@ -237,7 +243,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   }
 
   // Call to backend, newMessage is the document item to print (optional because when chaining don't want them to display)
-  async fetchGPT(messages, newMessage?) {
+  async fetchGPT(messages, chatBox, newMessage?) {
     try {
       var response;
       if (window.location.href.includes("127.0.0.1")) {
@@ -267,7 +273,8 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       if (newMessage) {
         // prints to screen if specified, otherwise only fetch
         runner.on("content", (delta, snapshot) => {
-          newMessage.innerHTML = snapshot.replace(/\n/g, "<br>");
+          newMessage.innerHTML += delta.replace(/\n/g, "<br>");
+          chatBox.scrollTop = chatBox.scrollHeight;
         });
       }
 
@@ -324,11 +331,11 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
       if (prompt) {
         // allows to pass in non defined prompts
-        response = await this.fetchGPT(prompt, newMessage);
+        response = await this.fetchGPT(prompt, chatBox, newMessage);
         console.log(prompt);
       } else {
         // special case when wanting to prompt with own thing
-        response = await this.fetchGPT(this.chatLog.getPrompt(), newMessage);
+        response = await this.fetchGPT(this.chatLog.getPrompt(), chatBox, newMessage);
         console.log(this.chatLog.getPrompt());
       }
 
@@ -433,7 +440,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
         message = await this.updateAndProcessGPT(chatBox, temp_prompt);
         logChain.push({ role: "assistant", content: message });
       } else {
-        message = await this.fetchGPT(temp_prompt); // Ensure to await if fetchGPT is asynchronous
+        message = await this.fetchGPT(temp_prompt, chatBox); // Ensure to await if fetchGPT is asynchronous
         logChain.push({ role: "assistant", content: message });
       }
     }
