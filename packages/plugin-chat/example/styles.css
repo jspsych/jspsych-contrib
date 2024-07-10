@@ -158,7 +158,8 @@ html, body {
   background-color: #f9f2a1a8; /* Darker shade on hover */
 }
 
-.user-message, .chatbot-message, .system-prompt-message {
+/* .system-prompt-message  */
+.user-message, .chatbot-message {
   padding: 10px 15px;
   margin: 5px;
   margin-top: 30px;
@@ -184,6 +185,7 @@ html, body {
   align-self: flex-end; 
   background-color: #D1D0E5; 
   color: #000000;
+  border-radius: 15px 15px 0px 15px;
 }
 
 /* Chatbot message */
@@ -191,15 +193,17 @@ html, body {
   align-self: flex-start; 
   background-color: #d1e7dd; /* Change this color to something contrasting */
   color: black; 
+  border-radius: 15px 15px 15px 0px;
 }
 
 .system-prompt-message {
-  background: #FFFAC180;
-  color: #6B503F;
+  /* background: #FFFAC180; */
+  margin-top: 30px;
+  color: #3e3e51c5;
 
   font-family: Exo;
-  font-size: 21px;
-  font-weight: 200;
+  font-size: 18px;
+  font-weight: 500;
   line-height: 26px;
   text-align: center;
 }
@@ -227,8 +231,8 @@ html, body {
 
 /* Tail for chatbot message */
 .chatbot-message::after {
-  left: -10px;
-  bottom: 1px; /* Adjust this value to align the tail */
+  left: -9px;
+  bottom: 0px; /* Adjust this value to align the tail */
   border-right-color: #d1e7dd;
   border-left: 0;
   border-bottom: 0;
