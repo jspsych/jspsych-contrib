@@ -1,6 +1,5 @@
 const OpenAI = require("openai");
 const express = require("express");
-const axios = require("axios");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 require("dotenv").config();
@@ -34,6 +33,6 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-// app.listen(port, () => {
-//   console.log(`Server is running on http://localhost:${port}`);
-// });
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
