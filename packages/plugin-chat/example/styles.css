@@ -183,7 +183,8 @@ html, body {
 /* User message */
 .user-message {
   align-self: flex-end; 
-  background-color: #D1D0E5; 
+  background-color: #e7e7e7;
+  /* background-color: #D1D0E5;  */
   color: #000000;
   border-radius: 15px 15px 0px 15px;
 }
@@ -223,7 +224,8 @@ html, body {
 .user-message::after {
   right: -10px;
   bottom: 0px; /* Adjust this value to align the tail */
-  border-left-color: #D1D0E5;
+  border-left-color: #e7e7e7;
+  /* border-left-color: #D1D0E5; */
   border-right: 0;
   border-bottom: 0;
   border-top: 20px solid transparent;
