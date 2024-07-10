@@ -5,7 +5,6 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  font-family: Arial, sans-serif;
   background-color: #d1d0e5;
   overflow-x: hidden;
 }
@@ -21,7 +20,6 @@ html, body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow*/
 }
 
-
 .bot-title {
   /* height: 80px; */
   height: 8vh;
@@ -35,6 +33,10 @@ html, body {
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
+
+  font-family: "Cantarell", sans-serif;
+  font-weight: 700;
+  font-style: normal;
 }
 
 .bot-title-text {
@@ -102,12 +104,18 @@ html, body {
   background-color: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   width: 100%; 
-  font-family: inherit; 
-  font-size: inherit; 
   resize: none; 
   height: auto; 
   overflow-y: auto; 
   flex: 1; 
+
+  font-family: "Cantarell", sans-serif;
+  font-weight: 500;
+  font-size: 23px;
+  line-height: 32.6px;
+  font-style: normal;
+  color: #424242;
+
 }
 
 /* Send button */
@@ -165,6 +173,12 @@ html, body {
   max-width: 70%;
   word-wrap: break-word; 
   text-align: left; 
+
+  font-family: "Cantarell", sans-serif;
+  font-weight: 500;
+  font-size: 23px;
+  line-height: 32.6px;
+  font-style: normal;
 }
 
 /* User message */
@@ -184,6 +198,8 @@ html, body {
 .system-prompt-message {
   background-color: #faf39d; 
   color: #6B503F;
+
+
 }
 
 /* Add pseudo-elements for the speech bubble tails */
@@ -213,4 +229,11 @@ html, body {
   border-right-color: #d1e7dd;
   border-left: 0;
   border-bottom: 0;
+}
+/* Data display */
+#jspsych-data-display {
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  width: 100%;
+  overflow-x: auto;
 }

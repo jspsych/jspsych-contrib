@@ -21,7 +21,7 @@ const info = <const>{
     },
     bot_name: {
       type: ParameterType.STRING,
-      default: "Adora-bot",
+      default: undefined,
     },
     continue_button: {
       type: ParameterType.COMPLEX,
@@ -114,15 +114,18 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     this.initializeTrialVariables(trial);
+    var botTitle = trial.bot_name
+      ? `<div class="bot-title">
+      <h1 class="bot-title-text">` +
+        trial.bot_name +
+        `</h1>
+    </div>`
+      : "";
 
     var html =
-      `<div class="chat-page">
-      <div class="bot-title">
-        <h1 class="bot-title-text">` +
-      trial.bot_name +
-      `</h1>
-      </div>
-      <div class="chat-container">
+      `<div class="chat-page">` +
+      botTitle +
+      `<div class="chat-container">
         <div class="chat-box" id="chat-box"></div>
 
         <div class="chat-fields"> 
