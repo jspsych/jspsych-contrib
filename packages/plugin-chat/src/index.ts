@@ -139,6 +139,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     </div>`;
 
     display_element.innerHTML = html;
+    document.body.style.backgroundColor = "#9c9ad05c";
     const chatBox = display_element.querySelector("#chat-box") as HTMLElement;
     const userInput = display_element.querySelector("#user-input") as HTMLInputElement;
     const sendButton = display_element.querySelector("#send-btn") as HTMLButtonElement;
