@@ -28,8 +28,8 @@ var _globalName_ = (function (jspsych) {
 
     on_finish(params) {
       return {
-        data_name: 99, // Make sure this type and name matches data_name
-        data_name2: "hello world!", // Make this this type and name matches data_name2
+        data1: 99, // Make sure this type and name matches data1
+        data2: "hello world!", // Make this this type and name matches data2
       };
     }
   }
@@ -37,12 +37,12 @@ var _globalName_ = (function (jspsych) {
     name: "{name}",
     version: version,
     data: {
-      /** This comment will be scraped as metadata for data_name when running the metadata module.  */
-      data_name: {
+      /** Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
+      data1: {
         type: ParameterType.INT,
       },
-      /** This comment will be scraped as metadata for data_name2 when running the metadata module.  */
-      data_name2: {
+      /** Provide a clear description of the data2 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
+      data2: {
         type: ParameterType.STRING,
       },
     },
