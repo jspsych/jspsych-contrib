@@ -1,4 +1,6 @@
-import { JsPsych, JsPsychExtension, JsPsychExtensionInfo } from "jspsych";
+import { JsPsych, JsPsychExtension, JsPsychExtensionInfo, ParameterType } from "jspsych";
+
+import { version } from "../package.json";
 
 interface InitializeParameters {}
 
@@ -19,6 +21,17 @@ interface OnFinishParameters {}
 class ExtensionNameExtension implements JsPsychExtension {
   static info: JsPsychExtensionInfo = {
     name: "{name}",
+    version: version,
+    data: {
+      /** This comment will be scraped as metadata for data_name when running the metadata module.  */
+      data_name: {
+        type: ParameterType.INT,
+      },
+      /** This comment will be scraped as metadata for data_name2 when running the metadata module.  */
+      data_name2: {
+        type: ParameterType.STRING,
+      },
+    },
   };
 
   constructor(private jsPsych: JsPsych) {}
@@ -35,7 +48,8 @@ class ExtensionNameExtension implements JsPsychExtension {
 
   on_finish = ({}: OnFinishParameters): { [key: string]: any } => {
     return {
-      data_property: "data_value",
+      data_name: 99, // Make sure this type and name matches data_name
+      data_name2: "hello world!", // Make this this type and name matches data_name2
     };
   };
 }

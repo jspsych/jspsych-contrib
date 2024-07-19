@@ -1,3 +1,5 @@
+import { version } from "./package.json";
+
 var _globalName_ = (function (jspsych) {
   "use strict";
 
@@ -26,12 +28,24 @@ var _globalName_ = (function (jspsych) {
 
     on_finish(params) {
       return {
-        data_property: "data_value",
+        data_name: 99, // Make sure this type and name matches data_name
+        data_name2: "hello world!", // Make this this type and name matches data_name2
       };
     }
   }
   ExtensionNameExtension.info = {
     name: "{name}",
+    version: version,
+    data: {
+      /** This comment will be scraped as metadata for data_name when running the metadata module.  */
+      data_name: {
+        type: ParameterType.INT,
+      },
+      /** This comment will be scraped as metadata for data_name2 when running the metadata module.  */
+      data_name2: {
+        type: ParameterType.STRING,
+      },
+    },
   };
 
   return ExtensionNameExtension;
