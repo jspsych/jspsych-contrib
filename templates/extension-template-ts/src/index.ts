@@ -1,4 +1,6 @@
-import { JsPsych, JsPsychExtension, JsPsychExtensionInfo } from "jspsych";
+import { JsPsych, JsPsychExtension, JsPsychExtensionInfo, ParameterType } from "jspsych";
+
+import { version } from "../package.json";
 
 interface InitializeParameters {}
 
@@ -19,6 +21,17 @@ interface OnFinishParameters {}
 class ExtensionNameExtension implements JsPsychExtension {
   static info: JsPsychExtensionInfo = {
     name: "{name}",
+    version: version,
+    data: {
+      /** Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
+      data1: {
+        type: ParameterType.INT,
+      },
+      /** Provide a clear description of the data2 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
+      data2: {
+        type: ParameterType.STRING,
+      },
+    },
   };
 
   constructor(private jsPsych: JsPsych) {}
@@ -35,7 +48,8 @@ class ExtensionNameExtension implements JsPsychExtension {
 
   on_finish = ({}: OnFinishParameters): { [key: string]: any } => {
     return {
-      data_property: "data_value",
+      data1: 99, // Make sure this type and name matches the information for data1 in the data object contained within the info const.
+      data2: "hello world!", // Make sure this type and name matches the information for data2 in the data object contained within the info const.
     };
   };
 }
