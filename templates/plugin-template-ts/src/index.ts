@@ -47,8 +47,8 @@ class PluginNamePlugin implements JsPsychPlugin<Info> {
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     // data saving
     var trial_data = {
-      data1: 99, // Make sure this type and name matches data1
-      data2: "hello world!", // Make this this type and name matches data2
+      data1: 99, // Make sure this type and name matches the information for data1 in the data object contained within the info const.
+      data2: "hello world!", // Make sure this type and name matches the information for data2 in the data object contained within the info const.
     };
 
     // end trial

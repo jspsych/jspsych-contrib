@@ -48,8 +48,8 @@ class ExtensionNameExtension implements JsPsychExtension {
 
   on_finish = ({}: OnFinishParameters): { [key: string]: any } => {
     return {
-      data1: 99, // Make sure this type and name matches data1
-      data2: "hello world!", // Make this this type and name matches data2
+      data1: 99, // Make sure this type and name matches the information for data1 in the data object contained within the info const.
+      data2: "hello world!", // Make sure this type and name matches the information for data2 in the data object contained within the info const.
     };
   };
 }
