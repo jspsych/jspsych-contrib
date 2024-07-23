@@ -110,7 +110,7 @@ class SpeechRecognitionPlugin implements JsPsychPlugin<Info> {
   private recorded_data_chunks = [];
   private transcript: string;
   private params: TrialType<Info>;
-  private timestamp: { choice: Array<number> };
+  private timestamp: { [choice: string]: Array<number> };
   private trial_data: {
     rt: number;
     stimulus: string;
@@ -262,19 +262,20 @@ class SpeechRecognitionPlugin implements JsPsychPlugin<Info> {
         let url = '${this.audio_url}';
         console.log('URL', url);
         let transcriber = await module.pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny.en');
-        let output = await transcriber(url, { return_timestamps: true });
+        let output = await transcriber(url, { return_timestamps: 'word' });
         //console.log(output);
         return output; // Assigning value to the outer scope variable
       })();
     `);
 
     this.transcript = out["text"];
-    for (const choice of this.params.choices) {
-      for (const chunk of out["chunks"]) {
+    for (const chunk of out["chunks"]) {
+      for (const choice of this.params.choices) {
         console.log(chunk["text"]);
         if (chunk["text"].includes(choice)) {
-          console.log(chunk["text"]);
-          this.timestamp = {}[choice.trim()] = chunk["timestamp"];
+          let timeObj;
+          timeObj[choice.trim()] = chunk["timestamp"];
+          this.timestamp = timeObj;
           break;
         }
       }
