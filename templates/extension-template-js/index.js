@@ -1,5 +1,3 @@
-import { version } from "./package.json";
-
 var _globalName_ = (function (jspsych) {
   "use strict";
 
@@ -28,21 +26,21 @@ var _globalName_ = (function (jspsych) {
 
     on_finish(params) {
       return {
-        data_name: 99, // Make sure this type and name matches data_name
-        data_name2: "hello world!", // Make this this type and name matches data_name2
+        data1: 99, // Make sure this type and name matches the information for data1 in the data object contained within the info const.
+        data2: "hello world!", // Make sure this type and name matches the information for data2 in the data object contained within the info const.
       };
     }
   }
   ExtensionNameExtension.info = {
     name: "{name}",
-    version: version,
+    version: "1.0.0", // When working in a Javascript environment with no build, you will need to manually put set the version information. This is used for metadata purposes and publishing.
     data: {
-      /** This comment will be scraped as metadata for data_name when running the metadata module.  */
-      data_name: {
+      /** Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
+      data1: {
         type: ParameterType.INT,
       },
-      /** This comment will be scraped as metadata for data_name2 when running the metadata module.  */
-      data_name2: {
+      /** Provide a clear description of the data2 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
+      data2: {
         type: ParameterType.STRING,
       },
     },

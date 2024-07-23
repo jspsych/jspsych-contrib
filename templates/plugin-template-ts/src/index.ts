@@ -6,24 +6,24 @@ const info = <const>{
   name: "{name}",
   version: version,
   parameters: {
-    /** This comment will be scraped as docs for parameter_name when running generating the JsPsych docs.  */
+    /** Provide a clear description of the parameter_name that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
     parameter_name: {
       type: ParameterType.INT, // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
       default: undefined,
     },
-    /** This comment will be scraped as docs for parameter_name when running generating the JsPsych docs.  */
+    /** Provide a clear description of the parameter_name2 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
     parameter_name2: {
       type: ParameterType.IMAGE,
       default: undefined,
     },
   },
   data: {
-    /** This comment will be scraped as metadata for data_name when running the metadata module.  */
-    data_name: {
+    /** Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
+    data1: {
       type: ParameterType.INT,
     },
-    /** This comment will be scraped as metadata for data_name2 when running the metadata module.  */
-    data_name2: {
+    /** Provide a clear description of the data2 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
+    data2: {
       type: ParameterType.STRING,
     },
   },
@@ -47,8 +47,8 @@ class PluginNamePlugin implements JsPsychPlugin<Info> {
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     // data saving
     var trial_data = {
-      data_name: 99, // Make sure this type and name matches data_name
-      data_name2: "hello world!", // Make this this type and name matches data_name2
+      data1: 99, // Make sure this type and name matches the information for data1 in the data object contained within the info const.
+      data2: "hello world!", // Make sure this type and name matches the information for data2 in the data object contained within the info const.
     };
 
     // end trial

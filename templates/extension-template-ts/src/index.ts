@@ -23,12 +23,12 @@ class ExtensionNameExtension implements JsPsychExtension {
     name: "{name}",
     version: version,
     data: {
-      /** This comment will be scraped as metadata for data_name when running the metadata module.  */
-      data_name: {
+      /** Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
+      data1: {
         type: ParameterType.INT,
       },
-      /** This comment will be scraped as metadata for data_name2 when running the metadata module.  */
-      data_name2: {
+      /** Provide a clear description of the data2 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
+      data2: {
         type: ParameterType.STRING,
       },
     },
@@ -48,8 +48,8 @@ class ExtensionNameExtension implements JsPsychExtension {
 
   on_finish = ({}: OnFinishParameters): { [key: string]: any } => {
     return {
-      data_name: 99, // Make sure this type and name matches data_name
-      data_name2: "hello world!", // Make this this type and name matches data_name2
+      data1: 99, // Make sure this type and name matches the information for data1 in the data object contained within the info const.
+      data2: "hello world!", // Make sure this type and name matches the information for data2 in the data object contained within the info const.
     };
   };
 }
