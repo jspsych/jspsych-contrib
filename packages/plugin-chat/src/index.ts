@@ -529,10 +529,6 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     ];
 
     const response_message = await this.updateAndProcessGPT(chatBox, prompt_select);
-
-    console.log("system-user:\n", system_user, "\n\n");
-    console.log("selection_prompt:\n", prompt_select);
-    console.log("\n\nResponse:", response_message);
   }
 }
 
