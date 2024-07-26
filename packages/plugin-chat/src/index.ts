@@ -494,16 +494,38 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     for (var i = 0; i < this.selection_prompt["prompts"].length; i++) {
       const input_prompt = this.selection_prompt["prompts"][i];
+      const combined_prompt = [
+        ...cleaned_prompt,
+        { role: "system", content: input_prompt },
+        { role: "user", content: message },
+      ];
 
-      // first combine cleaned_prompt with input prompt and then pass that in as the prompt
-      // save choice in bot response and keep going and console.log
+      console.log("individual_prompt:", combined_prompt);
+      const response = await this.fetchGPT(combined_prompt, chatBox);
 
-      bot_responses = bot_responses + "This is choice " + i + ":" + "```" + input_prompt + "```\n";
+      bot_responses = bot_responses + "\nThis is choice " + i + ":" + "```" + response + "```\n";
     }
 
-    console.log(bot_responses);
-    // once have this part, we prompt with selection prompt and message along with it to denote
-    // is the message responding too
+    const system_user =
+      this.selection_prompt["selection_prompt"] +
+      " For context I will enclose the user message that you are responding to in backticks and this should help you evaluate the quality of responses.\n\n" +
+      " User message: `" +
+      message +
+      "`";
+
+    this.chatLog.logMessage([system_user, bot_responses], "selection_prompt");
+
+    const prompt_select = [
+      ...cleaned_prompt,
+      { role: "system", content: system_user },
+      { role: "user", content: bot_responses },
+    ];
+
+    const response_message = await this.updateAndProcessGPT(chatBox, prompt_select);
+
+    console.log("system-user:\n", system_user, "\n\n");
+    console.log("selection_prompt:\n", prompt_select);
+    console.log("\n\nResponse:", response_message);
   }
 }
 

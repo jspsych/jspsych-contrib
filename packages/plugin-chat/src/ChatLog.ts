@@ -31,7 +31,7 @@ export class ChatLog {
     return this.final_data;
   }
 
-  // replaces current update prompt, possibly replace to pass in objct
+  // updates current prompt, possibly replace to pass in objct
   updateConversationLog(content, role, keyPressLog?, message?): void {
     if (role === "system")
       console.log(
@@ -56,8 +56,7 @@ export class ChatLog {
     this.final_data.push(newMessage);
   }
 
-  // addMessage, can ahve this replace updatePrompt
-  // work in functionaltiy to tie it in
+  // logMessage adds message to final data but not conversatin log
   logMessage(message, role) {
     const time = Math.round(performance.now());
 
