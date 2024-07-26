@@ -47,6 +47,17 @@
       }
     ]
 
+    selection_prompt = {
+      prompts: [
+        "Pretend to be a funny guy and tell a joke at the end of each message.",
+        "Be super wise and give a inspirational quote at then end of each message.",
+        "Be serious and give the user a serious quote at the end of each message."
+      ], 
+      selection_prompt:
+        "Select the prompt below that will give the user the most joy.",
+      message_trigger: 1,
+    }
+
     continue_button = {
       timer_trigger: 1000000,
       message_trigger: 1,
@@ -56,7 +67,11 @@
     prompt_chain = {
       message_trigger: 1,
       // timer_trigger: 1,
-      prompts: ["Summarize this response in Spanish", "Switch half of the sentences to English", "Add another paragraph onto the output explaining why you like bananas"],
+      prompts: [  
+        "Summarize this response in Spanish", 
+        "Switch half of the sentences to English", 
+        "Add another paragraph onto the output explaining why you like bananas"
+      ],
     }
 
     const trial = {
@@ -64,8 +79,9 @@
       ai_prompt: "Pretend to be a comedian and include a joke at the end of every response",
       chat_field_placeholder: "be nice...",
       continue_button: continue_button,
-      // prompt_chain: prompt_chain,
       additional_prompts: prompts,
+      // prompt_chain: prompt_chain,
+      selection_prompt: selection_prompt,
     }
 
     jsPsych.run([trial]);

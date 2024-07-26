@@ -19,10 +19,10 @@ const info = <const>{
       type: ParameterType.STRING,
       default: "Type your message here...",
     },
-    bot_name: {
-      type: ParameterType.STRING,
-      default: undefined,
-    },
+    // bot_name: {
+    //   type: ParameterType.STRING,
+    //   default: undefined,
+    // },
     continue_button: {
       type: ParameterType.COMPLEX,
       default: { message_trigger: 0 },
@@ -71,7 +71,7 @@ const info = <const>{
     // when triggers it doesn't stop, do we want to give it a stop?
     prompt_chain: {
       type: ParameterType.COMPLEX,
-      default: undefined,
+      default: [],
       nested: {
         prompts: {
           type: ParameterType.STRING,
@@ -80,7 +80,30 @@ const info = <const>{
         },
         message_trigger: {
           type: ParameterType.INT,
+          default: 99999999999999999999999, // silencing error message
+        },
+        timer_trigger: {
+          type: ParameterType.INT,
           default: null,
+        },
+      },
+    },
+    selection_prompt: {
+      type: ParameterType.COMPLEX,
+      default: {},
+      nested: {
+        prompts: {
+          type: ParameterType.STRING,
+          array: true,
+          default: [],
+        },
+        selection_prompt: {
+          type: ParameterType.STRING,
+          default: "Select one of these prompts:",
+        },
+        message_trigger: {
+          type: ParameterType.INT,
+          default: 99999999999999999999999, // silencing error message
         },
         timer_trigger: {
           type: ParameterType.INT,
@@ -105,6 +128,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private researcher_prompts: {}[]; // keeps track of researcher's prompts that need to be displayed
   private prompt_chain: {};
+  private selection_prompt: {};
   private messages_sent: number; // notes number of messages sent to calculate prompts
   private timer_start: number; // notes beginning of session in order to calculate prompts
   private ai_model: string; // keeps track of model
@@ -114,17 +138,17 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     this.initializeTrialVariables(trial);
-    var botTitle = trial.bot_name
-      ? `<div class="bot-title">
-      <h1 class="bot-title-text">` +
-        trial.bot_name +
-        `</h1>
-    </div>`
-      : "";
+    // var botTitle = trial.bot_name
+    //   ? `<div class="bot-title">
+    //   <h1 class="bot-title-text">` +
+    //     trial.bot_name +
+    //     `</h1>
+    // </div>`
+    //   : "";
 
     var html =
       `<div class="chat-page">` +
-      botTitle +
+      // botTitle +
       `<div class="chat-container">
         <div class="chat-box" id="chat-box"></div>
 
@@ -155,7 +179,9 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       userInput.value = "";
 
       // prompt chaining or simple requests
-      if (message !== "" && this.prompt_chain && this.chainCondition()) {
+      if (message !== "" && this.selection_prompt && this.checkCondition("selection_prompt"))
+        await this.selectionPrompt(message, chatBox);
+      else if (message !== "" && this.prompt_chain && this.checkCondition("prompt_chain")) {
         await this.chainPrompts(message, chatBox);
       } else if (message !== "") {
         await this.updateAndProcessGPT(chatBox);
@@ -225,7 +251,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     // sets continue button and removes any that can't trigger
     const continue_button = trial.continue_button;
     if (continue_button["message_trigger"] === null && continue_button["timer_trigger"] === null) {
-      console.error("Missing required property in continue prompt, will never display");
+      console.error("Missing required trigger property in continue prompt, will never display");
     } else {
       continue_button["role"] = "continue";
       this.researcher_prompts.push(continue_button);
@@ -237,9 +263,19 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       trial.prompt_chain["message_trigger"] === null &&
       trial.prompt_chain["timer_trigger"] === null
     ) {
-      console.error("Missing required property in prompt_chain, will never trigger");
+      console.error("Missing required trigger property in prompt_chain, will never trigger");
     } else {
       this.prompt_chain = trial.prompt_chain;
+    }
+
+    if (
+      trial.selection_prompt &&
+      trial.selection_prompt["message_trigger"] === null &&
+      trial.selection_prompt["timer_trigger"] === null
+    ) {
+      console.error("Missing required trigger property in selection_prompt, will never trigger");
+    } else {
+      this.selection_prompt = trial.selection_prompt;
     }
   }
 
@@ -248,6 +284,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     try {
       var response;
       if (window.location.href.includes("127.0.0.1")) {
+        // local chat vs hosting
         response = await fetch("http://localhost:3000/api/chat", {
           method: "POST",
           headers: {
@@ -402,17 +439,17 @@ class ChatPlugin implements JsPsychPlugin<Info> {
   }
 
   // checking whether chain prompts can trigger
-  private chainCondition() {
+  private checkCondition(name) {
     const time_elapsed = performance.now() - this.timer_start; // could instead keep subtracting from time_elapsed
-    const message_trigger = this.prompt_chain["message_trigger"];
-    const timer_trigger = this.prompt_chain["timer_trigger"];
+    const message_trigger = this[name]["message_trigger"];
+    const timer_trigger = this[name]["timer_trigger"];
 
     if (
       (message_trigger !== null && this.messages_sent >= message_trigger) ||
       (timer_trigger !== null && time_elapsed >= timer_trigger)
-    ) {
+    )
       return true;
-    } else return false;
+    else return false;
   }
 
   // triggering prompts in chain and prompting/logging logic
@@ -437,6 +474,8 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       temp_prompt.push(user_message);
       logChain.push(user_message);
 
+      // console.log(temp_prompt);
+
       if (i === this.prompt_chain["prompts"].length - 1) {
         message = await this.updateAndProcessGPT(chatBox, temp_prompt);
         logChain.push({ role: "assistant", content: message });
@@ -447,6 +486,24 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     }
 
     this.chatLog.logMessage(logChain, "chain-prompt");
+  }
+
+  private async selectionPrompt(message, chatBox) {
+    const cleaned_prompt = this.chatLog.cleanConversation(); // maybe be able to refactor and cleanSystem()
+    var bot_responses = "The choices will be seperated by headers and triple backticks.\n";
+
+    for (var i = 0; i < this.selection_prompt["prompts"].length; i++) {
+      const input_prompt = this.selection_prompt["prompts"][i];
+
+      // first combine cleaned_prompt with input prompt and then pass that in as the prompt
+      // save choice in bot response and keep going and console.log
+
+      bot_responses = bot_responses + "This is choice " + i + ":" + "```" + input_prompt + "```\n";
+    }
+
+    console.log(bot_responses);
+    // once have this part, we prompt with selection prompt and message along with it to denote
+    // is the message responding too
   }
 }
 
