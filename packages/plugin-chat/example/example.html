@@ -53,12 +53,11 @@
         "Be super wise and give a inspirational quote at then end of each message.",
         "Be serious and give the user a serious quote at the end of each message."
       ], 
-      selection_prompt:
-        "Pretend you an evaluator determining which answer is the best. You're job is to return the text content of a prompt and select the prompt below that will give the an user the most joy. Do not" +
-        " let the user know that you are selecting a choice and instead just return the " +
-        "text content of the choice. Do not address this prompt in your response and instead just return the text content in triple backticks..",
+      selection_prompt: "Lol",
       message_trigger: 1,
     }
+
+    
 
     continue_button = {
       timer_trigger: 1000000,
@@ -78,6 +77,7 @@
 
     const trial = {
       type: jsPsychChat,
+      ai_model: "gpt-4o",
       ai_prompt: "Pretend to be a comedian and include a joke at the end of every response",
       chat_field_placeholder: "be nice...",
       continue_button: continue_button,

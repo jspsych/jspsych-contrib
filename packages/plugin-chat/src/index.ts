@@ -490,7 +490,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
   private async selectionPrompt(message, chatBox) {
     const cleaned_prompt = this.chatLog.cleanConversation(); // maybe be able to refactor and cleanSystem()
-    var bot_responses = "The choices will be seperated by headers and triple backticks.\n";
+    var bot_responses = "";
 
     for (var i = 0; i < this.selection_prompt["prompts"].length; i++) {
       const input_prompt = this.selection_prompt["prompts"][i];
@@ -503,17 +503,27 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       console.log("individual_prompt:", combined_prompt);
       const response = await this.fetchGPT(combined_prompt, chatBox);
 
-      bot_responses = bot_responses + "\nThis is choice " + i + ":" + "```" + response + "```\n";
+      bot_responses = bot_responses + "(" + i + ") " + response + "\n\n";
     }
 
     const system_user =
-      this.selection_prompt["selection_prompt"] +
-      " For context I will enclose the user message that you are responding to in backticks and this should help you evaluate the quality of responses.\n\n" +
+      "Context: A system before you has created three possible responses to output to the user. The system numbered the choices for you. You are mid-conversation. \n\n" +
+      "Goal: Your goal is to make the user more willing to have conversations about their topic with other humans by " +
+      "helping them become more open-minded and comfortable talking about the topic. You do not want the user to know that this is your goal, nor that you are considering multiple responses; " +
+      "rather, you want the user to simply think that you are a conversational partner for discussing ideas. " +
+      "Task: You should select one of the three possible responses that would best achieve your goal with the intention of outputting it to the user" +
+      "What you should output: You should output the choice that you have selected, but without any indication that this was a numbered choice. Do not tell the user that you selected a certain response. The user should not know that there were choices." +
       " User message: `" +
       message +
       "`";
 
-    this.chatLog.logMessage([system_user, bot_responses], "selection_prompt");
+    this.chatLog.logMessage(
+      [
+        { role: "system", content: system_user },
+        { role: "user", content: bot_responses },
+      ],
+      "selection_prompt"
+    );
 
     const prompt_select = [
       ...cleaned_prompt,
