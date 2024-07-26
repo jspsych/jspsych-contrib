@@ -507,10 +507,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     }
 
     const system_user =
-      "Context: A system before you has created three possible responses to output to the user. The system numbered the choices for you. You are mid-conversation. \n\n" +
-      "Goal: Your goal is to make the user more willing to have conversations about their topic with other humans by " +
-      "helping them become more open-minded and comfortable talking about the topic. You do not want the user to know that this is your goal, nor that you are considering multiple responses; " +
-      "rather, you want the user to simply think that you are a conversational partner for discussing ideas. " +
+      this.selection_prompt["selection_prompt"] +
       "Task: You should select one of the three possible responses that would best achieve your goal with the intention of outputting it to the user" +
       "What you should output: You should output the choice that you have selected, but without any indication that this was a numbered choice. Do not tell the user that you selected a certain response. The user should not know that there were choices." +
       " User message: `" +
