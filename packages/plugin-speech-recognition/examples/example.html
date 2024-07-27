@@ -2,7 +2,7 @@
 <html>
   <head>
     <script src="https://unpkg.com/jspsych@8.0.0"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@2.0.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@1.0.3"></script>
     <script src="../dist/index.browser.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0"></script>
     <link href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css" rel="stylesheet" type="text/css" />
@@ -14,7 +14,7 @@
       on_finish: function() {
         jsPsych.data.displayData();
       },
-      default_iti: 250
+      //default_iti: 250
     });
 
     // manually preload the image files, since they are passed to the image-keyboard-response stimulus parameter
@@ -32,7 +32,7 @@
         choices: ['Red', 'Green', 'Blue'],
         };
 
-    jsPsych.run([initialize, audio]);
+    jsPsych.run([initialize, audio, audio, audio, audio]);
 
   </script>
 </html>

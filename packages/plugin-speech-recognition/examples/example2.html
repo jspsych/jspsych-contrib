@@ -2,9 +2,12 @@
 <html>
   <head>
     <script src="https://unpkg.com/jspsych@8.0.0"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@2.0.0"></script>    
+    <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@1.0.3"></script>
     <script src="../dist/index.browser.js"></script>
+    <script src="../../plugin-speech-process/dist/index.browser.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-audio-response@2.0.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0"></script>
     <link href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css" rel="stylesheet" type="text/css" />
   </head>
   <body></body>
@@ -14,7 +17,7 @@
       on_finish: function() {
         jsPsych.data.displayData();
       },
-      default_iti: 250
+      //default_iti: 250
     });
 
     // manually preload the image files, since they are passed to the image-keyboard-response stimulus parameter
@@ -37,16 +40,17 @@
             trial_duration: 500
         },
         {
-          type: jsPsychSpeechRecognition,
+          type: jsPsychHtmlAudioResponse,
           stimulus: function(){
                   const html = `<p style="font-size:48px; color:${jsPsych.evaluateTimelineVariable('color')}; font-weight: bold;">${rand_color()}</p>`;
+                  console.log(html);
                   return html;
               },
           prompt: '<p>Say the font color of the text.</p>',
-          trial_duration: 1000,
+          trial_duration: 500,
           choices: ['Red', 'Green', 'Blue', 'Yellow'],
           show_done_button: false,
-          middle_node: true,
+          save_audio_url: true,
         }
     ],
     timeline_variables: [
@@ -54,28 +58,28 @@
         { color: 'blue'},
         { color: 'yellow'},
         { color: 'green'}
-    ],
-    sample: {
-        type: 'with-replacement',
-        size: 1
-    }
+    ]
     };
-    const process_audio = {
-      type: jsPsychSpeechRecognition,
-      choices: ['Red', 'Green', 'Blue', 'Yellow'],
-      end_process_node: true,
-      audio_url: () =>{
-        url = []
-        for (const trial in jsPsych.data.get().values()){
-          if (trial[0].audio_url){
-            url.push(trial.audio_url)
-          }
-        }
-        console.log(url)
-        return url}
-    }
 
-    jsPsych.run([initialize, stroop_procedure, process_audio]);
+    var audio = {
+        type: jsPsychSpeechRecognition,
+        stimulus: '<img src="red_text_blue_color.png" style="width: 100px; height: 100px;">',
+        prompt: '<p>Say the word that corresponds to the color of the box.</p>',
+        trial_duration: 20000,
+        choices: ['Red', 'Green', 'Blue'],
+        end_process_node: true,
+        audio_url: () => {
+          url = []
+          for (const trial of jsPsych.data.get().filter({trial_type: "html-audio-response"}).values()){
+            console.log(trial.audio_url);
+             url.push(trial.audio_url);
+          }
+          console.log(url);
+          return url;
+        }
+        };
+
+    jsPsych.run([initialize, stroop_procedure, audio]);
 
   </script>
 </html>

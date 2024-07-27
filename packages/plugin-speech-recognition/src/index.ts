@@ -72,6 +72,15 @@ const info = <const>{
       type: ParameterType.INT,
       default: 10000,
     },
+    /** Optional, if given processes audio for all trials before this.  */
+    end_process_node: {
+      type: ParameterType.BOOL,
+      default: false,
+    },
+    audio_url: {
+      type: ParameterType.STRING,
+      default: "undefined",
+    },
   },
   data: {
     /** Transcript of audio recognized during trial  */
@@ -108,29 +117,44 @@ class SpeechRecognitionPlugin implements JsPsychPlugin<Info> {
   private stop_event_handler;
   private data_available_handler;
   private recorded_data_chunks = [];
-  private transcript: string;
   private params: TrialType<Info>;
-  private timestamp: { [choice: string]: Array<number> };
-  private trial_data: {
-    rt: number;
-    stimulus: string;
-    response: string;
-    estimated_stimulus_onset: number;
-  };
+  private transcript: string;
+  private timestamp: { text: any; timestamp: any };
+  private loadingBar: HTMLElement;
+  private display: HTMLElement;
   private trial_complete: (value?: unknown) => void;
 
   constructor(private jsPsych: JsPsych) {}
 
   async trial(display_element: HTMLElement, trial: TrialType<Info>) {
     this.params = trial;
+    this.display = display_element;
 
-    this.recorder = this.jsPsych.pluginAPI.getMicrophoneRecorder();
+    if (trial.end_process_node) {
+      let timestamp = [];
+      let transcript = [];
+      this.setLoadingBar();
+      for (let i = 0; i < trial.audio_url.length; i++) {
+        this.audio_url = trial.audio_url[i];
+        await this.getTranscript();
+        timestamp.push(this.timestamp);
+        transcript.push(this.transcript);
 
-    this.setupRecordingEvents(display_element, trial);
+        // Update the loading bar
+        const progress = ((i + 1) / trial.audio_url.length) * 100;
+        this.loadingBar.style.width = `${progress}%`;
+      }
 
-    this.startRecording();
+      return { timestamp: timestamp, transcript: transcript };
+    } else {
+      this.recorder = this.jsPsych.pluginAPI.getMicrophoneRecorder();
 
-    return new Promise((resolve) => (this.trial_complete = resolve));
+      this.setupRecordingEvents(display_element, trial);
+
+      this.startRecording();
+
+      return new Promise((resolve) => (this.trial_complete = resolve));
+    }
   }
 
   private showDisplay(display_element, trial) {
@@ -170,6 +194,7 @@ class SpeechRecognitionPlugin implements JsPsychPlugin<Info> {
         this.rt = Math.round(end_time - this.stimulus_start_time);
         this.stopRecording().then(async () => {
           await this.getTranscript();
+
           if (trial.allow_playback) {
             this.showPlaybackControls(display_element, trial);
           } else {
@@ -255,31 +280,66 @@ class SpeechRecognitionPlugin implements JsPsychPlugin<Info> {
     });
   }
 
-  private async getTranscript() {
-    const out = await eval(`
-      (async () => {
-        const module = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0');
-        let url = '${this.audio_url}';
-        console.log('URL', url);
-        let transcriber = await module.pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny.en');
-        let output = await transcriber(url, { return_timestamps: 'word' });
-        //console.log(output);
-        return output; // Assigning value to the outer scope variable
-      })();
-    `);
+  private async setLoadingBar() {
+    this.display.innerHTML = `
+    <p>Processing audio...</p>
+    <div style="width: 130px; background-color: #ddd;">
+  <div id='bar' style="width: 0%; height: 20px; background-color: green;"></div>
+</div>`;
+    this.loadingBar = this.display.querySelector("div > div");
+  }
 
-    this.transcript = out["text"];
-    for (const chunk of out["chunks"]) {
-      for (const choice of this.params.choices) {
-        console.log(chunk["text"]);
-        if (chunk["text"].includes(choice)) {
-          let timeObj;
-          timeObj[choice.trim()] = chunk["timestamp"];
-          this.timestamp = timeObj;
-          break;
-        }
+  private async getTranscript() {
+    const originalConsoleWarn = console.warn;
+    console.warn = () => {};
+    const out = await eval(`
+          (async () => {
+            const module = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0');
+            let url = '${this.audio_url}';
+            console.log('URL', url);
+            let transcriber = await module.pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny.en');
+            let output = await transcriber(url, { return_timestamps: 'word' });
+            //console.log(output);
+            return output; // Assigning value to the outer scope variable
+          })();
+        `);
+
+    console.warn = originalConsoleWarn;
+    this.transcript = out.text;
+
+    this.timestamp = this.findFirstMatchingWordAndTimestamp(out);
+
+    return out;
+  }
+
+  private findFirstMatchingWordAndTimestamp(output) {
+    // Assuming this.params.choices is an array of strings
+    if (this.params.choices === "NO_KEYS" || this.params.choices === "ALL_KEYS") {
+      return null;
+    }
+
+    const normalizedChoices = this.params.choices.map((choice) => choice.toLowerCase().trim());
+
+    // Normalize and flatten the words from out object
+    const wordsWithTimestamps = output.chunks.map((chunk) => ({
+      text: chunk.text.trim().toLowerCase(), // Normalize the text for comparison
+      timestamp: chunk.timestamp,
+    }));
+
+    // Find the first matching word and its timestamp
+    for (const wordWithTimestamp of wordsWithTimestamps) {
+      if (normalizedChoices.includes(wordWithTimestamp.text)) {
+        // Return the original word (with case) and its timestamp
+        // Assuming you want the original text from the `out` object, not the normalized one
+        return {
+          text: wordWithTimestamp.text,
+          timestamp: wordWithTimestamp.timestamp,
+        };
       }
     }
+
+    // Return null or any other indication if no match is found
+    return null;
   }
 
   private showPlaybackControls(display_element, trial) {
@@ -320,6 +380,7 @@ class SpeechRecognitionPlugin implements JsPsychPlugin<Info> {
       estimated_stimulus_onset: Math.round(this.stimulus_start_time - this.recorder_start_time),
       transcript: this.transcript,
       timestamp: this.timestamp,
+      audio_url: this.audio_url,
     };
 
     if (trial.save_audio_url) {
