@@ -458,30 +458,36 @@ class ChatPlugin implements JsPsychPlugin<Info> {
     const logChain = [];
 
     for (let i = 0; i < this.prompt_chain["prompts"].length; i++) {
-      const temp_prompt = [...cleaned_prompt];
-      const prompt = this.prompt_chain["prompts"][i];
-      const new_sys = {
-        role: "system",
-        content: prompt,
-      };
-      temp_prompt.push(new_sys);
-      logChain.push(new_sys);
+      const chain_prompt_system = this.prompt_chain["prompts"][i];
 
-      const user_message = {
-        role: "user",
-        content: message,
-      };
-      temp_prompt.push(user_message);
-      logChain.push(user_message);
+      const temp_prompt = [
+        ...cleaned_prompt,
+        {
+          role: "system",
+          content: chain_prompt_system,
+        },
+        {
+          role: "user",
+          content: message,
+        },
+      ];
 
-      // console.log(temp_prompt);
+      logChain.push(
+        {
+          role: `chain-system-${i}`,
+          content: chain_prompt_system,
+        },
+        {
+          role: `link-response-${i}`,
+          content: message,
+        }
+      );
 
       if (i === this.prompt_chain["prompts"].length - 1) {
         message = await this.updateAndProcessGPT(chatBox, temp_prompt);
         logChain.push({ role: "assistant", content: message });
       } else {
         message = await this.fetchGPT(temp_prompt, chatBox); // Ensure to await if fetchGPT is asynchronous
-        logChain.push({ role: "assistant", content: message });
       }
     }
 
@@ -516,8 +522,8 @@ class ChatPlugin implements JsPsychPlugin<Info> {
 
     this.chatLog.logMessage(
       [
-        { role: "system", content: system_user },
-        { role: "user", content: bot_responses },
+        { role: "prompt-selection", content: system_user },
+        { role: "content-choices/chatbot-answers", content: bot_responses },
       ],
       "selection_prompt"
     );
