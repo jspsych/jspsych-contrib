@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/jspsych"></script>
+        <script src="../dist/index.browser.js"></script>
+        <link href="https://unpkg.com/jspsych/css/jspsych.css" rel="stylesheet" type="text/css">
+    </head>
+    <body></body>
+    <script>
+        const jsPsych = initJsPsych({
+            on_finish: function() {
+                jsPsych.data.displayData();
+            }
+        });
+
+        const timeline = [];
+
+        // Labelled discreet slider displaying defaults
+        const discreet = {
+            type: jsPsychHtmlKeyboardSlider,
+            min: 1,
+            max: 5,
+            prompt: "Rate your confidence in your response:",
+            labels: ["Pure guess", "More or less guessing", "Somewhat confident", "Almost sure", "Certain"],
+        }
+
+        // Percentage slider where pressing 1 goes to 10, unless you press 1 again within 300 ms, in which case goes to 11
+        const percentage = {
+            type: jsPsychHtmlKeyboardSlider,
+            min: 0,
+            max: 100,
+            step: 1,
+            input_multiplier: 10,
+            slider_start: 50,
+            ticks: false,
+            key_buffer_on: true,
+            display_value: true,
+            unit_text: '%',
+            prompt: "Rate your confidence in your response: ",
+            //labels: ["Complete Guess", "Complete Certainty"],
+        }
+
+        //https://www.freecodecamp.org/news/javascript-range-create-an-array-of-numbers-with-the-from-method/
+        // function to create array of £ labels
+        const arrayRange = (start, stop, step) =>
+            Array.from({ length: (stop - start) / step + 1 }, (value, index) => start + index * step
+        );
+
+        // List of parameters to play around with
+        const cost = {
+            type: jsPsychHtmlKeyboardSlider,
+            // Slider properties
+            min: -5,
+            max: 5,
+            step: 0.01,
+            step_any: false, // Generally don't worry about this one!
+            slider_start: 0,
+            slider_width: 600,
+            // Special input keys
+            number_keys: true,
+            minimum_keys: '[', // an empty array or string turns _keys functionality off
+            maximum_keys: ']',
+            decrease_keys: ['ArrowLeft','ArrowDown'],
+            increase_keys: ['ArrowRight','ArrowUp','+'],
+            keys_step: 1,
+            // Inputs extras
+            input_multiplier: 1,
+            key_buffer_on: true,
+            key_buffer_timeout: 700,
+            // Text
+            stimulus: '<div style="display:flex;gap:10px;"><img src="https://picsum.photos/id/111/400"><img src="https://picsum.photos/id/183/400"></div>',
+            ticks: true,
+            ticks_interval: 0.5,
+            prompt: "How much more/less expensive is the car on the left?",
+            //labels: arrayRange(-5, 5, 1).map(i => '£' + i), //add £ sign to front of array -5 to 5
+            labels: ['£-5.00','','','','','£0.00','','','','','£5.00'], // Spacing can be handled this way too
+            label_dividers: false,
+            display_value: true,
+            unit_text: 'Difference in Value: £',
+            prepend_unit: true,
+            button_label: 'Submit',
+            // Meta-trial parameters
+            stimulus_duration: 3000, // After 3 seconds
+            trial_duration: 20000, // After 20 seconds
+            require_movement: true,
+            response_ends_trial: false,
+        }
+
+        // Happiness scale examples showing how to use other label types
+        const emojis = {
+            type: jsPsychHtmlKeyboardSlider,
+            min: -2,
+            max: 2,
+            slider_start: 0,
+            display_value: false,
+            ticks: false,
+            key_buffer_on: true,
+            display_value: true,
+            key_buffer_timeout: 300,
+            stimulus: '<img src="https://picsum.photos/id/237/400">',
+            prompt: "How do you feel about this dog?",
+            labels: ["&#128557;","&#128555;","&#128528;", "&#128515;","&#128513;"],
+        }
+
+        const images = {
+            type: jsPsychHtmlKeyboardSlider,
+            min: -1,
+            max: 1,
+            slider_start: 0,
+            slider_width: 500,
+            display_value: false,
+            prompt: "How happy are you?",
+            labels: [
+                "<img src='https://www.shutterstock.com/shutterstock/photos/1721368459/display_1500/stock-vector-smile-icon-vector-face-emoticon-sign-1721368459.jpg', style='max-width: 100%'>",
+                "<img src='https://static.vecteezy.com/system/resources/previews/022/362/067/original/flat-face-emoticon-icon-vector.jpg', style='max-width: 100%'>",
+                "<img src='https://www.shutterstock.com/shutterstock/photos/2471250453/display_1500/stock-vector-sad-face-icon-sad-emoji-emojis-sad-collection-and-black-icon-isolated-on-white-background-2471250453.jpg', style='max-width: 100%'>"
+            ],
+        }
+        // const loop = {
+        //     timeline: [trial],
+        //     loop_function: () => true,
+        // }
+
+        //jsPsych.run([loop]);
+
+        timeline.push(discreet)
+        timeline.push(percentage)
+        timeline.push(cost)
+        timeline.push(emojis)
+        //timeline.push(images)
+        jsPsych.run(timeline);
+    </script>
+</html>
