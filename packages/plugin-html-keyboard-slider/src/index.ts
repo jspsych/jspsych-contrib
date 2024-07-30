@@ -10,174 +10,240 @@ const info = <const>{
   version: "1.0.0",
   parameters: {
     // HTML Attributes
-    /** Slider minimum - Note Ints here can also be floats without issue */
+    /**
+     * Slider minimum - Note Ints here can also be floats without issue
+     */
     min: {
       type: ParameterType.INT, // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
       default: 0,
     },
-    /** Slider maximum */
+    /**
+     * Slider maximum
+     */
     max: {
       type: ParameterType.INT,
       default: 10,
     },
-    /** Slider minimum increase in value */
+    /**
+     * Slider minimum increase in value
+     */
     step: {
       type: ParameterType.INT,
       default: 1,
     },
-    /** For a more coninuous slider, set HTML Range input's step attribute to 'any', see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range#examples. Step values above still apply to 'increase_keys' and 'decrease_keys'. */
+    /**
+     * For a more coninuous slider, set HTML Range input's step attribute to 'any', see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range#examples. Step values above still apply to 'increase_keys' and 'decrease_keys'.
+     */
     step_any: {
       type: ParameterType.BOOL,
       default: false,
     },
-    /** Where to start the slider, defaults to minimum value */
+    /**
+     * Where to start the slider, defaults to minimum value
+     */
     slider_start: {
       type: ParameterType.INT,
       default: null,
     },
-    /** Width of the slider in pixels - defaults to 100% of container otherwise */
+    /**
+     * Width of the slider in pixels - defaults to 100% of container otherwise
+     */
     slider_width: {
       type: ParameterType.INT,
       default: null,
     },
 
     // KEYS
-    /** single charater or array of character(s) indicating which keys bottom out slider to minimum - notes: These fields are case sensitive e.g. use ['A','a'] to control slider with A key. Set to empty array or string to turn functionality off. */
+    /**
+     * single charater or array of character(s) indicating which keys bottom out slider to minimum - notes: These fields are case sensitive e.g. use ['A','a'] to control slider with A key. Set to empty array or string to turn functionality off.
+     */
     minimum_keys: {
       type: ParameterType.KEYS,
       default: ["`", "§"], // nullable and won't do anything if passed empty array
     },
-    /** keys which raise slider to maximum - can be a number e.g. "0" on a scale with 10 as maximum */
+    /**
+     * keys which raise slider to maximum - can be a number e.g. "0" on a scale with 10 as maximum
+     */
     maximum_keys: {
       type: ParameterType.KEYS,
       default: ["="],
     },
-    /** keys which decrease slider 1 step */
+    /**
+     * keys which decrease slider 1 step
+     */
     decrease_keys: {
       type: ParameterType.KEYS,
       default: ["ArrowLeft", "ArrowDown"],
     },
-    /** keys which increase slider 1 step */
+    /**
+     * keys which increase slider 1 step
+     */
     increase_keys: {
       type: ParameterType.KEYS,
       default: ["ArrowRight", "ArrowUp"],
     },
-    /** Whether or not to listen to number keys */
+    /**
+     * Whether or not to listen to number keys
+     */
     number_keys: {
       type: ParameterType.BOOL,
       default: true,
     },
-    /** How much the increase and decrease keys change the value on the slider - defaults to step size */
+    /**
+     * How much the increase and decrease keys change the value on the slider - defaults to step size
+     */
     keys_step: {
       type: ParameterType.FLOAT,
       default: null,
     },
 
     // INPUT MANIPULATION
-    /** Multiplies the input value after key_buffer is accounted for if on - e.g. to multiply input by 10 with 0-100% */
+    /**
+     * Multiplies the input value after key_buffer is accounted for if on - e.g. to multiply input by 10 with 0-100%
+     */
     input_multiplier: {
       type: ParameterType.INT,
       default: 1,
     },
-    /** Key buffer tracks presses over seconds to allow multiple button presses e.g. pressing 6 then 5 = 65. Handles negative values '-' and decimals '.' so long as they aren't assigned to other roles above. */
+    /**
+     * Key buffer tracks presses over seconds to allow multiple button presses e.g. pressing 6 then 5 = 65. Handles negative values '-' and decimals '.' so long as they aren't assigned to other roles above.
+     */
     key_buffer_on: {
       type: ParameterType.BOOL,
       default: false,
     },
-    /** Length of time consecutive key presses are held in memory */
+    /**
+     * Length of time consecutive key presses are held in memory
+     */
     key_buffer_timeout: {
       type: ParameterType.INT,
       default: 300,
     },
 
     // TEXT
-    /** Prompt displayed above slider */
+    /**
+     * Prompt displayed above slider
+     */
     prompt: {
       type: ParameterType.HTML_STRING,
       default: "",
     },
-    /** Whether to display ticks under each value of the slider - these are also slightly 'sticky' */
+    /**
+     * Whether to display ticks under each value of the slider - these are also slightly 'sticky'
+     */
     ticks: {
       type: ParameterType.BOOL,
       default: true,
     },
-    /** Interval at which to display ticks - defaults to step size */
+    /**
+     * Interval at which to display ticks - defaults to step size
+     */
     ticks_interval: {
       type: ParameterType.FLOAT,
       default: null,
     },
-    /** Labels (array or single value) displayed equidistantly below stimulus - Accepts HTML, e.g. "<img src='YOUR_URL_HERE' style='max-width: 100%'>" or special chars "&#128513;" */
+    /**
+     * Labels (array or single value) displayed equidistantly below stimulus - Accepts HTML, e.g. "<img src='YOUR_URL_HERE' style='max-width: 100%'>" or special chars "&#128513;"
+     */
     labels: {
       type: ParameterType.HTML_STRING,
       default: null,
     },
-    /** Whether to display dividing lines between labels */
+    /**
+     * Whether to display dividing lines between labels
+     */
     label_dividers: {
       type: ParameterType.BOOL,
       default: true,
     },
-    /** Whether or not to display the current value of the slider below */
+    /**
+     * Whether or not to display the current value of the slider below
+     */
     display_value: {
       type: ParameterType.BOOL,
       default: true,
     },
-    /** Text displayed next to display_value, e.g. %, cm, or another unit of measure */
+    /**
+     * Text displayed next to display_value, e.g. %, cm, or another unit of measure
+     */
     unit_text: {
       type: ParameterType.STRING,
       default: "",
     },
-    /** Whether or not to prepend unit e.g. £5 - default is append e.g. 5% */
+    /**
+     * Whether or not to prepend unit e.g. £5 - default is append e.g. 5%
+     */
     prepend_unit: {
       type: ParameterType.BOOL,
       default: false,
     },
 
     // NON-SLIDER-COMPONENTS
-    /** Stimulus to be displayed, any html is valid */
+    /**
+     * Stimulus to be displayed, any html is valid
+     */
     stimulus: {
       type: ParameterType.HTML_STRING,
       default: null, // null is nullable, undefined must be set?
     },
-    /** Duration of stimulus */
+    /**
+     * Duration of stimulus
+     */
     stimulus_duration: {
       type: ParameterType.INT,
       default: null,
     },
-    /** Duration of trial - if no response is made the response is recorded as null */
+    /**
+     * Duration of trial - if no response is made the response is recorded as null
+     */
     trial_duration: {
       type: ParameterType.INT,
       default: null,
     },
-    /** Whether or not a response ends the trial */
+    /**
+     * Whether or not a response ends the trial
+     */
     response_ends_trial: {
       type: ParameterType.BOOL,
       default: false,
     },
-    /** Whether the slider must be interacted with to continue */
+    /**
+     * Whether the slider must be interacted with to continue
+     */
     require_movement: {
       type: ParameterType.BOOL,
       default: false,
     },
-    /** Label of the button displayed */
+    /**
+     * Label of the button displayed
+     */
     button_label: {
       type: ParameterType.STRING,
       default: "Continue",
     },
   },
   data: {
-    /** Final value of the slider - defaults to slider starting value if slider not interacted with  */
+    /**
+     * Final value of the slider - defaults to slider starting value if slider not interacted with
+     */
     response: {
       type: ParameterType.INT,
     },
-    /** Reaction time in milliseconds */
+    /**
+     * Reaction time in milliseconds
+     */
     rt: {
       type: ParameterType.FLOAT,
     },
-    /** Stimulus presented */
+    /**
+     * Stimulus presented
+     */
     stimulus: {
       type: ParameterType.HTML_STRING,
     },
-    /** Starting value of the slider */
+    /**
+     * Starting value of the slider
+     */
     slider_start: {
       type: ParameterType.INT,
     },
@@ -193,7 +259,8 @@ type Info = typeof info;
  *
  * @author Max Lovell
  * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-html-keyboard-slider/README.md}}
- */
+
+     */
 class HtmlKeyboardSliderPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private keyboardListener: any; // Allows this.keyboardListener id to be saved
