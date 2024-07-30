@@ -494,8 +494,8 @@ class HtmlKeyboardSliderPlugin implements JsPsychPlugin<Info> {
       this.jsPsych.pluginAPI.cancelKeyboardResponse(this.keyboardListener);
       display_element.innerHTML = "";
 
-      // if no response and not ended without trial_duration being set
-      if (data.response === null && trial.trial_duration !== null)
+      // if no response and trial_duration not set
+      if (data.response === null && trial.trial_duration === null)
         data.response = data.slider_start; //set response to slider start
 
       // end trial
