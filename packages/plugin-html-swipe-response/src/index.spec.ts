@@ -142,7 +142,7 @@ describe("plugin-html-swipe-response", () => {
     ]);
 
     expect(getHTML()).toBe(
-      '<div id="jspsych-html-swipe-response-stimulus">this is html</div><div id="jspsych-html-swipe-response-btngroup"></div>'
+      '<div id="jspsych-html-swipe-response-stimulus-container"><div id="jspsych-html-swipe-response-stimulus">this is html</div></div><div id="jspsych-html-swipe-response-btngroup"></div>'
     );
     jest.advanceTimersByTime(500);
     await expectFinished();
