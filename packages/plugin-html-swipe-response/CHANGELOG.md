@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-html-swipe-response
 
+## 1.1.2
+
+### Patch Changes
+
+- [#120](https://github.com/jspsych/jspsych-contrib/pull/120) [`d2e2ba21c2cdb0065d8f6a37bea8711d5cfdef4b`](https://github.com/jspsych/jspsych-contrib/commit/d2e2ba21c2cdb0065d8f6a37bea8711d5cfdef4b) Thanks [@richford](https://github.com/richford)! - Add a stimulus container div to wrap the stimulus div. This allows the user to swipe on the container even after the stimulus has been hidden due to exceeding the stimulus duration.
+
 ## 1.1.1
 
 ### Patch Changes

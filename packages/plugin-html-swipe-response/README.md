@@ -9,7 +9,7 @@ Setting the `stimulus_duration` parameter while using the swipe modality can res
 ## Loading
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-html-swipe-response@1.1.1"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-html-swipe-response@1.1.2"></script>
 ```
 
 ## Compatibility
