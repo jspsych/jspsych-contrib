@@ -35,7 +35,7 @@ In addition to the [parameters available in all plugins](https://jspsych.org/lat
 | trial_duration      | INT              | null               | Duration of trial (ms). Response recorded as null if no response is made. |
 | response_ends_trial | BOOL             | false              | Whether a response ends the trial. |
 | require_movement    | BOOL             | false              | Whether the slider must be interacted with to continue. |
-| button_label        | STRING           | "Continue"         | Label of the button displayed. |
+| button_label        | STRING           | "Continue"         | Label of the button displayed - Note button is also clicked by 'Enter' key |
 
 ## Data Generated
 
@@ -76,7 +76,7 @@ import HtmlKeyboardSlider from '@jspsych-contrib/plugin-html-keyboard-slider';
 
 ### Simple discreet/categorical slider
 
-Labelled discreet slider displaying defaults
+Labelled discreet slider displaying defaults. Note pressing 'Enter' key also clicks the 'Continue' button.
 
 ```javascript
 var discreet = {
