@@ -28,7 +28,7 @@ jsPsych 7.0.0
 
 ## Documentation
 
-See [documentation](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-html-keyboard-slider/docs/jspsych-html-keyboard-slider.md)
+See [documentation](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-html-keyboard-slider/docs/html-keyboard-slider.md)
 
 ## Author / Citation
 
