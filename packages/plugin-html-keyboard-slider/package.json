@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-html-keyboard-slider",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "HTML slider which allows for keyboard responses",
   "type": "module",
   "main": "dist/index.cjs",
