@@ -65,7 +65,9 @@ async function runPrompts() {
     validate: (input) => {
       const fullDestPath = `${repoRoot}/packages/${type}-${formatName(input)}`;
       if (fs.existsSync(fullDestPath)) {
-        return "A package with this name already exists. Please choose a different name.";
+        return `A ${
+          type == "plugin" ? "plugin" : "extension"
+        } package with this name already exists. Please choose a different name.`;
       } else {
         return true;
       }
