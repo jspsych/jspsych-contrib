@@ -56,7 +56,7 @@ async function runPrompts() {
   });
 
   const name = await input({
-    message: "What do you want to call this package?",
+    message: `What do you want to call this ${type == "plugin" ? "plugin" : "extension"} package?`,
     required: true,
     transformer: (input) => {
       // convert to hyphen case
@@ -73,12 +73,14 @@ async function runPrompts() {
   });
 
   const description = await input({
-    message: "Enter a brief description of the package",
+    message: `Enter a brief description of the ${
+      type == "plugin" ? "plugin" : "extension"
+    } package.`,
     required: true,
   });
 
   const author = await input({
-    message: "Who is the author of this package?",
+    message: `Who is the author of this ${type == "plugin" ? "plugin" : "extension"} package?`,
     required: true,
   });
 
