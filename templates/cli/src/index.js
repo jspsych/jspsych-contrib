@@ -77,7 +77,9 @@ inquirer
 
     const destPath = `${answers.type}-${answers.name}`;
 
-    gulp.task("processTemplates", function () {
+    const { series } = require("gulp");
+
+    function processTemplate() {
       return gulp
         .src(`${repoRoot}/templates/${answers.type}-template-${answers.language}/**/*`)
         .pipe(replace("{name}", answers.name))
@@ -96,8 +98,9 @@ inquirer
         .pipe(replace("PluginNamePlugin", `${camelCaseName}Plugin`))
         .pipe(replace("ExtensionNameExtension", `${camelCaseName}Extension`))
         .pipe(gulp.dest(`${repoRoot}/packages/${destPath}`));
-    });
-    gulp.task("renameDocsTemplate", function () {
+    }
+
+    function renameDocsTemplate() {
       return gulp
         .src(`${repoRoot}/packages/${destPath}/docs/docs-template.md`)
         .pipe(rename(`${answers.name}.md`))
@@ -105,7 +108,7 @@ inquirer
         .on("end", function () {
           deleteSync(`${repoRoot}/packages/${destPath}/docs/docs-template.md`);
         });
-    });
+    }
 
-    gulp.series("processTemplates", "renameDocsTemplate")();
+    series(processTemplates, renameDocsTemplate);
   });
