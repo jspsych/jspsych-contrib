@@ -42,8 +42,5 @@
     "projects": [
       "<rootDir>/packages/*"
     ]
-  },
-  "dependencies": {
-    "@inquirer/prompts": "^5.3.8"
   }
 }
