@@ -18,7 +18,7 @@ jsPsych 7.0.0
 
 ## Documentation
 
-See [documentation](https://github.com/jspsych/jspsych-contrib/blob/main/packages/{full-name}/docs/jspsych-{name}.md)
+See [documentation](https://github.com/jspsych/jspsych-contrib/blob/main/packages/{full-name}/docs/{name}.md)
 
 ## Author / Citation
 
