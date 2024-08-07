@@ -1,111 +1,136 @@
-import path from "node:path";
+import fs from "node:fs";
+import path, { format } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { input, select } from "@inquirer/prompts";
 import { deleteSync } from "del";
-import gulp from "gulp";
+import { dest, series, src } from "gulp";
 import rename from "gulp-rename";
 import replace from "gulp-replace";
-import inquirer from "inquirer";
 import slash from "slash";
 
 const repoRoot = slash(path.resolve(fileURLToPath(import.meta.url), "../../../.."));
 
-inquirer
-  .prompt([
-    {
-      type: "list",
-      name: "type",
-      message: "What do you want to create?",
-      choices: [
-        {
-          name: "Plugin",
-          value: "plugin",
-        },
-        {
-          name: "Extension",
-          value: "extension",
-        },
-      ],
-    },
-    {
-      type: "list",
-      name: "language",
-      message: "What language do you want to use?",
-      choices: [
-        {
-          name: "TypeScript",
-          value: "ts",
-        },
-        {
-          name: "JavaScript",
-          value: "js",
-        },
-      ],
-    },
-    {
-      type: "input",
-      name: "name",
-      message: "What do you want to call this package?",
-      filter: (input) => {
-        // convert to hyphen case
-        return input
-          .trim()
-          .replace(/[\s_]+/g, "-") // Replace all spaces and underscores with hyphens
-          .replace(/([a-z])([A-Z])/g, "$1-$2") // Replace camelCase with hyphens
-          .replace(/[^\w-]/g, "") // Remove all non-word characters
-          .toLowerCase();
+function formatName(input) {
+  return input
+    .trim()
+    .replace(/[\s_]+/g, "-") // Replace all spaces and underscores with hyphens
+    .replace(/([a-z])([A-Z])/g, "$1-$2") // Replace camelCase with hyphens
+    .replace(/[^\w-]/g, "") // Remove all non-word characters
+    .toLowerCase();
+}
+
+async function runPrompts() {
+  const type = await select({
+    message: "What do you want to create?",
+    choices: [
+      {
+        name: "Plugin",
+        value: "plugin",
+        description:
+          "A jsPsych plugin is usually a widget that handles particular displays, like displaying an image and recording a keyboard response, or displaying particular kinds of stimuli.",
       },
-    },
-    {
-      type: "input",
-      name: "description",
-      message: "Enter a brief description of the package",
-    },
-    {
-      type: "input",
-      name: "author",
-      message: "Who is the author of this package?",
-    },
-  ])
-  .then(async (answers) => {
-    const camelCaseName =
-      answers.name.charAt(0).toUpperCase() +
-      answers.name.slice(1).replace(/-([a-z])/g, (g) => g[1].toUpperCase());
-
-    const globalName =
-      "jsPsych" + (answers.type === "extension" ? "Extension" : "") + camelCaseName;
-
-    const destPath = `${answers.type}-${answers.name}`;
-
-    gulp.task("processTemplates", function () {
-      return gulp
-        .src(`${repoRoot}/templates/${answers.type}-template-${answers.language}/**/*`)
-        .pipe(replace("{name}", answers.name))
-        .pipe(replace("{full-name}", destPath))
-        .pipe(replace("{author}", answers.author))
-        .pipe(
-          replace(
-            "{documentation-url}",
-            `https://github.com/jspsych/jspsych-contrib/packages/${destPath}/README.md`
-          )
-        )
-        .pipe(replace("{description}", answers.description))
-        .pipe(replace("_globalName_", globalName))
-        .pipe(replace("{globalName}", globalName))
-        .pipe(replace("{camelCaseName}", camelCaseName))
-        .pipe(replace("PluginNamePlugin", `${camelCaseName}Plugin`))
-        .pipe(replace("ExtensionNameExtension", `${camelCaseName}Extension`))
-        .pipe(gulp.dest(`${repoRoot}/packages/${destPath}`));
-    });
-    gulp.task("renameDocsTemplate", function () {
-      return gulp
-        .src(`${repoRoot}/packages/${destPath}/docs/docs-template.md`)
-        .pipe(rename(`${answers.name}.md`))
-        .pipe(gulp.dest(`${repoRoot}/packages/${destPath}/docs`))
-        .on("end", function () {
-          deleteSync(`${repoRoot}/packages/${destPath}/docs/docs-template.md`);
-        });
-    });
-
-    gulp.series("processTemplates", "renameDocsTemplate")();
+      {
+        name: "Extension",
+        value: "extension",
+        description:
+          "A jsPsych extension is a module that can interface with any plugin to extend its functionality. For instance, an eye tracking extension allows a plugin to gather gaze data and add it to the plugin's data object.",
+      },
+    ],
+    loop: false,
   });
+
+  const language = await select({
+    message: "What language do you want to use?",
+    choices: [
+      {
+        name: "TypeScript",
+        value: "ts",
+      },
+      {
+        name: "JavaScript",
+        value: "js",
+      },
+    ],
+    loop: false,
+  });
+
+  const name = await input({
+    message: "What do you want to call this package?",
+    required: true,
+    transformer: (input) => {
+      // convert to hyphen case
+      return formatName(input);
+    },
+    validate: (input) => {
+      const fullDestPath = `${repoRoot}/packages/${type}-${input}`;
+      if (fs.existsSync(fullDestPath)) {
+        return "A package with this name already exists. Please choose a different name.";
+      } else {
+        return true;
+      }
+    },
+  });
+
+  const description = await input({
+    message: "Enter a brief description of the package",
+    required: true,
+  });
+
+  const author = await input({
+    message: "Who is the author of this package?",
+    required: true,
+  });
+
+  return {
+    type: type,
+    language: language,
+    name: name,
+    description: description,
+    author: author,
+  };
+}
+
+async function processAnswers(answers) {
+  answers.name = formatName(answers.name);
+  const camelCaseName =
+    answers.name.charAt(0).toUpperCase() +
+    answers.name.slice(1).replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+
+  const globalName = "jsPsych" + (answers.type === "extension" ? "Extension" : "") + camelCaseName;
+
+  const destPath = `${answers.type}-${answers.name}`;
+
+  function processTemplate() {
+    return src(`${repoRoot}/templates/${answers.type}-template-${answers.language}/**/*`)
+      .pipe(replace("{name}", answers.name))
+      .pipe(replace("{full-name}", destPath))
+      .pipe(replace("{author}", answers.author))
+      .pipe(
+        replace(
+          "{documentation-url}",
+          `https://github.com/jspsych/jspsych-contrib/packages/${destPath}/README.md`
+        )
+      )
+      .pipe(replace("{description}", answers.description))
+      .pipe(replace("_globalName_", globalName))
+      .pipe(replace("{globalName}", globalName))
+      .pipe(replace("{camelCaseName}", camelCaseName))
+      .pipe(replace("PluginNamePlugin", `${camelCaseName}Plugin`))
+      .pipe(replace("ExtensionNameExtension", `${camelCaseName}Extension`))
+      .pipe(dest(`${repoRoot}/packages/${destPath}`));
+  }
+
+  function renameDocsTemplate() {
+    return src(`${repoRoot}/packages/${destPath}/docs/docs-template.md`)
+      .pipe(rename(`${answers.name}.md`))
+      .pipe(dest(`${repoRoot}/packages/${destPath}/docs`))
+      .on("end", function () {
+        deleteSync(`${repoRoot}/packages/${destPath}/docs/docs-template.md`);
+      });
+  }
+  series(processTemplate, renameDocsTemplate)();
+}
+
+const answers = await runPrompts();
+await processAnswers(answers);
