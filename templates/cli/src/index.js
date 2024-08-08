@@ -44,12 +44,12 @@ async function runPrompts() {
     message: "What language do you want to use?",
     choices: [
       {
-        name: "TypeScript",
-        value: "ts",
-      },
-      {
         name: "JavaScript",
         value: "js",
+      },
+      {
+        name: "TypeScript",
+        value: "ts",
       },
     ],
     loop: false,
@@ -125,6 +125,13 @@ async function processAnswers(answers) {
       .pipe(dest(`${repoRoot}/packages/${destPath}`));
   }
 
+  function renameExampleTemplate() {
+    return src(`${repoRoot}/packages/${destPath}/examples/index.html`)
+      .pipe(replace("{name}", answers.name))
+      .pipe(replace("{globalName}", globalName))
+      .pipe(dest(`${repoRoot}/packages/${destPath}/examples`));
+  }
+
   function renameDocsTemplate() {
     return src(`${repoRoot}/packages/${destPath}/docs/docs-template.md`)
       .pipe(rename(`${answers.name}.md`))
@@ -133,7 +140,8 @@ async function processAnswers(answers) {
         deleteSync(`${repoRoot}/packages/${destPath}/docs/docs-template.md`);
       });
   }
-  series(processTemplate, renameDocsTemplate)();
+
+  series(processTemplate, renameExampleTemplate, renameDocsTemplate)();
 }
 
 const answers = await runPrompts();
