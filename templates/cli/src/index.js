@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import path, { format } from "node:path";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { input, select } from "@inquirer/prompts";
@@ -56,16 +56,18 @@ async function runPrompts() {
   });
 
   const name = await input({
-    message: "What do you want to call this package?",
+    message: `What do you want to call this ${type == "plugin" ? "plugin" : "extension"} package?`,
     required: true,
     transformer: (input) => {
       // convert to hyphen case
       return formatName(input);
     },
     validate: (input) => {
-      const fullDestPath = `${repoRoot}/packages/${type}-${input}`;
+      const fullDestPath = `${repoRoot}/packages/${type}-${formatName(input)}`;
       if (fs.existsSync(fullDestPath)) {
-        return "A package with this name already exists. Please choose a different name.";
+        return `A ${
+          type == "plugin" ? "plugin" : "extension"
+        } package with this name already exists. Please choose a different name.`;
       } else {
         return true;
       }
@@ -73,12 +75,14 @@ async function runPrompts() {
   });
 
   const description = await input({
-    message: "Enter a brief description of the package",
+    message: `Enter a brief description of the ${
+      type == "plugin" ? "plugin" : "extension"
+    } package.`,
     required: true,
   });
 
   const author = await input({
-    message: "Who is the author of this package?",
+    message: `Who is the author of this ${type == "plugin" ? "plugin" : "extension"} package?`,
     required: true,
   });
 
@@ -121,6 +125,13 @@ async function processAnswers(answers) {
       .pipe(dest(`${repoRoot}/packages/${destPath}`));
   }
 
+  function renameExampleTemplate() {
+    return src(`${repoRoot}/packages/${destPath}/examples/index.html`)
+      .pipe(replace("{name}", answers.name))
+      .pipe(replace("{globalName}", globalName))
+      .pipe(dest(`${repoRoot}/packages/${destPath}/examples`));
+  }
+
   function renameDocsTemplate() {
     return src(`${repoRoot}/packages/${destPath}/docs/docs-template.md`)
       .pipe(rename(`${answers.name}.md`))
@@ -129,7 +140,8 @@ async function processAnswers(answers) {
         deleteSync(`${repoRoot}/packages/${destPath}/docs/docs-template.md`);
       });
   }
-  series(processTemplate, renameDocsTemplate)();
+
+  series(processTemplate, renameExampleTemplate, renameDocsTemplate)();
 }
 
 const answers = await runPrompts();
