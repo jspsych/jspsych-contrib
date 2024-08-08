@@ -44,12 +44,12 @@ async function runPrompts() {
     message: "What language do you want to use?",
     choices: [
       {
-        name: "JavaScript",
-        value: "js",
-      },
-      {
         name: "TypeScript",
         value: "ts",
+      },
+      {
+        name: "JavaScript",
+        value: "js",
       },
     ],
     loop: false,

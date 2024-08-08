@@ -10,11 +10,11 @@
   </head>
   <body>
     <script>
-      let jsPsych = initJsPsych({
+      const jsPsych = initJsPsych({
         extensions: [{ type: {globalName} }],
       });
 
-      let trial = {
+      const trial = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: "Hello world",
         extensions: [{ type: {globalName} },
