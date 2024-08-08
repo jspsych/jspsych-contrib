@@ -13,17 +13,16 @@ However we would encourage contributors to respond to issues/questions and to ma
 
 Contributions to `jspsych-contrib` that are broadly useful, well-documented, and well-tested may be added to the main `jsPsych` repository, with the contributor's permission.
 
-## List of available plugins/extensions
+## List of available plugins
 
-The jsPsych plugins/extensions that have been contributed by community members can be found in the `/packages` directory. 
+The jsPsych plugins that have been contributed by community members can be found in the `/packages` directory. 
 The `/packages` directory also contains four template sub-folders that can be used as a starting point for contributing a plugin/extension (see the [Guidelines for contributions](#guidelines-for-contributions) section).
 
-Plugin/Extension | Contributor | Description
+Plugin | Contributor | Description
 ----------- | ----------- | -----------
 [audio-multi-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-audio-multi-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using both button clicks and key presses.
 [audio-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-audio-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using swipe gestures and keyboard responses.
 [corsi-blocks](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-corsi-blocks/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays a configurable Corsi blocks task and records a series of click responses.
-[countdown](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-countdown/README.md) | [Shaobin Jiang](https://github.com/Shaobin-Jiang) | This extension adds a countdown during a trial.
 [gamepad](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-gamepad/README.md) | [Shaobin Jiang](https://github.com/Shaobin-Jiang) | This plugin allows one to use gamepads in a jsPsych experiment.
 [html-choice](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-html-choice/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This plugin displays clickable html elements that can be used to present a choice.
 [html-keyboard-response-raf](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-html-keyboard-response-raf/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays an arbitrary HTML string and collects responses using the keyboard. It uses requestAnimationFrame for timing.
@@ -36,7 +35,6 @@ Plugin/Extension | Contributor | Description
 [image-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-image-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an image stimulus using swipe gestures and keyboard responses.
 [ios](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-ios/README.md) | [Isaac Kinley](https://github.com/kinleyid) | This plugin implements a continuous version of the Inclusion of Other in the Self (IOS) Scale ([Aron et al., 1992](https://doi.org/10.1037/0022-3514.63.4.596)).
 [libet-intentional-blinding](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-libet-intentional-binding/README.md) | [Isaac Kinley](https://github.com/kinleyid) | This plugin measures intentional binding using a Libet clock, and allows the participant to estimate the timing of events by adjusting the clock hand themselves.
-[mediapipe-face-mesh](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-mediapipe-face-mesh/README.md) | [Martin Grewe](https://github.com/mgrewe) | This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library.
 [nextcloud-filedrop](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-nextcloud-filedrop/README.md) | [Martin Grewe](https://github.com/mgrewe) | This plugin provides permanent storage of data collected during an experiment using a nextcloud instance.
 [pipe](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-pipe/readme.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin facilitates communication with the DataPipe service (https://pipe.jspsych.org) for sending data to the OSF.
 [rdk](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-rdk/docs/jspsych-rdk.md#jspsych-rdk-plugin) | [Sivananda Rajananda](https://github.com/vrsivananda) | This plugin displays a Random Dot Kinematogram (RDK) and allows the subject to report the primary direction of motion by pressing a key on the keyboard.
@@ -46,6 +44,16 @@ Plugin/Extension | Contributor | Description
 [survey-slider](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-survey-slider/README.md) | [Max Lovell](https://github.com/Max-Lovell) & [Dominique Makowski](https://github.com/DominiqueMakowski) | Add several analogue scales on the same page for use in questionnaires. 
 [vsl-animate-occlusion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-animate-occlusion/docs/jspsych-vsl-animate-occlusion.md#jspsych-vsl-animate-occlusion-plugin) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) animate occlusion plugin displays an animated sequence of shapes that disappear behind an occluding rectangle while they change from one shape to another. 
 [vsl-grid-scene](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-grid-scene/docs/jspsych-vsl-grid-scene.md#jspsych-vsl-grid-scene-plugin) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) grid scene plugin displays images arranged in a grid. 
+
+## List of available extensions
+
+The jsPsych extensions that have been contributed by community members can be found in the `/packages` directory. 
+The `/packages` directory also contains four template sub-folders that can be used as a starting point for contributing a plugin/extension (see the [Guidelines for contributions](#guidelines-for-contributions) section).
+
+Extension | Contributor | Description
+----------- | ----------- | -----------
+[countdown](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-countdown/README.md) | [Shaobin Jiang](https://github.com/Shaobin-Jiang) | This extension adds a countdown during a trial.
+[mediapipe-face-mesh](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-mediapipe-face-mesh/README.md) | [Martin Grewe](https://github.com/mgrewe) | This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library.
 
 ## Guidelines for contributions
 
