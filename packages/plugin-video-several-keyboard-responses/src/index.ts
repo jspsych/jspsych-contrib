@@ -389,8 +389,6 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
       responses.push(this.jsPsych.pluginAPI.getValidKey(trial.choices));
     }
 
-    console.log(rts);
-
     const default_data = {
       stimulus: trial.stimulus,
       response: responses,
@@ -401,8 +399,6 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
     const data = this.jsPsych.pluginAPI.mergeSimulationData(default_data, simulation_options);
 
     //this.jsPsych.pluginAPI.ensureSimulationDataConsistency(trial, data);
-
-    console.log(data);
 
     return data;
   }

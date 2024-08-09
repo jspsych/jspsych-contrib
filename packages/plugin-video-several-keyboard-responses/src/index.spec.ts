@@ -42,8 +42,6 @@ describe("video-several-keyboard-responses simulation", () => {
 
     const data = getData().values()[0];
 
-    console.log(data);
-
     expect(data.rt.every((value) => value > 0)).toBe(true);
     expect(data.response.length).toEqual(data.rt.length);
     expect(data.video_time.length).toEqual(data.rt.length);
