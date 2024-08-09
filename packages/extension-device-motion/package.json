@@ -28,6 +28,7 @@
     "directory": "packages/extension-device-motion"
   },
   "author": "Pedro Neto",
+  "authorGitHub": "https://github.com/pasoneto",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

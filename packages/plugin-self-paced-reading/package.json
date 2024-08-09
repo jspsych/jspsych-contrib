@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-self-paced-reading",
   "version": "2.0.0",
-  "description": "jsPsych plugin for self paced reading paradigms.",
+  "description": "Self-paced reading tasks with different display options.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -28,6 +28,7 @@
     "directory": "packages/plugin-self-paced-reading"
   },
   "author": "igmmgi",
+  "authorGitHub": "https://github.com/igmmgi",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

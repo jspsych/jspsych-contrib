@@ -77,7 +77,7 @@ async function runPrompts() {
   const description = await input({
     message: `Enter a brief description of the ${
       type == "plugin" ? "plugin" : "extension"
-    } package.`,
+    } package:`,
     required: true,
   });
 
@@ -86,12 +86,17 @@ async function runPrompts() {
     required: true,
   });
 
+  const authorGitHub = await input({
+    message: `Enter the author's GitHub profile URL [Optional]:`,
+  });
+
   return {
     type: type,
     language: language,
     name: name,
     description: description,
     author: author,
+    authorGitHub: authorGitHub,
   };
 }
 
@@ -141,7 +146,20 @@ async function processAnswers(answers) {
       });
   }
 
-  series(processTemplate, renameExampleTemplate, renameDocsTemplate)();
+  function renameReadmeTemplate() {
+    return src(`${repoRoot}/packages/${destPath}/README.md`)
+      .pipe(
+        replace(
+          `{authorInfo}`,
+          answers.authorGitHub
+            ? `[${answers.author}](${answers.authorGitHub})`
+            : `${answers.author}`
+        )
+      )
+      .pipe(dest(`${repoRoot}/packages/${destPath}`));
+  }
+
+  series(processTemplate, renameExampleTemplate, renameDocsTemplate, renameReadmeTemplate)();
 }
 
 const answers = await runPrompts();

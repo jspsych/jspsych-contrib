@@ -28,6 +28,7 @@
     "directory": "packages/plugin-video-several-keyboard-responses"
   },
   "author": "Maria Emine Nylund",
+  "authorGitHub": "https://github.com/marianylund",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

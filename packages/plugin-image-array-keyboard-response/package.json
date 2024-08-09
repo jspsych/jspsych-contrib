@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-image-array-keyboard-response",
   "version": "1.0.0",
-  "description": "",
+  "description": "This plugin displays an arbitrary number of images and records responses generated with the keyboard.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -28,6 +28,7 @@
     "directory": "packages/plugin-image-array-keyboard-response"
   },
   "author": "Younes Strittmatter",
+  "authorGitHub": "https://github.com/younesStrittmatter",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

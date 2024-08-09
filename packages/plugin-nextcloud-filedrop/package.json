@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-nextcloud-filedrop",
   "version": "1.0.0",
-  "description": "",
+  "description": "This plugin provides permanent storage of data collected during an experiment using a nextcloud instance.",
   "unpkg": "dist/index.browser.min.js",
   "files": [
     "index.js",
@@ -17,6 +17,7 @@
     "directory": "packages/plugin-nextcloud-filedrop"
   },
   "author": "C. Martin Grewe",
+  "authorGitHub": "https://github.com/mgrewe",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

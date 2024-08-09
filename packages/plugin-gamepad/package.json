@@ -1,7 +1,7 @@
 {
-  "name": "@jspsych-contrib/jspsych-gamepad",
+  "name": "@jspsych-contrib/plugin-gamepad",
   "version": "1.0.1",
-  "description": "A jsPsych plugin for using gamepad in behavioral experiments",
+  "description": "This plugin allows one to use gamepads in a jsPsych experiment.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -28,6 +28,7 @@
     "directory": "packages/plugin-gamepad"
   },
   "author": "Shaobin Jiang",
+  "authorGitHub": "https://github.com/Shaobin-Jiang",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

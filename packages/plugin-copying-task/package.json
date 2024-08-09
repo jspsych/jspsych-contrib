@@ -17,6 +17,7 @@
     "directory": "packages/plugin-copying-task"
   },
   "author": "Andre Sahakian",
+  "authorGitHub": "https://github.com/Andre3582",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

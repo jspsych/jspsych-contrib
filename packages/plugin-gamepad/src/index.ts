@@ -3,7 +3,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import { GamepadModel, GamepadModels } from "./gamepad-model";
 
 const info = <const>{
-  name: "jspsych-gamepad",
+  name: "gamepad",
   parameters: {
     /**
      * The size of the canvas element

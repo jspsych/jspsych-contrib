@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/extension-countdown",
   "version": "1.1.0",
-  "description": "jsPsych extension for adding a countdown during a trial",
+  "description": "This extension adds a countdown during a trial.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -28,6 +28,7 @@
     "directory": "packages/extension-countdown"
   },
   "author": "Shaobin Jiang",
+  "authorGitHub": "https://github.com/Shaobin-Jiang",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-audio-swipe-response",
   "version": "1.0.0",
-  "description": "",
+  "description": "This plugin collects responses to an audio file using swipe gestures and keyboard responses.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -28,6 +28,7 @@
     "directory": "packages/plugin-audio-swipe-response"
   },
   "author": "Adam Richie-Halford",
+  "authorGitHub": "https://github.com/richford",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

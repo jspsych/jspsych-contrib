@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-html-multi-response",
   "version": "1.0.2",
-  "description": "",
+  "description": "This plugin collects responses to an arbitrary HTML string using both button clicks and key presses.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -28,6 +28,7 @@
     "directory": "packages/plugin-html-multi-response"
   },
   "author": "Adam Richie-Halford",
+  "authorGitHub": "https://github.com/richford",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

@@ -28,6 +28,7 @@
     "directory": "packages/plugin-html-keyboard-response-raf"
   },
   "author": "Josh de Leeuw",
+  "authorGitHub": "https://github.com/jodeleeuw",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
