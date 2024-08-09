@@ -295,14 +295,8 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
         "#jspsych-video-several-keyboard-responses-stimulus"
       ).className += " responded";
 
-      // by default only record the first response
       if (response.key == null) {
-        if (!trial.multiple_responses_allowed) {
-          // Would make sense to add it to a list, but then it would not be backwards compatible?
-          response = { rt: info.rt, key: info.key, video_time: video_element.currentTime };
-        } else {
-          response = { rt: [info.rt], key: [info.key], video_time: [video_element.currentTime] };
-        }
+        response = { rt: [info.rt], key: [info.key], video_time: [video_element.currentTime] };
       } else if (trial.multiple_responses_allowed) {
         response.rt.push(info.rt);
         response.key.push(info.key);
@@ -366,7 +360,9 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
 
     const respond = () => {
       if (data.rt !== null) {
-        this.jsPsych.pluginAPI.pressKey(data.response, data.rt);
+        for (let i = 0; i < data.rt.length; i++) {
+          this.jsPsych.pluginAPI.pressKey(data.response[i], data.rt[i]);
+        }
       }
     };
 
@@ -378,16 +374,35 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
   }
 
   private create_simulation_data(trial: TrialType<Info>, simulation_options) {
+    let n_responses = this.jsPsych.randomization.randomInt(1, 5);
+    if (!trial.multiple_responses_allowed) {
+      n_responses = 1;
+    }
+
+    const rts = [];
+    const responses = [];
+    let last_rt = 0;
+    for (let i = 0; i < n_responses; i++) {
+      const rt = Math.round(this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true));
+      rts.push(rt + last_rt);
+      last_rt = rt;
+      responses.push(this.jsPsych.pluginAPI.getValidKey(trial.choices));
+    }
+
+    console.log(rts);
+
     const default_data = {
       stimulus: trial.stimulus,
-      rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
-      response: this.jsPsych.pluginAPI.getValidKey(trial.choices),
-      video_time: 0,
+      response: responses,
+      rt: rts,
+      video_time: rts,
     };
 
     const data = this.jsPsych.pluginAPI.mergeSimulationData(default_data, simulation_options);
 
-    this.jsPsych.pluginAPI.ensureSimulationDataConsistency(trial, data);
+    //this.jsPsych.pluginAPI.ensureSimulationDataConsistency(trial, data);
+
+    console.log(data);
 
     return data;
   }

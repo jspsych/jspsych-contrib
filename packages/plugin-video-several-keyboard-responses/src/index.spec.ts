@@ -40,12 +40,17 @@ describe("video-several-keyboard-responses simulation", () => {
 
     await expectFinished();
 
-    expect(getData().values()[0].rt).toBeGreaterThan(0);
-    expect(typeof getData().values()[0].response).toBe("string");
+    const data = getData().values()[0];
+
+    console.log(data);
+
+    expect(data.rt.every((value) => value > 0)).toBe(true);
+    expect(data.response.length).toEqual(data.rt.length);
+    expect(data.video_time.length).toEqual(data.rt.length);
   });
 
   // can't run this until we mock video elements.
-  test("visual mode works", async () => {
+  test.skip("visual mode works", async () => {
     const jsPsych = initJsPsych();
 
     const timeline = [
@@ -53,7 +58,8 @@ describe("video-several-keyboard-responses simulation", () => {
         type: videoSeveralKeyboardResponses,
         stimulus: ["foo.mp4"],
         prompt: "foo",
-        trial_duration: 1000,
+        trial_ends_after_video: true,
+        response_ends_trial: false,
       },
     ];
 
@@ -78,5 +84,6 @@ describe("video-several-keyboard-responses simulation", () => {
     expect(rt.every((value) => value > 0)).toBe(true);
     expect(response.every((value) => typeof value === "string")).toBe(true);
     expect(video_time.every((value) => typeof value === "number")).toBe(true);
+    expect(response.length).toEqual(rt.length);
   });
 });
