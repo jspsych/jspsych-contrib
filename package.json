@@ -10,12 +10,12 @@
     "test:watch": "npm test -- --watch",
     "build": "npm run build -ws",
     "update-unpkg-links": "gulp updateUnpkgLinks",
+    "update-readme": "node ./update-readme.js",
     "prepare": "husky install",
     "changeset": "changeset",
-    "changeset:version": "changeset version && npm install && npm run update-unpkg-links",
+    "changeset:version": "changeset version && npm install && npm run update-unpkg-link && npm run update-readme",
     "changeset:publish": "npm run build && changeset publish",
-    "new": "node ./templates/cli/src/index.js",
-    "update-readme": "node ./update-readme.js"
+    "new": "node ./templates/cli/src/index.js"
   },
   "dependencies": {
     "gulp": "^5.0.0",
