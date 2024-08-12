@@ -13,7 +13,7 @@
     "update-readme": "node ./update-readme.js",
     "prepare": "husky install",
     "changeset": "changeset",
-    "changeset:version": "changeset version && npm install && npm run update-unpkg-link && npm run update-readme",
+    "changeset:version": "changeset version && npm install && npm run update-unpkg-links && npm run update-readme",
     "changeset:publish": "npm run build && changeset publish",
     "new": "node ./templates/cli/src/index.js"
   },
