@@ -87,7 +87,7 @@ async function runPrompts() {
   });
 
   const authorGitHub = await input({
-    message: `Enter the author's GitHub profile URL [Optional]:`,
+    message: `Enter a profile URL for the author(s) [Optional]:`,
   });
 
   return {
