@@ -27,8 +27,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-self-paced-reading"
   },
-  "author": "igmmgi",
-  "authorGitHub": "https://github.com/igmmgi",
+  "author": {
+    "name": "igmmgi",
+    "url": "https://github.com/igmmgi"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

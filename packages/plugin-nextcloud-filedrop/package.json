@@ -16,8 +16,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-nextcloud-filedrop"
   },
-  "author": "C. Martin Grewe",
-  "authorGitHub": "https://github.com/mgrewe",
+  "author": {
+    "name": "C. Martin Grewe",
+    "url": "https://github.com/mgrewe"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

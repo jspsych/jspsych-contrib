@@ -27,8 +27,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-html-swipe-response"
   },
-  "author": "Adam Richie-Halford",
-  "authorGitHub": "https://github.com/richford",
+  "author": {
+    "name": "Adam Richie-Halford",
+    "url": "https://github.com/richford"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

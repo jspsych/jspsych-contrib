@@ -27,8 +27,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-rdk"
   },
-  "author": "Younes Strittmatter",
-  "authorGitHub": "https://github.com/younesStrittmatter",
+  "author": {
+    "name": "Younes Strittmatter",
+    "url": "https://github.com/younesStrittmatter"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

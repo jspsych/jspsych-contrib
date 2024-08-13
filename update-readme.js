@@ -55,12 +55,13 @@ function updateRootReadme() {
     const packageReadmeLink = `https://github.com/jspsych/jspsych-contrib/blob/main/packages/${info.name}/README.md`;
     if (info.name.match(/^\@jspsych-contrib\/plugin-/g)) {
       const pluginName = info.name.replace(/^\@jspsych-contrib\/plugin-/g, "");
+      const authorRender =
+        info.authorUrl != "" ? `[${info.author}](${info.authorUrl})` : info.author;
       pluginList = pluginList.concat(
-        `[${pluginName}](${packageReadmeLink}) | [${info.author}](${info.authorUrl}) | ${
+        `[${pluginName}](${packageReadmeLink}) | ${authorRender} | ${
           info.description ? info.description : "foo"
         } \n`
       );
-      console.log(pluginList);
     } else {
       extensionList = extensionList.concat(
         `[${info.name.replace(/^\@jspsych-contrib\/extension-/g, "")}](${packageReadmeLink}) | [${

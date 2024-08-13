@@ -18,10 +18,15 @@ Contributions to `jspsych-contrib` that are broadly useful, well-documented, and
 The jsPsych plugins/extensions that have been contributed by community members can be found in the `/packages` directory. 
 The `/packages` directory also contains four template sub-folders that can be used as a starting point for contributing a plugin/extension (see the [Guidelines for contributions](#guidelines-for-contributions) section).
 
-### Plugins
 
-Plugin | Contributor | Description
------------ | ----------- | -----------
+  
+  
+  
+  
+  ### Plugins
+
+  Plugin | Contributor | Description
+  ----------- | ----------- | -----------
 [audio-multi-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-audio-multi-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using both button clicks and key presses. 
 [audio-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-audio-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using swipe gestures and keyboard responses. 
 [copying-task](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-copying-task/README.md) | [Andre Sahakian](https://github.com/Andre3582) | foo 
@@ -45,6 +50,7 @@ Plugin | Contributor | Description
 [self-paced-reading](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-self-paced-reading/README.md) | [igmmgi](https://github.com/igmmgi) | Self-paced reading tasks with different display options. 
 [survey-number](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-survey-number/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays a survey question and collects a numeric response. 
 [survey-slider](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-survey-slider/README.md) | [Dominique Makowski](https://github.com/DominiqueMakowski) | Add several analogue scales on the same page for use in questionnaires. 
+[test](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-test/README.md) | cherrie | test 
 [video-several-keyboard-responses](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-video-several-keyboard-responses/README.md) | [Maria Emine Nylund](https://github.com/marianylund) | jsPsych plugin for playing a video file and getting several keyboard responses 
 [vsl-animate-occlusion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-vsl-animate-occlusion/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | he VSL (visual statistical learning) animate occlusion plugin displays an animated sequence of shapes that disappear behind an occluding rectangle while they change from one shape to another. 
 [vsl-grid-scene](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-vsl-grid-scene/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) grid scene plugin displays images arranged in a grid. 
@@ -61,6 +67,11 @@ Plugin | Contributor | Description
 [mediapipe-face-mesh](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-mediapipe-face-mesh/README.md) | [C. Martin Grewe](https://github.com/mgrewe) | This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library. 
 [touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | foo 
 ## Guidelines for contributions
+
+
+
+
+
 
 
 

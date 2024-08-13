@@ -27,8 +27,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-survey-slider"
   },
-  "author": "Dominique Makowski",
-  "authorGitHub": "https://github.com/DominiqueMakowski",
+  "author": {
+    "name": "Dominique Makowski",
+    "url": "https://github.com/DominiqueMakowski"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
