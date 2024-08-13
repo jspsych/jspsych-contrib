@@ -86,8 +86,8 @@ async function runPrompts() {
     required: true,
   });
 
-  const authorGitHub = await input({
-    message: `Enter a profile URL for the author(s), e.g. a link to a GitHub profile [Optional]:`,
+  const authorUrl = await input({
+    message: `Enter a profile URL for the author, e.g. a link to a GitHub profile [Optional]:`,
   });
 
   return {
@@ -96,7 +96,7 @@ async function runPrompts() {
     name: name,
     description: description,
     author: author,
-    authorGitHub: authorGitHub,
+    authorUrl: authorUrl,
   };
 }
 
@@ -122,6 +122,7 @@ async function processAnswers(answers) {
         )
       )
       .pipe(replace("{description}", answers.description))
+      .pipe(replace("{authorUrl}", answers.authorUrl))
       .pipe(replace("_globalName_", globalName))
       .pipe(replace("{globalName}", globalName))
       .pipe(replace("{camelCaseName}", camelCaseName))
@@ -151,9 +152,7 @@ async function processAnswers(answers) {
       .pipe(
         replace(
           `{authorInfo}`,
-          answers.authorGitHub
-            ? `[${answers.author}](${answers.authorGitHub})`
-            : `${answers.author}`
+          answers.authorUrl ? `[${answers.author}](${answers.authorUrl})` : `${answers.author}`
         )
       )
       .pipe(dest(`${repoRoot}/packages/${destPath}`));

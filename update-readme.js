@@ -23,8 +23,8 @@ function getPackageInfo(packageDir) {
   return {
     name: packageJson.name,
     description: packageJson.description,
-    author: packageJson.author,
-    authorGitHub: packageJson.authorGitHub,
+    author: packageJson.author.name,
+    authorUrl: packageJson.author.url,
   };
 }
 
@@ -56,7 +56,7 @@ function updateRootReadme() {
     if (info.name.match(/^\@jspsych-contrib\/plugin-/g)) {
       const pluginName = info.name.replace(/^\@jspsych-contrib\/plugin-/g, "");
       pluginList = pluginList.concat(
-        `[${pluginName}](${packageReadmeLink}) | [${info.author}](${info.authorGitHub}) | ${
+        `[${pluginName}](${packageReadmeLink}) | [${info.author}](${info.authorUrl}) | ${
           info.description ? info.description : "foo"
         } \n`
       );
@@ -65,15 +65,13 @@ function updateRootReadme() {
       extensionList = extensionList.concat(
         `[${info.name.replace(/^\@jspsych-contrib\/extension-/g, "")}](${packageReadmeLink}) | [${
           info.author
-        }](${info.authorGitHub}) | ${info.description ? info.description : "foo"} \n`
+        }](${info.authorUrl}) | ${info.description ? info.description : "foo"} \n`
       );
     }
   });
 
   const pluginTable = [pluginListHead, pluginList, extensionListHead];
   const extensionTable = [extensionListHead, extensionList, guidelinesHead];
-
-  console.log(pluginTable);
 
   function generatePluginTable() {
     return src(`${__dirname}/README.md`)
