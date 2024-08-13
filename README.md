@@ -18,26 +18,10 @@ Contributions to `jspsych-contrib` that are broadly useful, well-documented, and
 The jsPsych plugins/extensions that have been contributed by community members can be found in the `/packages` directory. 
 The `/packages` directory also contains four template sub-folders that can be used as a starting point for contributing a plugin/extension (see the [Guidelines for contributions](#guidelines-for-contributions) section).
 
+### Plugins
 
-
-
-
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  ### Plugins
-
-  Plugin | Contributor | Description
-  ----------- | ----------- | -----------
+Plugin | Contributor | Description
+----------- | ----------- | -----------
 [audio-multi-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-audio-multi-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using both button clicks and key presses. 
 [audio-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-audio-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using swipe gestures and keyboard responses. 
 [copying-task](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-copying-task/README.md) | [Andre Sahakian](https://github.com/Andre3582) | foo 
