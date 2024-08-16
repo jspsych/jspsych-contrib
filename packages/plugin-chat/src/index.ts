@@ -13,7 +13,7 @@ const info = <const>{
     },
     ai_model: {
       type: ParameterType.STRING,
-      default: "gpt-3.5-turbo-16k",
+      default: "gpt-4o-mini",
     },
     chat_field_placeholder: {
       type: ParameterType.STRING,
@@ -71,7 +71,7 @@ const info = <const>{
     // when triggers it doesn't stop, do we want to give it a stop?
     prompt_chain: {
       type: ParameterType.COMPLEX,
-      default: [],
+      default: {},
       nested: {
         prompts: {
           type: ParameterType.STRING,
@@ -290,7 +290,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ messages, ai_model: this.ai_model }), // Corrected JSON structure
+          body: JSON.stringify({ messages, ai_model: this.ai_model }),
         });
       } else {
         response = await fetch("/api/chat", {
@@ -298,7 +298,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ messages, ai_model: this.ai_model }), // Corrected JSON structure
+          body: JSON.stringify({ messages, ai_model: this.ai_model }),
         });
       }
 
@@ -534,7 +534,7 @@ class ChatPlugin implements JsPsychPlugin<Info> {
       { role: "user", content: bot_responses },
     ];
 
-    const response_message = await this.updateAndProcessGPT(chatBox, prompt_select);
+    const response_message = await this.updateAndProcessGPT(chatBox, prompt_select); // in case need to something with this
   }
 }
 
