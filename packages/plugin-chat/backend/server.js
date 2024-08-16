@@ -1,13 +1,18 @@
-const OpenAI = require("openai/index.mjs");
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-require("dotenv").config();
+import bodyParser from "body-parser";
+import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+import OpenAI from "openai";
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 const OPENAI_API_KEY = process.env.OPENAI_KEY;
-const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+
+const openai = new OpenAI({
+  apiKey: OPENAI_API_KEY,
+});
 
 app.use(bodyParser.json());
 app.use(cors());
