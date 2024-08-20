@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-ios",
   "version": "1.0.0",
-  "description": "",
+  "description": "This plugin implements a continuous version of the Inclusion of Other in the Self (IOS) Scale ([Aron et al., 1992](https://psycnet.apa.org/doiLanding?doi=10.1037%2F0022-3514.63.4.596)).",
   "unpkg": "dist/index.browser.min.js",
   "files": [
     "index.js",
@@ -16,7 +16,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-ios"
   },
-  "author": "Isaac Kinley",
+  "author": {
+    "name": "Isaac Kinley",
+    "url": "https://github.com/kinleyid"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

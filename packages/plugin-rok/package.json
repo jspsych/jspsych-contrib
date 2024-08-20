@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-rok",
   "version": "1.1.1",
-  "description": "",
+  "description": "This plugin displays a Random Object Kinematogram (ROK) and allows the subject to report the primary direction of motion or the primary orientation by pressing a key on the keyboard.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -27,7 +27,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-rdk"
   },
-  "author": "Younes Strittmatter",
+  "author": {
+    "name": "Younes Strittmatter",
+    "url": "https://github.com/younesStrittmatter"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

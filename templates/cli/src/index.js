@@ -77,7 +77,7 @@ async function runPrompts() {
   const description = await input({
     message: `Enter a brief description of the ${
       type == "plugin" ? "plugin" : "extension"
-    } package.`,
+    } package:`,
     required: true,
   });
 
@@ -86,12 +86,17 @@ async function runPrompts() {
     required: true,
   });
 
+  const authorUrl = await input({
+    message: `Enter a profile URL for the author, e.g. a link to a GitHub profile [Optional]:`,
+  });
+
   return {
     type: type,
     language: language,
     name: name,
     description: description,
     author: author,
+    authorUrl: authorUrl,
   };
 }
 
@@ -117,6 +122,7 @@ async function processAnswers(answers) {
         )
       )
       .pipe(replace("{description}", answers.description))
+      .pipe(replace("{authorUrl}", answers.authorUrl))
       .pipe(replace("_globalName_", globalName))
       .pipe(replace("{globalName}", globalName))
       .pipe(replace("{camelCaseName}", camelCaseName))
@@ -141,7 +147,18 @@ async function processAnswers(answers) {
       });
   }
 
-  series(processTemplate, renameExampleTemplate, renameDocsTemplate)();
+  function renameReadmeTemplate() {
+    return src(`${repoRoot}/packages/${destPath}/README.md`)
+      .pipe(
+        replace(
+          `{authorInfo}`,
+          answers.authorUrl ? `[${answers.author}](${answers.authorUrl})` : `${answers.author}`
+        )
+      )
+      .pipe(dest(`${repoRoot}/packages/${destPath}`));
+  }
+
+  series(processTemplate, renameExampleTemplate, renameDocsTemplate, renameReadmeTemplate)();
 }
 
 const answers = await runPrompts();

@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-vsl-grid-scene",
   "version": "1.0.0",
-  "description": "",
+  "description": "The VSL (visual statistical learning) grid scene plugin displays images arranged in a grid.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -27,7 +27,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-vsl-grid-scene"
   },
-  "author": "Josh de Leeuw",
+  "author": {
+    "name": "Josh de Leeuw",
+    "url": "https://github.com/jodeleeuw"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

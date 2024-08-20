@@ -27,7 +27,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/extension-{name}"
   },
-  "author": "{author}",
+  "author": {
+    "name": "{author}",
+    "url": "{authorUrl}"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
