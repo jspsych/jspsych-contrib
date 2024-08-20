@@ -13,15 +13,11 @@ However we would encourage contributors to respond to issues/questions and to ma
 
 Contributions to `jspsych-contrib` that are broadly useful, well-documented, and well-tested may be added to the main `jsPsych` repository, with the contributor's permission.
 
-## List of available plugins/extensions
+## List of available plugins
 
-The jsPsych plugins/extensions that have been contributed by community members can be found in the `/packages` directory. 
+The jsPsych plugins that have been contributed by community members can be found in the `/packages` directory. 
 The `/packages` directory also contains four template sub-folders that can be used as a starting point for contributing a plugin/extension (see the [Guidelines for contributions](#guidelines-for-contributions) section).
 
-
-  
-  
-  
   
   ### Plugins
 
@@ -66,6 +62,7 @@ The `/packages` directory also contains four template sub-folders that can be us
 [device-motion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-device-motion/README.md) | [Pedro Neto](https://github.com/pasoneto) | jsPsych extension for tracking device motion 
 [mediapipe-face-mesh](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-mediapipe-face-mesh/README.md) | [C. Martin Grewe](https://github.com/mgrewe) | This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library. 
 [touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | foo 
+
 ## Guidelines for contributions
 
 
