@@ -11,16 +11,16 @@ interface OnLoadParameters {}
 interface OnFinishParameters {}
 
 /**
- * **{name}**
+ * **test**
  *
- * {description}
+ * test
  *
- * @author {author}
- * @see {@link {documentation-url}}}
+ * @author cherrie
+ * @see {@link https://github.com/jspsych/jspsych-contrib/packages/extension-test/README.md}}
  */
-class ExtensionNameExtension implements JsPsychExtension {
+class TestExtension implements JsPsychExtension {
   static info: JsPsychExtensionInfo = {
-    name: "{name}",
+    name: "test",
     version: version,
     data: {
       /** Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
@@ -60,4 +60,4 @@ class ExtensionNameExtension implements JsPsychExtension {
   };
 }
 
-export default ExtensionNameExtension;
+export default TestExtension;

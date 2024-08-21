@@ -8,6 +8,7 @@
     "dist"
   ],
   "scripts": {
+    "build-citation": "node build-citations.js",
     "build": "babel index.js --presets @babel/preset-env,minify --source-maps --out-file dist/index.browser.min.js",
     "build:watch": "npm run build -- --watch"
   },
