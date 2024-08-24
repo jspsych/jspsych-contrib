@@ -33,10 +33,10 @@ class ExtensionNameExtension implements JsPsychExtension {
       },
     },
     citation: {
-      /** APA citation */
-      apa: `{apaCitation}`,
-      /** BibTeX citation */
-      bibtex: `{bibtexCitation}`,
+      /** APA citation JSON */
+      apa: `{apaJson}`,
+      /** BibTeX citation JSON */
+      bibtex: `{bibtexJson}`,
     },
   };
 

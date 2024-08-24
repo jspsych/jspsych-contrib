@@ -45,6 +45,12 @@ var _globalName_ = (function (jspsych) {
         type: ParameterType.STRING,
       },
     },
+    citation: {
+      /** APA citation JSON */
+      apa: `{apaJson}`,
+      /** BibTeX citation JSON */
+      bibtex: `{bibtexJson}`,
+    },
   };
 
   return ExtensionNameExtension;

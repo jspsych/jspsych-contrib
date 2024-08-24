@@ -37,14 +37,16 @@
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-{name}",
+  "dependencies": {
+    "@citation-js/core": "^0.7.14",
+    "@citation-js/plugin-software-formats": "^0.6.1",
+    "@citation-js/plugin-bibtex": "^0.7.14",
+    "@citation-js/plugin-cff": "^0.6.1"
+  },
   "peerDependencies": {
     "jspsych": ">=7.0.0"
   },
   "devDependencies": {
-    "@citation-js/core": "^0.7.14",
-    "@citation-js/plugin-software-formats": "^0.6.1",
-    "@citation-js/plugin-bibtex": "^0.7.14",
-    "@citation-js/plugin-cff": "^0.6.1",
     "@jspsych/config": "^2.0.0",
     "@jspsych/test-utils": "^1.0.0",
     "jspsych": "^7.0.0"
