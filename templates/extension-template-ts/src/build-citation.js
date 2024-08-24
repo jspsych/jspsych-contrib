@@ -1,43 +1,46 @@
-import { exec } from "node:child_process";
+import "@citation-js/plugin-software-formats";
+
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "path";
 
-const srcDir = path.dirname(fileURLToPath(import.meta.url));
-const templateDir = path.dirname(srcDir);
-const cffFilePath = path.join(templateDir, "CITATION.cff");
-const indexFilePath = path.join(srcDir, "index.js");
+import { Cite } from "@citation-js/core";
 
-const apaCommand = `cffconvert --input ${cffFilePath} --outputformat apa`;
-const bibtexCommand = `cffconvert --input ${cffFilePath} --outputformat bibtex`;
+const srcDir = path.dirname(fileURLToPath(import.meta.url));
+const indexFilePath = path.join(srcDir, "index.js");
 
 const updateCitations = (indexFilePath, apaCitation, bibtexCitation) => {
   let fileContent = fs.readFileSync(indexFilePath, "utf-8");
-  fileContent = fileContent.replace(/`{apaCitation}`/g, apaCitation);
-  fileContent = fileContent.replace(/`{bibtexCitation}`/g, bibtexCitation);
+  fileContent = fileContent.replace(/`{apaJson}`/g, apaCitation);
+  fileContent = fileContent.replace(/`{bibtexJson}`/g, bibtexCitation);
   fs.writeFileSync(indexFilePath, fileContent, "utf-8");
 };
 
-const runCommand = (command) => {
-  return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-      }
-      if (stderr) {
-        reject(stderr);
-      }
-      resolve(stdout.trim);
-    });
+function cffToJson() {
+  const templateDir = path.dirname(srcDir);
+  const cffFilePath = path.join(templateDir, "CITATION.cff");
+  let cffCitation = fs.readFileSync(cffFilePath, "utf-8").toString();
+  Cite.async(cffCitation).then((data) => {
+    const apaJson = JSON.stringify(
+      data.format("data", {
+        format: "object",
+        template: "citation-apa",
+        lang: "en-US",
+      }),
+      null,
+      2
+    );
+    const bibtexJson = JSON.stringify(
+      data.format("data", {
+        format: "object",
+        template: "citation-bibtex",
+        lang: "en-US",
+      }),
+      null,
+      2
+    );
+    updateCitations(indexFilePath, apaJson, bibtexJson);
   });
-};
+}
 
-Promise.all([runCommand(apaCommand), runCommand(bibtexCommand)])
-  .then(([apaResult, bibtexResult]) => {
-    console.log(`APA Citation:\n${apaResult}`);
-    console.log(`BibTeX Citation:\n${bibtexResult}`);
-    updateCitations(indexFilePath, apaResult, bibtexResult);
-  })
-  .catch((error) => {
-    console.error(`Error: ${error.message}`);
-  });
+module.exports = { cffToJson, updateCitations };
