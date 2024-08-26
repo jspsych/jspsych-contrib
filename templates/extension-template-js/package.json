@@ -34,6 +34,6 @@
   },
   "devDependencies": {
     "@jspsych/config": "^2.0.0",
-    "jspsych": "^7.0.0"
+    "jspsych": "^8.0.0"
   }
 }

@@ -44,7 +44,7 @@
     "@citation-js/plugin-cff": "^0.6.1"
   },
   "peerDependencies": {
-    "jspsych": ">=7.0.0"
+    "jspsych": ">=8.0.0"
   },
   "devDependencies": {
     "@jspsych/config": "^2.0.0",

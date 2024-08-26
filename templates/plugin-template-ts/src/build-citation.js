@@ -15,21 +15,20 @@ const updateCitations = (indexFilePath, citationJson) => {
   fs.writeFileSync(indexFilePath, fileContent, "utf-8");
 };
 
-function cffToJson() {
+async function cffToJson() {
   const templateDir = path.dirname(srcDir);
   const cffFilePath = path.join(templateDir, "CITATION.cff");
   let cffCitation = fs.readFileSync(cffFilePath, "utf-8").toString();
-  Cite.async(cffCitation).then((data) => {
-    const citationJson = JSON.stringify(
-      data.format("data", {
-        format: "object",
-        lang: "en-US",
-      }),
-      null,
-      2
-    );
-    updateCitations(indexFilePath, citationJson);
-  });
+  let citeCff = await Cite.async(cffCitation);
+  let citationJson = JSON.stringify(
+    citeCff.format("data", {
+      format: "object",
+      lang: "en-US",
+    }),
+    null,
+    2
+  );
+  updateCitations(indexFilePath, citationJson);
 }
 
 export { cffToJson, updateCitations };
