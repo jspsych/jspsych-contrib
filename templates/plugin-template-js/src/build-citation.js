@@ -17,7 +17,7 @@ function cffToJson() {
   const cffFilePath = path.join(templateDir, "CITATION.cff");
   let cffCitation = fs.readFileSync(cffFilePath, "utf-8").toString();
   Cite.async(cffCitation).then((data) => {
-    const apaJson = JSON.stringify(
+    const citationJson = JSON.stringify(
       data.format("data", {
         format: "object",
         lang: "en-US",
