@@ -32,12 +32,7 @@ class ExtensionNameExtension implements JsPsychExtension {
         type: ParameterType.STRING,
       },
     },
-    citations: {
-      /** APA citation JSON */
-      apa: `{apaJson}`,
-      /** BibTeX citation JSON */
-      bibtex: `{bibtexJson}`,
-    },
+    citation: `{citationJson}`,
   };
 
   constructor(private jsPsych: JsPsych) {}
