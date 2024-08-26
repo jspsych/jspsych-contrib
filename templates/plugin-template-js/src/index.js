@@ -25,7 +25,7 @@ var _globalName_ = (function (jspsych) {
       data2: {
         type: ParameterType.STRING,
       },
-      citation: {
+      citations: {
         /** APA citation JSON */
         apa: `{apaJson}`,
         /** BibTeX citation JSON */
