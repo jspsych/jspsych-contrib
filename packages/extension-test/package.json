@@ -1,7 +1,7 @@
 {
-  "name": "@jspsych-contrib/extension-{name}",
+  "name": "@jspsych-contrib/extension-test",
   "version": "0.0.1",
-  "description": "{description}",
+  "description": "test",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -25,17 +25,17 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
-    "directory": "packages/extension-{name}"
+    "directory": "packages/extension-test"
   },
   "author": {
-    "name": "{author}",
-    "url": "{authorUrl}"
+    "name": "me",
+    "url": ""
   },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-{name}",
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-test",
   "dependencies": {
     "@citation-js/core": "^0.7.14",
     "@citation-js/plugin-software-formats": "^0.6.1",

@@ -19,7 +19,8 @@
   },
   "dependencies": {
     "gulp": "^5.0.0",
-    "gulp-replace": "^1.1.4"
+    "gulp-replace": "^1.1.4",
+    "npm-link": "^0.0.4"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.0",
