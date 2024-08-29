@@ -26,6 +26,7 @@ const info = <const>{
     data2: {
       type: ParameterType.STRING,
     },
+    citation: `{citationJson}`,
   },
 };
 

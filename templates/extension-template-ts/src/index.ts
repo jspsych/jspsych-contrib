@@ -32,6 +32,7 @@ class ExtensionNameExtension implements JsPsychExtension {
         type: ParameterType.STRING,
       },
     },
+    citation: `{citationJson}`,
   };
 
   constructor(private jsPsych: JsPsych) {}
