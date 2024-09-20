@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <!-- The plugin is loaded here -->
+  <script src="https://unpkg.com/@jspsych/plugin-image-click-response"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych();
+
+  const trial = {
+    type: jsPsychImageClickResponse,
+    stimulus: "https://www.jspsych.org/7.3/img/jspsych-logo.jpg",
+    dot_radius : 10
+  };
+
+  jsPsych.run([trial])
+</script>
+
+</html>
