@@ -1,4 +1,5 @@
 import { clickTarget, pressKey, simulateTimeline, startTimeline } from "@jspsych/test-utils";
+import interact from "interactjs";
 
 import htmlSwipeResponse from ".";
 
@@ -288,6 +289,34 @@ describe("plugin-html-swipe-response", () => {
     document.querySelectorAll(".jspsych-html-swipe-response-button button").forEach((element) => {
       expect(element.getAttribute("disabled")).toBe("disabled");
     });
+  });
+
+  test("should move container and stimulus together during drag", async () => {
+    const { displayElement } = await startTimeline([
+      {
+        type: htmlSwipeResponse,
+        stimulus: "this is html",
+        swipe_animation_duration: 0,
+      },
+    ]);
+
+    const container = displayElement.querySelector<HTMLElement>(
+      "#jspsych-html-swipe-response-stimulus-container"
+    );
+    const stimulus = displayElement.querySelector<HTMLElement>(
+      "#jspsych-html-swipe-response-stimulus"
+    );
+
+    // Simulate drag event manually using interact.js drag events
+    interact(container).fire({
+      type: "dragmove",
+      target: container,
+      delta: { x: 100, y: 50 },
+    });
+
+    // Now test if the transforms are applied correctly
+    expect(container.style.transform).toBe("translate3D(100px, 50px, 0)");
+    expect(stimulus.style.transform).toBe("translate3D(100px, 50px, 0) rotate(20deg)");
   });
 });
 
