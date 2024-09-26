@@ -1,7 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+// import { version } from "../package.json";
+
 const info = <const>{
   name: "corsi-blocks",
+  version: "2.0.0",
   parameters: {
     /**
      * An array of block indexes that specify the order of the sequence to be displayed. For example,
@@ -137,6 +140,28 @@ const info = <const>{
     incorrect_color: {
       type: ParameterType.STRING,
       default: "#ff0000",
+    },
+  },
+  data: {
+    sequence: {
+      type: ParameterType.INT,
+      array: true,
+    },
+    response: {
+      type: ParameterType.INT,
+      array: true,
+    },
+    rt: {
+      type: ParameterType.INT,
+      array: true,
+    },
+    blocks: {
+      type: ParameterType.COMPLEX,
+      array: true,
+    },
+    correct: {
+      type: ParameterType.BOOL,
+      default: null,
     },
   },
 };
