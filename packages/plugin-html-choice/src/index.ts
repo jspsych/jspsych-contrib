@@ -2,12 +2,14 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 const info = <const>{
   name: "html-choice",
+  version: "2.0.0",
   parameters: {
     /** The HTML string to be displayed */
     html_array: {
       type: ParameterType.HTML_STRING,
       pretty_name: "Stimulus",
-      default: undefined,
+      default: [],
+      array: true,
     },
     /** How long to show the stimulus. */
     stimulus_duration: {
@@ -40,6 +42,26 @@ const info = <const>{
       default: 0,
     },
   },
+  data: {
+    /** The response time in milliseconds for the participant to make a response. The time is measured from
+     * when the stimulus first appears on the screen until the participant makes a response. */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The HTML stimulus displayed. */
+    stimulus: {
+      type: ParameterType.HTML_STRING,
+      array: true,
+    },
+    /** The index of the HTML stimulus chosen */
+    choice: {
+      type: ParameterType.INT,
+    },
+    /** The value associated with the stimulus that was chosen. */
+    value: {
+      type: ParameterType.INT,
+    },
+  },
 };
 
 type Info = typeof info;
@@ -62,7 +84,7 @@ class HtmlChoicePlugin implements JsPsychPlugin<Info> {
     } else if (trial.values.length === trial.html_array.length) {
       values = trial.values;
     } else {
-      throw new Error("array of html-choices does not have the same length as array of valuse");
+      throw new Error("array of html-choices does not have the same length as array of values");
     }
     // display stimulus
     var html = "<div>";
