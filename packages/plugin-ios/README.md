@@ -12,7 +12,7 @@ This plugin allows for continuous responses on the Inclusion of Other in the Sel
 
 ## Compatibility
 
-jsPsych v7.0
+jsPsych v8.0. For using jsPsych v7.0, use version 1.0.0.
 
 ## Documentation
 
