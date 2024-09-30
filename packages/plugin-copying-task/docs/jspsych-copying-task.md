@@ -34,9 +34,9 @@ In addition to the default data collected by all plugins, this plugin collects a
 |Name|Type|Description|
 |----|----|-----------|
 |rt|numeric|Time the trial took from start to finish.|
-|key_press|sting|null|
+|key_press|string|null|
 |grid_contents|array of arrays of string|The state of the arrays (model, workspace, resource, respectively) when the trial ends|
-|trial_events|array|Timestamped trial events, such as items pick ups and placements.|
+|trial_events|array of objects|Timestamped trial events, such as items pick ups and placements.|
 |trial_completed|boolean|Whether the trial was succesfully completed.|
 |canvas_offset_top_left|array of numeric|The offset of the canvas topleft coordinate.|
                 
