@@ -2,6 +2,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 const info = <const>{
   name: "vsl-grid-scene",
+  version: "2.0.0",
   parameters: {
     /** An array of images that defines a grid. */
     stimuli: {
@@ -22,6 +23,13 @@ const info = <const>{
       type: ParameterType.INT,
       pretty_name: "Trial duration",
       default: 2000,
+    },
+  },
+  data: {
+    /** The image files that were displayed. */
+    stimulus: {
+      type: ParameterType.IMAGE,
+      array: true,
     },
   },
 };
