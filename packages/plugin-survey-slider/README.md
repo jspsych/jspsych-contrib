@@ -27,7 +27,7 @@ import jsPsychSurveySlider from '@jspsych-contrib/plugin-survey-slider';
 
 ## Compatibility
 
-jsPsych 7.0.0
+jsPsych 8.0.0. For using jsPsych v7.0, use version 1.0.0.
 
 ## Documentation
 
