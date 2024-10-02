@@ -63,7 +63,7 @@ Files with the same filename will automatically be enumerated.
 
 ### Trial Parameters
 
-This plulgin accepts the following parameters
+This plugin accepts the following parameters:
 
 
 ```js
@@ -75,7 +75,7 @@ var trial = {
     folder: 'Z6oaSWW9W9edmyk',
     filename: null,
     generate_download_url_on_error: true
-  });
+  };
 ```
 
 Parameter | Type | Default Value | Description
