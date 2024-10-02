@@ -2,6 +2,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 const info = <const>{
   name: "html-keyboard-response-raf",
+  version: "2.0.0",
   parameters: {
     /**
      * The HTML string to be displayed.
@@ -60,6 +61,21 @@ const info = <const>{
       default: 60,
     },
   },
+  data: {
+    /** The response time in milliseconds for the participant to make a response.
+     * The time is measured from when the stimulus first appears on the screen until the participant's response. */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** Indicates which key the participant pressed. */
+    response: {
+      type: ParameterType.STRING,
+    },
+    /** The HTML content that was displayed on the screen. */
+    stimulus: {
+      type: ParameterType.STRING,
+    },
+  },
 };
 
 type Info = typeof info;
@@ -100,8 +116,6 @@ class HtmlKeyboardResponseRafPlugin implements JsPsychPlugin<Info> {
 
     // draw
     this.currAnimationFrameHandler = requestAnimationFrame(() => {
-      const initialDisplayTime = performance.now();
-
       display_element.innerHTML = new_html;
 
       // start the response listener
@@ -125,7 +139,6 @@ class HtmlKeyboardResponseRafPlugin implements JsPsychPlugin<Info> {
         this.endTrialFrameCount = Math.round(trial.trial_duration / (1000 / trial.fps));
       }
 
-      console.log(performance.now());
       this.currAnimationFrameHandler = requestAnimationFrame(checkForEnd);
     });
 
@@ -136,10 +149,8 @@ class HtmlKeyboardResponseRafPlugin implements JsPsychPlugin<Info> {
         display_element.querySelector<HTMLElement>(
           "#jspsych-html-keyboard-response-stimulus"
         ).style.visibility = "hidden";
-        console.log(frame_counter, performance.now());
       }
       if (frame_counter >= this.endTrialFrameCount) {
-        console.log(frame_counter, performance.now());
         end_trial();
       } else {
         this.currAnimationFrameHandler = requestAnimationFrame(checkForEnd);

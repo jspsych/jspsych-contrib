@@ -2,7 +2,7 @@
 
 ## Overview
 
-This plugin implements the same functionality as the html-keyboard-response plugin, but uses requestAnimationFrame internally for timing
+This plugin implements the same functionality as the html-keyboard-response plugin, but uses requestAnimationFrame internally for timing.
 
 ## Loading
 
