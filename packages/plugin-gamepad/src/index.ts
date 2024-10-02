@@ -4,10 +4,9 @@ import { GamepadModel, GamepadModels } from "./gamepad-model";
 
 const info = <const>{
   name: "gamepad",
+  version: "2.0.0",
   parameters: {
-    /**
-     * The size of the canvas element
-     */
+    /** The size of the canvas element. */
     canvas_size: {
       type: ParameterType.INT,
       default: [500, 500],
@@ -78,6 +77,18 @@ const info = <const>{
     stimulus: {
       type: ParameterType.FUNCTION,
       default: (_context: CanvasRenderingContext2D) => {},
+    },
+  },
+  data: {
+    /** The time in milliseconds for the participant to make a response. The time is measured from when the stimulus first
+     * began playing until the participant's response.
+     */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The gamepad inputs recorded during the trial. */
+    input: {
+      type: ParameterType.COMPLEX,
     },
   },
 };
