@@ -2,6 +2,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 import { version } from "../package.json";
 
+// TODO: need to restructure to use the CSS styling proposed by Titus
 const info = <const>{
   name: "spr",
   version: version,
@@ -58,7 +59,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     this.mode = trial.mode;
     console.log(trial.structured_reading_string, trial.structured_reading_string.length);
-    // creates inital reading string -> should instead use mode
+    // creates inital reading string -> TODO: should instead use mode to determine
     if (trial.structured_reading_string.length > 0)
       this.structured_reading_string = trial.structured_reading_string;
     else this.structured_reading_string = this.createReadingString(trial.reading_string);
@@ -77,7 +78,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
     // Attach the event listener
     document.addEventListener("keydown", spacebarHandler);
 
-    // data saving
+    // TODO: figure out data saving -> will need to add times and how long to make it
     var trial_data = {
       data1: 99, // Make sure this type and name matches the information for data1 in the data object contained within the info const.
       data2: "hello world!", // Make sure this type and name matches the information for data2 in the data object contained within the info const.
@@ -86,6 +87,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
     // this.jsPsych.finishTrial(trial_data);
   }
 
+  // TODO: create a method that takes an entire string and uses a list of parameters to generate a "structured reading string"
   private createReadingString(reading_string: string): string[] {
     // pass in parameters to split it
     //  -> depends on the spaces and the typing
@@ -114,6 +116,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
       }
     } else {
       // mode 2 and 3
+      // TODO: build out the mode that doesn't obscure (should be simple boolean)
       const curr_length = this.structured_reading_string[this.index].length;
       this.inner_index++;
 
@@ -126,11 +129,22 @@ class SprPlugin implements JsPsychPlugin<Info> {
       const curr_segment = this.structured_reading_string[this.index];
       var string_to_display = "";
 
+      const styledText = `
+      <p>
+        <span style="text-decoration: underline; color: gray;">___</span>
+        <span style="color: black;"> hello </span>
+        <span style="text-decoration: underline; color: gray;">___</span>
+      </p>
+    `;
+
       for (var i = 0; i < curr_segment.length; i++) {
         if (this.inner_index === i) {
-          string_to_display += " " + curr_segment[i];
+          string_to_display += "<span class='text-current-region'>" + curr_segment[i] + "</span>";
         } else {
-          string_to_display += " " + this.generateBlank(curr_segment[i]);
+          string_to_display +=
+            "<span class='text-before-current-region'>" +
+            this.generateBlank(curr_segment[i]) +
+            "</span>";
         }
       }
 
@@ -144,10 +158,11 @@ class SprPlugin implements JsPsychPlugin<Info> {
 
   private generateBlank(text: string | string[]): string {
     const length = text.length;
-    // will need to account for the spaces and will need split? -> not sure how will handle that
+
     if (typeof text === "string") {
       return "_".repeat(length);
     } else {
+      // type of array
       var res = "";
       for (var i = 0; i < length; i++) {
         const word_length = text[i].length;
