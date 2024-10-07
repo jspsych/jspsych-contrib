@@ -16,6 +16,10 @@ const info = <const>{
       array: true,
       default: [],
     },
+    mode: {
+      type: ParameterType.INT,
+      default: 1,
+    },
   },
   data: {
     /** Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
@@ -42,26 +46,29 @@ type Info = typeof info;
 class SprPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private index: number = 0;
+  private inner_index: number = -1;
   private displayed = false;
-  private structured_reading_string: string[] = []; // | string[][] -> need to rethink this?
+  private structured_reading_string: string[] = [];
+  private mode;
+  // | string[][] -> each method that takes in string will need to account for list of strings
+  // would need another inner_index?
 
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
+    this.mode = trial.mode;
     console.log(trial.structured_reading_string, trial.structured_reading_string.length);
-    // creates inital reading string
+    // creates inital reading string -> should instead use mode
     if (trial.structured_reading_string.length > 0)
       this.structured_reading_string = trial.structured_reading_string;
     else this.structured_reading_string = this.createReadingString(trial.reading_string);
 
-    // const displayContainer = this.jsPsych.getDisplayContainerElement();
-
     // setup html logic
-
     var html = `<p>${this.generateBlank(this.structured_reading_string[this.index])}</p>`;
     display_element.innerHTML = html;
 
     // dynamic logic
+    // TODO: need to restructure to use JsPsych keyboard API and remove it
     const spacebarHandler = (e: KeyboardEvent) => {
       if (e.code === "Space") {
         this.onSpacebarPress(); // Call the onSpacebarPress method
@@ -69,11 +76,6 @@ class SprPlugin implements JsPsychPlugin<Info> {
     };
     // Attach the event listener
     document.addEventListener("keydown", spacebarHandler);
-
-    // Remove the event listener when the trial is finished to prevent memory leaks
-    // this.jsPsych.finishTrialCallback(() => {
-    //   document.removeEventListener("keydown", spacebarHandler);
-    // });
 
     // data saving
     var trial_data = {
@@ -95,18 +97,44 @@ class SprPlugin implements JsPsychPlugin<Info> {
     console.log("Spacebar was pressed!");
     var newHtml = `<p>Spacebar pressed!</p>`;
 
-    if (!this.displayed) {
-      newHtml = this.structured_reading_string[this.index];
-      this.displayed = true;
-    } else {
-      this.index++;
-      this.displayed = false;
-
-      if (this.index >= this.structured_reading_string.length) {
-        // this is when we want to end trial
+    // handles logic on whether to display blank or show text using boolean/index
+    if (this.mode === 1) {
+      if (!this.displayed) {
+        newHtml = this.structured_reading_string[this.index];
+        this.displayed = true;
       } else {
-        newHtml = this.generateBlank(this.structured_reading_string[this.index]);
+        this.index++;
+        this.displayed = false;
+
+        if (this.index >= this.structured_reading_string.length) {
+          // this is when we want to end trial
+        } else {
+          newHtml = this.generateBlank(this.structured_reading_string[this.index]);
+        }
       }
+    } else {
+      // mode 2 and 3
+      const curr_length = this.structured_reading_string[this.index].length;
+      this.inner_index++;
+
+      if (this.inner_index >= curr_length) {
+        // resets the index and moves onto the next
+        this.inner_index = 0;
+        this.index++;
+      }
+
+      const curr_segment = this.structured_reading_string[this.index];
+      var string_to_display = "";
+
+      for (var i = 0; i < curr_segment.length; i++) {
+        if (this.inner_index === i) {
+          string_to_display += " " + curr_segment[i];
+        } else {
+          string_to_display += " " + this.generateBlank(curr_segment[i]);
+        }
+      }
+
+      newHtml = `<p>${string_to_display}</p>`;
     }
 
     // Add any action you want to happen on spacebar press
@@ -114,10 +142,19 @@ class SprPlugin implements JsPsychPlugin<Info> {
     document.querySelector("p")!.innerHTML = newHtml;
   }
 
-  private generateBlank(text: string): string {
+  private generateBlank(text: string | string[]): string {
     const length = text.length;
     // will need to account for the spaces and will need split? -> not sure how will handle that
-    return "_".repeat(length);
+    if (typeof text === "string") {
+      return "_".repeat(length);
+    } else {
+      var res = "";
+      for (var i = 0; i < length; i++) {
+        const word_length = text[i].length;
+        res += "_".repeat(word_length) + " ";
+      }
+      return res;
+    }
   }
 }
 
