@@ -1,14 +1,14 @@
 {
   "name": "@jspsych-contrib/plugin-html-vas-response",
-  "version": "1.1.0",
-  "description": "",
+  "version": "1.2.0",
+  "description": "This plugin collects responses to an arbitrary HTML string using a point-and-click visual analogue scale.",
   "unpkg": "dist/index.browser.min.js",
   "files": [
     "index.js",
     "dist"
   ],
   "scripts": {
-    "build": "babel index.js --config-file @jspsych/config/babel --presets minify --source-maps --out-file dist/index.browser.min.js",
+    "build": "babel index.js --presets @babel/preset-env,minify --source-maps --out-file dist/index.browser.min.js",
     "build:watch": "npm run build -- --watch"
   },
   "repository": {
@@ -16,14 +16,17 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-html-vas-response"
   },
-  "author": "Isaac Kinley",
+  "author": {
+    "name": "Isaac Kinley",
+    "url": "https://github.com/kinleyid"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-html-vas-response",
   "devDependencies": {
-    "@jspsych/config": "^1.0.0",
+    "@jspsych/config": "^2.0.0",
     "jspsych": "^7.0.0"
   }
 }

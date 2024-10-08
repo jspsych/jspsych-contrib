@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://unpkg.com/jspsych@7.0.0"></script>
+	<script src="https://unpkg.com/@jspsych-contrib/plugin-ios@1.0.0"></script>
+	<link href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+</body>
+<script>
+	var jsPsych = initJsPsych({
+	  on_finish: function () {
+	    jsPsych.data.displayData("csv");
+	  },
+	});
+
+	var trial = {
+	  type: jsPsychIos,
+	  prompt: 'Move the circles so that they represent your relationship',
+	  left_label: 'Self',
+	  right_label: 'Other',
+	  movable_circle: 'left'
+	};
+
+	jsPsych.run([trial]);
+</script>
+</html>

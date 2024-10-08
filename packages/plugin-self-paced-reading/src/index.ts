@@ -120,11 +120,6 @@ const info = <const>{
       pretty_name: "inter-word-interval",
       default: 0,
     },
-    save_sentence: {
-      type: ParameterType.BOOL,
-      pretty_name: "Save sentence",
-      default: true,
-    },
   },
 };
 
@@ -220,7 +215,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
     let words = [];
     let line_length = [];
     let sentence_length = 0;
-    let word_number = -1;
+    let word_number = -1; // initialized to -1 because trial begins with no words displayed
     let word_number_line = -1;
     let line_number = 0;
     let sentence = trial.sentence.replace(/(\r\n|\n|\r)/gm, "");
@@ -321,13 +316,13 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       }
     }
 
-    // store response
-    let response = {
-      rt_sentence: null,
-      rt_word: null,
-      word: null,
-      word_number: null,
-      sentence: null,
+    // store responses
+    // must be an object, as this is what jsPsych.finishTrial() expects
+    let trial_data = {
+      word: [],
+      rt: [],
+      rt_total: [],
+      sentence: sentence,
     };
 
     // initial draw
@@ -348,34 +343,30 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
 
       // move on to the next trial
-      this.jsPsych.finishTrial(response);
+      this.jsPsych.finishTrial(trial_data);
     };
 
     // function to handle responses by the subject
     const after_response = (info: { rt: any }) => {
       // gather/store data
-      response.rt_sentence = info.rt;
       rts.push(info.rt);
 
-      if (word_number === 0) {
-        response.rt_word = rts[rts.length - 1] - rts[rts.length - 2];
-      } else {
-        response.rt_word = rts[rts.length - 1] - rts[rts.length - 2] - trial.inter_word_interval;
-      }
+      // trial.inter_word_interval not relevant for initial rt
+      let iwi = word_number === -1 ? 0 : trial.inter_word_interval;
+      // rts[rts.length - 1] is the cumulative rt for the trial
+      let current_rt = rts[rts.length - 1] - rts[rts.length - 2] - iwi;
+      // no words displayed at the start of trial
+      let current_word = word_number === -1 ? null : words_concat[word_number];
 
-      if (response.rt_word > 0) {
+      if (current_rt > 0) {
         // valid rts
-        response.word = words_concat[word_number];
-        response.word_number = word_number + 1;
-        if (trial.save_sentence) {
-          response.sentence = sentence;
-        }
-        if (word_number < sentence_length - 1) {
-          this.jsPsych.data.write(response);
-        }
+        trial_data.rt.push(current_rt);
+        trial_data.rt_total.push(rts[rts.length - 1]);
+        trial_data.word.push(current_word);
         // keep drawing until words in sentence complete
         word_number++;
         this.jsPsych.pluginAPI.setTimeout(function () {
+          // word_number will equal sentence_length after (valid) keypress on last word
           if (word_number < sentence_length) {
             clear_canvas();
             draw_mask();
@@ -385,7 +376,8 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
           }
         }, trial.inter_word_interval);
       } else {
-        rts.pop(); // invalid rt possible when trial.inter_word_interval is > 0
+        // invalid (i.e. negative) rts possible when trial.inter_word_interval is > 0
+        rts.pop(); // throw out invalid rt
       }
     };
 

@@ -31,18 +31,33 @@ var jsPsychExtensionTouchscreenButtons = (function (jspsych) {
   }
 
   class Button {
-    constructor(type, params, jsPsych) {
+    constructor(params, jsPsych) {
       this.jsPsych = jsPsych;
       this.div = document.createElement("div");
       this.key = (params && params.key) || "";
-      let c = "jsTouchButtonMiddle";
-      if (type === "left_bottom") {
+      let style = (params && params.css) || "jsTouchButton";
+      let position_x = params.position_x;
+      if (position_x === undefined) {
+        position_x = 50;
+      }
+      let position_y = params.position_y;
+      if (position_y === undefined) {
+        position_y = 10;
+      }
+      let size = params.size;
+      if (size === undefined) {
+        size = 10;
+      }
+      let type = (params && params.preset) || null;
+
+      let c = null;
+      if (type === "bottom_left") {
         c = "jsTouchButtonLeftBottom";
-      } else if (type === "left_top") {
+      } else if (type === "top_left") {
         c = "jsTouchButtonLeftTop";
-      } else if (type === "right_bottom") {
+      } else if (type === "bottom_right") {
         c = "jsTouchButtonRightBottom";
-      } else if (type === "right_top") {
+      } else if (type === "top_right") {
         c = "jsTouchButtonRightTop";
       } else if (type === "left") {
         c = "jsTouchButtonLeft";
@@ -50,7 +65,6 @@ var jsPsychExtensionTouchscreenButtons = (function (jspsych) {
         c = "jsTouchButtonRight";
       }
 
-      let style = (params && params.css) || "jsTouchButton";
       this.div.classList.add(style, c);
       let col = "#9999";
       if (params.color) {
@@ -66,6 +80,23 @@ var jsPsychExtensionTouchscreenButtons = (function (jspsych) {
         }
       }
       this.div.style.boxShadow = "inset 0 0 0 .5vw " + col + ", 0 0 0 .5vw " + col;
+      if (c === null) {
+        if (typeof position_x !== "string") {
+          this.div.style.left = position_x + "%";
+        } else {
+          this.div.style.left = position_x;
+        }
+        if (typeof position_y !== "string") {
+          this.div.style.bottom = position_y + "%";
+        } else {
+          this.div.style.bottom = position_y;
+        }
+        if (typeof size !== "string") {
+          this.div.style.width = this.div.style.height = this.div.style.lineHeight = size + "vw";
+        } else {
+          this.div.style.width = this.div.style.height = this.div.style.lineHeight = size;
+        }
+      }
       if (params.innerText) {
         this.div.innerText = params.innerText;
       }
@@ -99,47 +130,10 @@ var jsPsychExtensionTouchscreenButtons = (function (jspsych) {
 
     initialize(params) {
       return new Promise((resolve, reject) => {
-        this.layouts = [];
-        for (let i = 0; i < params.length; i++) {
-          let middle,
-            left,
-            right,
-            left_bottom,
-            left_top,
-            right_bottom,
-            right_top = null;
-          let param = params[i];
-          if (param.middle) {
-            middle = new Button("middle", param.middle, this.jsPsych);
-          }
-          if (param.left_bottom) {
-            left_bottom = new Button("left_bottom", param.left_bottom, this.jsPsych);
-          }
-          if (param.left_top) {
-            left_top = new Button("left_top", param.left_top, this.jsPsych);
-          }
-          if (param.right_bottom) {
-            right_bottom = new Button("right_bottom", param.right_bottom, this.jsPsych);
-          }
-          if (param.right_top) {
-            right_top = new Button("right_top", param.right_top, this.jsPsych);
-          }
-          if (param.left) {
-            left = new Button("left", param.left, this.jsPsych);
-          }
-          if (param.right) {
-            right = new Button("right", param.right, this.jsPsych);
-          }
-          let buttons = {
-            middle,
-            left_bottom,
-            left_top,
-            right_bottom,
-            right_top,
-            left,
-            right,
-          };
-          this.layouts.push(buttons);
+        this.layouts = {};
+        for (const [key, value] of Object.entries(params)) {
+          this.layouts[key] = [];
+          value.forEach((el) => this.layouts[key].push(new Button(el, this.jsPsych)));
         }
         resolve();
       });
@@ -149,125 +143,27 @@ var jsPsychExtensionTouchscreenButtons = (function (jspsych) {
 
     on_load(params) {
       let display_element = this.jsPsych.getDisplayElement();
-      let index = (params && params.layout) || 0;
-      let buttons = this.layouts[index];
-      if (buttons.middle) {
-        buttons.middle.div.addEventListener(
-          "touchstart",
-          buttons.middle.start_listener.bind(buttons.middle),
-          false
-        );
-        buttons.middle.div.addEventListener(
-          "touchend",
-          buttons.middle.end_listener.bind(buttons.middle),
-          false
-        );
-        display_element.appendChild(buttons.middle.div);
+
+      let key = Object.keys(this.layouts)[0];
+      if (params) {
+        key = params.layout;
       }
-      if (buttons.left_bottom) {
-        buttons.left_bottom.div.addEventListener(
-          "touchstart",
-          buttons.left_bottom.start_listener.bind(buttons.left_bottom),
-          false
-        );
-        buttons.left_bottom.div.addEventListener(
-          "touchend",
-          buttons.left_bottom.end_listener.bind(buttons.left_bottom),
-          false
-        );
-        display_element.appendChild(buttons.left_bottom.div);
-      }
-      if (buttons.left_top) {
-        buttons.left_top.div.addEventListener(
-          "touchstart",
-          buttons.left_top.start_listener.bind(buttons.left_top),
-          false
-        );
-        buttons.left_top.div.addEventListener(
-          "touchend",
-          buttons.left_top.end_listener.bind(buttons.left_top),
-          false
-        );
-        display_element.appendChild(buttons.left_top.div);
-      }
-      if (buttons.right_bottom) {
-        buttons.right_bottom.div.addEventListener(
-          "touchstart",
-          buttons.right_bottom.start_listener.bind(buttons.right_bottom),
-          false
-        );
-        buttons.right_bottom.div.addEventListener(
-          "touchend",
-          buttons.right_bottom.end_listener.bind(buttons.right_bottom),
-          false
-        );
-        display_element.appendChild(buttons.right_bottom.div);
-      }
-      if (buttons.right_top) {
-        buttons.right_top.div.addEventListener(
-          "touchstart",
-          buttons.right_top.start_listener.bind(buttons.right_top),
-          false
-        );
-        buttons.right_top.div.addEventListener(
-          "touchend",
-          buttons.right_top.end_listener.bind(buttons.right_top),
-          false
-        );
-        display_element.appendChild(buttons.right_top.div);
-      }
-      if (buttons.right) {
-        buttons.right.div.addEventListener(
-          "touchstart",
-          buttons.right.start_listener.bind(buttons.right),
-          false
-        );
-        buttons.right.div.addEventListener(
-          "touchend",
-          buttons.right.end_listener.bind(buttons.right),
-          false
-        );
-        display_element.appendChild(buttons.right.div);
-      }
-      if (buttons.left) {
-        buttons.left.div.addEventListener(
-          "touchstart",
-          buttons.left.start_listener.bind(buttons.left),
-          false
-        );
-        buttons.left.div.addEventListener(
-          "touchend",
-          buttons.left.end_listener.bind(buttons.left),
-          false
-        );
-        display_element.appendChild(buttons.left.div);
-      }
+      let buttons = this.layouts[key];
+
+      buttons.forEach((button) => {
+        button.div.addEventListener("touchstart", button.start_listener.bind(button), false);
+        button.div.addEventListener("touchend", button.end_listener.bind(button), false);
+        display_element.appendChild(button.div);
+      });
     }
 
     on_finish(params) {
-      for (let i = 0; i < this.layouts.length; i++) {
-        let buttons = this.layouts[i];
-        if (buttons.middle) {
-          buttons.middle.div.ontouchstart = null;
-        }
-        if (buttons.left_bottom) {
-          buttons.left_bottom.div.ontouchstart = null;
-        }
-        if (buttons.left_top) {
-          buttons.left_top.div.ontouchstart = null;
-        }
-        if (buttons.right_bottom) {
-          buttons.right_bottom.div.ontouchstart = null;
-        }
-        if (buttons.right_top) {
-          buttons.right_top.div.ontouchstart = null;
-        }
-        if (buttons.left) {
-          buttons.left.div.ontouchstart = null;
-        }
-        if (buttons.right) {
-          buttons.right.div.ontouchstart = null;
-        }
+      for (const [key, value] of Object.entries(this.layouts)) {
+        let buttons = value;
+        buttons.forEach((button) => {
+          button.div.ontouchstart = null;
+          button.div.ontouchend = null;
+        });
       }
       return {
         data_property: "data_value",

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>jspsych-gamepad plugin test</title>
+        <link rel="stylesheet" href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" />
+        <script src="https://unpkg.com/jspsych@7.3.3"></script>
+        <script src="../dist/index.browser.min.js"></script>
+    </head>
+    <body>
+        <script>
+            const jsPsych = initJsPsych();
+
+            let trial = {
+                type: jsPsychGamepad,
+                canvas_size: [400, 400],
+                display_minature_gamepad: true,
+                end_trial: (context, gamepad, time_stamp, delta_time) => {
+                    return time_stamp > 10000;
+                },
+                gamepad_connection_prompt: 'No controller detected...',
+                on_frame_update: (context, gamepad, time_stamp, delta) => {
+                    if (gamepad !== null) {
+                        for (let button of gamepad.buttons) {
+                            if (button.pressed) {
+                                gamepad.vibrationActuator.playEffect("dual-rumble", {
+                                    startDelay: 0,
+                                    duration: 200,
+                                    weakMagnitude: button.value,
+                                    strongMagnitude: button.value,
+                                });
+                                break;
+                            }
+                        }
+                    }
+                },
+                stimulus: (context) => {
+                    context.save();
+                    context.fillStyle = 'rgb(200, 200, 200)';
+                    context.fillRect(0, 0, 400, 400);
+                    context.font = 'normal 20px Arial';
+                    context.fillStyle = 'red';
+                    context.textAlign = 'center';
+                    context.textBaseline = 'middle';
+                    context.fillText('Press any button to vibrate', 200, 200);
+                    context.restore();
+                },
+            };
+
+            jsPsych.run([trial]);
+        </script>
+    </body>
+</html>

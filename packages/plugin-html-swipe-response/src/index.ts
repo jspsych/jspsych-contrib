@@ -10,11 +10,25 @@ const info = <const>{
       pretty_name: "Stimulus",
       default: undefined,
     },
+    /** Array containing the label(s) for the button(s). */
+    button_choices: {
+      type: ParameterType.STRING,
+      pretty_name: "Button Choices",
+      default: [],
+      array: true,
+    },
     /** Array containing the key(s) the subject is allowed to press to respond to the stimulus. */
     keyboard_choices: {
       type: ParameterType.KEYS,
       pretty_name: "Keyboard Choices",
       default: ["ArrowLeft", "ArrowRight"],
+    },
+    /** The HTML for creating button. Can create own style. Use the "%choice%" string to indicate where the label from the choices parameter should be inserted. */
+    button_html: {
+      type: ParameterType.HTML_STRING,
+      pretty_name: "Button HTML",
+      default: '<button class="jspsych-btn">%choice%</button>',
+      array: true,
     },
     /** Any content here will be displayed below the stimulus. */
     prompt: {
@@ -33,6 +47,18 @@ const info = <const>{
       type: ParameterType.INT,
       pretty_name: "Trial duration",
       default: null,
+    },
+    /** The vertical margin of the button. */
+    margin_vertical: {
+      type: ParameterType.STRING,
+      pretty_name: "Margin vertical",
+      default: "0px",
+    },
+    /** The horizontal margin of the button. */
+    margin_horizontal: {
+      type: ParameterType.STRING,
+      pretty_name: "Margin horizontal",
+      default: "8px",
     },
     /** If true, trial will end when subject makes a response. */
     response_ends_trial: {
@@ -85,20 +111,58 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     // display stimulus
-    let new_html = '<div id="jspsych-html-swipe-response-stimulus">' + trial.stimulus + "</div>";
+    let html =
+      '<div id="jspsych-html-swipe-response-stimulus-container"><div id="jspsych-html-swipe-response-stimulus">' +
+      trial.stimulus +
+      "</div></div>";
+
+    //display buttons
+    var buttons = [];
+    if (Array.isArray(trial.button_html)) {
+      if (trial.button_html.length == trial.button_choices.length) {
+        buttons = trial.button_html;
+      } else {
+        console.error(
+          "Error in html-swipe-response plugin. The length of the button_html array does not equal the length of the button_choices array"
+        );
+      }
+    } else {
+      for (var i = 0; i < trial.button_choices.length; i++) {
+        buttons.push(trial.button_html);
+      }
+    }
+
+    html += '<div id="jspsych-html-swipe-response-btngroup">';
+    for (var i = 0; i < trial.button_choices.length; i++) {
+      var str = buttons[i].replace(/%choice%/g, trial.button_choices[i]);
+      html +=
+        '<div class="jspsych-html-swipe-response-button" style="display: inline-block; margin:' +
+        trial.margin_vertical +
+        " " +
+        trial.margin_horizontal +
+        '" id="jspsych-html-swipe-response-button-' +
+        i +
+        '" data-choice="' +
+        i +
+        '">' +
+        str +
+        "</div>";
+    }
+    html += "</div>";
 
     // add prompt
     if (trial.prompt !== null) {
-      new_html += trial.prompt;
+      html += trial.prompt;
     }
 
     // draw
-    display_element.innerHTML = new_html;
+    display_element.innerHTML = html;
 
     // store response
     let response = {
       rt: null,
       key: null,
+      button: null,
       swipe: null,
       source: null,
     };
@@ -140,31 +204,63 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     // start time
     const start_time = performance.now();
 
+    // add event listeners to buttons
+    for (var i = 0; i < trial.button_choices.length; i++) {
+      display_element
+        .querySelector("#jspsych-html-swipe-response-button-" + i)
+        .addEventListener("click", (e) => {
+          var btn_el = e.currentTarget as HTMLButtonElement;
+          var choice = btn_el.getAttribute("data-choice"); // don't use dataset for jsdom compatibility
+          after_button_response(choice);
+        });
+    }
+
     const sendCardToLeft = async () => {
       stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
         trial.swipe_animation_duration / 1000
       }s ease-in`;
-      setPosition({ x: -trial.swipe_offscreen_coordinate, y: position.y, rotation: 0 });
+      setPosition({
+        x: -trial.swipe_offscreen_coordinate,
+        y: position.y,
+        rotation: -trial.swipe_animation_max_rotation,
+      });
     };
 
     const sendCardToRight = async () => {
       stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
         trial.swipe_animation_duration / 1000
       }s ease-in`;
-      setPosition({ x: trial.swipe_offscreen_coordinate, y: position.y, rotation: 0 });
+      setPosition({
+        x: trial.swipe_offscreen_coordinate,
+        y: position.y,
+        rotation: trial.swipe_animation_max_rotation,
+      });
     };
 
     // after a valid response, the stimulus will have the CSS class 'responded'
     // which can be used to provide visual feedback that a response was recorded
-    const toggle_css_respond = () => {
+    const toggle_css_respond = (idx: number) => {
+      //responded class for stimulus
       display_element.querySelector("#jspsych-html-swipe-response-stimulus").className +=
         " responded";
+
+      //responded class for button
+      document
+        .querySelectorAll(`#jspsych-html-swipe-response-button-${idx} > button`)
+        .forEach((element) => {
+          element.className += " responded";
+        });
+    };
+
+    // disable all the buttons after a response
+    const disable_buttons = () => {
+      document.querySelectorAll(".jspsych-html-swipe-response-button button").forEach((element) => {
+        element.setAttribute("disabled", "disabled");
+      });
     };
 
     // function to handle swipe responses by the subject
     const after_swipe_response = (left_or_right) => {
-      toggle_css_respond();
-
       if (left_or_right !== null) {
         // measure rt
         const end_time = performance.now();
@@ -173,9 +269,14 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
         response = {
           rt: rt,
           key: null,
+          button: null,
           swipe: left_or_right,
           source: "swipe",
         };
+
+        const idx = left_or_right === "left" ? 0 : 1;
+        toggle_css_respond(idx);
+        disable_buttons();
       }
 
       if (trial.response_ends_trial) {
@@ -213,20 +314,49 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
 
     // function to handle responses by the subject
     const after_keyboard_response = (info) => {
-      toggle_css_respond();
-
       // only record the first response
       if (response.key == null) {
         response = {
           source: "keyboard",
+          button: null,
           swipe: null,
           ...info,
         };
       }
 
       if (response.key.toLowerCase() == trial.keyboard_choices[0].toLowerCase()) {
+        toggle_css_respond(0);
         sendCardToLeft();
       } else if (response.key.toLowerCase() == trial.keyboard_choices[1].toLowerCase()) {
+        toggle_css_respond(1);
+        sendCardToRight();
+      }
+      disable_buttons();
+
+      if (trial.response_ends_trial) {
+        if (trial.swipe_animation_duration > 0) {
+          this.jsPsych.pluginAPI.setTimeout(end_trial, trial.swipe_animation_duration);
+        } else {
+          end_trial();
+        }
+      }
+    };
+
+    // function to handle responses by the subject
+    const after_button_response = (choice) => {
+      // measure rt
+      var end_time = performance.now();
+      var rt = Math.round(end_time - start_time);
+      response.button = parseInt(choice);
+      response.rt = rt;
+      response.source = "button";
+
+      toggle_css_respond(parseInt(choice));
+      disable_buttons();
+
+      if (response.button === 0) {
+        sendCardToLeft();
+      } else if (response.button === 1) {
         sendCardToRight();
       }
 
@@ -268,6 +398,7 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       const trial_data = {
         rt: response.rt,
         stimulus: trial.stimulus,
+        button_response: response.button,
         keyboard_response: response.key,
         swipe_response: response.swipe,
         response_source: response.source,
@@ -314,6 +445,7 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     const keyboard_data = {
       stimulus: trial.stimulus,
       rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
+      button_response: null,
       keyboard_response: this.jsPsych.pluginAPI.getValidKey(trial.keyboard_choices),
       swipe_response: null,
       response_source: "keyboard",
@@ -322,12 +454,30 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     const swipe_data = {
       stimulus: trial.stimulus,
       rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
+      button_response: null,
       swipe_response: Math.random() < 0.5 ? "left" : "right",
       keyboard_response: null,
       response_source: "swipe",
     };
 
-    const default_data = Math.random() < 0.5 ? keyboard_data : swipe_data;
+    const button_data = {
+      stimulus: trial.stimulus,
+      rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
+      button_response: this.jsPsych.randomization.randomInt(0, trial.button_choices.length - 1),
+      swipe_response: null,
+      keyboard_response: null,
+      response_source: "button",
+    };
+
+    let default_data;
+
+    if (Math.random() < 0.33) {
+      default_data = keyboard_data;
+    } else if (Math.random() < 0.5) {
+      default_data = swipe_data;
+    } else {
+      default_data = button_data;
+    }
 
     const data = this.jsPsych.pluginAPI.mergeSimulationData(default_data, simulation_options);
 
@@ -377,8 +527,13 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
             delta: { x: pageX, y: 0 },
           });
         }, data.rt);
-      } else {
+      } else if (data.keyboard_response !== null) {
         this.jsPsych.pluginAPI.pressKey(data.keyboard_response, data.rt);
+      } else {
+        this.jsPsych.pluginAPI.clickTarget(
+          display_element.querySelector(`div[data-choice="${data.button_response}"] button`),
+          data.rt
+        );
       }
     }
   }

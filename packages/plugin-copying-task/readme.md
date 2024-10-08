@@ -9,7 +9,7 @@ This plugin runs a copying task. In a trial, an example grid (the "model", conta
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-copying-task@1.0.0">
+<script src="https://unpkg.com/@jspsych-contrib/plugin-copying-task@1.0.0"></script>
 ```
 
 ## Compatibility

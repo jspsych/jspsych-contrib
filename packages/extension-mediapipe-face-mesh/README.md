@@ -11,7 +11,7 @@ The primary purpose of this extension is to use it in plugins. For instance, it 
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/extension-mediapipe-face-mesh@2.0.0">
+<script src="https://unpkg.com/@jspsych-contrib/extension-mediapipe-face-mesh@2.0.0"></script>
 ```
 
 ### Via NPM

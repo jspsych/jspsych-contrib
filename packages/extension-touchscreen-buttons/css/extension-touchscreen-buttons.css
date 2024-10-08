@@ -8,45 +8,51 @@
     line-height: 12vw;
     text-align: center;
     font-size: 22pt;
+    transform: translate(-50%, 50%);
 }
 
 .jsTouchButtonMiddle {
     bottom: 2vw;
     left: 50vw;
     transform: translateX(-50%);
-
 }
 
 .jsTouchButtonLeftBottom {
     bottom: 2vw;
     left: 14vw;
+    transform: translate(0, 0);
 
 }
 
 .jsTouchButtonLeftTop {
     bottom: 14vw;
     left: 2vw;
+    transform: translate(0, 0);
 
 }
 
 .jsTouchButtonRightBottom {
     bottom: 2vw;
     right: 14vw;
+    transform: translate(0, 0);
 
 }
 
 .jsTouchButtonRightTop {
     bottom: 14vw;
     right: 2vw;
+    transform: translate(0, 0);
 
 }
 
 .jsTouchButtonLeft {
     bottom: 2vw;
     left: 2vw;
+    transform: translate(0, 0);
 }
 
 .jsTouchButtonRight {
     bottom: 2vw;
     right: 2vw;
+    transform: translate(0, 0);
 }

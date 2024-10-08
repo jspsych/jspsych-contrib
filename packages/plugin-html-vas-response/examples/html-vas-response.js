@@ -15,10 +15,20 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         default: [],
         array: true,
       },
+      resp_fcn: {
+        type: jspsych.ParameterType.FUNCTION,
+        pretty_name: "Response function",
+        default: null,
+      },
       ticks: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Ticks",
         default: true,
+      },
+      n_scale_points: {
+        type: jspsych.ParameterType.BOOL,
+        pretty_name: "Number of scale points",
+        default: false,
       },
       scale_width: {
         type: jspsych.ParameterType.INT,
@@ -178,24 +188,33 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       // Function to move vertical tick
       var pct_tick = null;
       var vas_enabled = true;
+      var clicks = [];
       vas.onclick = function (e) {
+        var clickTime = performance.now() - startTime;
         if (!vas_enabled) {
           return;
         }
         var vas = document.getElementById("jspsych-html-vas-response-vas");
         var vas_rect = vas.getBoundingClientRect();
         if (e.clientX <= vas_rect.right && e.clientX >= vas_rect.left) {
-          var element = vas;
-          var vline = document.getElementById("jspsych-html-vas-response-vline");
-          var cx = Math.round(e.clientX);
-          vline.style.left = e.clientX - vas_rect.left - 1 + "px";
-          vline.style.visibility = "visible";
-          console.log(pct_tick);
+          // Compute click location as a proportion of VAS line
           pct_tick = (e.clientX - vas_rect.left) / vas_rect.width;
-          console.log(pct_tick);
-          vas.appendChild(vline);
+          // Round to nearest increment, if needed
+          if (trial.n_scale_points) {
+            pct_tick = Math.round(pct_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
+          }
+          var vline = document.getElementById("jspsych-html-vas-response-vline");
+          vline.style.left = pct_tick*vas_rect.width - 1 + "px";
+          vline.style.visibility = "visible";
+          // vas.appendChild(vline);
           var continue_button = document.getElementById("jspsych-html-vas-response-next");
           continue_button.disabled = false;
+          // record time series of clicks
+          clicks.push({ time: clickTime, location: pct_tick });
+          // call
+          if (trial.resp_fcn) {
+            trial.resp_fcn(pct_tick);
+          }
         }
       };
 
@@ -212,6 +231,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
           rt: response.rt,
           stimulus: trial.stimulus,
           response: response.response,
+          clicks: clicks,
         };
 
         display_element.innerHTML = "";

@@ -13,32 +13,75 @@ However we would encourage contributors to respond to issues/questions and to ma
 
 Contributions to `jspsych-contrib` that are broadly useful, well-documented, and well-tested may be added to the main `jsPsych` repository, with the contributor's permission.
 
-## List of available plugins/extensions
+## List of available plugins
 
-The jsPsych plugins/extensions that have been contributed by community members can be found in the `/packages` directory. 
+The jsPsych plugins that have been contributed by community members can be found in the `/packages` directory. 
 The `/packages` directory also contains four template sub-folders that can be used as a starting point for contributing a plugin/extension (see the [Guidelines for contributions](#guidelines-for-contributions) section).
 
-Plugin/Extension | Contributor | Description
------------ | ----------- | -----------
-[audio-multi-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-audio-multi-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using both button clicks and key presses.
-[audio-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-audio-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using swipe gestures and keyboard responses.
-[corsi-blocks](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-corsi-blocks/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays a configurable Corsi blocks task and records a series of click responses.
-[html-multi-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-html-multi-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an arbitrary HTML string using both button clicks and key presses.
-[html-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-html-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an arbitrary HTML string using swipe gestures and keyboard responses.
-[html-vas-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-html-vas-response/README.md) | [Isaac Kinley](https://github.com/kinleyid) | This plugin collects responses to an arbitrary HTML string using a point-and-click visual analogue scale.
-[image-array-keyboard-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-image-array-keyboard-response/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This plugin displays an arbitrary number of images and records responses generated with the keyboard.
-[image-multi-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-image-multi-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an image stimulus using both button clicks and key presses.
-[image-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-image-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an image stimulus using swipe gestures and keyboard responses.
-[libet-intentional-blinding](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-libet-intentional-binding/README.md) | [Isaac Kinley](https://github.com/kinleyid) | This plugin measures intentional binding using a Libet clock, and allows the participant to estimate the timing of events by adjusting the clock hand themselves.
-[mediapipe-face-mesh](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-mediapipe-face-mesh/README.md) | [Martin Grewe](https://github.com/mgrewe) | This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library.
-[pipe](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-pipe/readme.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin facilitates communication with the DataPipe service (https://pipe.jspsych.org) for sending data to the OSF.
-[rdk](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-rdk/docs/jspsych-rdk.md#jspsych-rdk-plugin) | [Sivananda Rajananda](https://github.com/vrsivananda) | This plugin displays a Random Dot Kinematogram (RDK) and allows the subject to report the primary direction of motion by pressing a key on the keyboard.
-[rok](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-rok/docs/jspsych-rok.md#jspsych-rok-plugin) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This plugin displays a Random Object Kinematogram (ROK) and allows the subject to report the primary direction of motion or the primary orientation by pressing a key on the keyboard.
-[self-paced-reading](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-self-paced-reading/docs/jspsych-self-paced-reading.md) | [@igmmgi](https://github.com/igmmgi) | Self-paced reading tasks with different display options.
-[vsl-animate-occlusion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-animate-occlusion/docs/jspsych-vsl-animate-occlusion.md#jspsych-vsl-animate-occlusion-plugin) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) animate occlusion plugin displays an animated sequence of shapes that disappear behind an occluding rectangle while they change from one shape to another. 
-[vsl-grid-scene](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-grid-scene/docs/jspsych-vsl-grid-scene.md#jspsych-vsl-grid-scene-plugin) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) grid scene plugin displays images arranged in a grid. 
+  
+  ### Plugins
+
+  Plugin | Contributor | Description
+  ----------- | ----------- | -----------
+[audio-multi-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-audio-multi-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using both button clicks and key presses. 
+[audio-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-audio-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using swipe gestures and keyboard responses. 
+[copying-task](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-copying-task/README.md) | [Andre Sahakian](https://github.com/Andre3582) | foo 
+[corsi-blocks](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-corsi-blocks/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays a configurable Corsi blocks task and records a series of click responses. 
+[gamepad](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-gamepad/README.md) | [Shaobin Jiang](https://github.com/Shaobin-Jiang) | This plugin allows one to use gamepads in a jsPsych experiment. 
+[html-choice](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-html-choice/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This plugin displays clickable html elements that can be used to present a choice. 
+[html-keyboard-response-raf](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-html-keyboard-response-raf/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin uses the same functionality as the html-keyboard-response plugin, but uses requestAnimationFrame internally for timing 
+[html-keyboard-slider](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-html-keyboard-slider/README.md) | [Max Lovell](https://github.com/Max-Lovell) | Sliders which allow for keyboard responses. 
+[html-multi-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-html-multi-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an arbitrary HTML string using both button clicks and key presses. 
+[html-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-html-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an arbitrary HTML string using swipe gestures and keyboard responses. 
+[html-vas-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-html-vas-response/README.md) | [Isaac Kinley](https://github.com/kinleyid) | This plugin collects responses to an arbitrary HTML string using a point-and-click visual analogue scale. 
+[image-array-keyboard-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-image-array-keyboard-response/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This plugin displays an arbitrary number of images and records responses generated with the keyboard. 
+[image-multi-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-image-multi-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an image stimulus using both button clicks and key presses. 
+[image-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-image-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an image stimulus using swipe gestures and keyboard responses. 
+[ios](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-ios/README.md) | [Isaac Kinley](https://github.com/kinleyid) | This plugin implements a continuous version of the Inclusion of Other in the Self (IOS) Scale ([Aron et al., 1992](https://psycnet.apa.org/doiLanding?doi=10.1037%2F0022-3514.63.4.596)). 
+[libet-intentional-binding](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-libet-intentional-binding/README.md) | [Isaac Kinley](https://github.com/kinleyid) | This plugin measures intentional binding using a Libet clock, and allows the participant to estimate the timing of events by adjusting the clock hand themselves. 
+[nextcloud-filedrop](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-nextcloud-filedrop/README.md) | [C. Martin Grewe](https://github.com/mgrewe) | This plugin provides permanent storage of data collected during an experiment using a nextcloud instance. 
+[pipe](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-pipe/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | jsPsych plugin to faciliate communication with [DataPipe](https://pipe.jspsych.org) 
+[rdk](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-rdk/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays a Random Dot Kinematogram (RDK) and allows the subject to report the primary direction of motion by pressing a key on the keyboard. 
+[rok](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-rok/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This plugin displays a Random Object Kinematogram (ROK) and allows the subject to report the primary direction of motion or the primary orientation by pressing a key on the keyboard. 
+[self-paced-reading](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-self-paced-reading/README.md) | [igmmgi](https://github.com/igmmgi) | Self-paced reading tasks with different display options. 
+[survey-number](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-survey-number/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays a survey question and collects a numeric response. 
+[survey-slider](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-survey-slider/README.md) | [Dominique Makowski](https://github.com/DominiqueMakowski) | Add several analogue scales on the same page for use in questionnaires. 
+[test](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-test/README.md) | cherrie | test 
+[video-several-keyboard-responses](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-video-several-keyboard-responses/README.md) | [Maria Emine Nylund](https://github.com/marianylund) | jsPsych plugin for playing a video file and getting several keyboard responses 
+[vsl-animate-occlusion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-vsl-animate-occlusion/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | he VSL (visual statistical learning) animate occlusion plugin displays an animated sequence of shapes that disappear behind an occluding rectangle while they change from one shape to another. 
+[vsl-grid-scene](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-vsl-grid-scene/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) grid scene plugin displays images arranged in a grid. 
+
+  
+
+  
+### Extensions
+
+   Extension | Contributor | Description
+  ----------- | ----------- | -----------
+[countdown](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-countdown/README.md) | [Shaobin Jiang](https://github.com/Shaobin-Jiang) | This extension adds a countdown during a trial. 
+[device-motion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-device-motion/README.md) | [Pedro Neto](https://github.com/pasoneto) | jsPsych extension for tracking device motion 
+[mediapipe-face-mesh](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-mediapipe-face-mesh/README.md) | [C. Martin Grewe](https://github.com/mgrewe) | This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library. 
+[touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | foo 
 
 ## Guidelines for contributions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Contributions to this repository must:
 
@@ -59,32 +102,26 @@ In the pull request comments, please make it clear how we can verify that the co
 This could be accomplished with a link to a demonstration experiment, the inclusion of an example file and/or testing files, or through some other means.
 We try to review pull requests quickly and add new contributions as soon as the minimal standards are met.
 
-## Plugin templates
+## Creating a new plugin or extension
 
-There are two plugin template directories inside the `/packages` directory that you can use as a reference when creating a directory for your plugin contribution. 
-Both templates are compatible with jsPsych v7+.
+After cloning this repository, run `npm install` and then `npm run new`. 
+This will prompt you through the process of creating a new plugin or extension. 
+The tool will create a new directory in the `/packages` directory with the appropriate files and names. 
 
-Regardless of which template you use, you can get started by creating a copy of the template folder in `/packages` and renaming it according to your plugin/extension name. 
-You may also want to read the jsPsych documentation on [plugin development](https://www.jspsych.org/latest/developers/plugin-development/) to understand how to work with the `index.ts`file (in `plugin-template-ts`) and `index.js` file (in `plugin-template`).
-In your plugin/extension folder, be sure that you also:
-* Edit the `package.json` file
-* Add a readme.md file to your plugin/extension directory, based on the [readme template](readme-template.md)
+You may want to read the jsPsych documentation on [plugin development](https://www.jspsych.org/latest/developers/plugin-development/) to understand how to work with the `index.ts`file (for TypeScript development) and `index.js` file (for JavaScript development).
 
-### `plugin-template-ts`
+### TypeScript template
 
 This template uses TypeScript source files that are complied into JavaScript using Node.js and npm.
 This is the format used for plugins in the main jsPsych repo.
-To use this template, you should edit the `src/index.ts` file, keeping the overall structure but changing the details as appropriate (plugin name, parameters, trial method, etc.).
+To use this template, you should edit the `src/index.ts` file, keeping the overall structure but changing the details as appropriate (parameters, trial method, etc.).
 You can then use the `npm run build` command to compile your `index.ts` code into JavaScript files, which will appear in a `/dist` directory.
-This format also allows you to add a Jest test file (optional), which you can create based on the `src/index.spec.ts` template file.
-
-In the `rollup.config.mjs` file, replace "jsPsychPluginName" with your plugin name.
-You do not need to edit the other config files in this template directory.
+This format also allows you to add a Jest test file (optional).
 
 For more details, including setup instructions and detailed explanations of files, please see the jsPsych documentation page: [Configuring the jsPsych development environment](https://www.jspsych.org/latest/developers/configuration).
 You can also read the [plugin development documentation](https://www.jspsych.org/latest/developers/plugin-development/) and look at the plugin/extension folders in the main jsPsych repository `/packages` directory for more examples.
 
-### `plugin-template`
+### JavaScript template
 
 This template allows you to put your plugin's JavaScript code directly into a JavaScript template file, rather than using TypeScript and Node.js/npm. 
 To use this template, you should keep the overall structure of the `index.js` file, but change the details as appropriate for your plugin (plugin name, parameters, etc.).
@@ -98,7 +135,7 @@ At the same time, we realize that there may be jsPsych users who have created ve
 Therefore we welcome contributions that are compatible with v6 as well as v7+. 
 
 If you'd like to contribute a **jsPsych v6 plugin**, please do the following:
-* Use the `plugin-template` directory as a reference
+* Use the `templates/plugin-template-js` directory as a reference
 * Delete everything inside of the `index.js` template file and replace it with your v6-compatible plugin code
 * In the `package.json` file, change the "jspsych" version field in "devDependencies" to "6.3.1"
 

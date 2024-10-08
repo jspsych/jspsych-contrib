@@ -9,7 +9,7 @@ This plugin implements the Corsi block tapping task. It has two modes: a display
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-corsi-blocks@1.0.0">
+<script src="https://unpkg.com/@jspsych-contrib/plugin-corsi-blocks@1.0.0"></script>
 ```
 
 ### Via NPM

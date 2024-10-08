@@ -37,11 +37,57 @@ describe("plugin-html-swipe-response", () => {
     await expectFinished();
   });
 
-  test("prompt should append html below stimulus", async () => {
+  test("display button labels", async () => {
+    const { getHTML } = await startTimeline([
+      {
+        type: htmlSwipeResponse,
+        stimulus: "this is html",
+        button_choices: ["button-choice1", "button-choice2"],
+      },
+    ]);
+
+    expect(getHTML()).toContain('<button class="jspsych-btn">button-choice1</button>');
+    expect(getHTML()).toContain('<button class="jspsych-btn">button-choice2</button>');
+  });
+
+  test("display button html", async () => {
+    const { getHTML } = await startTimeline([
+      {
+        type: htmlSwipeResponse,
+        stimulus: "this is html",
+        button_choices: ["buttonChoice"],
+        button_html: '<button class="jspsych-custom-button">%choice%</button>',
+      },
+    ]);
+
+    expect(getHTML()).toContain('<button class="jspsych-custom-button">buttonChoice</button>');
+  });
+
+  test("display should clear after button click", async () => {
     const { getHTML, expectFinished } = await startTimeline([
       {
         type: htmlSwipeResponse,
         stimulus: "this is html",
+        button_choices: ["button-choice"],
+        swipe_animation_duration: 0,
+      },
+    ]);
+
+    expect(getHTML()).toContain(
+      '<div id="jspsych-html-swipe-response-stimulus">this is html</div>'
+    );
+
+    clickTarget(document.querySelector("#jspsych-html-swipe-response-button-0"));
+
+    await expectFinished();
+  });
+
+  test("prompt should append html below button", async () => {
+    const { getHTML, expectFinished } = await startTimeline([
+      {
+        type: htmlSwipeResponse,
+        stimulus: "this is html",
+        button_choices: ["button-choice-0", "button-choice-1"],
         keyboard_choices: ["f", "j"],
         prompt: '<div id="foo">this is a prompt</div>',
         swipe_animation_duration: 0,
@@ -49,7 +95,7 @@ describe("plugin-html-swipe-response", () => {
     ]);
 
     expect(getHTML()).toContain(
-      '<div id="jspsych-html-swipe-response-stimulus">this is html</div><div id="foo">this is a prompt</div>'
+      '<button class="jspsych-btn">button-choice-1</button></div></div><div id="foo">this is a prompt</div>'
     );
 
     pressKey("f");
@@ -95,7 +141,9 @@ describe("plugin-html-swipe-response", () => {
       },
     ]);
 
-    expect(getHTML()).toBe('<div id="jspsych-html-swipe-response-stimulus">this is html</div>');
+    expect(getHTML()).toBe(
+      '<div id="jspsych-html-swipe-response-stimulus-container"><div id="jspsych-html-swipe-response-stimulus">this is html</div></div><div id="jspsych-html-swipe-response-btngroup"></div>'
+    );
     jest.advanceTimersByTime(500);
     await expectFinished();
   });
@@ -116,6 +164,26 @@ describe("plugin-html-swipe-response", () => {
     );
 
     pressKey("f");
+    await expectFinished();
+  });
+
+  test("should end trial when button is clicked", async () => {
+    const { getHTML, expectFinished } = await startTimeline([
+      {
+        type: htmlSwipeResponse,
+        stimulus: "this is html",
+        button_choices: ["button-choice-0", "button-choice-1"],
+        keyboard_choices: ["f", "j"],
+        swipe_animation_duration: 0,
+        response_ends_trial: true,
+      },
+    ]);
+
+    expect(getHTML()).toContain(
+      '<div id="jspsych-html-swipe-response-stimulus">this is html</div>'
+    );
+
+    clickTarget(document.querySelector("#jspsych-html-swipe-response-button-0"));
     await expectFinished();
   });
 
@@ -140,7 +208,33 @@ describe("plugin-html-swipe-response", () => {
       " responded"
     );
 
+    document
+      .querySelectorAll("#jspsych-html-swipe-response-button-0 > button")
+      .forEach((element) => {
+        expect(element.className).toBe(" responded");
+      });
+
     await expectRunning();
+  });
+
+  test("class should have responded when button is clicked", async () => {
+    const { getHTML } = await startTimeline([
+      {
+        type: htmlSwipeResponse,
+        stimulus: "this is html",
+        button_choices: ["button-choice-0", "button-choice-1"],
+        response_ends_trial: false,
+      },
+    ]);
+
+    expect(getHTML()).toContain(
+      '<div id="jspsych-html-swipe-response-stimulus">this is html</div>'
+    );
+
+    clickTarget(document.querySelector("#jspsych-html-swipe-response-button-0"));
+    expect(document.querySelector("#jspsych-html-swipe-response-stimulus").className).toBe(
+      " responded"
+    );
   });
 
   test("should wait for swipe animation if requested", async () => {
@@ -161,6 +255,40 @@ describe("plugin-html-swipe-response", () => {
 
     await expectFinished();
   });
+
+  test("should disable buttons on keyboard response", async () => {
+    await startTimeline([
+      {
+        type: htmlSwipeResponse,
+        stimulus: "this is html",
+        keyboard_choices: ["f", "j"],
+        swipe_animation_duration: 500,
+      },
+    ]);
+
+    pressKey("f");
+
+    document.querySelectorAll(".jspsych-html-swipe-response-button button").forEach((element) => {
+      expect(element.getAttribute("disabled")).toBe("disabled");
+    });
+  });
+
+  test("should disable buttons on click response", async () => {
+    await startTimeline([
+      {
+        type: htmlSwipeResponse,
+        stimulus: "this is html",
+        button_choices: ["button-choice-0", "button-choice-1"],
+        response_ends_trial: false,
+      },
+    ]);
+
+    clickTarget(document.querySelector("#jspsych-html-swipe-response-button-0"));
+
+    document.querySelectorAll(".jspsych-html-swipe-response-button button").forEach((element) => {
+      expect(element.getAttribute("disabled")).toBe("disabled");
+    });
+  });
 });
 
 describe("html-swipe-response simulation", () => {
@@ -170,11 +298,13 @@ describe("html-swipe-response simulation", () => {
         type: htmlSwipeResponse,
         stimulus: "foo",
         swipe_animation_duration: 0,
+        button_choices: ["a", "b"],
       },
     ];
     const { expectFinished, getData } = await simulateTimeline(timeline);
     await expectFinished();
     const swipeResponse = getData().values()[0].swipe_response;
+    const buttonResponse = getData().values()[0].button_response;
     const keyboardResponse = getData().values()[0].keyboard_response;
     const responseSource = getData().values()[0].response_source;
     expect(getData().values()[0].rt).toBeGreaterThan(0);
@@ -182,6 +312,9 @@ describe("html-swipe-response simulation", () => {
       expect(typeof keyboardResponse).toBe("string");
     } else if (responseSource == "swipe") {
       expect(typeof swipeResponse).toBe("string");
+    } else if (responseSource == "button") {
+      expect(buttonResponse).toBeGreaterThanOrEqual(0);
+      expect(buttonResponse).toBeLessThanOrEqual(1);
     }
   });
 
@@ -191,6 +324,7 @@ describe("html-swipe-response simulation", () => {
         type: htmlSwipeResponse,
         stimulus: "foo",
         swipe_animation_duration: 0,
+        button_choices: ["a", "b"],
       },
     ];
 
@@ -207,6 +341,7 @@ describe("html-swipe-response simulation", () => {
     await expectFinished();
 
     const swipeResponse = getData().values()[0].swipe_response;
+    const buttonResponse = getData().values()[0].button_response;
     const keyboardResponse = getData().values()[0].keyboard_response;
     const responseSource = getData().values()[0].response_source;
     expect(getData().values()[0].rt).toBeGreaterThan(0);
@@ -214,6 +349,9 @@ describe("html-swipe-response simulation", () => {
       expect(typeof keyboardResponse).toBe("string");
     } else if (responseSource == "swipe") {
       expect(typeof swipeResponse).toBe("string");
+    } else if (responseSource == "button") {
+      expect(buttonResponse).toBeGreaterThanOrEqual(0);
+      expect(buttonResponse).toBeLessThanOrEqual(1);
     }
   });
 });

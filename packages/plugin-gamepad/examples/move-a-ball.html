@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>jspsych-gamepad plugin test</title>
+        <link rel="stylesheet" href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" />
+        <script src="https://unpkg.com/jspsych@7.3.3"></script>
+        <script src="../dist/index.browser.min.js"></script>
+    </head>
+    <body>
+        <script>
+            const jsPsych = initJsPsych();
+
+            let position = [200, 200];
+            let radius = 10;
+            let velocity = 500; // pixels that can be covered within 1 second at full speed
+
+            let trial = {
+                type: jsPsychGamepad,
+                canvas_size: [400, 400],
+                display_minature_gamepad: true,
+                end_trial: (context, gamepad, time_stamp, delta_time) => {
+                    return time_stamp > 10000;
+                },
+                gamepad_connection_prompt: 'No controller detected...',
+                on_frame_update: (context, gamepad, time_stamp, delta) => {
+                    context.save();
+                    context.fillStyle = 'red';
+
+                    let x = 0;
+                    let y = 0;
+                    if (gamepad !== null) {
+                        x = gamepad.axes[0];
+                        y = gamepad.axes[1];
+                    }
+
+                    if (!(x === 0 && y === 0)) {
+                        let speed = Math.sqrt((x ** 2 + y ** 2) / 2) * velocity;
+                        let speed_x = x / Math.sqrt(x ** 2 + y ** 2) * speed;
+                        let speed_y = y / Math.sqrt(x ** 2 + y ** 2) * speed;
+                        position[0] += speed_x * delta / 1000;
+                        position[1] += speed_y * delta / 1000;
+                    }
+
+                    let path = new Path2D();
+                    path.arc(position[0], position[1], radius, 0, Math.PI * 2);
+                    context.fill(path);
+
+                    context.restore();
+                },
+                stimulus: (context) => {
+                    context.save();
+                    context.fillStyle = 'rgb(200, 200, 200)';
+                    context.fillRect(0, 0, 400, 400);
+                    context.font = 'normal 16px Arial';
+                    context.fillStyle = 'red';
+                    context.textAlign = 'center';
+                    context.textBaseline = 'middle';
+                    context.fillText('Trial ends in 10 seconds', 200, 370);
+                    context.restore();
+                },
+            };
+
+            jsPsych.run([trial]);
+        </script>
+    </body>
+</html>
