@@ -3,6 +3,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 const info = <const>{
   name: "image-swipe-response",
+  version: "2.0.0",
   parameters: {
     /** The image to be displayed */
     stimulus: {
@@ -95,6 +96,32 @@ const info = <const>{
       default: true,
     },
   },
+  data: {
+    /** The response time in milliseconds for the participant to make a response. The time is measured from when the
+     * stimulus first appears on the screen until the participant's response.
+     */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The file path of the image displayed. */
+    stimulus: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates which key the subject pressed. If the subject responded using button clicks,
+     * then this field will be `null`. */
+    keyboard_response: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates which direction the subject swiped. If the subject responded using the keyboard,
+     * then this field will be `null`. */
+    swipe_response: {
+      type: ParameterType.STRING,
+    },
+    /** The source of the response. This will either be `"swipe"` or `"keyboard"`. */
+    response_source: {
+      type: ParameterType.STRING,
+    },
+  },
 };
 
 type Info = typeof info;
@@ -111,7 +138,7 @@ class ImageSwipeResponsePlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    var height, width;
+    var height: number, width: number;
     if (trial.render_on_canvas) {
       var image_drawn = false;
       // first clear the display element (because the render_on_canvas method appends to display_element instead of overwriting it with .innerHTML)
@@ -275,7 +302,7 @@ class ImageSwipeResponsePlugin implements JsPsychPlugin<Info> {
     };
 
     // function to handle swipe responses by the subject
-    const after_swipe_response = (left_or_right) => {
+    const after_swipe_response = (left_or_right: "left" | "right") => {
       toggle_css_respond();
 
       if (left_or_right !== null) {
