@@ -11,7 +11,13 @@
 
 <body></body>
 <script>
-  const jsPsych = initJsPsych();
+  const jsPsych = initJsPsych({
+      on_finish: async function() {      
+        jsPsych.data.displayData();  
+      },
+      default_iti: 250
+  });
+
 
   const trial = {
     type: jsPsychSpr,

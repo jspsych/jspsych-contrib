@@ -52,8 +52,6 @@ class SprPlugin implements JsPsychPlugin<Info> {
   private current_display_string: string[] = []; // mode 1-2: use this to save iterations
   private structured_reading_string: string[] | string[][] = [];
   private mode;
-  // | string[][] -> each method that takes in string will need to account for list of strings
-  // would need another inner_index?
 
   constructor(private jsPsych: JsPsych) {}
 
@@ -71,15 +69,18 @@ class SprPlugin implements JsPsychPlugin<Info> {
       persist: true,
       allow_held_key: false,
     });
+  }
 
+  private endTrial() {
     // TODO: figure out data saving -> will need to add times and how long to make it
     var trial_data = {
-      data1: 99, // Make sure this type and name matches the information for data1 in the data object contained within the info const.
-      data2: "hello world!", // Make sure this type and name matches the information for data2 in the data object contained within the info const.
+      // data1: 99, // Make sure this type and name matches the information for data1 in the data object contained within the info const.
+      stimlulus: this.structured_reading_string, // Make sure this type and name matches the information for data2 in the data object contained within the info const.
+      mode: this.mode,
     };
     // end trial
-    // this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
-    // this.jsPsych.finishTrial(trial_data);
+    this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
+    this.jsPsych.finishTrial(trial_data);
   }
 
   private initializeVariables(trial: TrialType<Info>) {
@@ -113,6 +114,11 @@ class SprPlugin implements JsPsychPlugin<Info> {
         // resets the index and moves onto the next
         this.inner_index = -1; // ensures will be empty
         this.index++;
+
+        if (this.index >= this.structured_reading_string.length) {
+          this.endTrial();
+          return;
+        }
       }
 
       newHtml = `<p>${this.updateDisplayString()}</p>`;
@@ -134,7 +140,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
         this.displayed = false;
 
         if (this.index >= this.structured_reading_string.length) {
-          // this is when we want to end trial
+          this.endTrial();
         } else {
           newHtml =
             "<p class='text-before-current-region'>" +
