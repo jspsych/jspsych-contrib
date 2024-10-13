@@ -49,7 +49,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
   private index: number = 0;
   private inner_index: number = -1; // initialized so that not shown if has an inner_index
   private displayed = false;
-  private current_string: string[] = []; // use this to save iterations
+  private current_display_string: string[] = []; // use this to save iterations
   private structured_reading_string: string[] | string[][] = [];
   private mode;
   // | string[][] -> each method that takes in string will need to account for list of strings
@@ -63,15 +63,13 @@ class SprPlugin implements JsPsychPlugin<Info> {
     var html = `<p>${this.generateBlank(this.structured_reading_string[this.index])}</p>`;
     display_element.innerHTML = html;
 
-    // dynamic logic
-    // TODO: need to restructure to use JsPsych keyboard API and remove it
-    const spacebarHandler = (e: KeyboardEvent) => {
-      if (e.code === "Space") {
-        this.onSpacebarPress(); // Call the onSpacebarPress method
-      }
-    };
-    // Attach the event listener
-    document.addEventListener("keydown", spacebarHandler);
+    this.jsPsych.pluginAPI.getKeyboardResponse({
+      callback_function: (info) => this.onSpacebarPress(info),
+      valid_responses: [" "],
+      rt_method: "performance",
+      persist: true,
+      allow_held_key: false,
+    });
 
     // TODO: figure out data saving -> will need to add times and how long to make it
     var trial_data = {
@@ -79,6 +77,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
       data2: "hello world!", // Make sure this type and name matches the information for data2 in the data object contained within the info const.
     };
     // end trial
+    // this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
     // this.jsPsych.finishTrial(trial_data);
   }
 
@@ -101,7 +100,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
     return [reading_string];
   }
 
-  private onSpacebarPress() {
+  private onSpacebarPress(info?: any) {
     var newHtml = `<p>Spacebar pressed!</p>`;
 
     // handles logic on whether to display blank or show text using boolean/index
@@ -188,7 +187,14 @@ class SprPlugin implements JsPsychPlugin<Info> {
 
   // this is called whenever previousMethod upates the indicies
   // this will let us create more advanced logic for how to handle the displays
-  private updateDisplayString() {}
+  private updateDisplayString(): string {
+    var displayString = "";
+    for (const s of this.current_display_string) {
+      displayString += s + " "; // include another element
+    }
+
+    return displayString;
+  }
 
   private generateBlank(text: string | string[]): string {
     const length = text.length;
