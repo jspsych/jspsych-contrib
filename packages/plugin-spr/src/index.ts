@@ -47,9 +47,9 @@ type Info = typeof info;
 class SprPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private index: number = 0;
-  private inner_index: number = -1; // initialized so that not shown if has an inner_index
-  private displayed = false;
-  private current_display_string: string[] = []; // use this to save iterations
+  private inner_index: number = -1; // mode 1-2: initialized so that not shown if has an inner_index
+  private displayed = false; // mode 3
+  private current_display_string: string[] = []; // mode 1-2: use this to save iterations
   private structured_reading_string: string[] | string[][] = [];
   private mode;
   // | string[][] -> each method that takes in string will need to account for list of strings
@@ -102,7 +102,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
   }
 
   private onSpacebarPress(info?: any) {
-    var newHtml = `<p>Spacebar pressed!</p>`;
+    var newHtml = "";
 
     // handles logic on whether to display blank or show text using boolean/index
     if (this.mode === 1 || this.mode === 2) {
@@ -118,10 +118,16 @@ class SprPlugin implements JsPsychPlugin<Info> {
       newHtml = `<p>${this.updateDisplayString()}</p>`;
     } else if (this.mode === 3) {
       if (!this.displayed) {
-        if (typeof this.structured_reading_string === "string")
-          newHtml = this.structured_reading_string[this.index];
-        else newHtml = "weird formatting"; // should build out a method that uses the inner index but makes it iterate better
+        if (typeof this.structured_reading_string[this.index] === "string")
+          newHtml = this.structured_reading_string[this.index] as string;
+        else {
+          for (const c of this.structured_reading_string[this.index]) {
+            // accounts for weird formatting cases (not necessary)
+            newHtml += c + " ";
+          }
+        }
 
+        newHtml = "<p class='text-current-region'>" + newHtml + "</p>";
         this.displayed = true;
       } else {
         this.index++;
@@ -130,7 +136,10 @@ class SprPlugin implements JsPsychPlugin<Info> {
         if (this.index >= this.structured_reading_string.length) {
           // this is when we want to end trial
         } else {
-          newHtml = this.generateBlank(this.structured_reading_string[this.index]);
+          newHtml =
+            "<p class='text-before-current-region'>" +
+            this.generateBlank(this.structured_reading_string[this.index]) +
+            "</p>";
         }
       }
     }
@@ -141,8 +150,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
     document.querySelector("p")!.innerHTML = newHtml;
   }
 
-  // this is called whenever previousMethod upates the indicies
-  // this will let us create more advanced logic for how to handle the displays
+  // This helper method assists with mode 1 and 2 to keep efficency when updating indicies and the scren
   private updateDisplayString(): string {
     if (this.mode === 1 || this.mode === 2) {
       if (this.inner_index === -1) {
@@ -153,36 +161,29 @@ class SprPlugin implements JsPsychPlugin<Info> {
 
         for (var i = 0; i < curr_segment.length; i++) {
           new_display_string.push(
-            "<span class='text-before-current-region'>" +
+            "<span class='text-after-current-region'>" +
               this.generateBlank(curr_segment[i]) +
               "</span>"
           );
         }
 
         this.current_display_string = new_display_string;
-      } else if (this.mode === 1) {
-        // if not need to reupdate then we can do new logic
-        if (this.inner_index > 0)
+      } else {
+        if (this.mode === 1 && this.inner_index > 0) {
           // sets previous to blank if exists
           this.current_display_string[this.inner_index - 1] =
             "<span class='text-before-current-region'>" +
             this.generateBlank(this.structured_reading_string[this.index][this.inner_index - 1]) +
             "</span>";
-        this.current_display_string[this.inner_index] =
-          "<span class='text-current-region'>" +
-          this.structured_reading_string[this.index][this.inner_index] +
-          "</span>";
-      } else if (this.mode === 2) {
+        }
+        // shows next display
         this.current_display_string[this.inner_index] =
           "<span class='text-current-region'>" +
           this.structured_reading_string[this.index][this.inner_index] +
           "</span>";
       }
-    } else if (this.mode === 3) {
-      /// where we implement number 3
     }
 
-    console.log("update display string res:", this.current_display_string);
     var displayString = "";
     for (const s of this.current_display_string) {
       displayString += s + " "; // include another element
