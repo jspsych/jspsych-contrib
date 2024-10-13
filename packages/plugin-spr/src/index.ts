@@ -47,9 +47,10 @@ type Info = typeof info;
 class SprPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private index: number = 0;
-  private inner_index: number = -1;
+  private inner_index: number = -1; // initialized so that not shown if has an inner_index
   private displayed = false;
-  private structured_reading_string: string[] = [];
+  private current_string: string[] = []; // use this to save iterations
+  private structured_reading_string: string[] | string[][] = [];
   private mode;
   // | string[][] -> each method that takes in string will need to account for list of strings
   // would need another inner_index?
@@ -57,13 +58,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    this.mode = trial.mode;
-    console.log(trial.structured_reading_string, trial.structured_reading_string.length);
-    // creates inital reading string -> TODO: should instead use mode to determine
-    if (trial.structured_reading_string.length > 0)
-      this.structured_reading_string = trial.structured_reading_string;
-    else this.structured_reading_string = this.createReadingString(trial.reading_string);
-
+    this.initializeVariables(trial);
     // setup html logic
     var html = `<p>${this.generateBlank(this.structured_reading_string[this.index])}</p>`;
     display_element.innerHTML = html;
@@ -87,6 +82,17 @@ class SprPlugin implements JsPsychPlugin<Info> {
     // this.jsPsych.finishTrial(trial_data);
   }
 
+  private initializeVariables(trial: TrialType<Info>) {
+    if (trial.mode === 1 || trial.mode === 2 || trial.mode === 3) this.mode = trial.mode;
+    else throw console.error("Mode declared incorrectly, must be between 1 and 3.");
+
+    console.log(trial.structured_reading_string, trial.structured_reading_string.length);
+    // creates inital reading string -> TODO: should instead use mode to determine
+    if (trial.structured_reading_string.length > 0)
+      this.structured_reading_string = trial.structured_reading_string;
+    else this.structured_reading_string = this.createReadingString(trial.reading_string);
+  }
+
   // TODO: create a method that takes an entire string and uses a list of parameters to generate a "structured reading string"
   private createReadingString(reading_string: string): string[] {
     // pass in parameters to split it
@@ -96,13 +102,71 @@ class SprPlugin implements JsPsychPlugin<Info> {
   }
 
   private onSpacebarPress() {
-    console.log("Spacebar was pressed!");
     var newHtml = `<p>Spacebar pressed!</p>`;
 
     // handles logic on whether to display blank or show text using boolean/index
     if (this.mode === 1) {
+      // mode 2 and 3
+      // TODO: build out the mode that doesn't obscure (should be simple boolean)
+      const curr_length = this.structured_reading_string[this.index].length;
+      this.inner_index++;
+
+      if (this.inner_index >= curr_length) {
+        // resets the index and moves onto the next
+        this.inner_index = -1; // ensures will be empty
+        this.index++;
+      }
+
+      const curr_segment = this.structured_reading_string[this.index];
+      var string_to_display = "";
+
+      for (var i = 0; i < curr_segment.length; i++) {
+        if (this.inner_index === i) {
+          string_to_display +=
+            "<span class='text-current-region'>" + curr_segment[i] + "&nbsp;</span>";
+        } else {
+          string_to_display +=
+            "<span class='text-before-current-region'>" +
+            this.generateBlank(curr_segment[i]) +
+            "&nbsp;</span>";
+        }
+      }
+
+      newHtml = `<p>${string_to_display}</p>`;
+    } else if (this.mode === 2) {
+      // mode 2 and 3
+      // TODO: build out the mode that doesn't obscure (should be simple boolean)
+      const curr_length = this.structured_reading_string[this.index].length;
+      this.inner_index++;
+
+      if (this.inner_index >= curr_length) {
+        // resets the index and moves onto the next
+        this.inner_index = -1; // ensures will be empty
+        this.index++;
+      }
+
+      const curr_segment = this.structured_reading_string[this.index];
+      var string_to_display = "";
+
+      for (var i = 0; i < curr_segment.length; i++) {
+        if (this.inner_index >= i) {
+          string_to_display +=
+            "<span class='text-current-region'>" + curr_segment[i] + "&nbsp;</span>";
+        } else {
+          string_to_display +=
+            "<span class='text-before-current-region'>" +
+            this.generateBlank(curr_segment[i]) +
+            "&nbsp;</span>";
+        }
+      }
+
+      newHtml = `<p>${string_to_display}</p>`;
+    } else if (this.mode === 3) {
       if (!this.displayed) {
-        newHtml = this.structured_reading_string[this.index];
+        if (typeof this.structured_reading_string === "string")
+          newHtml = this.structured_reading_string[this.index];
+        else newHtml = "weird formatting"; // should build out a method that uses the inner index but makes it iterate better
+
         this.displayed = true;
       } else {
         this.index++;
@@ -114,47 +178,17 @@ class SprPlugin implements JsPsychPlugin<Info> {
           newHtml = this.generateBlank(this.structured_reading_string[this.index]);
         }
       }
-    } else {
-      // mode 2 and 3
-      // TODO: build out the mode that doesn't obscure (should be simple boolean)
-      const curr_length = this.structured_reading_string[this.index].length;
-      this.inner_index++;
-
-      if (this.inner_index >= curr_length) {
-        // resets the index and moves onto the next
-        this.inner_index = 0;
-        this.index++;
-      }
-
-      const curr_segment = this.structured_reading_string[this.index];
-      var string_to_display = "";
-
-      const styledText = `
-      <p>
-        <span style="text-decoration: underline; color: gray;">___</span>
-        <span style="color: black;"> hello </span>
-        <span style="text-decoration: underline; color: gray;">___</span>
-      </p>
-    `;
-
-      for (var i = 0; i < curr_segment.length; i++) {
-        if (this.inner_index === i) {
-          string_to_display += "<span class='text-current-region'>" + curr_segment[i] + "</span>";
-        } else {
-          string_to_display +=
-            "<span class='text-before-current-region'>" +
-            this.generateBlank(curr_segment[i]) +
-            "</span>";
-        }
-      }
-
-      newHtml = `<p>${string_to_display}</p>`;
     }
+    // need to handle a keyboard press element where records how long until press a key
 
     // Add any action you want to happen on spacebar press
     // e.g., changing the displayed text, ending the trial, etc.
     document.querySelector("p")!.innerHTML = newHtml;
   }
+
+  // this is called whenever previousMethod upates the indicies
+  // this will let us create more advanced logic for how to handle the displays
+  private updateDisplayString() {}
 
   private generateBlank(text: string | string[]): string {
     const length = text.length;

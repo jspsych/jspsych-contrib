@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <!-- The plugin is loaded here -->
+  <script src="https://unpkg.com/@jspsych/plugin-spr"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych();
+
+  const trial = {
+    type: jsPsychSpr,
+    reading_string: "this is the reading string",
+    structured_reading_string: [["first", "second", "third"], ["fith", "sixth", "seventh"], ["eighth", "ninth", "tenth"]],
+    mode: 1
+  };
+
+  jsPsych.run([trial])
+</script>
+
+</html>

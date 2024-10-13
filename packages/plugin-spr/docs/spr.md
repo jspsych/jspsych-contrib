@@ -1,6 +1,6 @@
 # spr
 
-This is a package built to enable self   paced reading
+This is a package built to enable self paced reading
 
 ## Parameters
 
@@ -8,7 +8,7 @@ In addition to the [parameters available in all plugins](https://jspsych.org/lat
 
 | Parameter           | Type             | Default Value      | Description                              |
 | ------------------- | ---------------- | ------------------ | ---------------------------------------- |
-|                     |                  |                    |                                          |
+| Mode                | Number           | 1                  | Indicates the mode of text displaying used by the SPR plugin. Mode 1 is a masked presentation where clicking spacebar hides the previous shown words, mode 2 reveals one chunk at time but the chunks but previous ones remain visible. Mode 3 is when one word is displayed with no mask. |
 
 ## Data Generated
 
