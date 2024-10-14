@@ -3,6 +3,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 const info = <const>{
   name: "html-swipe-response",
+  version: "2.0.0",
   parameters: {
     /** The HTML string to be displayed. */
     stimulus: {
@@ -23,12 +24,18 @@ const info = <const>{
       pretty_name: "Keyboard Choices",
       default: ["ArrowLeft", "ArrowRight"],
     },
-    /** The HTML for creating button. Can create own style. Use the "%choice%" string to indicate where the label from the choices parameter should be inserted. */
+    /**
+     * A function that generates the HTML for each button in the `choices` array.
+     * The function gets the string and index of the item in the `choices` array and should return valid HTML.
+     * If you want to use different markup for each button, you can do that by using a conditional on either parameter.
+     * The default parameter returns a button element with the text label of the choice.
+     */
     button_html: {
-      type: ParameterType.HTML_STRING,
+      type: ParameterType.FUNCTION,
       pretty_name: "Button HTML",
-      default: '<button class="jspsych-btn">%choice%</button>',
-      array: true,
+      default: function (choice: string, choice_index: number) {
+        return `<button class="jspsych-btn">${choice}</button>`;
+      },
     },
     /** Any content here will be displayed below the stimulus. */
     prompt: {
@@ -94,6 +101,45 @@ const info = <const>{
       default: 250,
     },
   },
+  data: {
+    /**
+     * The response time in milliseconds for the participant to make a response.
+     * The time is measured from when the stimulus first appears on the screen until the participant's response.
+     */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The HTML content that was displayed on the screen. */
+    stimulus: {
+      type: ParameterType.STRING,
+    },
+    /**
+     * Indicates which button the subject pressed. The first button in the `choices` array is 0, the second is 1, and so on.
+     * If the subject responded using the keyboard, then this field will be `null`.
+     */
+    button_response: {
+      type: ParameterType.INT,
+    },
+    /**
+     * Indicates which key the subject pressed.
+     * If the subject responded using button clicks, then this field will be `null`.
+     */
+    keyboard_response: {
+      type: ParameterType.STRING,
+    },
+    /**
+     * Indicates which direction the subject swiped.
+     * This will be either `"left"` or `"right"`. If the subject responded using the keyboard,
+     * then this field will be `null`.
+     */
+    swipe_response: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates the source of the response. This will either be `"button"` or `"keyboard"`. */
+    response_source: {
+      type: ParameterType.STRING,
+    },
+  },
 };
 
 type Info = typeof info;
@@ -116,25 +162,9 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       trial.stimulus +
       "</div></div>";
 
-    //display buttons
-    var buttons = [];
-    if (Array.isArray(trial.button_html)) {
-      if (trial.button_html.length == trial.button_choices.length) {
-        buttons = trial.button_html;
-      } else {
-        console.error(
-          "Error in html-swipe-response plugin. The length of the button_html array does not equal the length of the button_choices array"
-        );
-      }
-    } else {
-      for (var i = 0; i < trial.button_choices.length; i++) {
-        buttons.push(trial.button_html);
-      }
-    }
-
     html += '<div id="jspsych-html-swipe-response-btngroup">';
     for (var i = 0; i < trial.button_choices.length; i++) {
-      var str = buttons[i].replace(/%choice%/g, trial.button_choices[i]);
+      var button_str = trial.button_html(trial.button_choices[i], i);
       html +=
         '<div class="jspsych-html-swipe-response-button" style="display: inline-block; margin:' +
         trial.margin_vertical +
@@ -145,7 +175,7 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
         '" data-choice="' +
         i +
         '">' +
-        str +
+        button_str +
         "</div>";
     }
     html += "</div>";
@@ -240,11 +270,11 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     // after a valid response, the stimulus will have the CSS class 'responded'
     // which can be used to provide visual feedback that a response was recorded
     const toggle_css_respond = (idx: number) => {
-      //responded class for stimulus
+      // responded class for stimulus
       display_element.querySelector("#jspsych-html-swipe-response-stimulus").className +=
         " responded";
 
-      //responded class for button
+      // responded class for button
       document
         .querySelectorAll(`#jspsych-html-swipe-response-button-${idx} > button`)
         .forEach((element) => {
@@ -260,7 +290,7 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     };
 
     // function to handle swipe responses by the subject
-    const after_swipe_response = (left_or_right) => {
+    const after_swipe_response = (left_or_right: "left" | "right") => {
       if (left_or_right !== null) {
         // measure rt
         const end_time = performance.now();
@@ -343,7 +373,7 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     };
 
     // function to handle responses by the subject
-    const after_button_response = (choice) => {
+    const after_button_response = (choice: string) => {
       // measure rt
       var end_time = performance.now();
       var rt = Math.round(end_time - start_time);
@@ -403,9 +433,6 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
         swipe_response: response.swipe,
         response_source: response.source,
       };
-
-      // clear the display
-      display_element.innerHTML = "";
 
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
