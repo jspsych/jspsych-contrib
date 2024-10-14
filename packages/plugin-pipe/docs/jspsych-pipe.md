@@ -24,6 +24,7 @@ In addition to the [default data collected by all plugins](../overview/plugins.m
 | Name      | Type    | Value                                    |
 | --------- | ------- | ---------------------------------------- |
 | response | JSON | The response from the server. |
+| success | boolean | If the response was successful or not. |
 
 ## Static Methods
 

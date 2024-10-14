@@ -2,6 +2,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 const info = <const>{
   name: "pipe",
+  version: "0.5",
   parameters: {
     /**
      * The 12-character experiment ID provided by pipe.jspsych.org.
@@ -47,6 +48,20 @@ const info = <const>{
     wait_message: {
       type: ParameterType.HTML_STRING,
       default: `<p>Saving data. Please do not close this page.</p>`,
+    },
+  },
+  data: {
+    /**
+     * The response given upon sending the data, in the form of a JSON object.
+     */
+    result: {
+      type: ParameterType.OBJECT,
+      default: null,
+    },
+    /** Whether the action was successful. */
+    success: {
+      type: ParameterType.BOOL,
+      default: null,
     },
   },
 };
@@ -132,8 +147,6 @@ class PipePlugin implements JsPsychPlugin<Info> {
     if (trial.action === "condition") {
       result = await PipePlugin.getCondition(trial.experiment_id);
     }
-
-    display_element.innerHTML = "";
 
     // data saving
     var trial_data = {
