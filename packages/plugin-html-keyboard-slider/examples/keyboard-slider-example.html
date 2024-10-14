@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="https://unpkg.com/jspsych"></script>
+        <script src="https://unpkg.com/jspsych@8.0.0"></script>
         <script src="../dist/index.browser.js"></script>
-        <link href="https://unpkg.com/jspsych/css/jspsych.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css">
     </head>
     <body></body>
     <script>
@@ -15,8 +15,8 @@
 
         const timeline = [];
 
-        // Labelled discreet slider displaying defaults
-        const discreet = {
+        // Labelled discrete slider displaying defaults
+        const discrete = {
             type: jsPsychHtmlKeyboardSlider,
             min: 1,
             max: 5,
@@ -123,7 +123,7 @@
 
         //jsPsych.run([loop]);
 
-        timeline.push(discreet)
+        timeline.push(discrete)
         timeline.push(percentage)
         timeline.push(cost)
         timeline.push(emojis)
