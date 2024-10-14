@@ -1,49 +1,49 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script src="https://unpkg.com/jspsych@7.0.0"></script>
+		<script src="https://unpkg.com/jspsych@8.0.0"></script>
 		<script src="../dist/index.browser.js"></script>
-		<link rel="stylesheet" href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css">
+		<link rel="stylesheet" href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css">
 	</head>
 	<body></body>
 	<script>
 
 		var jsPsych = initJsPsych({
-      on_finish: function() {
-        jsPsych.data.displayData();
-      }
-    });
+		on_finish: function() {
+			jsPsych.data.displayData();
+		}
+		});
 
 		//---------Create trials---------
-		
-    const timeline = [];
+			
+		const timeline = [];
 
 		// Add a trial that only accepts keyboard responses
 		const keyboard_trial = {
 			type: jsPsychHtmlMultiResponse,
-      stimulus: '<p style="font-size:48px; color:green;">BLUE</p>',
-      keyboard_choices: ['r', 'g', 'b'],
-      prompt: "<p>Is the ink color red, green, or blue?<br>Press the <kbd>r</kbd>, <kbd>g</kbd>, or <kbd>b</kbd> keys to respond.</p>"
+			stimulus: '<p style="font-size:48px; color:green;">BLUE</p>',
+			keyboard_choices: ['r', 'g', 'b'],
+			prompt: "<p>Is the ink color red, green, or blue?<br>Press the <kbd>r</kbd>, <kbd>g</kbd>, or <kbd>b</kbd> keys to respond.</p>"
 		};
 
 		// Add a trial that only accepts button responses
 		const button_trial = {
 			type: jsPsychHtmlMultiResponse,
-      stimulus: '<p style="font-size:48px; color:red;">GREEN</p>',
-      button_choices: ['Red', 'Green', 'Blue'],
-      prompt: "<p>Is the ink color red, green, or blue?<br>Click the buttons to respond.</p>"
+			stimulus: '<p style="font-size:48px; color:red;">GREEN</p>',
+			button_choices: ['Red', 'Green', 'Blue'],
+			prompt: "<p>Is the ink color red, green, or blue?<br>Click the buttons to respond.</p>"
 		};
 
-    const multi_trial = {
-      type: jsPsychHtmlMultiResponse,
-      stimulus: '<p style="font-size:48px; color:blue;">RED</p>',
-      button_choices: ['Red', 'Green', 'Blue'],
-      keyboard_choices: ['r', 'g', 'b'],
-      prompt: "<p>Is the ink color red, green, or blue?<br>Click the buttons or press the <kbd>r</kbd>, <kbd>g</kbd>, or <kbd>b</kbd> keys to respond.</p>"
-    };
+		const multi_trial = {
+			type: jsPsychHtmlMultiResponse,
+			stimulus: '<p style="font-size:48px; color:blue;">RED</p>',
+			button_choices: ['Red', 'Green', 'Blue'],
+			keyboard_choices: ['r', 'g', 'b'],
+			prompt: "<p>Is the ink color red, green, or blue?<br>Click the buttons or press the <kbd>r</kbd>, <kbd>g</kbd>, or <kbd>b</kbd> keys to respond.</p>"
+		};
 
-    timeline.push(keyboard_trial, button_trial, multi_trial);
-		
+		timeline.push(keyboard_trial, button_trial, multi_trial);
+			
 		//---------Run the experiment---------
 		
 		jsPsych.run(timeline);
