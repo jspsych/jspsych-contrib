@@ -346,9 +346,6 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-
       // kill keyboard listeners
       if (typeof keyboardListener !== "undefined") {
         this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);

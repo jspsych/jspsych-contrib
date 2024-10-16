@@ -237,7 +237,6 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
     };
 
     const end_trial = () => {
-      display_element.innerHTML = "";
       this.jsPsych.finishTrial(trial_data);
     };
 

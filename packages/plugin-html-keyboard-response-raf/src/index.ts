@@ -173,9 +173,6 @@ class HtmlKeyboardResponseRafPlugin implements JsPsychPlugin<Info> {
         response: response.key,
       };
 
-      // clear the display
-      display_element.innerHTML = "";
-
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
     };

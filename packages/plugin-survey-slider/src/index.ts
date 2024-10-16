@@ -381,8 +381,6 @@ class SurveySliderPlugin implements JsPsychPlugin<Info> {
         question_order: JSON.stringify(question_order),
       };
 
-      display_element.innerHTML = "";
-
       // next trial
       this.jsPsych.finishTrial(trial_data);
     });

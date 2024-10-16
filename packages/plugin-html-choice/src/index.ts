@@ -125,9 +125,6 @@ class HtmlChoicePlugin implements JsPsychPlugin<Info> {
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-
       // gather the data to store for the trial
       var trial_data = {
         rt: response.rt,
@@ -135,9 +132,6 @@ class HtmlChoicePlugin implements JsPsychPlugin<Info> {
         response: response.choice,
         value: response.value,
       };
-
-      // clear the display
-      display_element.innerHTML = "";
 
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
@@ -165,7 +159,6 @@ class HtmlChoicePlugin implements JsPsychPlugin<Info> {
       }
 
       if (trial.response_ends_trial) {
-        this.jsPsych.pluginAPI.clearAllTimeouts();
         this.jsPsych.pluginAPI.setTimeout(end_trial, trial.time_after_response);
       }
     };

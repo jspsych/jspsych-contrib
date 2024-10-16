@@ -214,7 +214,6 @@ class GamepadPlugin implements JsPsychPlugin<Info> {
 
     let finish_trial: Function = (data: object) => {
       window.cancelAnimationFrame(this.animation_frame_id);
-      display_element.innerHTML = "";
       this.minature_gamepad_wrapper.remove();
       this.jsPsych.finishTrial(data);
     };

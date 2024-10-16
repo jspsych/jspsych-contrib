@@ -338,8 +338,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
         ctx.fillRect(canvas_rect[0], canvas_rect[1], canvas_rect[2], canvas_rect[3]);
       }
 
-      // kill any remaining setTimeout handlers + kill keyboard listeners
-      this.jsPsych.pluginAPI.clearAllTimeouts();
+      // kill any remaining keyboard listeners
       this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
 
       // move on to the next trial

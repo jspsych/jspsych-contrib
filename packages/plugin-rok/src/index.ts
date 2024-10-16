@@ -1065,9 +1065,6 @@ class RokPlugin implements JsPsychPlugin<Info> {
         aperture_mode: aperture_mode,
       };
 
-      //Clear the body
-      display_element.innerHTML = "";
-
       //Restore the settings to JsPsych defaults
       body.style.margin = originalMargin;
       body.style.padding = originalPadding;

@@ -569,8 +569,7 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
                 callback_function: function (info) {
                   // trial_data.rt = info.rt;
                   // trial_data.keypress_ms = performance.now();
-                  // cancel end of trial timeout
-                  jsPsych.pluginAPI.clearAllTimeouts();
+
                   // compute clock theta at the time of response
                   trial_data.theta.keypress = clock.theta;
                   if (info.rt < trial.early_ms) {

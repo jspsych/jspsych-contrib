@@ -224,7 +224,7 @@ class SurveyNumberPlugin implements JsPsychPlugin<Info> {
         rt: response_time,
         response: question_data,
       };
-      display_element.innerHTML = "";
+
       // next trial
       this.jsPsych.finishTrial(trialdata);
     });

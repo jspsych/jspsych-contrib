@@ -281,8 +281,6 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       };
 
       function end_trial() {
-        jsPsych.pluginAPI.clearAllTimeouts();
-
         // save data
         var trialdata = {
           rt: response.rt,
@@ -290,8 +288,6 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
           response: response.response,
           clicks: clicks,
         };
-
-        display_element.innerHTML = "";
 
         // next trial
         jsPsych.finishTrial(trialdata);

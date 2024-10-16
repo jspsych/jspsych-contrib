@@ -559,7 +559,6 @@ class HtmlKeyboardSliderPlugin implements JsPsychPlugin<Info> {
       //clear and cancel things
       clearKeybuffer();
       this.jsPsych.pluginAPI.cancelKeyboardResponse(this.keyboardListener);
-      display_element.innerHTML = "";
 
       // if no response and trial_duration not set
       if (data.response === null && trial.trial_duration === null)

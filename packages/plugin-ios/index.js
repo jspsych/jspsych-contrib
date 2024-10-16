@@ -434,7 +434,7 @@ var jsPsychIos = (function (jspsych) {
           prompt: trial.prompt,
           response: response.response,
         };
-        display_element.innerHTML = "";
+
         // next trial
         jsPsych.finishTrial(trialdata);
       }

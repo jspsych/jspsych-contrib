@@ -63,8 +63,6 @@ class VslGridScenePlugin implements JsPsychPlugin<Info> {
     }, trial.trial_duration);
 
     const endTrial = () => {
-      display_element.innerHTML = "";
-
       var trial_data = {
         stimulus: trial.stimuli,
       };

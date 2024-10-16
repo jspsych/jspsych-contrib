@@ -926,9 +926,6 @@ var jsPsychCopyingTask = (function (jspsych) {
         var endTime = Math.round(performance.now());
         var response_time = endTime - startTime;
 
-        // kill any remaining setTimeout handlers
-        this.jsPsych.pluginAPI.clearAllTimeouts();
-
         // clearInterval(interval_ID)
 
         var trial_completed = checkIfDone();
@@ -945,9 +942,6 @@ var jsPsychCopyingTask = (function (jspsych) {
           trial_completed: trial_completed,
           canvas_offset_top_left: [canvas_rect.top, canvas_rect.left],
         };
-
-        // clear the display
-        display_element.innerHTML = "";
 
         // move on to the next trial
         this.jsPsych.finishTrial(trial_data);
