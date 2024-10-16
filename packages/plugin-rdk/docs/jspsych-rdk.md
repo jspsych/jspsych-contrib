@@ -1,6 +1,6 @@
 # jspsych-rdk plugin
 
-This plugin displays a Random Dot Kinematogram (RDK) and allows the subject to report the primary direction of motion by pressing a key on the keyboard. The stimulus can be displayed until a keyboard response is given or until a certain duration of time has passed. The RDK is fully customizable (see documentation below) and can display multiple apertures at the same time, each with its own parameters.
+This plugin displays a Random Dot Kinematogram (RDK) and allows the participant to report the primary direction of motion by pressing a key on the keyboard. The stimulus can be displayed until a keyboard response is given or until a certain duration of time has passed. The RDK is fully customizable (see documentation below) and can display multiple apertures at the same time, each with its own parameters.
 
 !!! citation
     We would appreciate it if you cited this paper when you use the RDK plugin
@@ -15,10 +15,10 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 
 | Parameter                | Type             | Default Value        | Descripton                               |
 | ------------------------ | ---------------- | -------------------- | ---------------------------------------- |
-| choices                  | array of strings | jsPsych.ALL_KEYS     | The valid keys that the subject can press as a response. Must be an array of strings. If left unspecified, any key is a valid key. |
-| correct_choice           | array of strings  | *undefined*          | Array containing the key(s) that are considered the correct response for that particular trial. This needs to be linked with the `coherent_direction` parameter (see Examples section below for an illustration). This is used to determine whether the subject chose the correct response. The boolean indicating whether or not the subject chose the correct response is returned in the `correct` key of the data object. |
-| trial_duration           | numeric          | 500                  | The amount of time that the stimulus is displayed on the screen in ms. If -1, the stimulus will be displayed until the subject keys in a valid response. (`choices` parameter must contain valid keys or else the stimuli will run indefinitely). |
-| response_ends_trial      | boolean          | true                 | If `true`, then the subject's response will end the trial. If `false`, the stimuli will be presented for the full `trial_duration` (the response will be recorded as long as the subject responds within the trial duration). |
+| choices                  | array of strings | jsPsych.ALL_KEYS     | The valid keys that the participant can press as a response. Must be an array of strings. If left unspecified, any key is a valid key. |
+| correct_choice           | array of strings  | *undefined*          | Array containing the key(s) that are considered the correct response for that particular trial. This needs to be linked with the `coherent_direction` parameter (see Examples section below for an illustration). This is used to determine whether the participant chose the correct response. The boolean indicating whether or not the participant chose the correct response is returned in the `correct` key of the data object. |
+| trial_duration           | numeric          | 500                  | The amount of time that the stimulus is displayed on the screen in ms. If -1, the stimulus will be displayed until the participant keys in a valid response. (`choices` parameter must contain valid keys or else the stimuli will run indefinitely). |
+| response_ends_trial      | boolean          | true                 | If `true`, then the participant's response will end the trial. If `false`, the stimuli will be presented for the full `trial_duration` (the response will be recorded as long as the participant responds within the trial duration). |
 | number_of_apertures      | numeric          | 1                    | The number of apertures or RDKs on the screen. If set to more than one, remember to set the location (i.e., aperture_center_x and aperture_center_y) parameters to separate them. <br>In addition, each aperture can be customized individually by passing in an array of values as the parameter (see example below). If a single value (not an array) is passed as the parameter, then all apertures will have the same parameter. |
 | number_of_dots           | numeric          | 300                  | Number of dots per set. Equivalent to number of dots per frame. |
 | number_of_sets           | numeric          | 1                    | Number of sets to cycle through. Each frame displays one set of dots. (E.g. If 2 sets of dots, frame 1 will display dots from set 1, frame 2 will display dots from set 2, frame 3 will display sets from set 1, etc.) |
@@ -67,10 +67,10 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 | Name             | Type        | Value                                    |
 | ---------------- | ----------- | ---------------------------------------- |
-| rt               | numeric     | The response time in ms for the subject to make a response. |
-| response         | string      | The key that the subject pressed.        |
-| correct          | boolean     | Whether or not the subject's key press matches any of the key(s) provided in correct_choice. |
-| frame_rate       | numeric     | The average frame rate for the trial. 0 denotes that the subject responded before the appearance of the second frame. |
+| rt               | numeric     | The response time in ms for the participant to make a response. Will be -1 if the trial has timed out without the participant pressing a valid key. |
+| response         | string      | The key that the participant pressed.        |
+| correct          | boolean     | Whether or not the participant's key press matches any of the key(s) provided in correct_choice. |
+| frame_rate       | numeric     | The average frame rate for the trial. 0 denotes that the participant responded before the appearance of the second frame. |
 | number_of_frames | numeric     | The number of frames that was shown in this trial. |
 | frame_rate_array | array       | The array that holds the number of miliseconds for each frame in this trial. This will be encoded as a JSON string when data is saved using the `.json()` or `.csv()` functions. |
 | canvas_width     | numeric     | The width of the canvas in pixels.       |
