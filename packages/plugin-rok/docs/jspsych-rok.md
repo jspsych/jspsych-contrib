@@ -1,6 +1,6 @@
 # jspsych-rok plugin
 
-This plugin displays oriented objects (oobs) that move and allows the subject to report the primary direction of motion or the primary orientation by pressing a key on the keyboard. 
+This plugin displays oriented objects (oobs) that move and allows the participant to report the primary direction of motion or the primary orientation by pressing a key on the keyboard. 
 The stimulus can be displayed until a keyboard response is given or until a certain duration of time has passed. Oobs are objects that have an orientation (e.g. triangles).
 
 We would appreciate it if you cited this paper when you use the plugin: 
@@ -15,7 +15,7 @@ The elements of the array then apply to the corresponding aperture. Features tha
 
 |Parameter|Type|Default Value| Descripton|Array|
 |---------|----|-------------|-----------|-----|
-choices|array|[]|The valid keys that the subject can press to indicate a response|must|
+choices|array|[]|The valid keys that the participant can press to indicate a response|must|
 correct_choice|string|undefined|The correct keys for that trial|can|
 number_of_apertures|INT|1|Number of apertures. If greater then one, other parameters of trial should be arrays|can|
 density_unit_area|INT|null|If this parameter is set, number_of_objects is interpreted as number_of_objects per density_unit_area (in pixels*pixels)"
@@ -42,19 +42,19 @@ coherence_movement_opposite|INT|0|The percentage of oriented objects moving in t
 coherence_orientation_opposite|INT|0|The percentage of objects that are oriented opposite of the coherent orientation|can|
 movement_speed|INT|10|The movement speed of the oobs in (percentage of aperature_width)/second|can|
 movement_speed_randomisation|INT|0|The percentage of randomisation in movement speed (0 meaning all orientated objects move with speed defined in movement_speed, 100 meaning movement speeds from 0 to 2x movement_speed)|can|
-random_movement_type|INT|0|ype of random movement (0 direction is random but fixed, 1 movement direction of incoherent oobs changes over time|can|
-random_orientation_type|INT|0|Type of random movement (0 - orientation is random but fixed, 1 - orientation of incoherent oobs changes over time|can|
+random_movement_type|INT|0|Type of random movement (0 direction is random but fixed, 1 movement direction of incoherent oobs changes over time)|can|
+random_orientation_type|INT|0|Type of random movement (0 - orientation is random but fixed, 1 - orientation of incoherent oobs changes over time)|can|
 background_color|STRING|gray|The background of the stimulus|can|
-background_image|IMAGE|null|Background image, can be|can|
+background_image|IMAGE|null|Background image, can be key-framed(animated) or randomised,|can|
 prompt|STRING|null|Prompt that is presented above the stimulus|can|
 fade_out|INT|0|Fade the oobs on the edges of the aperture|can|
 experiment_congruency_mode|INT|0|Sets experiment to congruency mode: experiment_main_task has to be  set (0 = movement or 1 = direction) if this is set to 1 or 2. The congruency of the task does only apply to coherent oobs of main task. If this is set to 1 the remaining oobs secondary feature (the non task feature) is set at random. If this is set to 2 the remaining oobs have the same direction and orientation|no|
 experiment_main_task|INT|0|Sets the main task when experiment is in congruency mode. The congruency of the other task then only applies to non random oobs of main task|can|
-units|STRING|null|Units in which size and speed of oobs is expressed (null - percentage of aperture width, px - pixels|no|
+units|STRING|null|Units in which size and speed of oobs is expressed (null - percentage of aperture width, px - pixels)|no|
 aperture_mode|STRING|overlay|When in overlay draws stimuli of different apertures on top of each other. When in intermixed oobs all show up in one aperture intermixed.
 
 ### Image Loading
-If image are key framed, the keyframes must be loaded as one picture in a frame sheet. Keyframes are next to each other. If the image should be mirrored a mirrored version of the image must be in the same sheet below the original keyframe.
+If image are key framed, the keyframes must be loaded as one picture in a frame sheet. Keyframes are next to each other. If the image should be mirrored, a mirrored version of the image must be in the same sheet below the original keyframe.
 
 
 ## Data Generated
@@ -63,10 +63,10 @@ In addition to the default data collected by all plugins, this plugin collects a
 
 |Name|Type|Value|
 |----|----|-----|
-|rt|numeric|The response time in ms for the subject to make a response.|
-|key_press|numeric|The key that the subject pressed. The value corresponds to the Javascript Char Code (Key Code).|
-|correct|boolean|Whether or not the subject's key press corresponded to those provided in correct_choice.|
-|frame_rate|numeric|The average frame rate for the trial. 0 denotes that the subject responded before the appearance of the second frame.|
+|rt|numeric|The response time in ms for the participant to make a response.|
+|key_press|numeric|The key that the participant pressed. The value corresponds to the Javascript Char Code (Key Code).|
+|correct|boolean|Whether or not the participant's key press corresponded to those provided in correct_choice.|
+|frame_rate|numeric|The average frame rate for the trial. 0 denotes that the participant responded before the appearance of the second frame.|
 |number_of_frames|numeric|The number of frames that was shown in this trial.|
 |frame_rate_array|JSON string|The array that holds the number of milliseconds for each frame in this trial.|
 |canvas_width|numeric|The width of the canvas in pixels.|

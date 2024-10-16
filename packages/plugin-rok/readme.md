@@ -2,7 +2,7 @@
 
 ## Overview
 
-This plugin displays oriented objects (oobs) that move and allows the subject to report the primary direction of motion or the primary orientation by pressing a key on the keyboard.  The stimulus can be displayed until a keyboard response is given or until a certain duration of time has passed. Oobs are objects that have an orientation (e.g. triangles).
+This plugin displays oriented objects (oobs) that move and allows the participant to report the primary direction of motion or the primary orientation by pressing a key on the keyboard.  The stimulus can be displayed until a keyboard response is given or until a certain duration of time has passed. Oobs are objects that have an orientation (e.g. triangles).
 
 
 ## Loading
