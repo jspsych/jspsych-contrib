@@ -2,6 +2,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 const info = <const>{
   name: "video-several-keyboard-responses",
+  version: "3.0.0",
   parameters: {
     /** Array of the video file(s) to play. Video can be provided in multiple file formats for better cross-browser support. */
     stimulus: {
@@ -93,6 +94,28 @@ const info = <const>{
       type: ParameterType.BOOL,
       pretty_name: "Multiple responses allowed",
       default: true,
+    },
+  },
+  data: {
+    /** An array of the response time in milliseconds for each key press from the participant.
+     * The time is measured from when the stimulus first began playing until the participant's response. */
+    rt: {
+      type: ParameterType.INT,
+      array: true,
+    },
+    /** The stimulus displayed to the participant. */
+    stimulus: {
+      type: ParameterType.STRING,
+    },
+    /** An array of the keys that the subject pressed in order. */
+    response: {
+      type: ParameterType.STRING,
+      array: true,
+    },
+    /** An array of the times in seconds that the keys were pressed relative to the start of the video. */
+    video_time: {
+      type: ParameterType.FLOAT,
+      array: true,
     },
   },
 };
@@ -257,9 +280,6 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-
       // kill keyboard listeners
       this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
 
@@ -279,9 +299,6 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
         response: response.key,
         video_time: response.video_time,
       };
-
-      // clear the display
-      display_element.innerHTML = "";
 
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
