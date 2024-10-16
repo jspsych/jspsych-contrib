@@ -40,7 +40,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | min_tick_start           | int              | `Math.PI*2/120`        | Where to draw the first minor tick, in radians. |
 | num                      | int              | `[60, 55, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5]` | The numbers to draw around the clock face. |
 | num_start                | int              | `Math.PI/2`            | Where to draw the first number, in radians. |
-| num_font                 | string           | `"5mm Arial"`          | The font for the numbers. |
+| num_font                 | string           | `"5mm Arial"`          | The font for the numbers, in the standard of a [CSS font](https://developer.mozilla.org/en-US/docs/Web/CSS/font). |
 | num_dist                 | int              | 30                   | Distance of the numbers from the outer circle of the clock, in pixels. |
 | hand_len                 | int              | 80                   | Length of the clock hand in pixels. |
 
