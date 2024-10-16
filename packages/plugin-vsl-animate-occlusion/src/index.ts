@@ -3,6 +3,7 @@ import Snap from "snapsvg";
 
 const info = <const>{
   name: "vsl-animate-occlusion",
+  version: "2.0.0",
   parameters: {
     /** Array containing path(s) to image file(s). */
     stimuli: {
@@ -55,6 +56,21 @@ const info = <const>{
       type: ParameterType.INT,
       pretty_name: "Pre movement duration",
       default: 500,
+    },
+  },
+  data: {
+    /** Array containing all response information. Each element in the array is an object representing
+     *  each valid response. Each response item has three properties: `key` the key that was pressed,
+     * `stimulus` the index of the stimulus that was displayed when the response was made, and `rt`
+     * the response time measured since the start of the sequence. This will be encoded as a JSON string
+     *  when data is saved using the `.json()` or `.csv()` functions. */
+    response: {
+      type: ParameterType.COMPLEX,
+    },
+    /** Array where each element is a stimulus from the sequence, in the order that they were shown.
+     * This will be encoded as a JSON string when data is saved using the `.json()` or `.csv()` functions. */
+    stimulus: {
+      type: ParameterType.COMPLEX,
     },
   },
 };
@@ -204,8 +220,6 @@ class VslAnimateOcclusionPlugin implements JsPsychPlugin<Info> {
     }
 
     const endTrial = () => {
-      display_element.innerHTML = "";
-
       this.jsPsych.pluginAPI.cancelKeyboardResponse(key_listener);
 
       var trial_data = {

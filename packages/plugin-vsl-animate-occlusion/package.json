@@ -37,15 +37,15 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-vsl-animate-occlusion",
   "peerDependencies": {
-    "jspsych": ">=7.0.0"
+    "jspsych": ">=8.0.0"
   },
   "dependencies": {
     "snapsvg": "^0.5.1"
   },
   "devDependencies": {
-    "@jspsych/config": "^2.0.0",
+    "@jspsych/config": "^3.0.0",
     "@jspsych/test-utils": "^1.0.0",
     "@types/snapsvg": "^0.5.1",
-    "jspsych": "^7.0.0"
+    "jspsych": "^8.0.0"
   }
 }

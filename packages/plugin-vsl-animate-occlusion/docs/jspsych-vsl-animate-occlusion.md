@@ -4,6 +4,13 @@ The VSL (visual statistical learning) animate occlusion plugin displays an anima
 
 Fiser, J., & Aslin, R. N. (2002). Statistical learning of higher-order temporal structure from visual shape sequences. *Journal of Experimental Psychology: Learning, Memory, and Cognition, 28*(3), 458.
 
+## Dependencies
+
+This plugin has a dependency on [Snap.svg](http://snapsvg.io/). In order to run it, you must include the corresponding script in the header as such:
+```javascript
+<script src="https://unpkg.com/snapsvg@0.5.1/dist/snap.svg-min.js"></script>
+```
+
 ## Parameters
 
 In addition to the [parameters available in all plugins](https://www.jspsych.org//overview/plugins#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of *undefined* must be specified. Other parameters can be left unspecified if the default value is acceptable.
