@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script src="https://unpkg.com/jspsych@7.0.0"></script>
+		<script src="https://unpkg.com/jspsych@8.0.0"></script>
 		<script src="../dist/index.browser.js"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-preload@1.0.0"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.0.0"></script>
-		<link rel="stylesheet" href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css">
+		<script src="https://unpkg.com/@jspsych/plugin-preload@2.0.0"></script>
+		<script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.0.0"></script>
+		<link rel="stylesheet" href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css">
 	</head>
 	<body></body>
 	<script>
 
 		var jsPsych = initJsPsych({
-      on_finish: function() {
-        jsPsych.data.displayData();
-      }
-    });
+			on_finish: function() {
+				jsPsych.data.displayData();
+			}
+		});
 
 		// Create arrays of hot dog / not hot dog images
 		const soundFiles = [

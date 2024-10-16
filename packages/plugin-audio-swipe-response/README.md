@@ -8,7 +8,7 @@ If the browser supports it, audio files are played using the WebAudio API. This 
 
 Audio files can be automatically preloaded by jsPsych using the preload plugin. However, if you are using timeline variables or another dynamic method to specify the audio stimulus, then you will need to manually preload the audio.
 
-The trial can end when the subject responds, when the audio file has finished playing, or if the subject has failed to respond within a fixed length of time. You can also prevent a response from being recorded before the audio has finished playing.
+The trial can end when the participant responds, when the audio file has finished playing, or if the participant has failed to respond within a fixed length of time. You can also prevent a response from being recorded before the audio has finished playing.
 
 ## Loading
 
