@@ -301,7 +301,7 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
         }
         // Only end the trial when the response length matches the sequence length
         if (trial_data.response.length == trial.sequence.length) {
-          trial_data.correct = correct;
+          trial_data.correct = JSON.stringify(trial_data.response) === JSON.stringify(trial.sequence);
           setTimeout(end_trial, trial.response_animation_duration); // allows animation to finish
         }
       };
