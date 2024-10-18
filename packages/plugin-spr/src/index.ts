@@ -2,43 +2,47 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 import { version } from "../package.json";
 
-// TODO: need to restructure to use the CSS styling proposed by Titus
 const info = <const>{
   name: "spr",
   version: version,
   parameters: {
-    /** Provide a clear description of the parameter_name that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
+    /* String input of the displayed text which will be split to create a structured_reading_string. */
     unstructured_reading_string: {
       type: ParameterType.STRING,
       default: "",
     },
+    /* String input that explictly defines how the chunks and lines will be displayed during the SPR trial.*/
     structured_reading_string: {
       type: ParameterType.STRING,
       array: true,
       default: [],
     },
+    /* Mode between 1-3 that indicate the different built-in modes for how stimulus will be displayed. */
     mode: {
       type: ParameterType.INT,
       default: 1,
     },
-    // splitting parameters
+    /* Indicates how many words will be included with each chunk when splitting the unstructured_reading_string. */
     chunk_size: {
       type: ParameterType.INT,
       default: 1,
     },
+    /* Indicates how many chunks will be included with each chunk when splitting the unstructured_reading_string. */
     line_size: {
       type: ParameterType.INT,
       default: 1,
     },
   },
   data: {
-    /** Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
-    data1: {
-      type: ParameterType.INT,
-    },
-    /** Provide a clear description of the data2 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
-    data2: {
+    /* The representation of the structured_reading_string that was used. Combined with the mode this 
+    tells what exactly was displayed on the screen during each click. */
+    stimulus: {
       type: ParameterType.STRING,
+      Array: true,
+    },
+    /** Indicates the mode that the SPR experiment was ran using. */
+    mode: {
+      type: ParameterType.INT,
     },
   },
 };
