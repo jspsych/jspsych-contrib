@@ -9,7 +9,7 @@ const info = <const>{
   parameters: {
     /** Provide a clear description of the parameter_name that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
     unstructured_reading_string: {
-      type: ParameterType.STRING, // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
+      type: ParameterType.STRING,
       default: "",
     },
     structured_reading_string: {
