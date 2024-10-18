@@ -197,12 +197,19 @@ class SprPlugin implements JsPsychPlugin<Info> {
         this.current_display_string = new_display_string;
       } else {
         if (this.mode === 1 && this.inner_index > 0) {
-          // sets previous to blank if exists -> might want to do same with other one except just change css classifier
           this.current_display_string[this.inner_index - 1] =
             "<span class='text-after-current-region'>" +
             this.generateBlank(this.structured_reading_string[this.index][this.inner_index - 1]) +
             "</span>";
+        } else if (this.mode === 2 && this.inner_index > 0) {
+          console.log("enters modifier", this.current_display_string);
+          // changes classifier
+          this.current_display_string[this.inner_index - 1] =
+            "<span class='text-after-current-region'>" +
+            this.structured_reading_string[this.index][this.inner_index - 1] +
+            "</span>";
         }
+
         // shows next display
         this.current_display_string[this.inner_index] =
           "<span class='text-current-region'>" +
@@ -249,7 +256,6 @@ class SprPlugin implements JsPsychPlugin<Info> {
   }
 
   private generateBlank(text: string | string[]): string {
-    // todo: make sure to split on individual words
     const length = text.length;
     var res = "";
 
