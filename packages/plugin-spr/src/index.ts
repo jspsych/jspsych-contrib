@@ -98,7 +98,11 @@ class SprPlugin implements JsPsychPlugin<Info> {
     if (trial.structured_reading_string.length > 0)
       this.structured_reading_string = trial.structured_reading_string;
     else
-      this.structured_reading_string = this.createReadingString(trial.unstructured_reading_string);
+      this.structured_reading_string = this.createReadingString(
+        trial.unstructured_reading_string,
+        trial.chunk_size,
+        trial.line_size
+      );
 
     this.jsPsych.pluginAPI.getKeyboardResponse({
       callback_function: (info) => this.onSpacebarPress(info),
@@ -110,11 +114,36 @@ class SprPlugin implements JsPsychPlugin<Info> {
   }
 
   // TODO: create a method that takes an entire string and uses a list of parameters to generate a "structured reading string"
-  private createReadingString(unstructured_reading_string: string): string[] {
-    // pass in parameters to split it
-    //  -> depends on the spaces and the typing
+  private createReadingString(
+    unstructured_reading_string: string,
+    chunk_size: number,
+    line_size: number
+  ): string[] {
+    const split_text = unstructured_reading_string.split(" ");
+    const res = [];
 
-    return [unstructured_reading_string];
+    var current_chunk = [];
+    var current_line = [];
+
+    for (var i = 0; i < split_text.length; i++) {
+      const word = split_text[i];
+      current_chunk.push(word);
+
+      if (current_chunk.length >= chunk_size) {
+        current_line.push(current_chunk.join(" "));
+        current_chunk = [];
+
+        if (current_line.length >= line_size) {
+          res.push(current_line);
+          current_line = [];
+        }
+      }
+    }
+
+    if (current_chunk.length > 0) current_line.push(current_chunk);
+    if (current_line.length > 0) res.push(current_line);
+
+    return res;
   }
 
   private onSpacebarPress(info?: any) {
