@@ -75,14 +75,6 @@ class SprPlugin implements JsPsychPlugin<Info> {
         this.structured_reading_string[this.index]
       );
     else document.querySelector("p")!.innerHTML = this.updateDisplayString();
-
-    this.jsPsych.pluginAPI.getKeyboardResponse({
-      callback_function: (info) => this.onSpacebarPress(info),
-      valid_responses: [" "],
-      rt_method: "performance",
-      persist: true,
-      allow_held_key: false,
-    });
   }
 
   private endTrial() {
@@ -107,6 +99,14 @@ class SprPlugin implements JsPsychPlugin<Info> {
       this.structured_reading_string = trial.structured_reading_string;
     else
       this.structured_reading_string = this.createReadingString(trial.unstructured_reading_string);
+
+    this.jsPsych.pluginAPI.getKeyboardResponse({
+      callback_function: (info) => this.onSpacebarPress(info),
+      valid_responses: [" "],
+      rt_method: "performance",
+      persist: true,
+      allow_held_key: false,
+    });
   }
 
   // TODO: create a method that takes an entire string and uses a list of parameters to generate a "structured reading string"
@@ -222,20 +222,27 @@ class SprPlugin implements JsPsychPlugin<Info> {
   private generateBlank(text: string | string[]): string {
     // todo: make sure to split on individual words
     const length = text.length;
+    var res = "";
 
+    // type of string (in context of plugin: chunk)
     if (typeof text === "string") {
-      console.log(text.split(" "));
+      const split = text.split(" "); // checks for spaces to break up underscores
 
-      return "_".repeat(length);
-    } else {
-      // type of array
-      var res = "";
-      for (var i = 0; i < length; i++) {
-        const word_length = text[i].length;
-        res += "_".repeat(word_length) + " ";
-      }
-      return res;
+      if (split.length > 1) {
+        for (var i = 0; i < split.length; i++) {
+          res += "_".repeat(split[i].length) + " ";
+        }
+      } else res = "_".repeat(length);
     }
+    // type of array (in context of plugin: line)
+    else {
+      // var res = "";
+      for (var i = 0; i < length; i++) {
+        res += this.generateBlank(text[i]) + " ";
+      }
+    }
+
+    return res;
   }
 }
 
