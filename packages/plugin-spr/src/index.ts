@@ -8,7 +8,7 @@ const info = <const>{
   version: version,
   parameters: {
     /** Provide a clear description of the parameter_name that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
-    reading_string: {
+    unstructured_reading_string: {
       type: ParameterType.STRING, // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
       default: "",
     },
@@ -18,6 +18,15 @@ const info = <const>{
       default: [],
     },
     mode: {
+      type: ParameterType.INT,
+      default: 1,
+    },
+    // splitting parameters
+    chunk_size: {
+      type: ParameterType.INT,
+      default: 1,
+    },
+    line_size: {
       type: ParameterType.INT,
       default: 1,
     },
@@ -57,10 +66,15 @@ class SprPlugin implements JsPsychPlugin<Info> {
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     this.initializeVariables(trial);
-    this.updateDisplayString();
     // setup html logic
-    var html = `<p>${this.generateBlank(this.structured_reading_string[this.index])}</p>`;
+    var html = `<p></p>`;
     display_element.innerHTML = html;
+
+    if (this.mode === 3)
+      document.querySelector("p")!.innerHTML = this.generateBlank(
+        this.structured_reading_string[this.index]
+      );
+    else document.querySelector("p")!.innerHTML = this.updateDisplayString();
 
     this.jsPsych.pluginAPI.getKeyboardResponse({
       callback_function: (info) => this.onSpacebarPress(info),
@@ -87,19 +101,20 @@ class SprPlugin implements JsPsychPlugin<Info> {
     if (trial.mode === 1 || trial.mode === 2 || trial.mode === 3) this.mode = trial.mode;
     else throw console.error("Mode declared incorrectly, must be between 1 and 3.");
 
-    console.log(trial.structured_reading_string, trial.structured_reading_string.length);
+    console.log(trial.unstructured_reading_string, trial.unstructured_reading_string.length);
     // creates inital reading string -> TODO: should instead use mode to determine
     if (trial.structured_reading_string.length > 0)
       this.structured_reading_string = trial.structured_reading_string;
-    else this.structured_reading_string = this.createReadingString(trial.reading_string);
+    else
+      this.structured_reading_string = this.createReadingString(trial.unstructured_reading_string);
   }
 
   // TODO: create a method that takes an entire string and uses a list of parameters to generate a "structured reading string"
-  private createReadingString(reading_string: string): string[] {
+  private createReadingString(unstructured_reading_string: string): string[] {
     // pass in parameters to split it
     //  -> depends on the spaces and the typing
 
-    return [reading_string];
+    return [unstructured_reading_string];
   }
 
   private onSpacebarPress(info?: any) {
@@ -123,31 +138,8 @@ class SprPlugin implements JsPsychPlugin<Info> {
 
       newHtml = `<p>${this.updateDisplayString()}</p>`;
     } else if (this.mode === 3) {
-      if (!this.displayed) {
-        if (typeof this.structured_reading_string[this.index] === "string")
-          newHtml = this.structured_reading_string[this.index] as string;
-        else {
-          for (const c of this.structured_reading_string[this.index]) {
-            // accounts for weird formatting cases (not necessary)
-            newHtml += c + " ";
-          }
-        }
-
-        newHtml = "<p class='text-current-region'>" + newHtml + "</p>";
-        this.displayed = true;
-      } else {
-        this.index++;
-        this.displayed = false;
-
-        if (this.index >= this.structured_reading_string.length) {
-          this.endTrial();
-        } else {
-          newHtml =
-            "<p class='text-before-current-region'>" +
-            this.generateBlank(this.structured_reading_string[this.index]) +
-            "</p>";
-        }
-      }
+      // might want to include incrementation here for consistency
+      newHtml = this.updateDisplayString();
     }
     // need to handle a keyboard press element where records how long until press a key
 
@@ -167,7 +159,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
 
         for (var i = 0; i < curr_segment.length; i++) {
           new_display_string.push(
-            "<span class='text-after-current-region'>" +
+            "<span class='text-before-current-region'>" +
               this.generateBlank(curr_segment[i]) +
               "</span>"
           );
@@ -176,9 +168,9 @@ class SprPlugin implements JsPsychPlugin<Info> {
         this.current_display_string = new_display_string;
       } else {
         if (this.mode === 1 && this.inner_index > 0) {
-          // sets previous to blank if exists
+          // sets previous to blank if exists -> might want to do same with other one except just change css classifier
           this.current_display_string[this.inner_index - 1] =
-            "<span class='text-before-current-region'>" +
+            "<span class='text-after-current-region'>" +
             this.generateBlank(this.structured_reading_string[this.index][this.inner_index - 1]) +
             "</span>";
         }
@@ -188,6 +180,35 @@ class SprPlugin implements JsPsychPlugin<Info> {
           this.structured_reading_string[this.index][this.inner_index] +
           "</span>";
       }
+    } else if (this.mode == 3) {
+      var newHtml = "";
+
+      if (!this.displayed) {
+        // accounts for bad user input (not necessary) and could move it up to input
+        if (typeof this.structured_reading_string[this.index] === "string")
+          newHtml = this.structured_reading_string[this.index] as string;
+        else {
+          for (const c of this.structured_reading_string[this.index]) {
+            newHtml += c + " ";
+          }
+        }
+
+        newHtml = "<p class='text-current-region'>" + newHtml + "</p>";
+        this.displayed = true;
+      } else {
+        this.index++;
+        this.displayed = false;
+
+        if (this.index >= this.structured_reading_string.length) {
+          this.endTrial();
+        } else {
+          newHtml =
+            "<p class='text-before-current-region'>" +
+            this.generateBlank(this.structured_reading_string[this.index]) +
+            "</p>";
+        }
+      }
+      return newHtml;
     }
 
     var displayString = "";
@@ -199,9 +220,12 @@ class SprPlugin implements JsPsychPlugin<Info> {
   }
 
   private generateBlank(text: string | string[]): string {
+    // todo: make sure to split on individual words
     const length = text.length;
 
     if (typeof text === "string") {
+      console.log(text.split(" "));
+
       return "_".repeat(length);
     } else {
       // type of array
