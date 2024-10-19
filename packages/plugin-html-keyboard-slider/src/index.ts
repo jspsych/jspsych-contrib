@@ -14,7 +14,7 @@ const info = <const>{
      * Slider minimum - Note Ints here can also be floats without issue
      */
     min: {
-      type: ParameterType.INT, // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
+      type: ParameterType.INT,
       default: 0,
     },
     /**

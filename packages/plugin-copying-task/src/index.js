@@ -164,19 +164,23 @@ var jsPsychCopyingTask = (function (jspsych) {
       },
       /** The contents of the grids as the trial ends. */
       grid_contents: {
-        type: jspsych.ParameterType.COMPLEX, //TODO: specify structure of model/workspace/resource grid contents
+        type: jspsych.ParameterType.COMPLEX,
         nested: {
+          // all are arrays of arrays of strings
           /** The contents of the model grid the participant was to copy. */
           model: {
             type: jspsych.ParameterType.COMPLEX,
+            array: true,
           },
           /** The contents of the workspace grid the participant was to copy the model grid to. */
           workspace: {
             type: jspsych.ParameterType.COMPLEX,
+            array: true,
           },
           /** The contents of the resource grid where participants were given images to drag to the workspace. */
           resource: {
             type: jspsych.ParameterType.COMPLEX,
+            array: true,
           },
         },
       },
@@ -184,7 +188,7 @@ var jsPsychCopyingTask = (function (jspsych) {
       trial_events: {
         type: jspsych.ParameterType.COMPLEX,
         array: true,
-        parameters: {
+        nested: {
           /** The type of event the interaction was, split into if the participant successfully or unsuccessfully
            * interacted with the resource grid image, along with if the item was placed correctly or not. */
           event: {
@@ -201,7 +205,17 @@ var jsPsychCopyingTask = (function (jspsych) {
           },
           /** The location on the resource grid that the participant interacted with. */
           grid_coords: {
-            type: jspsych.ParameterType.COMPLEX, //TODO: add "row" and "column" demarkations
+            type: jspsych.ParameterType.COMPLEX,
+            nested: {
+              /** The row of the resource grid the participant interacted with. */
+              row: {
+                type: jspsych.ParameterType.INT,
+              },
+              /** The column of the resource grid the participant interacted with. */
+              column: {
+                type: jspsych.ParameterType.INT,
+              },
+            },
           },
           /** The timestamp of when the interaction occured, in milliseconds measured from when the stimulus appeared. */
           timestamp: {

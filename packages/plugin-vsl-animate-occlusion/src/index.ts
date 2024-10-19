@@ -66,11 +66,27 @@ const info = <const>{
      *  when data is saved using the `.json()` or `.csv()` functions. */
     response: {
       type: ParameterType.COMPLEX,
+      array: true,
+      nested: {
+        /** The key that was pressed. */
+        key: {
+          type: ParameterType.STRING,
+        },
+        /** The index of the stimulus that was displayed when the response was made. */
+        stimulus: {
+          type: ParameterType.INT,
+        },
+        /** The response time measured since the start of the sequence. */
+        rt: {
+          type: ParameterType.INT,
+        },
+      },
     },
     /** Array where each element is a stimulus from the sequence, in the order that they were shown.
      * This will be encoded as a JSON string when data is saved using the `.json()` or `.csv()` functions. */
-    stimulus: {
-      type: ParameterType.COMPLEX,
+    stimuli: {
+      type: ParameterType.STRING,
+      array: true,
     },
   },
 };

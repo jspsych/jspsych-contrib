@@ -143,25 +143,38 @@ const info = <const>{
     },
   },
   data: {
+    /** The sequence of block indicies that were displayed. */
     sequence: {
       type: ParameterType.INT,
       array: true,
     },
+    /** The sequence of blocks that were selected by the participant. */
     response: {
       type: ParameterType.INT,
       array: true,
     },
+    /** The time, in milliseconds, that the participant took to respond to each block.
+     * These times are cumulative, measured from the onset of the display. */
     rt: {
       type: ParameterType.INT,
       array: true,
     },
+    /** The x and y coordinates of each block that was displayed. */
     blocks: {
       type: ParameterType.COMPLEX,
       array: true,
+      nested: {
+        x: {
+          type: ParameterType.INT,
+        },
+        y: {
+          type: ParameterType.INT,
+        },
+      },
     },
+    /** Whether the participant's response was correct. */
     correct: {
       type: ParameterType.BOOL,
-      default: null,
     },
   },
 };

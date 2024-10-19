@@ -89,6 +89,7 @@ const info = <const>{
     /** The gamepad inputs recorded during the trial. */
     input: {
       type: ParameterType.COMPLEX,
+      array: true,
     },
   },
 };

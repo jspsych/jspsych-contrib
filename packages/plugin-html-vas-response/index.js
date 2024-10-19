@@ -136,12 +136,22 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         type: jspsych.ParameterType.STRING,
       },
       /**
-       * A record of the participant's clicks on the scale. Each element in the array is an object with properties `time`
-       * (the time of the click, in milliseconds since the trial began) and `location`
-       * (the location of the click on the VAS, from 0 to 1).
+       * A record of the participant's clicks on the scale. Each element in the array is an object
+       * with properties `time` and `location`.
        */
       clicks: {
         type: jspsych.ParameterType.COMPLEX,
+        array: true,
+        nested: {
+          /** The time of the click, in milliseconds since the trial began. */
+          time: {
+            type: jspsych.ParameterType.INT,
+          },
+          /** The location of the click on the VAS, from 0 to 1. */
+          location: {
+            type: jspsych.ParameterType.FLOAT,
+          },
+        },
       },
     },
   };
