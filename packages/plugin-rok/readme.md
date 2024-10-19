@@ -25,7 +25,7 @@ import jsPsychRok from '@jspsych-contrib/plugin-rok';
 
 ## Compatibility
 
-jsPsych v7.0.
+jsPsych v8.0. For compatibility with jsPsych v7.0, use version 1.1.1 of this plugin.
 
 ## Documentation
 

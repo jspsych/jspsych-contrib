@@ -6,6 +6,7 @@ const info = <const>{
   name: "survey-slider",
   version: "2.0.0",
   parameters: {
+    /** Questions that will be displayed to the participant. */
     questions: {
       type: ParameterType.COMPLEX,
       array: true,

@@ -22,13 +22,13 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | image_size            | array            | `[100, 100]`       | Array specifying the width and height of the images to show. The occluding rectangle will have a width equal to the width of image_size. |
 | initial_direction     | string           | "left"             | Which direction the stimulus should move first (subsequent directions will alternate). Choices are "left" or "right". |
 | occlude_center        | boolean          | true               | If true, display a rectangle in the center of the screen that is just wide enough to occlude the image completely as it passes behind. |
-| choices               | array of strings | `jsPsych.ALL_KEYS` | This array contains the key(s) that the subject is allowed to press in order to respond to the stimulus. Keys should be specified as characters (e.g., `'a'`, `'q'`, `' '`, `'Enter'`, `'ArrowDown'`) - see [this page](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values) and [this page (event.key column)](https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/) for more examples. Any key presses that are not listed in the array will be ignored. The default value of `jsPsych.ALL_KEYS` means that all keys will be accepted as valid responses. Specifying `jsPsych.NO_KEYS` will mean that no responses are allowed. |
+| choices               | array of strings | `jsPsych.ALL_KEYS` | This array contains the key(s) that the participant is allowed to press in order to respond to the stimulus. Keys should be specified as characters (e.g., `'a'`, `'q'`, `' '`, `'Enter'`, `'ArrowDown'`) - see [this page](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values) and [this page (event.key column)](https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/) for more examples. Any key presses that are not listed in the array will be ignored. The default value of `jsPsych.ALL_KEYS` means that all keys will be accepted as valid responses. Specifying `jsPsych.NO_KEYS` will mean that no responses are allowed. |
 | cycle_duration        | numeric          | 1000               | How long it takes for a stimulus in the sequence to make a complete cycle (move to the edge and back to the center) in milliseconds. |
 | pre_movement_duration | numeric          | 500                | How long to wait before the stimuli starts moving from behind the center rectangle. |
 
 ## Data Generated
 
-In addition to the [default data collected by all plugins](https://www.jspsych.org/overview/plugins#data-collected-by-all-plugins), this plugin collects the following data for each trial.
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects the following data for each trial.
 
 | Name      | Type        | Value                                    |
 | --------- | ----------- | ---------------------------------------- |

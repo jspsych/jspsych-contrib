@@ -10,15 +10,14 @@ We would appreciate it if you cited this paper when you use the plugin:
 
 ## Parameters
 
-Parameters can be left unspecified if the default value is acceptable. If more then one aperture is displayed most of the parameters should be specified as array (specified by the array column).
-The elements of the array then apply to the corresponding aperture. Features that are not fully implemented yet are marked with an x
+Parameters can be left unspecified if the default value is acceptable. If more then one aperture is displayed most of the parameters should be specified as array (specified by the array column). The elements of the array then apply to the corresponding aperture. In addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins), the parameters for this plugin are as follows:
 
 |Parameter|Type|Default Value| Descripton|Array|
 |---------|----|-------------|-----------|-----|
 choices|array|[]|The valid keys that the participant can press to indicate a response|must|
 correct_choice|string|undefined|The correct keys for that trial|can|
 number_of_apertures|INT|1|Number of apertures. If greater then one, other parameters of trial should be arrays|can|
-density_unit_area|INT|null|If this parameter is set, number_of_objects is interpreted as number_of_objects per density_unit_area (in pixels*pixels)"
+density_unit_area|INT|null|If this parameter is set, number_of_objects is interpreted as number_of_objects per density_unit_area (in pixels*pixels)"|no|
 aperture_width|INT|600|The width of the aperture in pixels|can|
 aperture_height|INT|400|he height of the aperture in pixels|can|
 aperture_position_left|INT|50|Position of midpoint of aperture in x direction in percentage of window width (50 being middle)|can|
@@ -59,7 +58,7 @@ If image are key framed, the keyframes must be loaded as one picture in a frame 
 
 ## Data Generated
 
-In addition to the default data collected by all plugins, this plugin collects all parameter data described above and the following data for each trial.
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects all parameter data described above and the following data for each trial.
 
 |Name|Type|Value|
 |----|----|-----|

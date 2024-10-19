@@ -6,7 +6,7 @@ The plugin enables sending data collected by the experiment to DataPipe, which i
 
 ## Parameters
 
-In addition to the [parameters available in all plugins](https://www.jspsych.org/overview/plugins#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of *undefined* must be specified. Parameters can be left unspecified if the default value is acceptable.
+In addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of *undefined* must be specified. Parameters can be left unspecified if the default value is acceptable.
 
 | Parameter | Type | Default Value | Description |
 | ----------|------|---------------|------------ |
@@ -19,7 +19,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 
 ## Data Generated
 
-In addition to the [default data collected by all plugins](../overview/plugins.md#data-collected-by-all-plugins), this plugin collects the following data for each trial.
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects the following data for each trial.
 
 | Name      | Type    | Value                                    |
 | --------- | ------- | ---------------------------------------- |
@@ -64,14 +64,14 @@ jsPsychPipe.getCondition(experiment_id).then(condition => {
 // This ID is provided by pipe.jspsych.org.
 const expID = "ABCDEF123456";
 
-// Generate a random subject ID.
-const subjectID = jsPsych.randomization.randomID(10);
+// Generate a random participant ID.
+const participantID = jsPsych.randomization.randomID(10);
 
 const save_data = {
   type: jsPsychPipe,
   action: "save",
   experiment_id: expID,
-  filename: `${subjectID}.csv`,
+  filename: `${participantID}.csv`,
   data_string: ()=>jsPsych.data.get().csv()
 };
 ```
@@ -82,8 +82,8 @@ const save_data = {
 // This ID is provided by pipe.jspsych.org.
 const expID = "ABCDEF123456";
 
-// Generate a random subject ID.
-const subjectID = jsPsych.randomization.randomID(10);
+// Generate a random participant ID.
+const participantID = jsPsych.randomization.randomID(10);
 
 var trial = {
   type: jsPsychHtmlAudioResponse,
@@ -93,7 +93,7 @@ var trial = {
   recording_duration: 15000,
   allow_playback: true,
   on_finish: function(data){
-    const filename = `${subjectID}_${jsPsych.getProgress().current_trial_global}_audio.webm`;
+    const filename = `${participantID}_${jsPsych.getProgress().current_trial_global}_audio.webm`;
     jsPsychPipe.saveBase64Data(expID,  filename, data.response);
     // optionally, delete the base64 data to save space. store the filename instead.
     data.response = filename;
@@ -101,7 +101,7 @@ var trial = {
 };
 ```
 
-### Get the condition assignment for a subject.
+### Get the condition assignment for a participant.
 
 ```javascript
 // This ID is provided by pipe.jspsych.org.

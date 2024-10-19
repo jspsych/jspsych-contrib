@@ -14,8 +14,8 @@
 
     var jsPsych = initJsPsych({});
 
-    const subject_id = jsPsych.randomization.randomID(10);
-    jsPsych.data.addProperties({subject_id: subject_id});
+    const participant_id = jsPsych.randomization.randomID(10);
+    jsPsych.data.addProperties({participant_id: participant_id});
 
     const flanker_timeline = {
       timeline: [{
@@ -42,7 +42,7 @@
       type: jsPsychPipe,
       action: "save",
       experiment_id: expID,
-      filename: `${subject_id}.csv`,
+      filename: `${participant_id}.csv`,
       data_string: ()=>jsPsych.data.get().csv()
     };
 

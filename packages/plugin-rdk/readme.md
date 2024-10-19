@@ -24,8 +24,7 @@ import jsPsychRdk from '@jspsych-contrib/plugin-rdk';
 
 ## Compatibility
 
-jsPsych v7.0.
-
+jsPsych v8.0. For compatibility with jsPsych v7.0, use version 1.1.0 of this plugin.
 ## Documentation
 
 See [documentation](docs/jspsych-rdk.md)

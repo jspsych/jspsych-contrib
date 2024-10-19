@@ -13,7 +13,7 @@ const info = <const>{
       default: undefined,
     },
     /**
-     * Array containing the key(s) the subject is allowed to press to respond to the stimulus.
+     * Array containing the key(s) the participant is allowed to press to respond to the stimulus.
      */
     choices: {
       type: ParameterType.KEYS,
@@ -45,7 +45,7 @@ const info = <const>{
       default: null,
     },
     /**
-     * If true, trial will end when subject makes a response.
+     * If true, trial will end when participant makes a response.
      */
     response_ends_trial: {
       type: ParameterType.BOOL,
@@ -177,7 +177,7 @@ class HtmlKeyboardResponseRafPlugin implements JsPsychPlugin<Info> {
       this.jsPsych.finishTrial(trial_data);
     };
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     const after_response = (info) => {
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded

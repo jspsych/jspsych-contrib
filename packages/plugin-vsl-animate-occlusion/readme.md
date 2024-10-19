@@ -27,7 +27,7 @@ import jsPsychVslAnimateOcclusion from '@jspsych-contrib/plugin-vsl-animate-occl
 
 ## Compatibility
 
-jsPsych v7.0.
+jsPsych v8.0. For compatibility with jsPsych v7.0, use version 1.0.0 of this plugin.
 
 ## Documentation
 

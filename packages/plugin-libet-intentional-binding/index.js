@@ -10,7 +10,7 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
         pretty_name: "Condition",
         default: "baseline-key",
         description:
-          'Specifies whether condition ("baseline-key", "baseline-tone", "operant-key", or "operant-tone".',
+          'Specifies the condition ("baseline-key", "baseline-tone", "operant-key", or "operant-tone").',
       },
       est_wo_keypress: {
         type: jspsych.ParameterType.BOOL,

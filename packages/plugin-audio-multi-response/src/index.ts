@@ -18,7 +18,7 @@ const info = <const>{
       default: [],
       array: true,
     },
-    /** Array containing the key(s) the subject is allowed to press to respond to the stimulus. */
+    /** Array containing the key(s) the participant is allowed to press to respond to the stimulus. */
     keyboard_choices: {
       type: ParameterType.KEYS,
       pretty_name: "Keyboard Choices",

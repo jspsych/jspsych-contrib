@@ -29,7 +29,7 @@ const info = <const>{
       pretty_name: "Maintain aspect ratio",
       default: true,
     },
-    /** Array containing the key(s) the subject is allowed to press to respond to the stimulus. */
+    /** Array containing the key(s) the participant is allowed to press to respond to the stimulus. */
     keyboard_choices: {
       type: ParameterType.KEYS,
       pretty_name: "Keyboard Choices",
@@ -53,13 +53,13 @@ const info = <const>{
       pretty_name: "Trial duration",
       default: null,
     },
-    /** If true, trial will end when subject makes a response. */
+    /** If true, trial will end when participant makes a response. */
     response_ends_trial: {
       type: ParameterType.BOOL,
       pretty_name: "Response ends trial",
       default: true,
     },
-    /** How far away from the center should the subject have to swipe for a
+    /** How far away from the center should the participant have to swipe for a
      * left/right response to be recorded. */
     swipe_threshold: {
       type: ParameterType.INT,
@@ -107,12 +107,12 @@ const info = <const>{
     stimulus: {
       type: ParameterType.STRING,
     },
-    /** Indicates which key the subject pressed. If the subject responded using button clicks,
+    /** Indicates which key the participant pressed. If the participant responded using button clicks,
      * then this field will be `null`. */
     keyboard_response: {
       type: ParameterType.STRING,
     },
-    /** Indicates which direction the subject swiped. If the subject responded using the keyboard,
+    /** Indicates which direction the participant swiped. If the participant responded using the keyboard,
      * then this field will be `null`. */
     swipe_response: {
       type: ParameterType.STRING,
@@ -301,7 +301,7 @@ class ImageSwipeResponsePlugin implements JsPsychPlugin<Info> {
         " responded";
     };
 
-    // function to handle swipe responses by the subject
+    // function to handle swipe responses by the participant
     const after_swipe_response = (left_or_right: "left" | "right") => {
       toggle_css_respond();
 
@@ -351,7 +351,7 @@ class ImageSwipeResponsePlugin implements JsPsychPlugin<Info> {
       },
     });
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     const after_keyboard_response = (info) => {
       toggle_css_respond();
 

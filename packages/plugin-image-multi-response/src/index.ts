@@ -35,7 +35,7 @@ const info = <const>{
       default: [],
       array: true,
     },
-    /** Array containing the key(s) the subject is allowed to press to respond to the stimulus. */
+    /** Array containing the key(s) the participant is allowed to press to respond to the stimulus. */
     keyboard_choices: {
       type: ParameterType.KEYS,
       pretty_name: "Keyboard Choices",
@@ -113,15 +113,15 @@ const info = <const>{
       type: ParameterType.STRING,
     },
     /**
-     * Indicates which button the subject pressed. The first button in the `choices` array is 0, the second is 1, and so on.
-     * If the subject responded using the keyboard, then this field will be `null`.
+     * Indicates which button the participant pressed. The first button in the `choices` array is 0, the second is 1, and so on.
+     * If the participant responded using the keyboard, then this field will be `null`.
      */
     button_response: {
       type: ParameterType.INT,
     },
     /**
-     * Indicates which key the subject pressed.
-     * If the subject responded using button clicks, then this field will be `null`.
+     * Indicates which key the participant pressed.
+     * If the participant responded using button clicks, then this field will be `null`.
      */
     keyboard_response: {
       type: ParameterType.STRING,
@@ -290,7 +290,7 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
       img.style.width = width.toString() + "px";
     }
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     var after_keyboard_response = function (info) {
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded
@@ -364,7 +364,7 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
       this.jsPsych.finishTrial(trial_data);
     };
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     function after_response(choice: string) {
       // measure rt
       var end_time = performance.now();

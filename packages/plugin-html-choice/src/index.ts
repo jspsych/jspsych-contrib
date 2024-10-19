@@ -23,7 +23,7 @@ const info = <const>{
       pretty_name: "Trial duration",
       default: null,
     },
-    /** If true, trial will end when subject makes a response. */
+    /** If true, trial will end when participant makes a response. */
     response_ends_trial: {
       type: ParameterType.BOOL,
       pretty_name: "Response ends trial",
@@ -137,7 +137,7 @@ class HtmlChoicePlugin implements JsPsychPlugin<Info> {
       this.jsPsych.finishTrial(trial_data);
     };
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     const after_response = (choice, value) => {
       // measure rt
       var end_time = performance.now();

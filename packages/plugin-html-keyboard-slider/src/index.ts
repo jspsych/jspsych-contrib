@@ -236,7 +236,7 @@ const info = <const>{
       type: ParameterType.FLOAT,
     },
     /**
-     * Stimulus presented
+     * Stimulus presented.
      */
     stimulus: {
       type: ParameterType.HTML_STRING,
@@ -259,8 +259,7 @@ type Info = typeof info;
  *
  * @author Max Lovell
  * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-html-keyboard-slider/README.md}}
-
-     */
+ */
 class HtmlKeyboardSliderPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private keyboardListener: any; // Allows this.keyboardListener id to be saved

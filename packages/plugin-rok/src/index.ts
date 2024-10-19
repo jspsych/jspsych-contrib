@@ -649,7 +649,7 @@ class RokPlugin implements JsPsychPlugin<Info> {
     //Variable to start the timer
     let timerHasStarted = false;
 
-    //Initialize object to store the response data. Default values of -1 are used if the trial times out and the subject has not pressed a valid key
+    //Initialize object to store the response data. Default values of -1 are used if the trial times out and the participant has not pressed a valid key
     let response = {
       rt: -1,
       key: "",
@@ -990,9 +990,9 @@ class RokPlugin implements JsPsychPlugin<Info> {
     const startKeyboardListener = () => {
       //Start the response listener if there are choices for keys
       if (choices != "NO_KEYS") {
-        //Create the keyboard listener to listen for subjects' key response
+        //Create the keyboard listener to listen for participants' key response
         keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
-          callback_function: after_response, //Function to call once the subject presses a valid key
+          callback_function: after_response, //Function to call once the participant presses a valid key
           valid_responses: choices, //The keys that will be considered a valid response and cause the callback function to be called
           rt_method: "performance", //The type of method to record timing information.
           persist: false, //If set to false, keyboard listener will only trigger the first time a valid key is pressed. If set to true, it has to be explicitly cancelled by the cancelKeyboardResponse plugin API.
@@ -1018,7 +1018,7 @@ class RokPlugin implements JsPsychPlugin<Info> {
         frameRate =
           (frameRate as number[]).reduce((total, current) => total + current) / numberOfFrames; //Sum up all the elements in the array
       } else {
-        frameRate = 0; //Set to zero if the subject presses an answer before a frame is shown (i.e. if frameRate is an empty array)
+        frameRate = 0; //Set to zero if the participant presses an answer before a frame is shown (i.e. if frameRate is an empty array)
       }
 
       //Cancel the keyboard listener if keyboardListener has been defined
@@ -1029,8 +1029,8 @@ class RokPlugin implements JsPsychPlugin<Info> {
       //Place all the data to be saved from this trial in one data object
       let trial_data = {
         rt: response.rt, //The response time
-        key_press: response.key, //The key that the subject pressed
-        correct: correctOrNot(), //If the subject response was correct
+        key_press: response.key, //The key that the participant pressed
+        correct: correctOrNot(), //If the participant response was correct
         choices: choices, //The set of valid keys
         correct_choice: correct_choice, //The correct choice
         trial_duration: trial_duration, //The trial duration
@@ -1077,7 +1077,7 @@ class RokPlugin implements JsPsychPlugin<Info> {
     //start animation
     animateDotMotion();
 
-    //Function to record the first response by the subject
+    //Function to record the first response by the participant
     function after_response(info) {
       //If the response has not been recorded, record it
       if (response.key == "") {
@@ -1145,7 +1145,7 @@ class RokPlugin implements JsPsychPlugin<Info> {
       //frameRequestID saves a long integer that is the ID of this frame request. The ID is then used to terminate the request below.
       let frameRequestID = window.requestAnimationFrame(animate);
 
-      //Start to listen to subject's key responses
+      //Start to listen to participant's key responses
       startKeyboardListener();
 
       //Declare a timestamp
@@ -1162,8 +1162,8 @@ class RokPlugin implements JsPsychPlugin<Info> {
           //If the timer has not been started and it is set, then start the timer
           if (!timerHasStarted && trial_duration > 0) {
             //If the trial duration is set, then set a timer to count down and call the end_trial function when the time is up
-            //(If the subject did not press a valid keyboard response within the trial duration, then this will end the trial)
-            timeoutID = window.setTimeout(end_trial, trial_duration); //This timeoutID is then used to cancel the timeout should the subject press a valid key
+            //(If the participant did not press a valid keyboard response within the trial duration, then this will end the trial)
+            timeoutID = window.setTimeout(end_trial, trial_duration); //This timeoutID is then used to cancel the timeout should the participant press a valid key
             //The timer has started, so we set the variable to true so it does not start more timers
             timerHasStarted = true;
           }

@@ -5,111 +5,133 @@ var jsPsychIos = (function (jspsych) {
     name: "ios",
     version: "2.0.0",
     parameters: {
+      /** The prompt to be displayed above the circles. */
       prompt: {
         type: jspsych.ParameterType.HTML_STRING,
         pretty_name: "Prompt",
         default: undefined,
       },
+      /** Specifies which circle `left` or `right` may be moved by the participant. */
       movable_circle: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Movable circle",
         default: "right",
       },
+      /** Specifies if both circles move (`true`), or just one of them (`false`). */
       both_move: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Both circles move?",
         default: "one",
       },
+      /** Specifies which circle is in front of the other. */
       front_circle: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Front circle",
         default: "right",
       },
+      /** Label for the left circle. */
       left_label: {
         type: jspsych.ParameterType.HTML_STRING,
         pretty_name: "Left circle label",
         default: "[left_label]",
       },
+      /** Label for the right circle. */
       right_label: {
         type: jspsych.ParameterType.HTML_STRING,
         pretty_name: "Right circle label",
         default: "[right_label]",
       },
+      /** Diameter of the left circle, in pixels. */
       left_diam: {
         type: jspsych.ParameterType.INT,
         pretty_name: "Left circle diameter",
         default: 200,
       },
+      /** Diameter of the right circle, in pixels. */
       right_diam: {
         type: jspsych.ParameterType.INT,
         pretty_name: "Right circle diameter",
         default: 200,
       },
+      /** The maximum allowable separation between the two circles. */
       max_sep: {
         type: jspsych.ParameterType.INT,
         pretty_name: "Maximum separation",
         default: 0,
       },
+      /** Width, in pixels, of the left circle's border. */
       left_border_width: {
         type: jspsych.ParameterType.INT,
         pretty_name: "Left circle border width",
         default: 2,
       },
+      /** Style arguments for the left circle's border. */
       left_border_style: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Left circle border style",
         default: "solid",
       },
+      /** Colour of the left circle's border. */
       left_border_col: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Left circle border colour",
         default: "black",
       },
+      /** Additional style arguments for the [left/right] circle. E.g., `'background-color: rgba(1, 0, 0, 0.5)';` */
       left_style: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Left circle style",
         default: "",
       },
+      /** Width, in pixels, of the right circle's border. */
       right_border_width: {
         type: jspsych.ParameterType.INT,
         pretty_name: "Right circle border width",
         default: 2,
       },
+      /** Style arguments for the right circle's border. */
       right_border_style: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Right circle border style",
         default: "solid",
       },
+      /** Colour of the right circle's border. */
       right_border_col: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Right circle border colour",
         default: "black",
       },
+      /** Additional style arguments for the [left/right] circle. E.g., `'background-color: rgba(1, 0, 0, 0.5)';` */
       right_style: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Right circle style",
         default: "",
       },
+      /** Specifies whether lines should connect the circles to their labels, in case of any ambiguity (e.g., if one circle is smaller). */
       arrows: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Arrows",
         default: false,
       },
+      /** Style of cursor when the user hovers over the clickable area. */
       cursor: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Cursor when circles clickable",
         default: "crosshair",
       },
+      /** Text of the button the user clicks to submit their response. */
       button_label: {
         type: jspsych.ParameterType.HTML_STRING,
-        pretty_name: "Buton label",
+        pretty_name: "Button label",
         default: "Continue",
       },
+      /** Specifies whether the user must make a response of some kind before clicking the submit button. */
       required: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Response required",
         default: false,
       },
+      /** If true, the circles are hidden until the user hovers over them. */
       hide_initially: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Hide initially",
@@ -126,7 +148,8 @@ var jsPsychIos = (function (jspsych) {
       prompt: {
         type: jspsych.ParameterType.HTML_STRING,
       },
-      /** Proportion of the circles that are combined, on a scale from [0, 1]. */
+      /** The degree of overlap, with 1 being concentric circles, 0 being no space between but no overlap,
+       * and negative values indicating the amount of separation. */
       response: {
         type: jspsych.ParameterType.FLOAT,
       },

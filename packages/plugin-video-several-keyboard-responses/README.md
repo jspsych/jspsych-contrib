@@ -24,7 +24,7 @@ import jsPsychVideoSeveralKeyboardResponses from '@jspsych-contrib/plugin-video-
 
 ## Compatibility
 
-jsPsych v7.3.4
+jsPsych v8.0. For compatibility with jsPsych v7.3+, use version 2.0.0 of this plugin.
 
 ## Documentation
 

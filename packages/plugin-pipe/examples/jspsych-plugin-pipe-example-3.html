@@ -14,8 +14,8 @@
 
     var jsPsych = initJsPsych({});
 
-    const subject_id = jsPsych.randomization.randomID(10);
-    jsPsych.data.addProperties({subject_id: subject_id});
+    const participant_id = jsPsych.randomization.randomID(10);
+    jsPsych.data.addProperties({participant_id: participant_id});
 
     var trial = {
       type: jsPsychHtmlAudioResponse,
@@ -25,7 +25,7 @@
       recording_duration: 15000,
       allow_playback: true,
       on_finish: function(data){
-        const filename = `${subject_id}_${jsPsych.getProgress().current_trial_global}_audio.webm`;
+        const filename = `${participant_id}_${jsPsych.getProgress().current_trial_global}_audio.webm`;
         jsPsychPipe.saveBase64Data(expID,  filename, data.response);
         // delete the base64 data to save space. store the filename instead.
         data.response = filename;

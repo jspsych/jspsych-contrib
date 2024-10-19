@@ -1,11 +1,10 @@
 # jspsych-copying-task plugin
 
-This plugin runs a copying task. In a trial, an example grid (the "model", containing various stimuli) on the left must replicated in the middle grid (the "workspace"). To do this stimuli from the right grid (the "resources") can be picked up and dragged to the middle grid. You can use imgage files (e.g., .jpg/.png/.gif) as stimuli, or built in 'nonsense' shape stimuli in any color. The plugin records the actions of the participant what items are picked up and where they are placed.    
+This plugin runs a copying task. In a trial, an example grid (the "model", containing various stimuli) on the left must replicated in the middle grid (the "workspace"). To do this stimuli from the right grid (the "resources") can be picked up and dragged to the middle grid. You can use image files (e.g., .jpg/.png/.gif) as stimuli, or built in 'nonsense' shape stimuli in any color. The plugin records the actions of the participant what items are picked up and where they are placed.    
 
 ## Parameters
 
-Parameters can be left unspecified if the default value is acceptable. If more then one aperture is displayed most of the parameters should be specified as array (specified by the array column).
-The elements of the array then apply to the corresponding aperture. Features that are not fully implemented yet are marked with an x
+Parameters can be left unspecified if the default value is acceptable. If more then one aperture is displayed most of the parameters should be specified as array (specified by the array column). The elements of the array then apply to the corresponding aperture. So in addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins), this plugin accepts the following parameters.
 
 |Parameter|Type|Default Value| Descripton|
 |---------|----|-------------|-----------|
@@ -29,7 +28,7 @@ The elements of the array then apply to the corresponding aperture. Features tha
 
 ## Data Generated
 
-In addition to the default data collected by all plugins, this plugin collects all parameter data described above and the following data for each trial.
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects all parameter data described above and the following data for each trial.
 
 |Name|Type|Description|
 |----|----|-----------|

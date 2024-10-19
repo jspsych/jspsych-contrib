@@ -345,7 +345,7 @@ class SelfPacedReadingPlugin implements JsPsychPlugin<Info> {
       this.jsPsych.finishTrial(trial_data);
     };
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     const after_response = (info: { rt: any }) => {
       // gather/store data
       rts.push(info.rt);
