@@ -3,8 +3,6 @@
 "@jspsych-contrib/plugin-image-array-keyboard-response": major
 "@jspsych-contrib/plugin-html-keyboard-response-raf": major
 "@jspsych-contrib/plugin-libet-intentional-binding": major
-"@jspsych-contrib/extension-mediapipe-face-mesh": major
-"@jspsych-contrib/extension-touchscreen-buttons": major
 "@jspsych-contrib/plugin-vsl-animate-occlusion": major
 "@jspsych-contrib/plugin-audio-multi-response": major
 "@jspsych-contrib/plugin-audio-swipe-response": major
@@ -16,7 +14,6 @@
 "@jspsych-contrib/plugin-nextcloud-filedrop": major
 "@jspsych-contrib/plugin-self-paced-reading": major
 "@jspsych-contrib/plugin-html-vas-response": major
-"@jspsych-contrib/extension-device-motion": major
 "@jspsych-contrib/plugin-vsl-grid-scene": major
 "@jspsych-contrib/plugin-survey-number": major
 "@jspsych-contrib/plugin-survey-slider": major
