@@ -61,10 +61,12 @@ class SprPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private index: number = 0;
   private inner_index: number = -1; // mode 1-2: initialized so that not shown if has an inner_index
-  private displayed = false; // mode 3
   private current_display_string: string[] = []; // mode 1-2: use this to save iterations
+  private displayed = false; // mode 3
   private structured_reading_string: string[] | string[][] = [];
   private mode;
+  private results = [];
+  private startTime;
 
   constructor(private jsPsych: JsPsych) {}
 
@@ -87,6 +89,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
       // data1: 99, // Make sure this type and name matches the information for data1 in the data object contained within the info const.
       stimlulus: this.structured_reading_string, // Make sure this type and name matches the information for data2 in the data object contained within the info const.
       mode: this.mode,
+      results: this.results,
     };
     // end trial
     this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
@@ -97,7 +100,6 @@ class SprPlugin implements JsPsychPlugin<Info> {
     if (trial.mode === 1 || trial.mode === 2 || trial.mode === 3) this.mode = trial.mode;
     else throw console.error("Mode declared incorrectly, must be between 1 and 3.");
 
-    console.log(trial.unstructured_reading_string, trial.unstructured_reading_string.length);
     // creates inital reading string -> TODO: should instead use mode to determine
     if (trial.structured_reading_string.length > 0)
       this.structured_reading_string = trial.structured_reading_string;
@@ -115,6 +117,8 @@ class SprPlugin implements JsPsychPlugin<Info> {
       persist: true,
       allow_held_key: false,
     });
+
+    this.startTime = Date.now();
   }
 
   // TODO: create a method that takes an entire string and uses a list of parameters to generate a "structured reading string"
@@ -199,6 +203,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
         }
 
         this.current_display_string = new_display_string;
+        this.results.push([this.getElapsed()]);
       } else {
         if (this.mode === 1 && this.inner_index > 0) {
           this.current_display_string[this.inner_index - 1] =
@@ -219,6 +224,12 @@ class SprPlugin implements JsPsychPlugin<Info> {
           "<span class='text-current-region'>" +
           this.structured_reading_string[this.index][this.inner_index] +
           "</span>";
+
+        this.results[this.results.length - 1].push(
+          this.structured_reading_string[this.index][this.inner_index],
+          this.getElapsed()
+        );
+        // this.results[this.results.length-1].push([this.getElapsed(), this.structured_reading_string[this.index][this.inner_index]]);
       }
     } else if (this.mode == 3) {
       var newHtml = "";
@@ -235,6 +246,8 @@ class SprPlugin implements JsPsychPlugin<Info> {
 
         newHtml = "<p class='text-current-region'>" + newHtml + "</p>";
         this.displayed = true;
+
+        this.results.push([this.getElapsed(), newHtml]); // pushes new list with time passed (time looking at blank)
       } else {
         this.index++;
         this.displayed = false;
@@ -247,6 +260,8 @@ class SprPlugin implements JsPsychPlugin<Info> {
             this.generateBlank(this.structured_reading_string[this.index]) +
             "</p>";
         }
+
+        this.results[this.results.length - 1].push(this.getElapsed()); // pushes second time spent looking at word
       }
       return newHtml;
     }
@@ -282,6 +297,10 @@ class SprPlugin implements JsPsychPlugin<Info> {
     }
 
     return res;
+  }
+
+  private getElapsed() {
+    return Date.now() - this.startTime;
   }
 }
 
