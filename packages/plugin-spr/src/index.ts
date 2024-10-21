@@ -32,6 +32,10 @@ const info = <const>{
       type: ParameterType.INT,
       default: 1,
     },
+    delimiting: {
+      type: ParameterType.BOOL,
+      default: false,
+    },
   },
   data: {
     /* The representation of the structured_reading_string that was used. Combined with the mode this 
@@ -103,7 +107,15 @@ class SprPlugin implements JsPsychPlugin<Info> {
     // creates inital reading string -> TODO: should instead use mode to determine
     if (trial.structured_reading_string.length > 0)
       this.structured_reading_string = trial.structured_reading_string;
-    else
+    else if (trial.delimiting) {
+      this.structured_reading_string = this.createReadingString(
+        trial.unstructured_reading_string,
+        trial.chunk_size,
+        trial.line_size,
+        "%"
+      );
+      console.log("delimiting is true", this.structured_reading_string);
+    } else
       this.structured_reading_string = this.createReadingString(
         trial.unstructured_reading_string,
         trial.chunk_size,
@@ -125,9 +137,12 @@ class SprPlugin implements JsPsychPlugin<Info> {
   private createReadingString(
     unstructured_reading_string: string,
     chunk_size: number,
-    line_size: number
+    line_size: number,
+    delimiter?: string
   ): string[] {
-    const split_text = unstructured_reading_string.split(" ");
+    const split_text = delimiter
+      ? unstructured_reading_string.split(delimiter)
+      : unstructured_reading_string.split(" ");
     const res = [];
 
     var current_chunk = [];

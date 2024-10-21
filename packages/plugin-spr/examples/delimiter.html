@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <!-- The plugin is loaded here -->
+  <script src="https://unpkg.com/@jspsych/plugin-spr"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+      on_finish: async function() {      
+        jsPsych.data.displayData();  
+      },
+      default_iti: 250
+  });
+
+
+  const trial = {
+    type: jsPsychSpr,
+    unstructured_reading_string: "this %is the %reading string and it is %super super long, i wonder %what will be %coming next.",
+    mode: 1,
+    delimiting: true,
+  };
+
+  jsPsych.run([trial])
+</script>
+
+</html>
