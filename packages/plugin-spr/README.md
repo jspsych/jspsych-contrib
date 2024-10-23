@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a package built to enable self-paced reading. It supports different reading modes including single-word mask and multi-word (hide/show). This package allows you to also customize the format of the text displayed by using css.
+This is a package built to enable self-paced reading trials. It supports different reading modes including single-word mask and multi-word (hide/show). This package allows you to also customize the format of the text displayed by using CSS.
 
 ## Loading
 
@@ -24,7 +24,7 @@ import jsPsychSpr from '@jspsych-contrib/plugin-spr';
 
 ## Compatibility
 
-jsPsych 7.0.0
+jsPsych 8.0.0
 
 ## Documentation
 

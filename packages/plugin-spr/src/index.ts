@@ -38,15 +38,21 @@ const info = <const>{
     },
   },
   data: {
-    /* The representation of the structured_reading_string that was used. Combined with the mode this 
+    /* The representation of the `structured_reading_string` that was used. Combined with the mode, this 
     tells what exactly was displayed on the screen during each click. */
     stimulus: {
       type: ParameterType.STRING,
-      Array: true,
+      array: true,
     },
     /** Indicates the mode that the SPR experiment was ran using. */
     mode: {
       type: ParameterType.INT,
+    },
+    // TODO: redocument this -> might need to change to a more structured format
+    /** Records the results of the SPR experiment. */
+    results: {
+      type: ParameterType.COMPLEX,
+      array: true,
     },
   },
 };
@@ -56,7 +62,7 @@ type Info = typeof info;
 /**
  * **spr**
  *
- * This is a package built to enable self   paced reading
+ * This is a package built to enable self-paced reading trials.
  *
  * @author Victor Zhang
  * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-spr/README.md}}
@@ -90,8 +96,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
   private endTrial() {
     // TODO: figure out data saving -> will need to add times and how long to make it
     var trial_data = {
-      // data1: 99, // Make sure this type and name matches the information for data1 in the data object contained within the info const.
-      stimlulus: this.structured_reading_string, // Make sure this type and name matches the information for data2 in the data object contained within the info const.
+      stimulus: this.structured_reading_string,
       mode: this.mode,
       results: this.results,
     };
