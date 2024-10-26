@@ -70,11 +70,6 @@ const info = <const>{
       type: ParameterType.KEYS,
       default: [" "],
     },
-    /** To be removed */
-    delimiting: {
-      type: ParameterType.BOOL,
-      default: false,
-    },
   },
   data: {
     /* The representation of the `structured_reading_string` that was used. Combined with the mode, this 
@@ -149,22 +144,15 @@ class SprPlugin implements JsPsychPlugin<Info> {
     else throw console.error("Mode declared incorrectly, must be between 1 and 3.");
 
     // creates inital reading string -> TODO: should instead use mode to determine
-    if (trial.structured_reading_string.length > 0)
+    if (trial.structured_reading_string.length > 0) {
       this.structured_reading_string = trial.structured_reading_string;
-    else if (trial.delimiting) {
-      this.structured_reading_string = this.createReadingString(
-        trial.unstructured_reading_string,
-        trial.chunk_size,
-        trial.line_size,
-        "%"
-      );
-      console.log("delimiting is true", this.structured_reading_string);
-    } else
+    } else {
       this.structured_reading_string = this.createReadingString(
         trial.unstructured_reading_string,
         trial.chunk_size,
         trial.line_size
       );
+    }
 
     this.jsPsych.pluginAPI.getKeyboardResponse({
       callback_function: (info) => this.onSpacebarPress(info),
@@ -181,11 +169,10 @@ class SprPlugin implements JsPsychPlugin<Info> {
   private createReadingString(
     unstructured_reading_string: string,
     chunk_size: number,
-    line_size: number,
-    delimiter?: string
+    line_size: number
   ): string[] {
-    const split_text = delimiter
-      ? unstructured_reading_string.split(delimiter)
+    const split_text = unstructured_reading_string.includes("^")
+      ? unstructured_reading_string.split("^")
       : unstructured_reading_string.split(" ");
     const res = [];
 
