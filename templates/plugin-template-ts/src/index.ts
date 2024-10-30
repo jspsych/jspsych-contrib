@@ -26,7 +26,10 @@ const info = <const>{
     data2: {
       type: ParameterType.STRING,
     },
-    citation: `{citationJson}`,
+  },
+  citation: {
+    apa: "__APACITATION__",
+    bibtex: "__BIBTEXCITATION__",
   },
 };
 

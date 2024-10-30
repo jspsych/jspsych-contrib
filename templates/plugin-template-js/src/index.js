@@ -25,7 +25,10 @@ var _globalName_ = (function (jspsych) {
       data2: {
         type: ParameterType.STRING,
       },
-      citation: `{citationJson}`,
+      citation: {
+        apa: "APA citation for your plugin here",
+        bibtex: "BibTex citation for your plugin here",
+      },
     },
   };
 
