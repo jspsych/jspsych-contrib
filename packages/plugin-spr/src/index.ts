@@ -120,11 +120,11 @@ class SprPlugin implements JsPsychPlugin<Info> {
     var html = `<p></p>`;
     display_element.innerHTML = html;
 
-    if (this.mode === 3)
-      document.querySelector("p")!.innerHTML = this.generateBlank(
-        this.structured_reading_string[this.index]
-      );
-    else document.querySelector("p")!.innerHTML = this.updateDisplayString(null); // update this, passing null for TS
+    if (this.mode === 3) {
+      const blank = this.generateBlank(this.structured_reading_string[this.index]);
+      document.querySelector("p")!.innerHTML = blank;
+      this.addDataPoint(blank, this.index);
+    } else document.querySelector("p")!.innerHTML = this.updateDisplayString(null); // update this, passing null for TS
   }
 
   private endTrial() {
@@ -162,7 +162,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
       allow_held_key: false,
     });
 
-    this.startTime = Date.now();
+    this.startTime = performance.now();
   }
 
   // TODO: create a method that takes an entire string and uses a list of parameters to generate a "structured reading string"
@@ -237,7 +237,6 @@ class SprPlugin implements JsPsychPlugin<Info> {
       if (this.inner_index === -1) {
         // need to update new display string
         const new_display_string: string[] = [];
-
         const curr_segment = this.structured_reading_string[this.index];
 
         for (var i = 0; i < curr_segment.length; i++) {
@@ -249,7 +248,8 @@ class SprPlugin implements JsPsychPlugin<Info> {
         }
 
         this.current_display_string = new_display_string;
-        this.results.push([this.getElapsed()]);
+        // this.results.push([this.getElapsed()]);
+        this.addDataPoint(this.current_display_string.join(" "), this.index);
       } else {
         if (this.mode === 1 && this.inner_index > 0) {
           this.current_display_string[this.inner_index - 1] =
@@ -257,7 +257,6 @@ class SprPlugin implements JsPsychPlugin<Info> {
             this.generateBlank(this.structured_reading_string[this.index][this.inner_index - 1]) +
             "</span>";
         } else if (this.mode === 2 && this.inner_index > 0) {
-          console.log("enters modifier", this.current_display_string);
           // changes classifier
           this.current_display_string[this.inner_index - 1] =
             "<span class='text-after-current-region'>" +
@@ -271,11 +270,12 @@ class SprPlugin implements JsPsychPlugin<Info> {
           this.structured_reading_string[this.index][this.inner_index] +
           "</span>";
 
-        this.results[this.results.length - 1].push(
-          this.structured_reading_string[this.index][this.inner_index],
-          this.getElapsed(),
-          info.key
-        );
+        this.addDataPoint(this.current_display_string.join(" "), this.index);
+        // this.results[this.results.length - 1].push(
+        //   this.structured_reading_string[this.index][this.inner_index],
+        //   this.getElapsed(),
+        //   info.key
+        // );
         // this.results[this.results.length-1].push([this.getElapsed(), this.structured_reading_string[this.index][this.inner_index]]);
       }
     } else if (this.mode == 3) {
@@ -294,7 +294,9 @@ class SprPlugin implements JsPsychPlugin<Info> {
         newHtml = "<p class='text-current-region'>" + newHtml + "</p>";
         this.displayed = true;
 
-        this.results.push([this.getElapsed(), newHtml, info.key]); // pushes new list with time passed (time looking at blank)
+        this.addDataPoint(newHtml, this.index);
+        console.log("this is info.key:", info.key, "this is new Html", newHtml);
+        // this.results.push([this.getElapsed(), newHtml, info.key]); // pushes new list with time passed (time looking at blank)
       } else {
         this.index++;
         this.displayed = false;
@@ -308,7 +310,8 @@ class SprPlugin implements JsPsychPlugin<Info> {
             "</p>";
         }
 
-        this.results[this.results.length - 1].push(this.getElapsed(), info.key); // pushes second time spent looking at word
+        this.addDataPoint(newHtml, this.index);
+        // this.results[this.results.length - 1].push(this.getElapsed(), info.key); // pushes second time spent looking at word
       }
       return newHtml;
     }
@@ -346,10 +349,14 @@ class SprPlugin implements JsPsychPlugin<Info> {
     return res;
   }
 
-  // TODO: turn this into performance.now() for more accurate results
-  // TODO: also, will need to subtract the time from the previous time for data
-  private getElapsed() {
-    return Date.now() - this.startTime;
+  private addDataPoint(stimulus: string, line_number: number) {
+    const res = {
+      time_elapsed: Math.round(performance.now() - this.startTime),
+      stimulus: stimulus,
+      line_number: line_number,
+    };
+
+    this.results.push(res);
   }
 }
 
