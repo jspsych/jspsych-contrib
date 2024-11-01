@@ -18,8 +18,10 @@
     "new": "node ./templates/cli/src/index.js"
   },
   "dependencies": {
+    "canvas": "^2.11.2",
     "gulp": "^5.0.0",
-    "gulp-replace": "^1.1.4"
+    "gulp-replace": "^1.1.4",
+    "npm-link": "^0.0.4"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.0",
