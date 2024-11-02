@@ -124,7 +124,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
       const blank = this.generateBlank(this.structured_reading_string[this.index]);
       document.querySelector("p")!.innerHTML = blank;
       this.addDataPoint(blank, this.index);
-    } else document.querySelector("p")!.innerHTML = this.updateDisplayString(null); // update this, passing null for TS
+    } else document.querySelector("p")!.innerHTML = this.updateDisplayString(); // update this, passing null for TS
   }
 
   private endTrial() {
@@ -155,7 +155,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
     }
 
     this.jsPsych.pluginAPI.getKeyboardResponse({
-      callback_function: (info) => this.onSpacebarPress(info),
+      callback_function: (info) => this.onValidKeyPress(info),
       valid_responses: trial.choices,
       rt_method: "performance",
       persist: true,
@@ -200,7 +200,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
     return res;
   }
 
-  private onSpacebarPress(info?: any) {
+  private onValidKeyPress(info?: any) {
     var newHtml = "";
 
     // handles logic on whether to display blank or show text using boolean/index
@@ -232,7 +232,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
   }
 
   // This helper method assists with mode 1 and 2 to keep efficency when updating indicies and the scren
-  private updateDisplayString(info?: any): string {
+  private updateDisplayString(info: any = {}): string {
     if (this.mode === 1 || this.mode === 2) {
       if (this.inner_index === -1) {
         // need to update new display string
@@ -248,8 +248,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
         }
 
         this.current_display_string = new_display_string;
-        // this.results.push([this.getElapsed()]);
-        this.addDataPoint(this.current_display_string.join(" "), this.index);
+        this.addDataPoint(this.current_display_string.join(" "), this.index, info.key);
       } else {
         if (this.mode === 1 && this.inner_index > 0) {
           this.current_display_string[this.inner_index - 1] =
@@ -270,7 +269,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
           this.structured_reading_string[this.index][this.inner_index] +
           "</span>";
 
-        this.addDataPoint(this.current_display_string.join(" "), this.index);
+        this.addDataPoint(this.current_display_string.join(" "), this.index, info.key);
         // this.results[this.results.length - 1].push(
         //   this.structured_reading_string[this.index][this.inner_index],
         //   this.getElapsed(),
@@ -294,7 +293,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
         newHtml = "<p class='text-current-region'>" + newHtml + "</p>";
         this.displayed = true;
 
-        this.addDataPoint(newHtml, this.index);
+        this.addDataPoint(newHtml, this.index, info.key);
         console.log("this is info.key:", info.key, "this is new Html", newHtml);
         // this.results.push([this.getElapsed(), newHtml, info.key]); // pushes new list with time passed (time looking at blank)
       } else {
@@ -310,7 +309,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
             "</p>";
         }
 
-        this.addDataPoint(newHtml, this.index);
+        this.addDataPoint(newHtml, this.index, info.key);
         // this.results[this.results.length - 1].push(this.getElapsed(), info.key); // pushes second time spent looking at word
       }
       return newHtml;
@@ -349,12 +348,23 @@ class SprPlugin implements JsPsychPlugin<Info> {
     return res;
   }
 
-  private addDataPoint(stimulus: string, line_number: number) {
+  private getTimeElapsed() {
+    const prev = this.startTime;
+    const now = performance.now();
+    this.startTime = now;
+    return Math.round(now - prev);
+  }
+
+  private addDataPoint(stimulus: string, line_number: number, key?: string) {
     const res = {
-      time_elapsed: Math.round(performance.now() - this.startTime),
+      time_elapsed: this.getTimeElapsed(),
       stimulus: stimulus,
       line_number: line_number,
     };
+
+    if (key) {
+      res["key_pressed"] = key; // Add key_pressed if key exists
+    }
 
     this.results.push(res);
   }
