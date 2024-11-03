@@ -1,8 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "html-multi-response",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /** The HTML string to be displayed */
     stimulus: {
@@ -111,7 +113,8 @@ const info = <const>{
 type Info = typeof info;
 
 /**
- * html-multi-response
+ * **html-multi-response**
+ *
  * jsPsych plugin for displaying an HTML stimulus and getting a swipe or keyboard response
  * @author Adam Richie-Halford
  * @see {@link https://www.jspsych.org/plugins/jspsych-html-multi-response/ html-multi-response plugin documentation on jspsych.org}

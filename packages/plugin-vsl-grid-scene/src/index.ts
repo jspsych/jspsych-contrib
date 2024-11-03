@@ -1,8 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "vsl-grid-scene",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /** An array of images that defines a grid. */
     stimuli: {

@@ -1,8 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "survey-number",
-  version: "2.0.0",
+  version: version,
   parameters: {
     questions: {
       type: ParameterType.COMPLEX,

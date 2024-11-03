@@ -156,6 +156,12 @@ var jsPsychIos = (function (jspsych) {
     },
   };
 
+  /**
+   * **ios**
+   *
+   * This plugin implements a continuous version of the Inclusion of Other in the Self (IOS) Scale.
+   * @author Isaac Kinley
+   */
   class jsPsychIosPlugin {
     constructor(jsPsych) {
       this.jsPsych = jsPsych;

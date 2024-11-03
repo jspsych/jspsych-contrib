@@ -1,8 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "rdk",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /** Array containing the valid key(s) that the participant can press to indicate a response. */
     choices: {

@@ -1,8 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "pipe",
-  version: "0.5",
+  version: version,
   parameters: {
     /**
      * The 12-character experiment ID provided by pipe.jspsych.org.

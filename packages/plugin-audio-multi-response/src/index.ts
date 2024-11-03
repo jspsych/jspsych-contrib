@@ -1,9 +1,11 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import { AudioPlayer, AudioPlayerInterface } from "jspsych/src/modules/plugin-api/AudioPlayer";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "audio-multi-response",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /** The HTML string to be displayed. */
     stimulus: {

@@ -2,12 +2,12 @@
 // Need to trim params down in future
 
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
-//Cannot find module '../package.json'. Consider using '--resolveJsonModule' to import module with '.json' extension.ts(2732)//
-//import { version } from '../package.json';
+
+import { version } from "../package.json";
 
 const info = <const>{
   name: "html-keyboard-slider",
-  version: "1.0.0",
+  version: version,
   parameters: {
     // HTML Attributes
     /**
@@ -32,7 +32,9 @@ const info = <const>{
       default: 1,
     },
     /**
-     * For a more coninuous slider, set HTML Range input's step attribute to 'any', see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range#examples. Step values above still apply to 'increase_keys' and 'decrease_keys'.
+     * For a more continuous slider, set HTML Range input's step attribute to 'any',
+     * see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range#examples.
+     * Step values above still apply to `increase_keys` and `decrease_keys`.
      */
     step_any: {
       type: ParameterType.BOOL,
@@ -150,7 +152,7 @@ const info = <const>{
       default: null,
     },
     /**
-     * Whether to display dividing lines between labels
+     * Whether or not to display dividing lines between labels
      */
     label_dividers: {
       type: ParameterType.BOOL,

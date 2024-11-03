@@ -1,8 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "rok",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /** The valid keys that the participant can press to indicate a response. */
     choices: {
@@ -425,9 +427,6 @@ type Info = typeof info;
  * @author Younes Strittmatter
  * @see {@link https://www.jspsych.org/plugins/jspsych-rok/ RDK plugin documentation on jspsych.org}
  * @copyright
- *
- *    We would appreciate it if you cited this paper when you use the ROK:
- *
  * ----------------------
  *
  * Copyright (C) 2021 Younes Strittmatter
@@ -442,6 +441,9 @@ type Info = typeof info;
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+ * ----------------------
+ * We would appreciate it if you cited this paper when you use the ROK:
+ * Strittmatter, Y., Spitzer, M., & Kiesel, A. (2021, July 12). A Random-Object-Kinematogram Plugin for Web-Based Research: Implementing Oriented Objects Enables Varying Coherence Levels and Stimulus Congruency Levels. DOI: [10.31234/osf.io/hmq4u]
  */
 class RokPlugin implements JsPsychPlugin<Info> {
   static info = info;

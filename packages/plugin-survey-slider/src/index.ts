@@ -1,8 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "survey-slider",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /** Questions that will be displayed to the participant. */
     questions: {

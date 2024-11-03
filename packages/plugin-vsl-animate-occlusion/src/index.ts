@@ -1,9 +1,11 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import Snap from "snapsvg";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "vsl-animate-occlusion",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /** Array containing path(s) to image file(s). */
     stimuli: {

@@ -1,8 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "image-multi-response",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /** The image to be displayed */
     stimulus: {
@@ -136,7 +138,8 @@ const info = <const>{
 type Info = typeof info;
 
 /**
- * image-multi-response
+ * **image-multi-response**
+ *
  * jsPsych plugin for displaying an html stimulus and getting a response
  * @author Adam Richie-Halford
  * @see {@link https://www.jspsych.org/plugins/jspsych-image-multi-response/ image-multi-response plugin documentation on jspsych.org}

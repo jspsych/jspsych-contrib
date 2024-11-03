@@ -1,9 +1,11 @@
 import interact from "interactjs";
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "html-swipe-response",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /** The HTML string to be displayed. */
     stimulus: {
@@ -146,6 +148,7 @@ type Info = typeof info;
 
 /**
  * **html-swipe-response**
+ *
  * jsPsych plugin for displaying a stimulus and getting a swipe response
  * @author Adam Richie-Halford
  * @see {@link https://www.jspsych.org/plugins/jspsych-html-swipe-response/ html-swipe-response plugin documentation on jspsych.org}

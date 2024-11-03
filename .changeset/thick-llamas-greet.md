@@ -12,7 +12,6 @@
 "@jspsych-contrib/plugin-html-multi-response": major
 "@jspsych-contrib/plugin-html-swipe-response": major
 "@jspsych-contrib/plugin-nextcloud-filedrop": major
-"@jspsych-contrib/plugin-self-paced-reading": major
 "@jspsych-contrib/plugin-html-vas-response": major
 "@jspsych-contrib/plugin-vsl-grid-scene": major
 "@jspsych-contrib/plugin-survey-number": major

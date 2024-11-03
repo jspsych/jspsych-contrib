@@ -1,8 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "html-keyboard-response-raf",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /**
      * The HTML string to be displayed.
@@ -53,7 +55,7 @@ const info = <const>{
       default: true,
     },
     /**
-     * FPS for requestAnimationFrame
+     * Frames per second for requestAnimationFrame.
      */
     fps: {
       type: ParameterType.INT,

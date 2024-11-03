@@ -1,8 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "html-choice",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /** The HTML string to be displayed */
     html_array: {
@@ -67,7 +69,8 @@ const info = <const>{
 type Info = typeof info;
 
 /**
- * html-choice
+ * **html-choice**
+ *
  * jsPsych plugin for displaying a stimulus and getting a choice
  * @author Younes Strittmatter
  */

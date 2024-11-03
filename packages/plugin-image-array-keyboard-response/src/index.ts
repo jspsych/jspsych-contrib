@@ -1,8 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "image-array-keyboard-response",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /** The images to be displayed */
     stimulus: {
@@ -85,7 +87,7 @@ type Info = typeof info;
  * jsPsych plugin for displaying an image array and getting a keyboard response
  *
  * @author Younes Strittmatter
- * @see {@link https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-image-array-keyboard-response/README.md image-array-keyboard-response plugin documentation on github.com}
+ * @see {@link https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-image-array-keyboard-response image-array-keyboard-response plugin documentation on github.com}
  */
 class ImageArrayKeyboardResponsePlugin implements JsPsychPlugin<Info> {
   static info = info;

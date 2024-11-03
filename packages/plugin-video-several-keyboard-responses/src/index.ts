@@ -1,8 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "video-several-keyboard-responses",
-  version: "3.0.0",
+  version: version,
   parameters: {
     /** Array of the video file(s) to play. Video can be provided in multiple file formats for better cross-browser support. */
     stimulus: {

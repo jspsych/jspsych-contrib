@@ -1,14 +1,10 @@
 /**
- * jspsych-copying-task
- * version 2.0.0
- *
- * Andre Sahakian (modified from Chris Jungerius (modified from Josh de Leeuw))
+ * **jspsych-copying-task**
  *
  * a jsPsych plugin for displaying a basic copying task.
- *
+ * @author Andre Sahakian (modified from Chris Jungerius (modified from Josh de Leeuw))
  * documentation: docs.jspsych.org
- **/
-
+ */
 var jsPsychCopyingTask = (function (jspsych) {
   "use strict";
 

@@ -1,10 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
-// import { version } from "../package.json";
+import { version } from "../package.json";
 
 const info = <const>{
   name: "corsi-blocks",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /**
      * An array of block indexes that specify the order of the sequence to be displayed. For example,

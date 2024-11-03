@@ -1,10 +1,11 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
 import { GamepadModel, GamepadModels } from "./gamepad-model";
 
 const info = <const>{
   name: "gamepad",
-  version: "2.0.0",
+  version: version,
   parameters: {
     /** The size of the canvas element. */
     canvas_size: {
@@ -99,7 +100,7 @@ type Info = typeof info;
 /**
  * **jspsych-gamepad**
  *
- * A jsPsych plugin for using gamepad in behavioral experiments.
+ * A jsPsych plugin for using a gamepad in behavioral experiments.
  *
  * @author Shaobin Jiang
  */

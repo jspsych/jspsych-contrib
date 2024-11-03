@@ -156,6 +156,12 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
     },
   };
 
+  /**
+   * **html-vas-response**
+   *
+   * jsPsych plugin for a visual analogue scale (VAS) response.
+   * @author Isaac Kinley
+   */
   class jsPsychHtmlVasResponsePlugin {
     constructor(jsPsych) {
       this.jsPsych = jsPsych;

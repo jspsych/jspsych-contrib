@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-nextcloud-filedrop",
   "devDependencies": {
-    "@jspsych/config": "^2.0.0",
+    "@jspsych/config": "^3.0.1",
     "jspsych": "^7.0.0"
   },
   "dependencies": {
