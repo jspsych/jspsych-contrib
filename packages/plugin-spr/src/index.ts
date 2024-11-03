@@ -9,7 +9,7 @@ const info = <const>{
     /**
      * This is the string of text that will be displayed to the participant during the trial. Without any
      * ^ characters, the text will be split up based on the space character. If the ^ character is used,
-     * the text will be split up based on the ^ character.
+     * the text will be split up based on the space character.
      */
     unstructured_reading_string: {
       type: ParameterType.STRING,
@@ -82,11 +82,28 @@ const info = <const>{
     mode: {
       type: ParameterType.INT,
     },
-    // TODO: redocument this -> might need to change to a more structured format
     /** Records the results of the SPR experiment. */
     results: {
       type: ParameterType.COMPLEX,
       array: true,
+      nested: {
+        /** The response time in milliseconds from when the stimulus was displayed to when a valid key was pressed. */
+        rt: {
+          type: ParameterType.INT,
+        },
+        /** The stimulus that was displayed to the participant. */
+        stimulus: {
+          type: ParameterType.STRING,
+        },
+        /** The line number of the stimulus that was displayed. */
+        line_number: {
+          type: ParameterType.INT,
+        },
+        /** The key that was pressed by the participant. */
+        key_pressed: {
+          type: ParameterType.STRING,
+        },
+      },
     },
   },
 };
@@ -128,9 +145,8 @@ class SprPlugin implements JsPsychPlugin<Info> {
   }
 
   private endTrial() {
-    // TODO: figure out data saving -> will need to add times and how long to make it
     var trial_data = {
-      stimulus: this.structured_reading_string,
+      stimulus: this.structured_reading_string.flat(),
       mode: this.mode,
       results: this.results,
     };
@@ -357,13 +373,16 @@ class SprPlugin implements JsPsychPlugin<Info> {
 
   private addDataPoint(stimulus: string, line_number: number, key?: string) {
     const res = {
-      time_elapsed: this.getTimeElapsed(),
+      rt: this.getTimeElapsed(),
       stimulus: stimulus,
       line_number: line_number,
     };
 
+    // Add key_pressed if key exists
     if (key) {
-      res["key_pressed"] = key; // Add key_pressed if key exists
+      res["key_pressed"] = key;
+    } else {
+      res["key_pressed"] = null;
     }
 
     this.results.push(res);
