@@ -1,0 +1,48 @@
+{
+  "name": "@jspsych-contrib/plugin-headphone-check",
+  "version": "0.0.1",
+  "description": "Allows for one to check if a participant is wearing headphones using an auditory task.",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "typings": "dist/index.d.ts",
+  "unpkg": "dist/index.browser.min.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "source": "src/index.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
+    "tsc": "tsc",
+    "build": "rollup --config",
+    "build:watch": "npm run build -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/plugin-headphone-check"
+  },
+  "author": {
+    "name": "jadeddelta",
+    "email": "jadeddelta@gmail.com",
+    "url": "https://github.com/jadeddelta"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-headphone-check",
+  "peerDependencies": {
+    "jspsych": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@jspsych/config": "^3.0.1",
+    "@jspsych/test-utils": "^1.0.0",
+    "jspsych": "^8.0.0"
+  }
+}

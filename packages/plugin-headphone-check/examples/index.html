@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-preload@2"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData();
+    }
+  });
+
+  const preload = {
+    type: jsPsychPreload,
+    auto_preload: true
+  }
+
+  const trial = {
+    type: jsPsychHeadphoneCheck,
+    stimuli: ["./audio/antiphase_HC_ISO.wav", "./audio/antiphase_HC_IOS.wav", "./audio/antiphase_HC_SOI.wav", "./audio/antiphase_HC_SIO.wav", "./audio/antiphase_HC_OSI.wav", "./audio/antiphase_HC_OIS.wav"],
+    correct: [2, 3, 1, 1, 2, 3],
+    calibration: true,
+    calibration_stimulus: "./audio/noise_calib_stim.wav",
+  };
+
+  jsPsych.run([preload, trial])
+</script>
+
+</html>
