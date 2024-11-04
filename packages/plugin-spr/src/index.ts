@@ -123,7 +123,6 @@ class SprPlugin implements JsPsychPlugin<Info> {
   private index: number = 0;
   private inner_index: number = -1; // mode 1-2: initialized so that not shown if has an inner_index
   private current_display_string: string[] = []; // mode 1-2: use this to save iterations
-  private displayed = false; // mode 3
   private structured_reading_string: string[] | string[][] = [];
   private mode: 1 | 2 | 3;
   private results = [];
@@ -141,6 +140,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
       const blank = this.generateBlank(this.structured_reading_string[this.index]);
       document.querySelector("p")!.innerHTML = blank;
       this.addDataPoint(blank, this.index);
+      this.index = -1; // this initializes mode in way that allows to start at 0, might not be best way to do it
     } else document.querySelector("p")!.innerHTML = this.updateDisplayString(); // update this, passing null for TS
   }
 
@@ -238,6 +238,13 @@ class SprPlugin implements JsPsychPlugin<Info> {
       newHtml = `<p>${this.updateDisplayString(info)}</p>`;
     } else if (this.mode === 3) {
       // might want to include incrementation here for consistency
+      this.index++;
+
+      if (this.index >= this.structured_reading_string.length) {
+        this.endTrial();
+        return;
+      }
+
       newHtml = this.updateDisplayString(info);
     }
     // need to handle a keyboard press element where records how long until press a key
@@ -286,48 +293,22 @@ class SprPlugin implements JsPsychPlugin<Info> {
           "</span>";
 
         this.addDataPoint(this.current_display_string.join(" "), this.index, info.key);
-        // this.results[this.results.length - 1].push(
-        //   this.structured_reading_string[this.index][this.inner_index],
-        //   this.getElapsed(),
-        //   info.key
-        // );
-        // this.results[this.results.length-1].push([this.getElapsed(), this.structured_reading_string[this.index][this.inner_index]]);
       }
     } else if (this.mode == 3) {
       var newHtml = "";
 
-      if (!this.displayed) {
-        // accounts for bad user input (not necessary) and could move it up to input
-        if (typeof this.structured_reading_string[this.index] === "string")
-          newHtml = this.structured_reading_string[this.index] as string;
-        else {
-          for (const c of this.structured_reading_string[this.index]) {
-            newHtml += c + " ";
-          }
+      // accounts for bad user input (not necessary) and could move it up to input
+      if (typeof this.structured_reading_string[this.index] === "string")
+        newHtml = this.structured_reading_string[this.index] as string;
+      else {
+        for (const c of this.structured_reading_string[this.index]) {
+          newHtml += c + " ";
         }
-
-        newHtml = "<p class='text-current-region'>" + newHtml + "</p>";
-        this.displayed = true;
-
-        this.addDataPoint(newHtml, this.index, info.key);
-        console.log("this is info.key:", info.key, "this is new Html", newHtml);
-        // this.results.push([this.getElapsed(), newHtml, info.key]); // pushes new list with time passed (time looking at blank)
-      } else {
-        this.index++;
-        this.displayed = false;
-
-        if (this.index >= this.structured_reading_string.length) {
-          this.endTrial();
-        } else {
-          newHtml =
-            "<p class='text-before-current-region'>" +
-            this.generateBlank(this.structured_reading_string[this.index]) +
-            "</p>";
-        }
-
-        this.addDataPoint(newHtml, this.index, info.key);
-        // this.results[this.results.length - 1].push(this.getElapsed(), info.key); // pushes second time spent looking at word
       }
+
+      newHtml = "<p class='text-current-region'>" + newHtml + "</p>";
+
+      this.addDataPoint(newHtml, this.index, info.key);
       return newHtml;
     }
 
