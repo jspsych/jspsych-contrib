@@ -127,8 +127,6 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private params: TrialType<Info>;
   private container: HTMLElement;
-  private context: AudioContext;
-  private startTime: number;
   private trialData: {
     did_pass: boolean;
     total_correct: number;
@@ -150,16 +148,15 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
     page: number;
     alreadyPlayed: boolean;
   }[];
-
   private trialContinueButton: HTMLButtonElement;
 
   private currentPage: number;
-  private numberOfPages: number;
 
   private css: string =
     `<style id="jspsych-headphone-check-css">` +
     `.jspsych-headphone-check-box {display: flex; flex-direction: column; justify-content: center; align-items: center;}` +
     `.jspsych-headphone-check-fieldset {display: flex; flex-direction: row;}` +
+    `.jspsych-headphone-check-fieldset-container {display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px;}` +
     `</style>`;
 
   private trialComplete: (trial_data) => void;
@@ -172,7 +169,6 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
     this.params = trial;
     this.container = display_element;
     this.container.innerHTML = this.css;
-    this.context = this.jsPsych.pluginAPI.audioContext();
     this.trialResources = [];
     this.trialData = {
       did_pass: null,
@@ -186,8 +182,6 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
     await this.setupParameters();
 
     on_load();
-
-    this.startTime = performance.now();
 
     if (trial.calibration) {
       await this.beginCalibration();
@@ -216,7 +210,6 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
       throw new Error(
         "Error from HeadphoneCheckPlugin: The number of trials per page is not a factor of the total trials."
       );
-    this.numberOfPages = this.params.total_trials / this.params.trials_per_page;
 
     // Test parameter verification
     if (this.params.labels.length !== 3)
@@ -244,6 +237,7 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
       var play = document.createElement("button");
       play.id = `jspsych-headphone-check-play-${stimuliIndex}`;
       play.className = "jspsych-btn";
+      play.style.alignSelf = "center";
       play.innerHTML = this.params.play_button_label;
       play.addEventListener("click", this.handleCheckPlay(audioRes, fieldset));
       fieldset.appendChild(play);
@@ -370,9 +364,12 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
     this.container.insertAdjacentHTML("beforeend", this.css);
     this.container.insertAdjacentHTML("beforeend", this.params.prompt);
 
+    var fieldsetContainer = document.createElement("div");
+    fieldsetContainer.className = "jspsych-headphone-check-fieldset-container";
     for (const resource of currentResources) {
-      this.container.appendChild(resource.fieldset);
+      fieldsetContainer.appendChild(resource.fieldset);
     }
+    this.container.appendChild(fieldsetContainer);
 
     this.container.appendChild(this.trialContinueButton);
   }
@@ -405,6 +402,9 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
 
   /** if there's more pages, instantiate another test- otherwise we are ending the trial. */
   private async handleCheckContinue() {
+    if (!this.checkData()) {
+      return;
+    }
     this.saveData();
     this.currentPage++;
     var currentResources = this.getCurrentResources();
@@ -415,6 +415,27 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
     }
   }
 
+  /** checks for and highlights fieldsets that the participant has not responded to */
+  private checkData(): boolean {
+    var isValidData = true;
+
+    var currentResources = this.getCurrentResources();
+    for (var i = 0; i < currentResources.length; i++) {
+      var fieldset = currentResources[i].fieldset;
+      var radioButtons = fieldset.querySelectorAll("input[type='radio']");
+      var selected = Array.from(radioButtons).find((radio) => (radio as HTMLInputElement).checked);
+      if (!selected) {
+        isValidData = false;
+        fieldset.style.border = "2px solid red";
+      } else {
+        fieldset.style.border = "";
+      }
+    }
+
+    return isValidData;
+  }
+
+  /** saves the data for the current page */
   private saveData() {
     var currentResources = this.getCurrentResources();
     for (var i = 0; i < currentResources.length; i++) {
@@ -448,7 +469,6 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
   private endTrial() {
     this.trialData.did_pass = this.trialData.total_correct >= this.params.threshold;
 
-    // end trial
     this.jsPsych.finishTrial(this.trialData);
   }
 }
