@@ -25,8 +25,9 @@
     type: jsPsychHeadphoneCheck,
     stimuli: ["./audio/antiphase_HC_ISO.wav", "./audio/antiphase_HC_IOS.wav", "./audio/antiphase_HC_SOI.wav", "./audio/antiphase_HC_SIO.wav", "./audio/antiphase_HC_OSI.wav", "./audio/antiphase_HC_OIS.wav"],
     correct: [2, 3, 1, 1, 2, 3],
-    calibration: true,
     calibration_stimulus: "./audio/noise_calib_stim.wav",
+    sequential: true,
+    shuffle: false,
   };
 
   jsPsych.run([preload, trial])

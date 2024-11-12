@@ -15,7 +15,7 @@ const info = <const>{
       array: true,
     },
     /** The list of correct answers, corresponding to each tone. Each number in the array is between 1-3,
-     * corresponding to the first, second, and third being correct or not. */
+     * corresponding to the first, second, and third being the correct response. */
     correct: {
       type: ParameterType.INT,
       default: undefined,
@@ -58,10 +58,25 @@ const info = <const>{
       type: ParameterType.STRING,
       default: "Continue",
     },
-    /** If a calibration sound will be played to allow the participant to adjust their volume. */
-    calibration: {
+    /** If true, each stimulus must be played and completed from first to last. */
+    sequential: {
       type: ParameterType.BOOL,
       default: false,
+    },
+    /** If true, the trials will be shuffled before being displayed to the participant. */
+    shuffle: {
+      type: ParameterType.BOOL,
+      default: true,
+    },
+    /** If true, on shuffle, the trials will be shuffled with replacement, meaning some trials may contain duplicates. */
+    sample_with_replacement: {
+      type: ParameterType.BOOL,
+      default: false,
+    },
+    /** If true, a calibration sound will be played to allow the participant to adjust their volume. */
+    calibration: {
+      type: ParameterType.BOOL,
+      default: true,
     },
     /** The audio file that will be played for calibration. */
     calibration_stimulus: {
@@ -76,7 +91,7 @@ const info = <const>{
         return `<p>Calibrating Volume: Press the play button below to play a sound. <br> Adjust the volume of the sound to a comfortable level, and click continue when you are ready. <br> You have ${calibration_counter} calibration attempts remaining.</p>`;
       },
     },
-    /** The amount of times the user may play the calibraiton sound. */
+    /** The amount of times the user may play the calibration sound. */
     calibration_attempts: {
       type: ParameterType.INT,
       default: 3,
@@ -149,6 +164,8 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
     alreadyPlayed: boolean;
   }[];
   private trialContinueButton: HTMLButtonElement;
+  private stimuliList: string[];
+  private correctList: number[];
 
   private currentPage: number;
 
@@ -170,6 +187,8 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
     this.container = display_element;
     this.container.innerHTML = this.css;
     this.trialResources = [];
+    this.stimuliList = trial.stimuli;
+    this.correctList = trial.correct;
     this.trialData = {
       did_pass: null,
       total_correct: 0,
@@ -225,8 +244,30 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
         "Error from HeadphoneCheckPlugin: Calibration is enabled, but no calibration stimulus was provided."
       );
 
+    // shuffle stimuli
+    this.stimuliList = this.params.stimuli;
+    this.correctList = this.params.correct;
+    if (this.params.shuffle) {
+      if (this.params.sample_with_replacement) {
+        this.stimuliList = this.jsPsych.randomization.sampleWithReplacement(
+          this.stimuliList,
+          this.params.total_trials
+        );
+        this.correctList = this.jsPsych.randomization.sampleWithReplacement(
+          this.correctList,
+          this.params.total_trials
+        );
+      } else {
+        var shuffled = this.jsPsych.randomization.shuffle([
+          ...Array(this.params.total_trials).keys(),
+        ]);
+        this.stimuliList = shuffled.map((i) => this.params.stimuli[i]);
+        this.correctList = shuffled.map((i) => this.params.correct[i]);
+      }
+    }
+
     // instantiate trial resources
-    for (const [stimuliIndex, stimuli] of this.params.stimuli.entries()) {
+    for (const [stimuliIndex, stimuli] of this.stimuliList.entries()) {
       var fieldset = document.createElement("fieldset");
       fieldset.id = `jspsych-headphone-check-fieldset-${stimuliIndex}`;
       fieldset.className = "jspsych-headphone-check-fieldset";
@@ -444,11 +485,11 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
       var selected = Array.from(radioButtons).find((radio) => (radio as HTMLInputElement).checked);
       if (selected) {
         var selectedValue = parseInt((selected as HTMLInputElement).value);
-        var correctValue = this.params.correct[absoluteIndex] - 1;
+        var correctValue = this.correctList[absoluteIndex] - 1;
         var correct = selectedValue === correctValue;
         this.trialData.total_correct += correct ? 1 : 0;
         this.trialData.responses.push({
-          stimulus: this.params.stimuli[absoluteIndex],
+          stimulus: this.stimuliList[absoluteIndex],
           response: selectedValue + 1,
           correct: correct,
         });
