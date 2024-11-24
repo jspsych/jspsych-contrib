@@ -167,6 +167,7 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
   private stimuliList: string[];
   private correctList: number[];
 
+  private trialCounter: number;
   private currentPage: number;
 
   private css: string =
@@ -248,22 +249,17 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
     this.stimuliList = this.params.stimuli;
     this.correctList = this.params.correct;
     if (this.params.shuffle) {
+      var shuffled: number[];
       if (this.params.sample_with_replacement) {
-        this.stimuliList = this.jsPsych.randomization.sampleWithReplacement(
-          this.stimuliList,
-          this.params.total_trials
-        );
-        this.correctList = this.jsPsych.randomization.sampleWithReplacement(
-          this.correctList,
+        shuffled = this.jsPsych.randomization.sampleWithReplacement(
+          [...Array(this.params.total_trials).keys()],
           this.params.total_trials
         );
       } else {
-        var shuffled = this.jsPsych.randomization.shuffle([
-          ...Array(this.params.total_trials).keys(),
-        ]);
-        this.stimuliList = shuffled.map((i) => this.params.stimuli[i]);
-        this.correctList = shuffled.map((i) => this.params.correct[i]);
+        shuffled = this.jsPsych.randomization.shuffle([...Array(this.params.total_trials).keys()]);
       }
+      this.stimuliList = shuffled.map((i) => this.params.stimuli[i]);
+      this.correctList = shuffled.map((i) => this.params.correct[i]);
     }
 
     // instantiate trial resources
@@ -294,6 +290,11 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
         radio.name = `jspsych-headphone-check-radio-${stimuliIndex}`;
         radio.id = `jspsych-headphone-check-radio-${stimuliIndex}-${labelIndex}`;
         radio.value = labelIndex.toString();
+        if (this.params.sequential)
+          radio.addEventListener(
+            "click",
+            this.handleCheckRadioClick(stimuliIndex % this.params.trials_per_page)
+          );
 
         var radioLabel = document.createElement("label");
         radioLabel.setAttribute("for", radio.id);
@@ -399,6 +400,7 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
   /** rest of headphone check- similar to calibration this will get re-called */
   private async beginCheck() {
     const currentResources = this.getCurrentResources();
+    this.trialCounter = 0;
 
     // reset display
     this.container.innerHTML = "";
@@ -410,6 +412,11 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
     for (const resource of currentResources) {
       fieldsetContainer.appendChild(resource.fieldset);
     }
+
+    if (this.params.sequential) {
+      this.handleSequentialFieldsets();
+    }
+
     this.container.appendChild(fieldsetContainer);
 
     this.container.appendChild(this.trialContinueButton);
@@ -435,9 +442,24 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
       audio.removeEventListener("ended", this.handleCheckAudioEnd(audio, fieldset));
 
       var fieldsets = document.querySelectorAll(`.${fieldset.className}`);
-      fieldsets.forEach((fieldset) => {
+      // not seq, enable all fieldsets, otherwise, enable current, radio will enable next
+      if (!this.params.sequential) {
+        fieldsets.forEach((fs) => {
+          fs.removeAttribute("disabled");
+        });
+      } else {
         fieldset.removeAttribute("disabled");
-      });
+      }
+    };
+  }
+
+  /** enables the next fieldset on answer */
+  private handleCheckRadioClick(id: number) {
+    return () => {
+      if (id < this.trialCounter || this.trialCounter === this.params.trials_per_page - 1) return;
+
+      this.trialCounter++;
+      this.handleSequentialFieldsets();
     };
   }
 
@@ -453,6 +475,17 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
       this.endTrial();
     } else {
       await this.beginCheck();
+    }
+  }
+
+  /** enables current fieldset, disables all others */
+  private handleSequentialFieldsets() {
+    var currentResources = this.getCurrentResources();
+    var currentFieldset = currentResources[this.trialCounter].fieldset;
+    currentFieldset.removeAttribute("disabled");
+    for (var i = this.trialCounter + 1; i < currentResources.length; i++) {
+      var fieldset = currentResources[i].fieldset;
+      fieldset.setAttribute("disabled", "disabled");
     }
   }
 
