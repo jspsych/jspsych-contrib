@@ -1,19 +1,29 @@
-import { startTimeline } from "@jspsych/test-utils";
+jest.mock("../node_modules/jspsych/src/modules/plugin-api/AudioPlayer");
+
+import { clickTarget, startTimeline } from "@jspsych/test-utils";
 
 import jsPsychHeadphoneCheck from ".";
 
 jest.useFakeTimers();
 
-describe.skip("headphone-check plugin", () => {
-  it("should load", async () => {
-    const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
-      {
-        type: jsPsychHeadphoneCheck,
-        parameter_name: 1,
-        parameter_name2: "img.png",
-      },
-    ]);
+describe("headphone-check plugin", () => {
+  it.skip("should complete", async () => {
+    const { expectFinished, expectRunning, getHTML, getData, displayElement, jsPsych } =
+      await startTimeline([
+        {
+          type: jsPsychHeadphoneCheck,
+          stimuli: ["foo1.mp3"],
+          correct: [0],
+          calibration: false,
+        },
+      ]);
 
-    expect(3).toBe(3);
+    expectRunning();
+
+    clickTarget(displayElement.querySelector("#jspsych-headphone-check-play-0"));
+    clickTarget(displayElement.querySelector("#jspsych-headphone-check-radio-0-0"));
+    clickTarget(displayElement.querySelector("#jspsych-headphone-check-continue"));
+
+    expectFinished();
   });
 });
