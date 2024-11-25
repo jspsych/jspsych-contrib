@@ -2,7 +2,7 @@
 
 ## Overview
 
-Allows for one to check if a participant is wearing headphones using an auditory task.
+Allows for one to check if a participant is wearing headphones using an auditory task. In the default configuration, participants listen to 6 audio samples with 3 tones each, and asked for which is the quietest. Upon meeting a threshold (at least 5), we can accurately conclude that the participant is wearing headphones, as per the findings in the [paper describing the original HeadphoneCheck](http://mcdermottlab.mit.edu/papers/Woods_etal_2017_headphone_screening.pdf).
 
 ## Loading
 
