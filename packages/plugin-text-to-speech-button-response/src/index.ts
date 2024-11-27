@@ -81,6 +81,11 @@ const info = <const>{
       type: ParameterType.INT,
       default: 0,
     },
+    /** A pause between words in milliseconds */
+    time_between_words: {
+      type: ParameterType.INT,
+      default: 0,
+    },
   },
   data: {
     /** The response time in milliseconds for the participant to make a response. The time is measured from when the stimulus first appears on the screen until the participant's response. */
@@ -162,14 +167,27 @@ class TextToSpeechButtonPluginResponse implements JsPsychPlugin<Info> {
     }
 
     // Set up SpeechSytnthesis
-    const utterance = new SpeechSynthesisUtterance(trial.stimulus);
-    utterance.lang = trial.lang;
+    const words = trial.stimulus.split(" ");
+    let currentIndex = 0;
 
     // start time
     const start_time = performance.now();
 
-    // start speechSynthesis
-    speechSynthesis.speak(utterance);
+    function speakNextWord() {
+      if (currentIndex < words.length) {
+        const utterance = new SpeechSynthesisUtterance(words[currentIndex]);
+        utterance.lang = trial.lang;
+
+        utterance.onend = () => {
+          setTimeout(() => {
+            currentIndex++;
+            speakNextWord();
+          }, trial.time_between_words);
+        };
+        speechSynthesis.speak(utterance);
+      }
+    }
+    speakNextWord();
 
     // store response
     const response = {

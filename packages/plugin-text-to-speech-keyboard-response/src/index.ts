@@ -76,6 +76,11 @@ const info = <const>{
       type: ParameterType.BOOL,
       default: true,
     },
+    /** A pause between words in milliseconds */
+    time_between_words: {
+      type: ParameterType.INT,
+      default: 0,
+    },
   },
   data: {
     /** Indicates which key the participant pressed. */
@@ -117,13 +122,27 @@ class TextToSpeechKeyboardResponsePlugin implements JsPsychPlugin<Info> {
     if (trial.prompt !== null) {
       display_element.insertAdjacentHTML("beforeend", trial.prompt);
     }
-
     // Set up SpeechSytnthesis
-    const utterance = new SpeechSynthesisUtterance(trial.stimulus);
-    utterance.lang = trial.lang;
+    const words = trial.stimulus.split(" ");
+    let currentIndex = 0;
 
-    // start speechSynthesis
-    speechSynthesis.speak(utterance);
+    // start time
+
+    function speakNextWord() {
+      if (currentIndex < words.length) {
+        const utterance = new SpeechSynthesisUtterance(words[currentIndex]);
+        utterance.lang = trial.lang;
+
+        utterance.onend = () => {
+          setTimeout(() => {
+            currentIndex++;
+            speakNextWord();
+          }, trial.time_between_words);
+        };
+        speechSynthesis.speak(utterance);
+      }
+    }
+    speakNextWord();
 
     // store response
     var response = {
