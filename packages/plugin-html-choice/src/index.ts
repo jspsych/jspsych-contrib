@@ -10,7 +10,7 @@ const info = <const>{
     html_array: {
       type: ParameterType.HTML_STRING,
       pretty_name: "Stimulus",
-      default: [],
+      default: undefined,
       array: true,
     },
     /** How long to show the stimulus. */

@@ -10,6 +10,7 @@ const info = <const>{
     stimulus: {
       type: ParameterType.IMAGE,
       pretty_name: "Stimulus",
+      default: undefined,
       array: true,
     },
     /**
@@ -19,6 +20,7 @@ const info = <const>{
     stimulus_rect: {
       type: ParameterType.COMPLEX,
       pretty_name: "Image rectangle",
+      default: null,
       array: true,
     },
     /** Maintain the aspect ratio after setting width or height */
