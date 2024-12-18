@@ -34,4 +34,7 @@ The documentaion can be read [here](/docs/index.md).
 
 ## Author / Citation
 
-Any author or citation info that you would like to include.
+Created by [Caluã de Lacerda Pataca](https://www.caluapataca.com) and [Russell Lee](https://github.com/rl2939).
+
+### Citation
+de Lacerda Pataca, C., & Lee, R. (2024, December 8). A jsPsych Plugin for Continuous Real-Time Valence, Arousal, and Dominance Reporting Using a Three-Handle Controller. https://doi.org/10.31234/osf.io/snr5u
