@@ -1,7 +1,5 @@
 # triple-handle-controller plugin
 
-TODO: Add Author/Citations.
-
 ## Overview
 
 This plugin collects responses to a video file in real time using a game controller.
