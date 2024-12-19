@@ -1,0 +1,8 @@
+{
+  {
+  "license": "Apache-2.0"
+  }
+  "dependencies": {
+    "prettier": "^2.8.4"
+  }
+}
