@@ -16,7 +16,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/extension-touchscreen-buttons"
   },
-  "author": "Younes Strittmatter",
+  "author": {
+    "name": "Younes Strittmatter",
+    "url": "https://github.com/younesStrittmatter"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

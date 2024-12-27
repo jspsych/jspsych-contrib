@@ -4,7 +4,7 @@ import PluginGamepad from ".";
 
 jest.useFakeTimers();
 
-describe("jsPsychGamepad", () => {
+describe("Gamepad", () => {
   it("should end within about 2s", async () => {
     let time_start = performance.now();
     await startTimeline([

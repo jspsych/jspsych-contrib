@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-html-choice",
   "version": "1.0.0",
-  "description": "",
+  "description": "This plugin displays clickable html elements that can be used to present a choice.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -27,7 +27,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-html-choice"
   },
-  "author": "Younes Strittmatter",
+  "author": {
+    "name": "Younes Strittmatter",
+    "url": "https://github.com/younesStrittmatter"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

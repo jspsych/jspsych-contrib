@@ -2,11 +2,8 @@ import * as tf from "@tensorflow/tfjs";
 import { JsPsych, JsPsychExtension, JsPsychExtensionInfo } from "jspsych";
 
 interface InitializeParameters {}
-
 interface OnStartParameters {}
-
 interface OnLoadParameters {}
-
 interface OnFinishParameters {}
 
 /**
@@ -22,62 +19,56 @@ class MeyeExtension implements JsPsychExtension {
     name: "meye-extension",
   };
 
-  // I'm sorry for this ;_; but hey it works
-  setup: any;
-  threshold: any;
-  rx: any;
-  ry: any;
-  rs: any;
-  input: any;
-  videoStream: any;
-  beginInterval: any;
-  updatePredictionTimeout: any;
-  model: any;
-  mode: any;
-  timeToSubtract: any;
-  debugMode: any;
-  pupilSideLength: any;
-  changeObserver: any;
-  pluginPupilData: any;
-  samples: any;
-  pupilOutput: any;
-  pupilOutputText: any;
-  getUserMediaSupported: any;
-  toggleCam: any;
-  showRoi: any;
-  video: any;
-  pupilXLocator: any;
-  pupilYLocator: any;
-  output: any;
-  roi: any;
-  updatePrediction: any;
-  observer: any;
-  loadModel: any;
-  predictOnce: any;
-  predictFrame: any;
-  keepLargestComponent: any;
-  fillHoles: any;
-  findCentroid: any;
-  updatePupilLocator: any;
-  updateMode: any;
-  predictLoop: any;
-  snapshotHandler: any;
-  updateVariables: any;
-  addValDot: any;
-  floodFill: any;
-  findZero: any;
+  setup: () => void;
+  threshold: number;
+  rx: number;
+  ry: number;
+  rs: number;
+  videoStream: MediaStream;
+  beginInterval: number;
+  updatePredictionTimeout: number;
+  model: tf.GraphModel;
+  mode: string;
+  timeToSubtract: number;
+  debugMode: boolean;
+  pupilSideLength: number;
+  pluginPupilData: Array<Record<string, number>>;
+  samples: Array<Array<number>>;
+  toggleCam: () => void;
+  video: HTMLVideoElement;
+  pupilXLocator: HTMLDivElement;
+  pupilYLocator: HTMLDivElement;
+  output: HTMLCanvasElement;
+  roi: HTMLDivElement;
+  updatePrediction: (delay?: number) => void;
+  loadModel: () => Promise<void>;
+  predictOnce: () => null | Promise<Array<number>>;
+  keepLargestComponent: (array: Array<Array<number>>) => number;
+  fillHoles: (array: Array<Array<number>>) => number;
+  findCentroid: (array: Array<Array<number>>) => Array<number>;
+  updatePupilLocator: (pupilX: number, pupilY: number) => void;
+  updateMode: (mode: string) => void;
+  predictLoop: () => void | null;
+  snapshotHandler: () => Promise<void> | null;
+  updateVariables: (newX: number, newY: number) => void;
+  addValDot: (mostRecentSnapshot: Array<number>) => void;
+  floodFill: (array: Array<Array<number>>) => void;
+  findZero: (array: Array<Array<number>>) => null | Array<number>;
   filledLastTrial: boolean;
-  tf: any;
+
+  // Not changing this from 'any' because 1) it leads to complicated issues outside of my current competence,
+  // 										2) it works when using any,
+  //										3) I'm not paid to investigate it further.
+  predictFrame: any;
 
   constructor(private jsPsych: JsPsych) {
     this.setup = () => {
-      // Setup variables
+      // Set up variables
       this.filledLastTrial = false;
       this.threshold = 0.5;
       this.rx = 0;
       this.ry = 0;
       this.rs = 347;
-      this.input = null;
       this.videoStream = null;
       this.beginInterval = null;
       this.updatePredictionTimeout = null;
@@ -86,25 +77,19 @@ class MeyeExtension implements JsPsychExtension {
       this.timeToSubtract = 0;
       this.debugMode = false;
       this.pupilSideLength = null;
-      this.changeObserver = null;
       this.pluginPupilData = [];
       this.samples = [];
-      this.pupilOutput = document.createElement("div");
-      this.pupilOutput.id = "pupil-output";
-      this.pupilOutputText = document.createTextNode("mEye pupil area:");
-      this.pupilOutput.appendChild(this.pupilOutputText);
 
-      // Create placeholders for mEye
+      // Create invisible placeholders for mEye
+      // TODO: Ensure that these are destroyed after use.
       this.video = document.createElement("video");
       this.pupilXLocator = document.createElement("div");
       this.pupilYLocator = document.createElement("div");
       this.output = document.createElement("canvas");
       this.roi = document.createElement("div");
 
-      // Check if webcam is supported
-      if (this.getUserMediaSupported()) this.toggleCam();
+      this.toggleCam();
 
-      this.video.addEventListener("loadedmetadata", this.showRoi);
       this.video.addEventListener("loadeddata", () => {
         this.video.muted = true;
         this.video.volume = 0;
@@ -115,18 +100,7 @@ class MeyeExtension implements JsPsychExtension {
         this.updatePrediction();
       });
 
-      this.observer = new MutationObserver(() => {
-        this.updatePrediction(30);
-      }).observe(this.roi, {
-        attributes: true,
-      });
-
       this.loadModel();
-    };
-
-    // Check if webcam access is supported.
-    this.getUserMediaSupported = () => {
-      return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     };
 
     // Enable the live webcam view and start classification.
@@ -146,19 +120,22 @@ class MeyeExtension implements JsPsychExtension {
       };
 
       // Activate the webcam stream.
-      navigator.mediaDevices.getUserMedia(constraints).then(
-        (stream) => {
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then((stream) => {
           this.videoStream = stream;
           this.video.srcObject = stream;
-        },
-
-        () => {
-          console.log("error");
-        }
-      );
+        })
+        .catch((err) => {
+          console.error(
+            err +
+              ". Check that your webcam is plugged in and nothing else is using it, then refresh the page."
+          );
+        });
     };
 
     this.loadModel = () => {
+      // TODO: Just use the one already set up with the plugin
       var modelUrl =
         "../../plugin-meye-config/models/meye-segmentation_i128_s4_c1_f16_g1_a-relu-no-subj/model.json";
 
@@ -166,7 +143,9 @@ class MeyeExtension implements JsPsychExtension {
       return tf.loadGraphModel(modelUrl).then((loadedModel) => {
         this.model = loadedModel;
         tf.tidy(() => {
-          this.model.predict(tf.zeros([1, 128, 128, 1]))[0].data();
+          if (this.model instanceof tf.GraphModel) {
+            this.model.predict(tf.zeros([1, 128, 128, 1]))[0].data();
+          }
         });
       });
     };
@@ -182,14 +161,10 @@ class MeyeExtension implements JsPsychExtension {
       var timestamp = new Date();
       var timecode = this.video.currentTime;
 
-      var x = parseInt(this.rx);
-      var y = parseInt(this.ry);
-      var s = parseInt(this.rs);
-
       // Now var's start classifying a frame in the stream.
       var frame: any = tf.browser
         .fromPixels(this.video, 3)
-        .slice([y, x], [s, s])
+        .slice([this.ry, this.rx], [this.rs, this.rs])
         .resizeBilinear([128, 128])
         .mul(tf.tensor1d([0.2989, 0.587, 0.114]))
         .sum(2);
@@ -197,15 +172,20 @@ class MeyeExtension implements JsPsychExtension {
       frame = frame.clipByValue(0, 255);
       frame = frame.div(tf.scalar(255));
 
-      tf.browser.toPixels(frame, this.input);
-
-      var [maps, eb] = this.model.predict(frame.expandDims(0).expandDims(-1));
+      if (this.model instanceof tf.GraphModel) {
+        var [maps, eb] = this.model.predict(frame.expandDims(0).expandDims(-1)) as [
+          tf.Tensor,
+          tf.Tensor
+        ];
+      }
 
       // some older models have their output order swapped
       if (maps.rank < 4) [maps, eb] = [eb, maps];
 
       // take first channel in last dimension
-      var pupil = maps.slice([0, 0, 0, 0], [-1, -1, -1, 1]).squeeze();
+      var pupil: tf.Tensor | Promise<number[]> = maps
+        .slice([0, 0, 0, 0], [-1, -1, -1, 1])
+        .squeeze();
       var [eye, blink] = eb.squeeze().split(2);
 
       pupil = tf.cast(pupil.greaterEqual(this.threshold), "float32").squeeze();
@@ -213,7 +193,7 @@ class MeyeExtension implements JsPsychExtension {
       var pupilArea = pupil.sum().data();
       var blinkProb = blink.data();
 
-      pupil = pupil.array();
+      pupil = (pupil as tf.Tensor).array() as Promise<number[]>;
 
       return [pupil, timestamp, timecode, pupilArea, blinkProb];
     };
@@ -237,12 +217,9 @@ class MeyeExtension implements JsPsychExtension {
             pupilArea += this.fillHoles(pupil);
 
             [pupilX, pupilY] = this.findCentroid(pupil);
-            var x = parseInt(this.rx);
-            var y = parseInt(this.ry);
-            var s = parseInt(this.rs);
 
-            pupilX = (pupilX * s) / 128 + x;
-            pupilY = (pupilY * s) / 128 + y;
+            pupilX = (pupilX * this.rs) / 128 + this.rx;
+            pupilY = (pupilY * this.rs) / 128 + this.ry;
           }
 
           this.updatePupilLocator(pupilX, pupilY);
@@ -408,7 +385,7 @@ class MeyeExtension implements JsPsychExtension {
       this.mode = mode;
     };
 
-    this.snapshotHandler = (deeperItem = null, action = null) => {
+    this.snapshotHandler = () => {
       if (!this.model) return null;
 
       // Force one async prediction
@@ -440,7 +417,7 @@ class MeyeExtension implements JsPsychExtension {
           this.updateVariables(newX, newY);
         }
 
-        blinkProb = blinkProb.toFixed(3);
+        blinkProb = Number(blinkProb.toFixed(3));
 
         this.samples.push([pupilArea, blinkProb, timecode]);
 
@@ -448,43 +425,18 @@ class MeyeExtension implements JsPsychExtension {
       });
     };
 
-    this.addValDot = (mostRecentSnapshot, isLate = false) => {
+    this.addValDot = (mostRecentSnapshot) => {
       // Convert mEye's unit of measurement for pupil area into something understandable by humans (in this case, diameter since we assume circular pupils).
       this.pupilSideLength = (this.rs * Math.sqrt(mostRecentSnapshot[0])) / 128;
-      mostRecentSnapshot[0] = this.pupilSideLength.toFixed(2);
-
-      // This commented-out section is for future functionality I intend to add.
-      // var valNode = document.createElement('span');
-      // valNode.className = "valDot";
-      // valNode.id = "killme";
-      // valNode.style.width = valNode.style.height = this.pupilSideLength + "px";
-
-      // if (isLate) {
-      // if (document.getElementById("killme")) document.getElementById("killme").remove();
-      // if (document.getElementById("pupil-output")) document.getElementById("pupil-output").remove();
-      // } else if (this.debugMode) {
-
-      // // Wipe any existing valdots on the screen
-      // if (document.getElementById("killme")) document.getElementById("killme").remove();
-
-      // // Create a new output box if one doesn't already exist
-      // if (!document.getElementById("pupil-output")) document.getElementById("jspsych-content").appendChild(this.pupilOutput);
-
-      // valNode.style.left = (parseInt(window.getComputedStyle(this.pupilOutput).getPropertyValue("width")) / 2) + "px";
-      // valNode.style.top = (parseInt(window.getComputedStyle(this.pupilOutput).getPropertyValue("height")) / 2) + "px";
-
-      // document.getElementById("pupil-output").appendChild(valNode);
-      // }
+      mostRecentSnapshot[0] = Number(this.pupilSideLength.toFixed(2));
 
       if (this.pluginPupilData.length == 0) this.timeToSubtract = mostRecentSnapshot[2];
 
       this.pluginPupilData.push({
         pupil_diameter: mostRecentSnapshot[0],
         blink_prob: mostRecentSnapshot[1],
-        timecode: (mostRecentSnapshot[2] - this.timeToSubtract).toFixed(3),
+        timecode: Number((mostRecentSnapshot[2] - this.timeToSubtract).toFixed(3)),
       });
-
-      //console.log(this.pluginPupilData[this.pluginPupilData.length - 1]); debug
     };
 
     this.updateVariables = (newX, newY) => {
@@ -556,7 +508,7 @@ class MeyeExtension implements JsPsychExtension {
     if (typeof params != "undefined") {
       if (typeof params.debug != "undefined" && params.debug == true) this.debugMode = true;
       if (typeof params.detection_interval != "undefined") {
-        this.snapshotHandler(null, "interval detection");
+        this.snapshotHandler();
         this.beginInterval = setInterval(
           this.snapshotHandler,
           params.detection_interval,
@@ -572,7 +524,7 @@ class MeyeExtension implements JsPsychExtension {
   on_finish = ({}: OnFinishParameters): any => {
     clearInterval(this.beginInterval);
 
-    return this.snapshotHandler("Trial", "finished").then((test) => {
+    return this.snapshotHandler().then((test) => {
       // Handle the fact that setInterval will take another snapshot when we don't want it to that it saves to second last index
       this.pluginPupilData[this.pluginPupilData.length - 2] =
         this.pluginPupilData[this.pluginPupilData.length - 1];

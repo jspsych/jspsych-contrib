@@ -22,32 +22,19 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    console.log("Loaded TensorFlow.js - version: " + tf.version.tfjs); // debug
-
-    // Style sheet
-    const styleSheet = document.createElement("link");
-    styleSheet.setAttribute("rel", "stylesheet");
-    styleSheet.setAttribute("type", "text/css");
-    styleSheet.setAttribute("href", "../../plugin-meye-config/css/main.css");
-    styleSheet.setAttribute("id", "plugin-meye-config-stylesheet");
-    document.head.appendChild(styleSheet);
+    console.log("Loaded TensorFlow.js - version: " + tf.version.tfjs);
 
     // Setup event stuff
     const passedPerformanceCheck = new Event("passedPerformanceCheck", { bubbles: true });
     const passedSetup2 = new Event("passedSetup2", { bubbles: true });
     const exit = new Event("exit", { bubbles: true });
-    const recalibrate = new Event("recalibrate", { bubbles: true });
 
-    display_element.addEventListener("recalibrate", introduction);
     display_element.addEventListener("dragover", dragover);
     display_element.addEventListener("dragover", resizeover);
-    display_element.addEventListener("drop", drop); // in common
-
+    display_element.addEventListener("drop", drop);
     display_element.addEventListener("exit", () => {
-      cleanHTML();
       this.jsPsych.endExperiment();
     });
-
     display_element.addEventListener("passedPerformanceCheck", () => {
       continueBtn.addEventListener("click", () => {
         display_element.dispatchEvent(passedSetup2);
@@ -56,79 +43,66 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
     display_element.addEventListener("passedSetup2", () => {
       var data = { settings: idealObject };
-
-      cleanHTML();
       this.jsPsych.finishTrial(data);
     });
 
-    // Begin plugin
-    styleSheet.onload = () => {
-      introduction();
-    };
-
-    function introduction() {
-      // Present instructions
-      display_element.innerHTML = `<h3>Eye tracking calibration</h3>
-										<p><br>To ensure that the data we get is high-quality, and to reduce the likelihood that you will need to recalibrate, proceed with this experiment <b>only if there is daylight outside.</b><br>
+    // Present instructions
+    display_element.innerHTML = `<section style="font-family: helvetica, arial, sans-serif; width: 100%; height: 100%; margin: 10px; display: flex; flex-flow: column wrap; box-sizing: border-box">
+									<h3>Eye tracking calibration</h3>
+										<p><br>To ensure that the data collected is high-quality, and to reduce the likelihood that you will need to recalibrate, proceed with this experiment <b>only if there is daylight outside.</b><br>
 										<ul>
 											<li>If you are using a laptop, turn as much as possible toward your window and try to get the daylight onto your beautiful face, or go outside.</li>
 											<li>If you are using a desktop, please continue only if the daylight from your window is not coming from behind you.</li>
 										</ul>
 										If possible, make as much daylight enter your room as possible (e.g. by opening curtains). It is ideal if your webcam is positioned on the same monitor used to view this page.</p><br>
-										<button id='goto-phase-one'>Continue</button>`;
-      document.getElementById("goto-phase-one").addEventListener("click", calPhaseOne);
-    }
+										</section>
+									<button id='goto-phase-one' style="margin-left: 10px">Continue</button>`;
+    document.getElementById("goto-phase-one").addEventListener("click", calPhaseOne);
 
     function calPhaseOne() {
-      display_element.innerHTML = `<section>
-											<aside class="pre-post-params">
-												<fieldset id="roi-preview">
-													<legend>INPUT PREVIEW</legend>
-													<canvas id="net-input" width="128" height="128"></canvas>
-													<img src="../../plugin-meye-config/img/eyeExample.png" width="217" height="188">
-												</fieldset>
-												<fieldset id="filter-params">
-													<legend>Calibration</legend>
-													<div id="completion-div">
-														<b>0%</b> complete
+      display_element.innerHTML = `<section style="font-family: helvetica, arial, sans-serif; width: 100%; height: 100%; margin: 0; display: flex; flex-flow: row nowrap; box-sizing: border-box">
+										<aside class="pre-post-params">
+											<fieldset id="roi-preview" style="display: flex; flex-direction: column; width: 200px; border: none; background-color: #eee; margin: 5px; line-height: 1.6em">
+												<legend style="font-size: 0.9em; background-color: gainsboro; text-transform: uppercase; padding: 0px 10px">INPUT PREVIEW</legend>
+												<canvas id="net-input" width="128" height="128"></canvas>
+												<img src="../../plugin-meye-config/img/eyeExample.png" width="217" height="188">
+											</fieldset>
+											<fieldset id="filter-params" style="display: flex; flex-direction: column; width: 200px; border: none; background-color: #eee; margin: 5px; line-height: 1.6em">
+												<legend style="font-size: 0.9em; background-color: gainsboro; text-transform: uppercase; padding: 0px 10px">Calibration</legend>
+												<div id="completion-div">
+													<b>0%</b> complete
+												</div>
+											</fieldset>
+										</aside>
+
+										<aside class="pre-post-params">
+											<fieldset id="video-params" style="display: flex; flex-direction: column; width: 200px; border: none; background-color: #eee; margin: 5px; line-height: 1.6em">
+												<legend style="display: flex; align-items: center; font-size: 0.9em; background-color: gainsboro; text-transform: uppercase; padding: 0px 10px">
+													<div class="flex-legend">
+														Output
+														<label style="margin-left: 15px"><meter id="fps-meter" min=0 low=8 optimum=24 max=30></meter> FPS: <span id="fps-preview"></span></label>
+														<label id="backend-preview" style="font-size: .75em; text-transform: none">(Backend: <span id="backend-text"></span>)</label>
 													</div>
-												</fieldset>
-											</aside>
+												</legend>
+												<div id="preview" style="padding: 0; border: 0; margin: 0; position: relative; display: inline-block">
+													<div id="roi" style="overflow: auto; position: absolute; border: 1px dashed red; margin: 0; padding: 0; background-color: red; opacity: 0.5; z-index: 7; box-sizing: content-box; overflow: hidden; pointer-events: none">
+														<div draggable="true" id="roi-dragger" style="-khtml-user-drag: element; -webkit-user-drag: element; cursor: grab; top: 0; left: 0; background-image: url('/packages/plugin-meye-config/img/baseline_open_with_white_18dp.png'); pointer-events: auto; position: absolute; height: 20%; width: 20%; min-width: 24px; min-height: 24px; max-width: 32px; max-height: 32px; display: block; z-index: 9; background-size: 80%; background-repeat: no-repeat; background-position: center center; border: 0; padding: 0; margin: 0; visibility: hidden"></div>
+														<div draggable="true" id="roi-resizer" style="-khtml-user-drag: element; -webkit-user-drag: element; cursor: se-resize; bottom: 0; right: 0; background-image: url('/packages/plugin-meye-config/img/baseline_open_in_full_white_18dp.png'); -webkit-transform: scaleX(-1); -moz-transform: scaleX(-1); -o-transform: scaleX(-1); transform: scaleX(-1); filter: FlipH; -ms-filter: 'FlipH'; pointer-events: auto; position: absolute; height: 20%; width: 20%; min-width: 24px; min-height: 24px; max-width: 32px; max-height: 32px; display: block; z-index: 9; background-size: 80%; background-repeat: no-repeat; background-position: center center; border: 0; padding: 0; margin: 0; visibility: hidden"></div>
+														<canvas id="output" style="resize: both; position: absolute; top: 0; width: 100%; height: 100%; border: 0; box-sizing: border-box; z-index: 8"></canvas>
+													</div>
+													<div id="pupil-x" style="z-index: 10; display: none; position: absolute; box-sizing: border-box; top: 0; width: 1px; border-right: 1px dashed rgba(255, 0, 0, 0.7);"></div>
+													<div id="pupil-y" style="z-index: 10; display: none; position: absolute; box-sizing: border-box; left: 0; height: 1px; border-bottom: 1px dashed rgba(255, 0, 0, 0.7);"></div>
+													<video id="webcam" style="display: inline-block; z-index: 5"></video>
+												</div>	
+											</fieldset>
+										</aside>
 
-											<aside class="pre-post-params">
-												<fieldset id="video-params">
-													<legend>
-														<div class="flex-legend">
-															Output
-															<label><meter id="fps-meter" min=0 low=8 optimum=24 max=30></meter> FPS: <span id="fps-preview"></span></label>
-															<label id="backend-preview">(Backend: <span id="backend-text"></span>)</label>
-														</div>
-													</legend>
-													<div id="preview">
-														<div id="roi">
-															<div draggable="true" id="roi-dragger"></div>
-															<div draggable="true" id="roi-resizer"></div>
-															<canvas id="output"></canvas>
-														</div>
-														<div id="pupil-x"></div>
-														<div id="pupil-y"></div>
-														<video id="webcam"></video>
-													</div>	
-												</fieldset>
-											</aside>
-
-											<aside class="pre-post-params" id="info-box">
-												<h3>Calibration</h3>
-												<p>Measuring your computer's power...<br><b>Please do not leave this window until this is done.</b><br>It will only take a few seconds 🥵</p>
-											</aside>
-										</section>`;
-
+										<aside id="info-box">
+											<h3>Calibration</h3>
+											<p>Measuring your computer's power...<br><b>Please do not leave this window until this is done.</b><br>It will only take a few seconds 🥵</p>
+										</aside>
+									</section>`;
       calPhaseOneSetup();
-    }
-
-    function cleanHTML() {
-      display_element.innerHTML = "";
-      document.getElementById("plugin-meye-config-stylesheet").remove();
     }
 
     var input,
@@ -148,7 +122,6 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       rx,
       ry,
       rs,
-      observer,
       calibrateBtn,
       freezeBtn,
       invertGuiBtn,
@@ -211,10 +184,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
       videoStream = null;
       resetRoi();
-
-      // Check if webcam is supported
-      if (getUserMediaSupported()) toggleCam();
-      else console.warn("getUserMedia() is not supported by your browser");
+      toggleCam();
 
       video.addEventListener("loadedmetadata", showRoi);
       video.addEventListener("loadeddata", () => {
@@ -229,12 +199,6 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
       roiDragger.addEventListener("dragstart", dragstart);
       roiResizer.addEventListener("dragstart", resizestart);
-
-      observer = new MutationObserver(() => {
-        updatePrediction(30);
-      }).observe(roi, {
-        attributes: true,
-      });
 
       loadModel().then(() => {
         var backend = tf.getBackend();
@@ -270,16 +234,18 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       };
 
       // Activate the webcam stream.
-      navigator.mediaDevices.getUserMedia(constraints).then(
-        (stream) => {
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then((stream) => {
           videoStream = stream;
           video.srcObject = stream;
-        },
-
-        () => {
-          console.log("error");
-        }
-      );
+        })
+        .catch((err) => {
+          console.error(
+            err +
+              ". Check that your webcam is plugged in and nothing else is using it, then refresh the page."
+          );
+        });
     }
 
     function resetRoi() {
@@ -399,12 +365,6 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       event.preventDefault();
       return false;
     }
-
-    var pupilOutput = document.createElement("div");
-    pupilOutput.id = "pupil-output";
-
-    var pupilOutputText = document.createTextNode("mEye pupil area:");
-    pupilOutput.appendChild(pupilOutputText);
 
     function updatePupilLocator(x, y) {
       if (x < 0 || y < 0) pupilXLocator.style.display = pupilYLocator.style.display = "none";

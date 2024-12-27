@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-pipe",
   "version": "0.4.0",
-  "description": "jsPsych plugin to faciliate communication with DataPipe (https://pipe.jspsych.org)",
+  "description": "jsPsych plugin to faciliate communication with [DataPipe](https://pipe.jspsych.org)",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -27,7 +27,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-pipe"
   },
-  "author": "Josh de Leeuw",
+  "author": {
+    "name": "Josh de Leeuw",
+    "url": "https://github.com/jodeleeuw"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

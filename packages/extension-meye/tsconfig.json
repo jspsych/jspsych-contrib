@@ -2,7 +2,8 @@
   "extends": "@jspsych/config/tsconfig.contrib.json",
   "compilerOptions": {
 	"module": "esnext",
-    "baseUrl": "."
+    "baseUrl": ".",
+	"types": ["node"]
   },
   "include": ["src"]
 }

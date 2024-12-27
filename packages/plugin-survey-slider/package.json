@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-survey-slider",
   "version": "1.0.0",
-  "description": "Add several analogue scales on the same page for use in questionnaires",
+  "description": "Add several analogue scales on the same page for use in questionnaires.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -27,7 +27,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-survey-slider"
   },
-  "author": "Dominique Makowski",
+  "author": {
+    "name": "Dominique Makowski",
+    "url": "https://github.com/DominiqueMakowski"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

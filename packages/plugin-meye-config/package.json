@@ -12,6 +12,6 @@
   "author": "Adam Vasarhelyi",
   "license": "ISC",
   "dependencies": {
-	  "@tensorflow/tfjs": ""
+	  "@tensorflow/tfjs": "^4.22.0"
   }
 }

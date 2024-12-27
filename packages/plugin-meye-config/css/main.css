@@ -192,39 +192,7 @@ input[type=number] {
     border-bottom: 1px dashed rgba(255, 0, 0, 0.7);
 }
 
-#pupil-x span,
-#pupil-y span {
-    position: absolute;
-    font-size: small;
-    font-family: monospace;
-    padding: 0;
-}
-
-#pupil-x span {
-    width: 100px;
-    top: calc(100% + 5px);
-    left: -50px;
-    line-height: 10px;
-    text-align: center;
-}
-
-#pupil-y span {
-    line-height: 32px;
-    top: -16px;
-    left: calc(100% + 5px);
-}
-
 video {
     display: inline-block;
     z-index: 5;
-}
-
-#pupil-output {
-	top: 0px;
-	left: 0px;
-	width: 250px;
-	height: 250px;
-	border-style: solid;
-	border-color: black;
-	background-color: white;
 }

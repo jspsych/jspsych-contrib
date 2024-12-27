@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/extension-mediapipe-face-mesh",
   "version": "2.0.0",
-  "description": "A jsPsych extension for online tracking of facial posture during trials using the MediaPipe Face Mesh library",
+  "description": "This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -25,7 +25,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/extension-mediapipe-face-mesh"
   },
-  "author": "C. Martin Grewe",
+  "author": {
+    "name": "C. Martin Grewe",
+    "url": "https://github.com/mgrewe"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

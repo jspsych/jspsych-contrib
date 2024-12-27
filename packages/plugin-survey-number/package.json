@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-survey-number",
   "version": "1.0.0",
-  "description": "Collects a number response in a text box",
+  "description": "This plugin displays a survey question and collects a numeric response.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -27,7 +27,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-survey-number"
   },
-  "author": "Josh de Leeuw",
+  "author": {
+    "name": "Josh de Leeuw",
+    "url": "https://github.com/jodeleeuw"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
