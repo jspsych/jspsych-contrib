@@ -26,4 +26,4 @@
 "@jspsych-contrib/plugin-pipe": minor
 ---
 
-Plugin updated to use jsPsych v8, with data now properly typed, proper audio integration, and unnecessary timeout/display clears removed. To use v7, check the README.md file for which version is compatible.
+Plugin updated to use jsPsych v8, with data now properly typed, proper audio integration, unnecessary timeout/display clears removed, and citations added if they exist. To use v7, check the README.md file for which version is compatible.

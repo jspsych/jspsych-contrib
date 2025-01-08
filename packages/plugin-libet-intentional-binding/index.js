@@ -254,6 +254,11 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
         },
       },
     },
+    citations: {
+      apa: "Michael Galang, C., Malik, R., Kinley, I., & Obhi, S. S. (2021). Studying sense of agency online: Can intentional binding be observed in uncontrolled online settings? Consciousness and Cognition, 95, 103217. https://doi.org/10.1016/j.concog.2021.103217 ",
+      bibtex:
+        "@article{Michael2021Studying, 	author = {Michael Galang, Carl and Malik, Rubina and Kinley, Isaac and Obhi, Sukhvinder S.}, 	journal = {Consciousness and Cognition}, 	doi = {10.1016/j.concog.2021.103217}, 	issn = {1053-8100}, 	year = {2021}, 	month = {oct 1}, 	pages = {103217}, 	publisher = {Elsevier}, 	title = {Studying sense of agency online: Can intentional binding be observed in uncontrolled online settings?}, 	url = {https://www.sciencedirect.com/science/article/abs/pii/S1053810021001434}, 	volume = {95}, }  ",
+    },
   };
 
   /**

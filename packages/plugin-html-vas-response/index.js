@@ -154,6 +154,11 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         },
       },
     },
+    citations: {
+      apa: "Kinley, I. (2022). A jsPsych plugin for visual analogue scales. PsyArXiv. https://doi.org/10.31234/osf.io/avj92 ",
+      bibtex:
+        "@article{Kinley2022jsPsych, 	author = {Kinley, Isaac}, 	journal = {PsyArXiv}, 	doi = {10.31234/osf.io/avj92}, 	issn = {2331-8422}, 	year = {2022}, 	month = {mar 7}, 	title = {A {jsPsych} plugin for visual analogue scales}, 	url = {https://osf.io/preprints/psyarxiv/avj92}, 	howpublished = {https://osf.io/preprints/psyarxiv/avj92}, }  ",
+    },
   };
 
   /**

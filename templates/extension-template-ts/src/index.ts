@@ -31,6 +31,8 @@ class ExtensionNameExtension implements JsPsychExtension {
       data2: {
         type: ParameterType.STRING,
       },
+      // prettier-ignore
+      citations: '__CITATIONS__',
     },
   };
 

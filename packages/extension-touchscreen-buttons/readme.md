@@ -10,12 +10,12 @@ This extension displays touch buttons that allow the participant to respond to s
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/extension-touchscreen-buttons@2.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/extension-touchscreen-buttons@2.1.0"></script>
 ```
 
 ## Compatibility
 
-jsPsych v7.0.
+jsPsych v7.0+.
 
 ## Documentation
 

@@ -1,0 +1,47 @@
+cff-version: "1.2.0"
+title: "A jsPsych touchscreen extension for behavioral research on touch-enabled interfaces"
+authors:
+- family-names: Strittmatter
+  given-names: Younes
+  orcid: "https://orcid.org/0000-0002-3414-2838"
+- family-names: Spitzer
+  given-names: Markus W. H.
+  orcid: "https://orcid.org/0000-0001-6040-1939"
+- family-names: Ging-Jehil
+  given-names: Nadja
+  orcid: "https://orcid.org/0000-0002-1071-0693"
+- family-names: Musslick
+  given-names: Sebastian
+  orcid: "https://orcid.org/0000-0002-8896-639X"
+contact:
+- family-names: Spitzer
+  given-names: Markus W. H.
+  orcid: "https://orcid.org/0000-0001-6040-1939"
+doi: 10.5281/zenodo.7702307
+message: If you use this extension, please cite our article in Behavior Research Methods.
+preferred-citation:
+  authors:
+  - family-names: Strittmatter
+    given-names: Younes
+    orcid: "https://orcid.org/0000-0002-3414-2838"
+  - family-names: Spitzer
+    given-names: Markus W. H.
+    orcid: "https://orcid.org/0000-0001-6040-1939"
+  - family-names: Ging-Jehil
+    given-names: Nadja
+    orcid: "https://orcid.org/0000-0002-1071-0693"
+  - family-names: Musslick
+    given-names: Sebastian
+    orcid: "https://orcid.org/0000-0002-8896-639X"
+  date-published: 2024-07-12
+  doi: 10.3758/s13428-024-02454-9
+  issn: 1554-3528
+  issue: 7
+  journal: Behavior Research Methods
+  publisher:
+    name: Springer
+  start: 7814
+  title: "A jsPsych touchscreen extension for behavioral research on touch-enabled interfaces"
+  type: article
+  url: "https://link.springer.com/article/10.3758/s13428-024-02454-9"
+  volume: 56
