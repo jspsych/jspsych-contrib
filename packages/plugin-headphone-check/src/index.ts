@@ -387,11 +387,12 @@ class HeadphoneCheckPlugin implements JsPsychPlugin<Info> {
     this.calibrationAudioResource.play();
   }
 
-  /** finished up with play, reinstate new calibration attempt. */
+  /** finished up with play, reinstate new calibration attempt or go next. */
   private handleCalibrationAudioEnd() {
     this.calibrationAudioResource.stop();
     this.cleanupCalibration();
-    this.beginCalibration();
+    if (this.calibrationCounter > 0) this.beginCalibration();
+    else this.beginCheck();
   }
 
   /** clear display and event listeners */
