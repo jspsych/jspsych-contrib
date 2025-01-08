@@ -10,7 +10,6 @@
 
 <body></body>
 <script>
-  // --- NOTE: do not use live server as you'll have to deal with a CORS error, just run this experiment from the file explorer ---
   const jsPsych = initJsPsych({
     on_finish: function() {
       jsPsych.data.displayData();
@@ -25,7 +24,10 @@
   // this trial uses the default configuration described in the original headphonecheck
   // https://github.com/mcdermottLab/HeadphoneCheck?tab=readme-ov-file#configure-and-start-the-headphone-check
   const trial = {
-    type: jsPsychHeadphoneCheck
+    type: jsPsychHeadphoneCheck,
+    stimuli: ["./audio/antiphase_HC_ISO.wav", "./audio/antiphase_HC_IOS.wav", "./audio/antiphase_HC_SOI.wav", "./audio/antiphase_HC_SIO.wav", "./audio/antiphase_HC_OSI.wav", "./audio/antiphase_HC_OIS.wav"],
+    correct: [2, 3, 1, 1, 2, 3],
+    calibration_stimulus: "./audio/noise_calib_stim.wav"
   };
 
   jsPsych.run([preload, trial])

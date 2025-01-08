@@ -1,6 +1,6 @@
 # headphone-check
 
-Allows for one to check if a participant is wearing headphones using an auditory task.
+Allows for one to check if a participant is wearing headphones using an auditory task. Adapted from the original [HeadphoneCheck](https://github.com/mcdermottLab/HeadphoneCheck) repository, which adapts from the paper [Woods KJP, Siegel MH, Traer J & McDermott JH (2017) Headphone screening to facilitate web-based auditory experiments. Attention, Perception & Psychophysics.](http://mcdermottlab.mit.edu/papers/Woods_etal_2017_headphone_screening.pdf).
 
 ## Parameters
 
@@ -8,8 +8,8 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 
 | Parameter | Type    | Default Value      | Description        |
 | --------- | ------- | ------------------ | ------------------ |
-| stimuli   | array of audio files | *undefined* | The list of tones that will be played. |
-| correct   | array of integers | *undefined* | The list of correct answers, corresponding to each tone. Each number in the array is between 1-3, corresponding to the first, second, and third being the correct response. |
+| stimuli   | array of audio files | see aws file names | The list of tones that will be played. |
+| correct   | array of integers | `[2, 3, 1, 1, 2, 3]` | The list of correct answers, corresponding to each tone. Each number in the array is between 1-3, corresponding to the first, second, and third being the correct response. |
 | total_trials | integer | 6 | Number of trials that will be played. |
 | threshold | integer | 5 | Threshold of correct trials needed to pass the headphone screening. |
 | trials_per_page | integer | 3 | Number of trials that are rendered on a single page. Must be a factor of `total_trials` so each page gets their own equal set of trials. |
@@ -21,10 +21,25 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | shuffle | boolean | `true` | If true, the trials will be shuffled before being displayed to the participant. |
 | sample_with_replacement | boolean | `false` | If true, on shuffle, the trials will be shuffled with replacement, meaning some trials may contain duplicates. |
 | calibration | boolean | `true` | If true, a calibration sound will be played to allow the participant to adjust their volume. |
-| calibration_stimulus | audio file | `null` | The audio file that will be played for calibration. | 
+| calibration_stimulus | audio file | see aws file name | The audio file that will be played for calibration. | 
 | calibration_prompt | function | ``function (calibration_counter: number) { return `<p>Calibrating Volume: Press the play button below to play a sound. <br> Adjust the volume of the sound to a comfortable level, and click continue when you are ready. <br> You have ${calibration_counter} calibration attempts remaining.</p>`;}`` | A function taking in the current amount of calibration attempts, which acts to present this info along with a stimulus to the participant above the calibration button. |
 | calibration_attempts | integer | 3 | The amount of times the user may play the calibration sound. |
 
+### Default Configuration with AWS Files
+
+The plugin is meant to work out of the box with as little setup as possible. The stimuli files, as shown in the original paper, are hosted on the following links:
+```javascript
+[
+  "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/antiphase_HC_ISO.wav",
+  "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/antiphase_HC_IOS.wav",
+  "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/antiphase_HC_SOI.wav",
+  "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/antiphase_HC_SIO.wav",
+  "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/antiphase_HC_OSI.wav",
+  "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/antiphase_HC_OIS.wav",
+]
+```
+
+The default calibration file is found on `"https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/noise_calib_stim.wav"`.
 
 ## Data Generated
 
@@ -62,16 +77,23 @@ import HeadphoneCheck from '@jspsych-contrib/plugin-headphone-check';
 
 ## Examples
 
-### Basic Headphone Check
+### Basic Configuration
 This example mimics the default configurations in the [original Headphone Check](https://github.com/mcdermottLab/HeadphoneCheck) plugin.
+
+```javascript
+var trial = {
+  type: jsPsychHeadphoneCheck,
+}
+```
+
+### File System Configuration
+If you'd like to use custom sounds or just source the files locally, see below. **Note**: make sure if you're using custom sounds, change the value of the `correct` field or you will be getting incorrect readings!
 
 ```javascript
 var trial = {
   type: jsPsychHeadphoneCheck,
   stimuli: ["./audio/antiphase_HC_ISO.wav", "./audio/antiphase_HC_IOS.wav", "./audio/antiphase_HC_SOI.wav", "./audio/antiphase_HC_SIO.wav", "./audio/antiphase_HC_OSI.wav", "./audio/antiphase_HC_OIS.wav"],
   correct: [2, 3, 1, 1, 2, 3],
-  calibration_stimulus: "./audio/noise_calib_stim.wav",
-  sample_with_replacement: true,
-  sequential: true,
-}
+  calibration_stimulus: "./audio/noise_calib_stim.wav"
+};
 ```

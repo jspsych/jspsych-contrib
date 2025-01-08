@@ -8,17 +8,26 @@ const info = <const>{
   name: "headphone-check",
   version: version,
   parameters: {
-    /** The list of tones that will be played. */
+    /** The list of tones that will be played. The default will use the
+     * original sounds presented in the paper. */
     stimuli: {
       type: ParameterType.AUDIO,
-      default: undefined,
+      default: [
+        "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/antiphase_HC_ISO.wav",
+        "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/antiphase_HC_IOS.wav",
+        "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/antiphase_HC_SOI.wav",
+        "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/antiphase_HC_SIO.wav",
+        "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/antiphase_HC_OSI.wav",
+        "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/antiphase_HC_OIS.wav",
+      ],
       array: true,
     },
     /** The list of correct answers, corresponding to each tone. Each number in the array is between 1-3,
-     * corresponding to the first, second, and third being the correct response. */
+     * corresponding to the first, second, and third being the correct response. The default value
+     * is meant to be used with the default stimuli. */
     correct: {
       type: ParameterType.INT,
-      default: undefined,
+      default: [2, 3, 1, 1, 2, 3],
       array: true,
     },
     /** Number of trials that will be played. */
@@ -61,7 +70,7 @@ const info = <const>{
     /** If true, each stimulus must be played and completed from first to last. */
     sequential: {
       type: ParameterType.BOOL,
-      default: false,
+      default: true,
     },
     /** If true, the trials will be shuffled before being displayed to the participant. */
     shuffle: {
@@ -71,7 +80,7 @@ const info = <const>{
     /** If true, on shuffle, the trials will be shuffled with replacement, meaning some trials may contain duplicates. */
     sample_with_replacement: {
       type: ParameterType.BOOL,
-      default: false,
+      default: true,
     },
     /** If true, a calibration sound will be played to allow the participant to adjust their volume. */
     calibration: {
@@ -81,7 +90,7 @@ const info = <const>{
     /** The audio file that will be played for calibration. */
     calibration_stimulus: {
       type: ParameterType.AUDIO,
-      default: null,
+      default: "https://s3.amazonaws.com/mcd-headphone-check/v1.0/assets/noise_calib_stim.wav",
     },
     /** A function taking in the current amount of calibration attempts, which acts to present this info
      * along with a stimulus to the participant above the calibration button. */
