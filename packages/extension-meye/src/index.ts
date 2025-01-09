@@ -18,7 +18,6 @@ class MeyeExtension implements JsPsychExtension {
   static info: JsPsychExtensionInfo = {
     name: "meye-extension",
   };
-
   setup: () => void;
   threshold: number;
   rx: number;
@@ -56,9 +55,7 @@ class MeyeExtension implements JsPsychExtension {
   findZero: (array: Array<Array<number>>) => null | Array<number>;
   filledLastTrial: boolean;
 
-  // Not changing this from 'any' because 1) it leads to complicated issues outside of my current competence,
-  // 										2) it works when using any,
-  //										3) I'm not paid to investigate it further.
+  // Not changing this from 'any' because it leads to complicated issues outside of my current competence and currently works when using any.
   predictFrame: any;
 
   constructor(private jsPsych: JsPsych) {

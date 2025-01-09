@@ -3,7 +3,13 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 const info = <const>{
   name: "meye-config",
-  parameters: {},
+  parameters: {
+	/** Determines whether the plugin will be calibrated using an automatic algorithm versus manual calibration by the participant. */
+	auto_calibrate: {
+		type: ParameterType.BOOL,
+		default: true
+	}
+  },
 };
 
 type Info = typeof info;
@@ -23,28 +29,10 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     console.log("Loaded TensorFlow.js - version: " + tf.version.tfjs);
-
-    // Setup event stuff
+	
     const passedPerformanceCheck = new Event("passedPerformanceCheck", { bubbles: true });
     const passedSetup2 = new Event("passedSetup2", { bubbles: true });
     const exit = new Event("exit", { bubbles: true });
-
-    display_element.addEventListener("dragover", dragover);
-    display_element.addEventListener("dragover", resizeover);
-    display_element.addEventListener("drop", drop);
-    display_element.addEventListener("exit", () => {
-      this.jsPsych.endExperiment();
-    });
-    display_element.addEventListener("passedPerformanceCheck", () => {
-      continueBtn.addEventListener("click", () => {
-        display_element.dispatchEvent(passedSetup2);
-      });
-    });
-
-    display_element.addEventListener("passedSetup2", () => {
-      var data = { settings: idealObject };
-      this.jsPsych.finishTrial(data);
-    });
 
     // Present instructions
     display_element.innerHTML = `<section style="font-family: helvetica, arial, sans-serif; width: 100%; height: 100%; margin: 10px; display: flex; flex-flow: column wrap; box-sizing: border-box">
@@ -54,13 +42,12 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 											<li>If you are using a laptop, turn as much as possible toward your window and try to get the daylight onto your beautiful face, or go outside.</li>
 											<li>If you are using a desktop, please continue only if the daylight from your window is not coming from behind you.</li>
 										</ul>
-										If possible, make as much daylight enter your room as possible (e.g. by opening curtains). It is ideal if your webcam is positioned on the same monitor used to view this page.</p><br>
-										</section>
-									<button id='goto-phase-one' style="margin-left: 10px">Continue</button>`;
-    document.getElementById("goto-phase-one").addEventListener("click", calPhaseOne);
-
-    function calPhaseOne() {
-      display_element.innerHTML = `<section style="font-family: helvetica, arial, sans-serif; width: 100%; height: 100%; margin: 0; display: flex; flex-flow: row nowrap; box-sizing: border-box">
+										<p>If possible, make as much daylight enter your room as possible (e.g. by opening curtains). It is ideal if your webcam is positioned on the same monitor used to view this page.</p>
+										<button id='goto-phase-one' style="width: fit-content">Continue</button>
+										</section>`;
+    
+	document.getElementById("goto-phase-one").addEventListener("click", () => {
+		display_element.innerHTML = `<section id="main" style="font-family: helvetica, arial, sans-serif; width: 100%; height: 100%; margin: 0; display: flex; flex-flow: row nowrap; box-sizing: border-box">
 										<aside class="pre-post-params">
 											<fieldset id="roi-preview" style="display: flex; flex-direction: column; width: 200px; border: none; background-color: #eee; margin: 5px; line-height: 1.6em">
 												<legend style="font-size: 0.9em; background-color: gainsboro; text-transform: uppercase; padding: 0px 10px">INPUT PREVIEW</legend>
@@ -96,53 +83,92 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 												</div>	
 											</fieldset>
 										</aside>
-
 										<aside id="info-box">
-											<h3>Calibration</h3>
-											<p>Measuring your computer's power...<br><b>Please do not leave this window until this is done.</b><br>It will only take a few seconds 🥵</p>
 										</aside>
 									</section>`;
-      calPhaseOneSetup();
-    }
 
-    var input,
-      output,
-      video,
-      roiDragger,
-      roiResizer,
-      roi,
-      pupilXLocator,
-      pupilYLocator,
-      phaseOneInfoDiv,
-      backendIndicator,
-      infoBox,
-      fpsPreview,
-      fpsMeter,
-      videoStream,
-      rx,
-      ry,
-      rs,
-      calibrateBtn,
-      freezeBtn,
-      invertGuiBtn,
-      continueBtn,
-      ruleCheck,
-      completeMessage,
-      beginInterval,
-      updatePredictionTimeout,
-      idealObject,
-      mode,
-      totalPa,
-      totalPx,
-      totalPy,
-      totalRx,
-      totalRy,
-      brightnessFactor,
-      timeToSubtract,
-      contrastFactor,
-      gammaFactor,
-      threshold,
-      exitBtn;
+		mainDisplayElement = document.getElementById("main");
+
+		mainDisplayElement.addEventListener("dragover", dragover);
+		mainDisplayElement.addEventListener("dragover", resizeover);
+		mainDisplayElement.addEventListener("drop", drop);
+		mainDisplayElement.addEventListener("exit", () => {
+		  this.jsPsych.endExperiment();
+		});
+		mainDisplayElement.addEventListener("passedPerformanceCheck", () => {
+		  continueBtn.addEventListener("click", () => {
+			mainDisplayElement.dispatchEvent(passedSetup2);
+		  });
+		});
+
+		mainDisplayElement.addEventListener("passedSetup2", () => {
+		  data = { settings: idealObject };
+		  this.jsPsych.finishTrial(data);
+		});
+		
+		// This is so the event stuff above works when the mouse crosses the entire screen, not just the trimmed-down display_element.
+		mainDisplayElement.style.height = "100%";
+		mainDisplayElement.style.position = "fixed";
+			
+		if (trial.auto_calibrate) {
+			document.getElementById("info-box").innerHTML = `<h3>Calibration</h3>
+									<p>Measuring your computer's power...<br><b>Please do not leave this window until this is done.</b><br>It will only take a few seconds 🥵</p>`;
+		}
+		
+		calPhaseOneSetup();
+    });
+
+    var mainDisplayElement,
+		input,
+		output,
+		video,
+		roiDragger,
+		roiResizer,
+		roi,
+		pupilXLocator,
+		pupilYLocator,
+		phaseOneInfoDiv,
+		backendIndicator,
+		infoBox,
+		fpsPreview,
+		fpsMeter,
+		videoStream,
+		rx,
+		ry,
+		rs,
+		calibrateBtn,
+		freezeBtn,
+		invertGuiBtn,
+		continueBtn,
+		ruleCheck,
+		freezeWarning,
+		controlThrPreview,
+		controlThr,
+		completeMessage,
+		beginInterval,
+		updatePredictionTimeout,
+		idealObject,
+		mode,
+		totalPa,
+		totalPx,
+		totalPy,
+		totalRx,
+		totalRy,
+		brightnessFactor,
+		timeToSubtract,
+		contrastFactor,
+		gammaFactor,
+		threshold,
+		exitBtn,
+		data: { settings: {
+		  avgPa: number 
+		  avgPx: number,
+		  avgPy: number,
+		  avgRx: number,
+		  avgRy: number,
+		  roiSize: number,
+		  threshValue: number,
+		}};
 
     var thresholdsPerVariance = 9; // Somewhat arbitrarily picked.
     var rgb = tf.tensor1d([0.2989, 0.587, 0.114]);
@@ -168,46 +194,46 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
     var benchmark = 0.0;
 
     function calPhaseOneSetup() {
-      input = document.getElementById("net-input");
-      output = document.getElementById("output");
-      video = document.getElementById("webcam");
-      roiDragger = document.getElementById("roi-dragger");
-      roiResizer = document.getElementById("roi-resizer");
-      roi = document.getElementById("roi");
-      pupilXLocator = document.getElementById("pupil-x");
-      pupilYLocator = document.getElementById("pupil-y");
-      phaseOneInfoDiv = document.getElementById("completion-div");
-      backendIndicator = document.getElementById("backend-text");
-      infoBox = document.getElementById("info-box");
-      fpsPreview = document.getElementById("fps-preview");
-      fpsMeter = document.getElementById("fps-meter");
+		input = document.getElementById("net-input");
+		output = document.getElementById("output");
+		video = document.getElementById("webcam");
+		roiDragger = document.getElementById("roi-dragger");
+		roiResizer = document.getElementById("roi-resizer");
+		roi = document.getElementById("roi");
+		pupilXLocator = document.getElementById("pupil-x");
+		pupilYLocator = document.getElementById("pupil-y");
+		phaseOneInfoDiv = document.getElementById("completion-div");
+		backendIndicator = document.getElementById("backend-text");
+		infoBox = document.getElementById("info-box");
+		fpsPreview = document.getElementById("fps-preview");
+		fpsMeter = document.getElementById("fps-meter");
+		
+		videoStream = null;
+		resetRoi();
+		toggleCam();
 
-      videoStream = null;
-      resetRoi();
-      toggleCam();
+		video.addEventListener("loadedmetadata", showRoi);
+		video.addEventListener("loadeddata", () => {
+			video.muted = true;
+			video.volume = 0;
+		});
 
-      video.addEventListener("loadedmetadata", showRoi);
-      video.addEventListener("loadeddata", () => {
-        video.muted = true;
-        video.volume = 0;
-      });
+		video.addEventListener("canplaythrough", () => {
+			video.play();
+			updatePrediction(null);
+		});
 
-      video.addEventListener("canplaythrough", () => {
-        video.play();
-        updatePrediction(null);
-      });
+		roiDragger.addEventListener("dragstart", dragstart);
+		roiResizer.addEventListener("dragstart", resizestart);
 
-      roiDragger.addEventListener("dragstart", dragstart);
-      roiResizer.addEventListener("dragstart", resizestart);
+		loadModel().then(() => {
+			var backend = tf.getBackend();
+			var styleClass = backend != "cpu" ? "accelerated" : "non-accelerated";
 
-      loadModel().then(() => {
-        var backend = tf.getBackend();
-        var styleClass = backend != "cpu" ? "accelerated" : "non-accelerated";
-
-        backend = backend == "webgl" ? "WebGL" : backend.toUpperCase();
-        backendIndicator.textContent = backend;
-        backendIndicator.classList.add(styleClass);
-      });
+			backend = backend == "webgl" ? "WebGL" : backend.toUpperCase();
+			backendIndicator.textContent = backend;
+			backendIndicator.classList.add(styleClass);
+		});
 
       setInterval(computeFps, 1000);
     }
@@ -293,6 +319,8 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
       event.dataTransfer.setDragImage(new Image(), 0, 0);
       event.dataTransfer.effectAllowed = "move";
+	  
+	  
     }
 
     function dragover(event) {
@@ -367,8 +395,9 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
     }
 
     function updatePupilLocator(x, y) {
-      if (x < 0 || y < 0) pupilXLocator.style.display = pupilYLocator.style.display = "none";
-      else {
+      if (x < 0 || y < 0) {
+	    pupilXLocator.style.display = pupilYLocator.style.display = "none";
+	  } else {
         pupilXLocator.style.left = x + "px";
         pupilXLocator.style.height = video.videoHeight + "px";
 
@@ -400,8 +429,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       var s = parseInt(rs);
 
       // Now var's start classifying a frame in the stream.
-      var frame: any = true;
-      frame = tf.browser
+      var frame: any = tf.browser
         .fromPixels(video, 3)
         .slice([y, x], [s, s])
         .resizeBilinear([128, 128])
@@ -571,13 +599,19 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
             pupilArea = keepLargestComponent(pupil);
             pupilArea += fillHoles(pupil);
 
-            [pupilX, pupilY] = findCentroid(pupil);
-            var x = parseInt(rx);
-            var y = parseInt(ry);
-            var s = parseInt(rs);
-
-            pupilX = (pupilX * s) / 128 + x;
-            pupilY = (pupilY * s) / 128 + y;
+            if (freezeROI) {
+			  var midRoiX = (rs / 2) + rx;
+			  var midRoiY = (rs / 2) + ry;
+			  [pupilX, pupilY] = [midRoiX, midRoiY];
+			} else {
+			  [pupilX, pupilY] = findCentroid(pupil);
+              var x = parseInt(rx);
+              var y = parseInt(ry);
+              var s = parseInt(rs);
+			
+              pupilX = (pupilX * s) / 128 + x;
+              pupilY = (pupilY * s) / 128 + y;
+			}
           }
 
           updatePupilLocator(pupilX, pupilY);
@@ -607,7 +641,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
     function predictLoop() {
       // if no model OR performance check complete but not calibrating OR playback is started but video is not loaded, wait.
-      if (!model || mode == "standby" || (!video.paused && video.readyState < 3)) {
+      if (trial.auto_calibrate && (!model || mode == "standby" || (!video.paused && video.readyState < 3))) {
         window.requestAnimationFrame(predictLoop); // This literally just keeps the loop going.
         return;
       }
@@ -695,57 +729,71 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
     }
 
     function addSample(sample) {
-      // sorry for the spaghetti code uwu
-      var [timestamp, timecode, pupilArea, blinkProb, pupilX, pupilY] = sample;
+		// sorry for the spaghetti code uwu
+		var [timestamp, timecode, pupilArea, blinkProb, pupilX, pupilY] = sample;
 
-      if (mode == "calibrate") {
-        if (pupilArea != 0) {
-          samples.push(sample);
-          totalPa = totalPa + parseFloat(pupilArea.toFixed(2));
+		if (mode == "calibrate") {
+			if (pupilArea != 0) {
+				samples.push(sample);
+				totalPa = totalPa + pupilArea;
 
-          // We have this conditional because pupil x,y are both -1 if Meye can't detect the pupil, which throws off the true average calculated later.
-          if (pupilX > 0 && pupilY > 0) {
-            totalPx = totalPx + parseFloat(pupilX.toFixed(2));
-            totalPy = totalPy + parseFloat(pupilY.toFixed(2));
-          }
+				// We have this conditional because pupil x,y are both -1 if Meye can't detect the pupil, which throws off the true average calculated later.
+				if (pupilX > 0 && pupilY > 0) {
+					totalPx = totalPx + pupilX;
+					totalPy = totalPy + pupilY;
+				}
 
-          totalRx = totalRx + parseFloat(rx);
-          totalRy = totalRy + parseFloat(ry);
+				totalRx = totalRx + rx;
+				totalRy = totalRy + ry;
 
-          if (samples.length == samplesPerThresh) {
-            var thresholdDataObject = {
-              avgPa: totalPa / samplesPerThresh,
-              avgPx: totalPx / samplesPerThresh,
-              avgPy: totalPy / samplesPerThresh,
+				if (samples.length == samplesPerThresh) {
+				  var thresholdDataObject = {
+					  avgPa: totalPa / samplesPerThresh,
+					  avgPx: totalPx / samplesPerThresh,
+					  avgPy: totalPy / samplesPerThresh,
+					  avgRx: Math.round(totalRx / samplesPerThresh),
+					  avgRy: Math.round(totalRy / samplesPerThresh),
+					  roiSize: rs,
+					  threshValue: parseFloat(threshHolder.toFixed(2)), // More decimal places are unnecessary bc of iteration size of threshold
+				  };
 
-              avgRx: Math.round(totalRx / samplesPerThresh),
-              avgRy: Math.round(totalRy / samplesPerThresh),
-              roiSize: rs,
-
-              threshValue: parseFloat(threshHolder.toFixed(2)), // More decimal places are unnecessary bc of iteration size of threshold
-            };
-
-            phaseOneInfoDiv.innerHTML = "<b>" + Math.round(threshHolder * 100) + "%</b> complete";
-            threshAvg.push(thresholdDataObject); // The zeroth threshAvg is when the threshold is at 0.01. The threshold is also a property of the object above.
-            threshHolder = parseFloat(threshHolder.toString()) + 0.01;
-            setThreshold();
-            clearData();
-          }
-        } else {
-          // Skip adding data object if any samples within it had Pa = 0. This is because Pa = 0 is really stinky data to calibrate off.
-          phaseOneInfoDiv.innerHTML = "<b>" + Math.round(threshHolder * 100) + "%</b> complete";
-          threshHolder = parseFloat(threshHolder.toString()) + 0.01;
-          setThreshold();
-        }
-      } else if (mode == "performanceCheck") {
-        if (avgFps > benchmark) benchmark = avgFps;
-        else if (avgFps < benchmark) {
-          analyzePerformance(benchmark);
-          clearData();
-          prepForCalibration();
-        }
-      }
-    }
+				  phaseOneInfoDiv.innerHTML = "<b>" + Math.round(threshHolder * 100) + "%</b> complete";
+				  threshAvg.push(thresholdDataObject); // The zeroth threshAvg is when the threshold is at 0.01. The threshold is also a property of the object above.
+				  threshHolder = parseFloat(threshHolder.toString()) + 0.01;
+				  setThreshold();
+				  clearData();
+				}
+			} else {
+				// Skip adding data object if any samples within it had Pa = 0. This is because Pa = 0 is really stinky data to calibrate off.
+				phaseOneInfoDiv.innerHTML = "<b>" + Math.round(threshHolder * 100) + "%</b> complete";
+				threshHolder = parseFloat(threshHolder.toString()) + 0.01;
+				setThreshold();
+			}
+		} else if (mode == "performanceCheck") {
+		  if (trial.auto_calibrate) {
+			if (avgFps > benchmark) {
+			  benchmark = avgFps;
+			} else if (avgFps < benchmark) {
+			  analyzePerformance(benchmark);
+			  clearData();
+			  prepForCalibration();
+			}
+		  } else {
+		    postPerformanceCheck();
+		    mode = "standby";
+		  } 
+		} else if (mode == "standby" && !trial.auto_calibrate) {
+		  idealObject = {
+			avgPa: pupilArea,
+			avgPx: pupilX,
+			avgPy: pupilY,
+			avgRx: rx,
+			avgRy: ry,
+			roiSize: rs,
+			threshValue: threshold,
+		  }
+		}
+	}
 
     function prepForCalibration() {
       mode = "standby";
@@ -755,16 +803,18 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       roi.style.width = roi.style.height = rs + "px";
       threshHolder = 1;
       setThreshold();
-
       phaseOneInfoDiv.innerHTML = "<b>0%</b> complete";
     }
 
     function ruleChecked() {
       if (ruleCheck.checked) {
-        calibrateBtn.disabled = false;
-        if (calibrated && calibrationSuccess) continueBtn.disabled = false;
-      } else calibrateBtn.disabled = continueBtn.disabled = true;
-    }
+        if (trial.auto_calibrate) calibrateBtn.disabled = false;
+        if ((calibrated && calibrationSuccess) || (!trial.auto_calibrate && continueBtn.disabled)) continueBtn.disabled = false;
+      } else {
+		if (trial.auto_calibrate) calibrateBtn.disabled;
+		continueBtn.disabled = true;
+      }
+	}
 
     function analyzePerformance(parsedBenchmark) {
       // Formula: (numberOfThresholds * samplesPerThreshold) / benchmark = secondsCalibrationTakes. numberOfThresholds = 99 (since we go from 0.01 to 1).
@@ -777,9 +827,15 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
           display_element.dispatchEvent(exit);
         });
       } else {
-        // Successful performance check
+		// Performance check was successful - client computer is powerful enough.
         samplesPerThresh = Math.floor((secondsCalibrationTakes * parsedBenchmark) / 99);
-        infoBox.innerHTML = `<h4>Step 1: Get as close as possible to the screen, but make sure that you can still see its corners without moving your head and that your webcam can still see an eye. It may help to rest your chin on your hand.</h4>
+		postPerformanceCheck();
+      }
+    }
+	
+	function postPerformanceCheck() {
+		if (trial.auto_calibrate) {
+			infoBox.innerHTML = `<h4>Step 1: Get as close as possible to the screen, but make sure that you can still see its corners without moving your head and that your webcam can still see an eye. It may help to rest your chin on your hand.</h4>
 									<h4>Step 2: Resize and reposition the red-edged square so that it covers your eyeball without extending past your plica semilunaris. The input preview and image to the side can help. It doesn't have to be perfect, and it's normal for the preview to be a still image when not calibrating.</h4> 
 									<h4>Step 3: Change your positioning if you see a white reflection in your <i>pupil</i>. This can be avoided if light comes from the side, rather than the front.</h4>
 									<p>Red-edged box settings:</p>
@@ -787,31 +843,79 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 										<input type='button' id='invert-gui-btn' value='Hide / show box dragger and resizer'> 
 										<input type='button' id='freeze-btn' value='Freeze / unfreeze box position' disabled>
 									</form>
-									<p>Calibration can take up to 20 seconds and can be reattempted. After you click calibrate below, do not blink, try not to look around while the completion percent rises, and ensure that you are comfortably positioned. Although unlikely, your camera's software may allow you to zoom in or adjust brightness.</p>
+									<p>Calibration can take up to 20 seconds and can be reattempted. After you click calibrate below, do not blink nor try to look around while the completion percent rises, and ensure that you are comfortably positioned. Although unlikely, your camera's software may allow you to zoom in or adjust brightness.</p>
 									<p>From the moment that calibration starts to the end of participation, the experiment requires that you keep your head and camera as still as possible, and your lighting as constant as possible.</p>
 									<form>
 										<input type='checkbox' id='rule-confirm'>Okay!<br>
 										<input type='button' id='calibrate-btn' value='Calibrate' disabled> 
-										<input type='button' id='continue-btn' value='Continue' disabled></form>
-									<p id='complete-message'></p>`;
+										<input type='button' id='continue-btn' value='Continue' disabled>
+									</form>
+									<p id='complete-message'></p>
+									<p id='freeze-warning' style="color: red"></p>`;
+			
+			calibrateBtn = document.getElementById("calibrate-btn");
+			calibrateBtn.addEventListener("click", startCalibration);
+		} else {
+			infoBox.innerHTML = `<h4>Step 1: Get as close as possible to the screen, but make sure that you can still see its corners without moving your head and that your webcam can still see an eye. It may help to rest your chin on your hand.</h4>
+									<h4>Step 2: Resize and reposition the red-edged square so that it covers your eyeball without extending past your plica semilunaris. The input preview and image to the side can help. It doesn't have to be perfect, and it's normal for the preview to be a still image when not calibrating.</h4> 
+									<h4>Step 3: Change your positioning if you see a white reflection in your <i>pupil</i>. This can be avoided if light comes from the side, rather than the front.</h4>
+									<p>Red-edged box settings:</p>
+									<form>
+										<input type='button' id='invert-gui-btn' value='Hide / show box dragger and resizer'> 
+										<input type='button' id='freeze-btn' value='Freeze / unfreeze box position'>
+									</form>
+									<p>Ensure that you're comfortably positioned. Although unlikely, your camera's software may allow you to zoom in or adjust brightness.</p>
+									Input a number or use the slider to change the sensitivity of pupil detection:<br><input type="number" min="0" max="1" step="0.01" value="0.01" id="control-thr-preview">
+									<label><input type="range" min="0" max="1" step="0.01" id="control-thr"></label><br>
+									<p>After you've configured the settings as best as you can, the experiment requires that you keep your head and camera as still as possible, and your lighting as constant as possible.</p>
+									<form>
+										<input type='checkbox' id='rule-confirm'>Okay!<br>
+										<input type='button' id='continue-btn' value='Continue' disabled>
+									</form>
+									<p id='freeze-warning' style="color: red"></p>`;
+									
+			controlThrPreview = document.getElementById("control-thr-preview");
+			controlThr = document.getElementById("control-thr");
+			
+			// I used 1 - threshold in the following code and event handlers so that the GUI presents participants with increasing numbers = increasing sensitivity since I thought this would be more intuitive
+			controlThrPreview.value = controlThr.value = 1 - threshold;
+			
+			controlThrPreview.addEventListener("input", (e) => {
+				// Setting threshold to 0 (i.e., the GUI to 1) crashes the software even with the original meye (when morphology is enabled, which it is for js-mEye), so the following conditional safeguards against this.
+				if (e.target.value > 0.99) {
+				  e.target.value = 0.99;
+				}
+				controlThr.value = e.target.value;
+				threshHolder = 1 - e.target.value;
+				setThreshold();
+			});
+			
+			controlThr.addEventListener("input", (e) => {
+				if (e.target.value > 0.99) {
+				  e.target.value = 0.99;
+				}
+				controlThrPreview.value = e.target.value;
+				threshHolder = 1 - e.target.value;
+				setThreshold();
+			});
+		}
 
-        // Initialize page elements that we just added
-        calibrateBtn = document.getElementById("calibrate-btn");
+        // Initialize common page elements that we just added
         freezeBtn = document.getElementById("freeze-btn");
+		freezeWarning = document.getElementById("freeze-warning");
         invertGuiBtn = document.getElementById("invert-gui-btn");
         continueBtn = document.getElementById("continue-btn");
         ruleCheck = document.getElementById("rule-confirm");
         completeMessage = document.getElementById("complete-message");
 
         ruleCheck.addEventListener("click", ruleChecked);
-        calibrateBtn.addEventListener("click", startCalibration);
         invertGuiBtn.addEventListener("click", invertRoiGUI);
         freezeBtn.addEventListener("click", toggleRoiFreeze);
-
-        display_element.dispatchEvent(passedPerformanceCheck);
+		
+		mainDisplayElement.dispatchEvent(passedPerformanceCheck);
+		
         showRoiGUI();
-      }
-    }
+	}
 
     function invertRoiGUI() {
       if (roiDragger.style.visibility == "visible" && roiResizer.style.visibility == "visible")
@@ -831,8 +935,13 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
     var freezeROI = false;
 
     function toggleRoiFreeze() {
-      if (freezeROI) freezeROI = false;
-      else freezeROI = true;
+      if (freezeROI) {
+	    freezeROI = false;
+		freezeWarning.innerHTML = ``;
+	  } else {
+	    freezeROI = true;
+		freezeWarning.innerHTML = `You must unfreeze the box to continue.`;
+	  }
     }
 
     function calculateOptimal() {
@@ -847,8 +956,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
           // Get band average
           for (var c = b; c < b + thresholdsPerVariance; c++) bandTotal += threshAvg[c].avgPa;
-          var bandAvg: any = true;
-          bandAvg = (bandTotal / thresholdsPerVariance).toFixed(4);
+          var bandAvg: number = Number((bandTotal / thresholdsPerVariance).toFixed(4));
 
           // Get band variability
           for (var c = b; c < b + thresholdsPerVariance; c++)
@@ -879,7 +987,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
         rx = idealObject.avgRx;
         ry = idealObject.avgRy;
         setRoi();
-        threshHolder = idealObject.threshValue;
+        threshHolder = idealObject.threshValue; // TODO parse this to setThreshold instead of setting separately
         setThreshold();
 
         phaseOneInfoDiv.innerHTML = "<b>Wowie, it's done!</b>";
@@ -892,12 +1000,14 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
       // Housekeeping
       calibrateBtn.value = "Recalibrate";
+	  
       calibrateBtn.disabled =
         ruleCheck.disabled =
         freezeBtn.disabled =
         invertGuiBtn.disabled =
         continueBtn.disabled =
           false;
+		  
       showRoiGUI();
       clearData();
     }

@@ -8,7 +8,11 @@ Minimum requirements are a 720p 30fps webcam. This plugin must be called as a tr
 
 ## Parameters
 
-This plugin takes no parameters. 
+In addition to the [parameters available in all plugins](../overview/plugins.md#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of *undefined* must be specified. Other parameters can be left unspecified if the default value is acceptable.
+
+Parameter | Type | Default Value | Description
+----------|------|---------------|------------
+auto_calibrate | boolean | true | If enabled, the plugin will attempt to automatically configure its threshold for pupil detection. If disabled, GUI is presented to participants that lets them manually adjust this threshold.
 
 ## Data Generated
 
@@ -37,5 +41,6 @@ Using the downloaded jspsych-contrib folder:
 ```javascript
 var meyeCalibrate = {
 	type: jsPsychMeyeConfig,
+	auto_calibrate: false,
 };
 ```
