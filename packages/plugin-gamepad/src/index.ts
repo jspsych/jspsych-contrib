@@ -1,13 +1,13 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
 import { GamepadModel, GamepadModels } from "./gamepad-model";
 
 const info = <const>{
   name: "gamepad",
+  version: version,
   parameters: {
-    /**
-     * The size of the canvas element
-     */
+    /** The size of the canvas element. */
     canvas_size: {
       type: ParameterType.INT,
       default: [500, 500],
@@ -80,6 +80,19 @@ const info = <const>{
       default: (_context: CanvasRenderingContext2D) => {},
     },
   },
+  data: {
+    /** The time in milliseconds for the participant to make a response. The time is measured from when the stimulus first
+     * began playing until the participant's response.
+     */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The gamepad inputs recorded during the trial. */
+    input: {
+      type: ParameterType.COMPLEX,
+      array: true,
+    },
+  },
 };
 
 type Info = typeof info;
@@ -87,7 +100,7 @@ type Info = typeof info;
 /**
  * **jspsych-gamepad**
  *
- * A jsPsych plugin for using gamepad in behavioral experiments.
+ * A jsPsych plugin for using a gamepad in behavioral experiments.
  *
  * @author Shaobin Jiang
  */
@@ -203,7 +216,6 @@ class GamepadPlugin implements JsPsychPlugin<Info> {
 
     let finish_trial: Function = (data: object) => {
       window.cancelAnimationFrame(this.animation_frame_id);
-      display_element.innerHTML = "";
       this.minature_gamepad_wrapper.remove();
       this.jsPsych.finishTrial(data);
     };

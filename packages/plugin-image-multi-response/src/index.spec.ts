@@ -53,12 +53,15 @@ describe("plugin-image-multi-response", () => {
   });
 
   test("display button html", async () => {
+    const buttonHtmlFn = jest.fn();
+    buttonHtmlFn.mockReturnValue("<button class='jspsych-custom-button'>buttonChoice</button>");
+
     const { getHTML } = await startTimeline([
       {
         type: imageMultiResponse,
         stimulus: "../media/blue.png",
         button_choices: ["buttonChoice"],
-        button_html: '<button class="jspsych-custom-button">%choice%</button>',
+        button_html: buttonHtmlFn,
       },
     ]);
 

@@ -1,7 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "survey-number",
+  version: version,
   parameters: {
     questions: {
       type: ParameterType.COMPLEX,
@@ -70,6 +73,17 @@ const info = <const>{
       type: ParameterType.BOOL,
       pretty_name: "Allow autocomplete",
       default: false,
+    },
+  },
+  data: {
+    /** The response time in milliseconds for the participant to make a response.
+     * The time is measured from when the stimulus first appears on the screen until the participant's response. */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** An object containing the string of the response given by the participant. */
+    response: {
+      type: ParameterType.OBJECT,
     },
   },
 };
@@ -212,7 +226,7 @@ class SurveyNumberPlugin implements JsPsychPlugin<Info> {
         rt: response_time,
         response: question_data,
       };
-      display_element.innerHTML = "";
+
       // next trial
       this.jsPsych.finishTrial(trialdata);
     });

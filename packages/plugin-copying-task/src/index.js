@@ -1,28 +1,17 @@
 /**
- * jspsych-copying-task
- * version 0.2
- *
- * Andre Sahakian (modified from Chris Jungerius (modified from Josh de Leeuw))
+ * **jspsych-copying-task**
  *
  * a jsPsych plugin for displaying a basic copying task.
- *
+ * @author Andre Sahakian (modified from Chris Jungerius (modified from Josh de Leeuw))
  * documentation: docs.jspsych.org
- *
- * * DONE:
- *  - ensure the right mouse click does not open a menu
- *  - ensure correctly placed items cannot be interacted with
- *  - the model and resource grids are passed as nested lists
- *
- * TO DO:
- *
- **/
-
+ */
 var jsPsychCopyingTask = (function (jspsych) {
   "use strict";
 
   const info = {
     name: "copying-task",
-    description: "",
+    version: "2.0.0",
+    description: "Add a copying task where one has to copy a model grid into a workspace grid.",
     parameters: {
       model_grid_contents: {
         type: jspsych.ParameterType.HTML_STRING,
@@ -158,12 +147,93 @@ var jsPsychCopyingTask = (function (jspsych) {
         description: "SVG paths of twenty items",
       },
     },
+    data: {
+      /** The time in milliseconds for the participant to make a response. The time is measured from when the stimulus first
+       * began playing until the participant's response.
+       */
+      rt: {
+        type: jspsych.ParameterType.INT,
+      },
+      /** The key the participant pressed in response to the stimulus. */
+      key_press: {
+        type: jspsych.ParameterType.STRING,
+      },
+      /** The contents of the grids as the trial ends. */
+      grid_contents: {
+        type: jspsych.ParameterType.COMPLEX,
+        nested: {
+          // all are arrays of arrays of strings
+          /** The contents of the model grid the participant was to copy. */
+          model: {
+            type: jspsych.ParameterType.COMPLEX,
+            array: true,
+          },
+          /** The contents of the workspace grid the participant was to copy the model grid to. */
+          workspace: {
+            type: jspsych.ParameterType.COMPLEX,
+            array: true,
+          },
+          /** The contents of the resource grid where participants were given images to drag to the workspace. */
+          resource: {
+            type: jspsych.ParameterType.COMPLEX,
+            array: true,
+          },
+        },
+      },
+      /** An array of objects which each consist of interactions with the resource grid images. */
+      trial_events: {
+        type: jspsych.ParameterType.COMPLEX,
+        array: true,
+        nested: {
+          /** The type of event the interaction was, split into if the participant successfully or unsuccessfully
+           * interacted with the resource grid image, along with if the item was placed correctly or not. */
+          event: {
+            type: jspsych.ParameterType.STRING,
+          },
+          /** The item the participant interacted with. */
+          item: {
+            type: jspsych.ParameterType.STRING,
+          },
+          /** The location on the screen in which the participant interacted with the item. */
+          location: {
+            type: jspsych.ParameterType.INT,
+            array: true,
+          },
+          /** The location on the resource grid that the participant interacted with. */
+          grid_coords: {
+            type: jspsych.ParameterType.COMPLEX,
+            nested: {
+              /** The row of the resource grid the participant interacted with. */
+              row: {
+                type: jspsych.ParameterType.INT,
+              },
+              /** The column of the resource grid the participant interacted with. */
+              column: {
+                type: jspsych.ParameterType.INT,
+              },
+            },
+          },
+          /** The timestamp of when the interaction occured, in milliseconds measured from when the stimulus appeared. */
+          timestamp: {
+            type: jspsych.ParameterType.INT,
+          },
+        },
+      },
+      /** If the participant was able to finish the trial. */
+      trial_completed: {
+        type: jspsych.ParameterType.BOOL,
+      },
+      /** The participant's specific scroll value that deviated from the resting scroll values, measured in [top, left]. */
+      canvas_offset_top_left: {
+        type: jspsych.ParameterType.INT,
+        array: true,
+      },
+    },
   };
 
   /**
    * **copying-task**
    *
-   * SHORT PLUGIN DESCRIPTION:
    * A plugin for running a copying task: a model grid on the left has to be recreated
    * in the middle grid, using items from the right grid.
    *
@@ -866,9 +936,6 @@ var jsPsychCopyingTask = (function (jspsych) {
         var endTime = Math.round(performance.now());
         var response_time = endTime - startTime;
 
-        // kill any remaining setTimeout handlers
-        this.jsPsych.pluginAPI.clearAllTimeouts();
-
         // clearInterval(interval_ID)
 
         var trial_completed = checkIfDone();
@@ -885,9 +952,6 @@ var jsPsychCopyingTask = (function (jspsych) {
           trial_completed: trial_completed,
           canvas_offset_top_left: [canvas_rect.top, canvas_rect.left],
         };
-
-        // clear the display
-        display_element.innerHTML = "";
 
         // move on to the next trial
         this.jsPsych.finishTrial(trial_data);

@@ -1,0 +1,43 @@
+cff-version: "1.2.0"
+title: "A Random-Dot Kinematogram for Web-Based Vision Research"
+authors:
+- family-names: Strittmatter
+  given-names: Younes
+  orcid: "https://orcid.org/0000-0002-3414-2838"
+- family-names: Spitzer
+  given-names: Markus W. H.
+  orcid: "https://orcid.org/0000-0001-6040-1939"
+  email: "Spitzer@psych.uni-frankfurt.de"
+- family-names: Kiesel
+  given-names: Andrea
+  orcid: "https://orcid.org/0000-0001-5564-010X"
+contact:
+- family-names: Spitzer
+  given-names: Markus W. H.
+  orcid: "https://orcid.org/0000-0001-6040-1939"
+  email: "Spitzer@psych.uni-frankfurt.de"
+doi: 10.3758/s13428-021-01767-3
+message: If you use this plugin, please cite our article in Behavior Research Methods.
+preferred-citation:
+  authors:
+  - family-names: Strittmatter
+    given-names: Younes
+    orcid: "https://orcid.org/0000-0002-3414-2838"
+  - family-names: Spitzer
+    given-names: Markus W. H.
+    orcid: "https://orcid.org/0000-0001-6040-1939"
+    email: "Spitzer@psych.uni-frankfurt.de"
+  - family-names: Kiesel
+    given-names: Andrea
+    orcid: "https://orcid.org/0000-0001-5564-010X"
+  date-published: 2022-05-03
+  doi: 10.3758/s13428-021-01767-3
+  issn: 1554-3528
+  journal: Behavior Research Methods
+  publisher:
+    name: Springer
+  start: 883
+  title: "A Random-Dot Kinematogram for Web-Based Vision Research"
+  type: article
+  url: "https://link.springer.com/article/10.3758/s13428-021-01767-3"
+  volume: 55

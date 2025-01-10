@@ -1,7 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "image-multi-response",
+  version: version,
   parameters: {
     /** The image to be displayed */
     stimulus: {
@@ -34,20 +37,24 @@ const info = <const>{
       default: [],
       array: true,
     },
-    /**
-     * Array containing the key(s) the subject is allowed to press to respond to the stimulus.
-     */
+    /** Array containing the key(s) the participant is allowed to press to respond to the stimulus. */
     keyboard_choices: {
       type: ParameterType.KEYS,
       pretty_name: "Keyboard Choices",
       default: "NO_KEYS",
     },
-    /** The HTML for creating button. Can create own style. Use the "%choice%" string to indicate where the label from the choices parameter should be inserted. */
+    /**
+     * A function that generates the HTML for each button in the `choices` array.
+     * The function gets the string and index of the item in the `choices` array and should return valid HTML.
+     * If you want to use different markup for each button, you can do that by using a conditional on either parameter.
+     * The default parameter returns a button element with the text label of the choice.
+     */
     button_html: {
-      type: ParameterType.HTML_STRING,
+      type: ParameterType.FUNCTION,
       pretty_name: "Button HTML",
-      default: '<button class="jspsych-btn">%choice%</button>',
-      array: true,
+      default: function (choice: string, choice_index: number) {
+        return `<button class="jspsych-btn">${choice}</button>`;
+      },
     },
     /** Any content here will be displayed under the button(s). */
     prompt: {
@@ -95,12 +102,44 @@ const info = <const>{
       default: true,
     },
   },
+  data: {
+    /**
+     * The response time in milliseconds for the participant to make a response.
+     * The time is measured from when the stimulus first appears on the screen until the participant's response.
+     */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The HTML content that was displayed on the screen. */
+    stimulus: {
+      type: ParameterType.STRING,
+    },
+    /**
+     * Indicates which button the participant pressed. The first button in the `choices` array is 0, the second is 1, and so on.
+     * If the participant responded using the keyboard, then this field will be `null`.
+     */
+    button_response: {
+      type: ParameterType.INT,
+    },
+    /**
+     * Indicates which key the participant pressed.
+     * If the participant responded using button clicks, then this field will be `null`.
+     */
+    keyboard_response: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates the source of the response. This will either be `"button"` or `"keyboard"`. */
+    response_source: {
+      type: ParameterType.STRING,
+    },
+  },
 };
 
 type Info = typeof info;
 
 /**
- * image-multi-response
+ * **image-multi-response**
+ *
  * jsPsych plugin for displaying an html stimulus and getting a response
  * @author Adam Richie-Halford
  * @see {@link https://www.jspsych.org/plugins/jspsych-image-multi-response/ image-multi-response plugin documentation on jspsych.org}
@@ -111,8 +150,8 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    var height, width;
-    var html;
+    var height: number, width: number;
+    var html: string;
     if (trial.render_on_canvas) {
       var image_drawn = false;
       // first clear the display element (because the render_on_canvas method appends to display_element instead of overwriting it with .innerHTML)
@@ -161,26 +200,13 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
         canvas.width = width;
       };
       getHeightWidth(); // call now, in case image loads immediately (is cached)
-      // create buttons
-      var buttons = [];
-      if (Array.isArray(trial.button_html)) {
-        if (trial.button_html.length == trial.button_choices.length) {
-          buttons = trial.button_html;
-        } else {
-          console.error(
-            "Error in image-multi-response plugin. The length of the button_html array does not equal the length of the button_choices array"
-          );
-        }
-      } else {
-        for (var i = 0; i < trial.button_choices.length; i++) {
-          buttons.push(trial.button_html);
-        }
-      }
+
       var btngroup_div = document.createElement("div");
       btngroup_div.id = "jspsych-image-multi-response-btngroup";
       html = "";
       for (var i = 0; i < trial.button_choices.length; i++) {
-        var str = buttons[i].replace(/%choice%/g, trial.button_choices[i]);
+        var button_str = trial.button_html(trial.button_choices[i], i);
+
         html +=
           '<div class="jspsych-image-multi-response-button" style="display: inline-block; margin:' +
           trial.margin_vertical +
@@ -191,7 +217,7 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
           '" data-choice="' +
           i +
           '">' +
-          str +
+          button_str +
           "</div>";
       }
       btngroup_div.innerHTML = html;
@@ -215,25 +241,11 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
         '<img draggable="false" src="' +
         trial.stimulus +
         '" id="jspsych-image-multi-response-stimulus">';
-      //display buttons
-      var buttons = [];
-      if (Array.isArray(trial.button_html)) {
-        if (trial.button_html.length == trial.button_choices.length) {
-          buttons = trial.button_html;
-        } else {
-          console.error(
-            "Error in image-multi-response plugin. The length of the button_html array does not equal the length of the button_choices array"
-          );
-        }
-      } else {
-        for (var i = 0; i < trial.button_choices.length; i++) {
-          buttons.push(trial.button_html);
-        }
-      }
+
       html += '<div id="jspsych-image-multi-response-btngroup">';
 
       for (var i = 0; i < trial.button_choices.length; i++) {
-        var str = buttons[i].replace(/%choice%/g, trial.button_choices[i]);
+        var button_str = trial.button_html(trial.button_choices[i], i);
         html +=
           '<div class="jspsych-image-multi-response-button" style="display: inline-block; margin:' +
           trial.margin_vertical +
@@ -244,7 +256,7 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
           '" data-choice="' +
           i +
           '">' +
-          str +
+          button_str +
           "</div>";
       }
       html += "</div>";
@@ -281,7 +293,7 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
       img.style.width = width.toString() + "px";
     }
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     var after_keyboard_response = function (info) {
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded
@@ -337,9 +349,6 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-
       // kill keyboard listeners
       if (typeof keyboardListener !== "undefined") {
         this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
@@ -354,15 +363,12 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
         response_source: response.source,
       };
 
-      // clear the display
-      display_element.innerHTML = "";
-
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
     };
 
-    // function to handle responses by the subject
-    function after_response(choice) {
+    // function to handle responses by the participant
+    function after_response(choice: string) {
       // measure rt
       var end_time = performance.now();
       var rt = Math.round(end_time - start_time);

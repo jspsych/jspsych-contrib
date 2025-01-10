@@ -1,9 +1,12 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "rok",
+  version: version,
   parameters: {
-    /** The valid keys that the subject can press to indicate a response. */
+    /** The valid keys that the participant can press to indicate a response. */
     choices: {
       type: ParameterType.KEYS,
       pretty_name: "Choices",
@@ -33,7 +36,7 @@ const info = <const>{
       pretty_name: "Number of oriented objectes",
       default: 300,
     },
-    /** The direction of coherent motion in degrees (0 degre meaning right). */
+    /** The direction of coherent motion in degrees (0 degree meaning right). */
     coherent_movement_direction: {
       type: ParameterType.INT,
       pretty_name: "Coherent movement direction",
@@ -75,9 +78,9 @@ const info = <const>{
       pretty_name: "Movement Speed",
       default: 10,
     },
-    /** The percentage of randomisation in movement speed " +
-         "(0 meaning all orientated objects move with speed defined in movement_speed," +
-         " 100 meaning movement speeds from 0 to 2x movement_speed). */
+    /** The percentage of randomisation in movement speed:
+     * 0 meaning all orientated objects move with speed defined in movement_speed,
+     * 100 meaning movement speeds from 0 to 2x movement_speed. */
     movement_speed_randomisation: {
       type: ParameterType.INT,
       pretty_name: "Movement speed randomisation",
@@ -107,7 +110,7 @@ const info = <const>{
       pretty_name: "Dot color",
       default: "white",
     },
-    /** The background of the stimulus. */
+    /** The background color of the stimulus. */
     background_color: {
       type: ParameterType.STRING,
       pretty_name: "Background color",
@@ -125,7 +128,7 @@ const info = <const>{
       pretty_name: "Border width",
       default: 1,
     },
-    /**The color of the border. */
+    /** The color of the border. */
     border_color: {
       type: ParameterType.STRING,
       pretty_name: "Border Color",
@@ -143,7 +146,7 @@ const info = <const>{
       pretty_name: "aperture shape",
       default: 0,
     },
-    /** Backgroundcolor of aperture */
+    /** Background color of aperture */
     aperture_background_color: {
       type: ParameterType.STRING,
       pretty_name: "Background of aperture",
@@ -263,6 +266,157 @@ const info = <const>{
       default: "overlay",
     },
   },
+  data: {
+    /** The time in milliseconds for the participant to make a response. The time is measured from when the stimulus first
+     * began playing until the participant's response.
+     */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The key that the participant pressed. */
+    key_press: {
+      type: ParameterType.KEY,
+    },
+    /** If the participant's response was correct or not. */
+    correct: {
+      type: ParameterType.BOOL,
+    },
+    /** An array containing the valid choices. */
+    choices: {
+      type: ParameterType.STRING,
+      array: true,
+    },
+    /** The correct choice */
+    correct_choice: {
+      type: ParameterType.STRING,
+      array: true,
+    },
+    /** The trial duration in ms. */
+    trial_duration: {
+      type: ParameterType.INT,
+    },
+    /** If the response ends the trial. */
+    response_ends_trial: {
+      type: ParameterType.BOOL,
+    },
+    /** The number of oobs displayed for the trial. */
+    number_of_oobs: {
+      type: ParameterType.INT,
+    },
+    /** The direction of coherent motion in degrees (0 degree meaning right) */
+    coherent_movement_direction: {
+      type: ParameterType.INT,
+    },
+    /** The percentage of oriented objects moving in the coherent direction. */
+    coherence_movement: {
+      type: ParameterType.INT,
+    },
+    /** The percentage of oriented objects moving in the direction opposite of the coherent direction. */
+    opposite_coherence_movement: {
+      type: ParameterType.INT,
+    },
+    /** The percentage of oriented objects moving in the coherent direction */
+    coherent_orientation: {
+      type: ParameterType.INT,
+    },
+    /** The percentage of objects that are oriented in the coherent orientation */
+    coherence_orientation: {
+      type: ParameterType.INT,
+    },
+    /** The percentage of objects that are oriented opposite of the coherent orientation */
+    opposite_coherence_orientation: {
+      type: ParameterType.INT,
+    },
+    /** The movement speed of the oobs in (percentage of aperature_width)/second */
+    movement_speed: {
+      type: ParameterType.INT,
+    },
+    /** The size of the orientated objects in percentage of aperture_width */
+    oob_size: {
+      type: ParameterType.INT,
+    },
+    /** The color of the objects displayed */
+    oob_color: {
+      type: ParameterType.STRING,
+    },
+    /** The percentage of randomisation in movement speed:
+     * 0 meaning all orientated objects move with speed defined in movement_speed,
+     * 100 meaning movement speeds from 0 to 2x movement_speed. */
+    movement_speed_randomisation: {
+      type: ParameterType.INT,
+    },
+    /** Position of midpoint of aperture in x direction in percentage of window width (50 being middle). */
+    aperture_width: {
+      type: ParameterType.INT,
+    },
+    /** Position of midpoint of aperture in x direction in percentage of window width (50 being middle). */
+    aperture_height: {
+      type: ParameterType.INT,
+    },
+    /** The background color of the stimulus. */
+    background_color: {
+      type: ParameterType.STRING,
+    },
+    /** The background color of the aperture. */
+    aperture_background_color: {
+      type: ParameterType.STRING,
+    },
+    /** The average frame rate for the trial. */
+    frame_rate: {
+      type: ParameterType.INT,
+    },
+    /** The array of ms per frame in this trial. */
+    frame_rate_array: {
+      type: ParameterType.INT,
+      array: true,
+    },
+    /** The number of frames in this trial. */
+    number_of_frames: {
+      type: ParameterType.INT,
+    },
+    /** Apperance of stimulus (0-triangles, 1-circle, 2-square, 3-origami_birds, 4-image). */
+    stimulus_type: {
+      type: ParameterType.INT,
+    },
+    /** Shade of aperture (0 - rectangular, 1 - elliptic). */
+    aperture_shape: {
+      type: ParameterType.INT,
+    },
+    /** Type of random movement (0 direction is random but fixed, 1 movement direction of incoherent oobs changes over time). */
+    random_movement_type: {
+      type: ParameterType.INT,
+    },
+    /** Type of random movement (0 - orientation is random but fixed, 1 - orientation of incoherent oobs changes over time). */
+    random_orientation_type: {
+      type: ParameterType.INT,
+    },
+    /** Number of apertures. If greater then one, other parameters of trial should be arrays. */
+    number_of_apertures: {
+      type: ParameterType.INT,
+    },
+    /** If this parameter is set, number_of_objects is interpreted as average number_of_objects per density_unit_area (in pixels). */
+    density_unit_area: {
+      type: ParameterType.INT,
+    },
+    /** Prompt that is presented above the stimulus. */
+    prompt: {
+      type: ParameterType.STRING,
+    },
+    /** Position of midpoint of aperture in x direction in percentage of window width (50 being middle). */
+    aperture_position_left: {
+      type: ParameterType.INT,
+    },
+    /** Position of midpoint of aperture in y direction in percentage of window width (0 being top, 50 being middle, 100 being bot). */
+    aperture_position_top: {
+      type: ParameterType.INT,
+    },
+    /** Should stimuli be drawn on top of each other ("overlay") or intermixed ("intermixed"). **/
+    aperture_mode: {
+      type: ParameterType.STRING,
+    },
+  },
+  // prettier-ignore
+  citations: '__CITATIONS__',
 };
 
 type Info = typeof info;
@@ -275,9 +429,6 @@ type Info = typeof info;
  * @author Younes Strittmatter
  * @see {@link https://www.jspsych.org/plugins/jspsych-rok/ RDK plugin documentation on jspsych.org}
  * @copyright
- *
- *    We would appreciate it if you cited this paper when you use the ROK:
- *
  * ----------------------
  *
  * Copyright (C) 2021 Younes Strittmatter
@@ -292,6 +443,9 @@ type Info = typeof info;
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+ * ----------------------
+ * We would appreciate it if you cited this paper when you use the ROK:
+ * Strittmatter, Y., Spitzer, M., & Kiesel, A. (2021, July 12). A Random-Object-Kinematogram Plugin for Web-Based Research: Implementing Oriented Objects Enables Varying Coherence Levels and Stimulus Congruency Levels. DOI: [10.31234/osf.io/hmq4u]
  */
 class RokPlugin implements JsPsychPlugin<Info> {
   static info = info;
@@ -499,7 +653,7 @@ class RokPlugin implements JsPsychPlugin<Info> {
     //Variable to start the timer
     let timerHasStarted = false;
 
-    //Initialize object to store the response data. Default values of -1 are used if the trial times out and the subject has not pressed a valid key
+    //Initialize object to store the response data. Default values of -1 are used if the trial times out and the participant has not pressed a valid key
     let response = {
       rt: -1,
       key: "",
@@ -840,9 +994,9 @@ class RokPlugin implements JsPsychPlugin<Info> {
     const startKeyboardListener = () => {
       //Start the response listener if there are choices for keys
       if (choices != "NO_KEYS") {
-        //Create the keyboard listener to listen for subjects' key response
+        //Create the keyboard listener to listen for participants' key response
         keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
-          callback_function: after_response, //Function to call once the subject presses a valid key
+          callback_function: after_response, //Function to call once the participant presses a valid key
           valid_responses: choices, //The keys that will be considered a valid response and cause the callback function to be called
           rt_method: "performance", //The type of method to record timing information.
           persist: false, //If set to false, keyboard listener will only trigger the first time a valid key is pressed. If set to true, it has to be explicitly cancelled by the cancelKeyboardResponse plugin API.
@@ -868,7 +1022,7 @@ class RokPlugin implements JsPsychPlugin<Info> {
         frameRate =
           (frameRate as number[]).reduce((total, current) => total + current) / numberOfFrames; //Sum up all the elements in the array
       } else {
-        frameRate = 0; //Set to zero if the subject presses an answer before a frame is shown (i.e. if frameRate is an empty array)
+        frameRate = 0; //Set to zero if the participant presses an answer before a frame is shown (i.e. if frameRate is an empty array)
       }
 
       //Cancel the keyboard listener if keyboardListener has been defined
@@ -879,8 +1033,8 @@ class RokPlugin implements JsPsychPlugin<Info> {
       //Place all the data to be saved from this trial in one data object
       let trial_data = {
         rt: response.rt, //The response time
-        key_press: response.key, //The key that the subject pressed
-        correct: correctOrNot(), //If the subject response was correct
+        key_press: response.key, //The key that the participant pressed
+        correct: correctOrNot(), //If the participant response was correct
         choices: choices, //The set of valid keys
         correct_choice: correct_choice, //The correct choice
         trial_duration: trial_duration, //The trial duration
@@ -905,7 +1059,7 @@ class RokPlugin implements JsPsychPlugin<Info> {
         number_of_frames: numberOfFrames, //The number of frames in this trial
         stimulus_type: stimulus_type,
         aperture_shape: aperture_shape,
-        random_movemet_type: random_movement_type,
+        random_movement_type: random_movement_type,
         random_orientation_type: random_orientation_type,
         number_of_apertures: number_of_apertures,
         density_unit_area: density_unit_area,
@@ -914,9 +1068,6 @@ class RokPlugin implements JsPsychPlugin<Info> {
         aperture_position_top: aperture_position_top,
         aperture_mode: aperture_mode,
       };
-
-      //Clear the body
-      display_element.innerHTML = "";
 
       //Restore the settings to JsPsych defaults
       body.style.margin = originalMargin;
@@ -930,7 +1081,7 @@ class RokPlugin implements JsPsychPlugin<Info> {
     //start animation
     animateDotMotion();
 
-    //Function to record the first response by the subject
+    //Function to record the first response by the participant
     function after_response(info) {
       //If the response has not been recorded, record it
       if (response.key == "") {
@@ -998,7 +1149,7 @@ class RokPlugin implements JsPsychPlugin<Info> {
       //frameRequestID saves a long integer that is the ID of this frame request. The ID is then used to terminate the request below.
       let frameRequestID = window.requestAnimationFrame(animate);
 
-      //Start to listen to subject's key responses
+      //Start to listen to participant's key responses
       startKeyboardListener();
 
       //Declare a timestamp
@@ -1015,8 +1166,8 @@ class RokPlugin implements JsPsychPlugin<Info> {
           //If the timer has not been started and it is set, then start the timer
           if (!timerHasStarted && trial_duration > 0) {
             //If the trial duration is set, then set a timer to count down and call the end_trial function when the time is up
-            //(If the subject did not press a valid keyboard response within the trial duration, then this will end the trial)
-            timeoutID = window.setTimeout(end_trial, trial_duration); //This timeoutID is then used to cancel the timeout should the subject press a valid key
+            //(If the participant did not press a valid keyboard response within the trial duration, then this will end the trial)
+            timeoutID = window.setTimeout(end_trial, trial_duration); //This timeoutID is then used to cancel the timeout should the participant press a valid key
             //The timer has started, so we set the variable to true so it does not start more timers
             timerHasStarted = true;
           }
