@@ -40,7 +40,7 @@
     "jspsych": ">=8.0.0"
   },
   "devDependencies": {
-    "@jspsych/config": "^3.2.0",
+    "@jspsych/config": "^3.2.1",
     "@jspsych/test-utils": "^1.1.2",
     "jspsych": "^8.0.0"
   }
