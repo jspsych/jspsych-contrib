@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-rdk",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "This plugin displays a Random Dot Kinematogram (RDK) and allows the subject to report the primary direction of motion by pressing a key on the keyboard.",
   "type": "module",
   "main": "dist/index.cjs",
