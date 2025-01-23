@@ -186,15 +186,15 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
 
     // Reset the position of the stimulus and container
     const resetPosition = async () => {
-      stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
-        trial.swipe_animation_duration / 1000
-      }s ease-in`;
-      container_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
-        trial.swipe_animation_duration / 1000
-      }s ease-in`;
+      for (const div of [container_div, stimulus_div]) {
+        div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
+          trial.swipe_animation_duration / 1000
+        }s ease-in`;
+      }
       setPosition({ x: 0, y: 0, rotation: 0 });
-      stimulus_div.style.transition = null;
-      container_div.style.transition = null;
+      for (const div of [container_div, stimulus_div]) {
+        div.style.transition = null;
+      }
     };
 
     // Handle drag movement of the stimulus and container together
@@ -227,12 +227,11 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     }
 
     const sendCardToLeft = async () => {
-      stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
-        trial.swipe_animation_duration / 1000
-      }s ease-in`;
-      container_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
-        trial.swipe_animation_duration / 1000
-      }s ease-in`;
+      for (const div of [container_div, stimulus_div]) {
+        div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
+          trial.swipe_animation_duration / 1000
+        }s ease-in`;
+      }
       setPosition({
         x: -trial.swipe_offscreen_coordinate,
         y: position.y,
@@ -241,12 +240,11 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     };
 
     const sendCardToRight = async () => {
-      stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
-        trial.swipe_animation_duration / 1000
-      }s ease-in`;
-      container_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
-        trial.swipe_animation_duration / 1000
-      }s ease-in`;
+      for (const div of [container_div, stimulus_div]) {
+        div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
+          trial.swipe_animation_duration / 1000
+        }s ease-in`;
+      }
       setPosition({
         x: trial.swipe_offscreen_coordinate,
         y: position.y,
@@ -305,29 +303,31 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       }
     };
 
-    interact(container_div).draggable({
-      inertia: false,
-      autoScroll: true,
-      modifiers: [
-        interact.modifiers.restrictRect({
-          endOnly: true,
-        }),
-      ],
-      listeners: {
-        move: dragMoveListener,
-        end: () => {
-          if (position.x < -trial.swipe_threshold) {
-            sendCardToLeft();
-            after_swipe_response("left");
-          } else if (position.x > trial.swipe_threshold) {
-            sendCardToRight();
-            after_swipe_response("right");
-          } else {
-            resetPosition();
-          }
+    for (const div of [stimulus_div, container_div]) {
+      interact(div).draggable({
+        inertia: false,
+        autoScroll: true,
+        modifiers: [
+          interact.modifiers.restrictRect({
+            endOnly: true,
+          }),
+        ],
+        listeners: {
+          move: dragMoveListener,
+          end: () => {
+            if (position.x < -trial.swipe_threshold) {
+              sendCardToLeft();
+              after_swipe_response("left");
+            } else if (position.x > trial.swipe_threshold) {
+              sendCardToRight();
+              after_swipe_response("right");
+            } else {
+              resetPosition();
+            }
+          },
         },
-      },
-    });
+      });
+    }
 
     // function to handle responses by the subject
     const after_keyboard_response = (info) => {
@@ -409,8 +409,9 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
         this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
       }
 
-      interact(stimulus_div).unset();
-      interact(container_div).unset();
+      for (const div of [stimulus_div, container_div]) {
+        interact(div).unset();
+      }
 
       // gather the data to store for the trial
       const trial_data = {

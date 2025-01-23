@@ -373,6 +373,7 @@ describe("html-swipe-response simulation", () => {
     const buttonResponse = getData().values()[0].button_response;
     const keyboardResponse = getData().values()[0].keyboard_response;
     const responseSource = getData().values()[0].response_source;
+
     expect(getData().values()[0].rt).toBeGreaterThan(0);
     if (responseSource == "keyboard") {
       expect(typeof keyboardResponse).toBe("string");
