@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-html-swipe-response
 
+## 1.1.3
+
+### Patch Changes
+
+- [#136](https://github.com/jspsych/jspsych-contrib/pull/136) [`1e135ea6ccef00a8b8bb9b166ff01a1d8a80bb74`](https://github.com/jspsych/jspsych-contrib/commit/1e135ea6ccef00a8b8bb9b166ff01a1d8a80bb74) Thanks [@Emily-ejag](https://github.com/Emily-ejag)! - the patch ensures that both the container (`#jspsych-html-swipe-response-stimulus-container`) and the stimulus (`#jspsych-html-swipe-response-stimulus`) move together when dragged, providing a unified and seamless interaction.
+
 ## 1.1.2
 
 ### Patch Changes
