@@ -1,10 +1,12 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
-// BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
+import { version } from "../package.json";
 
 const info = <const>{
   name: "survey-slider",
+  version: version,
   parameters: {
+    /** Questions that will be displayed to the participant. */
     questions: {
       type: ParameterType.COMPLEX,
       array: true,
@@ -23,7 +25,7 @@ const info = <const>{
           default: undefined,
           description: "Content to be displayed below the stimulus and above the slider",
         },
-        // Labels to appear to the left of each slider, one in line with the top row ticks and one in line with the bottom
+        /** Labels to appear to the left of each slider, one in line with the top row ticks and one in line with the bottom */
         labels: {
           type: ParameterType.STRING,
           pretty_name: "Labels",
@@ -31,7 +33,9 @@ const info = <const>{
           array: true,
           description: "Labels of the sliders.",
         },
-        /** Array containing the ticks to show along the slider. Ticks will be displayed at equidistant locations along the slider. Note this parameter is called Labels in the original plugin.*/
+        /** Array containing the ticks to show along the slider.
+         * Ticks will be displayed at equidistant locations along the slider.
+         * Note this parameter is called Labels in the original plugin.*/
         ticks: {
           type: ParameterType.HTML_STRING,
           pretty_name: "Ticks",
@@ -107,6 +111,21 @@ const info = <const>{
       pretty_name: "Slider width",
       default: 500,
       description: "Width of the slider in pixels.",
+    },
+  },
+  data: {
+    /** The response time in milliseconds for the participant to make a response.
+     * The time is measured from when the stimulus first appears on the screen until the participant's response. */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** A JSON string representing the responses given to each question. */
+    response: {
+      type: ParameterType.STRING,
+    },
+    /** The order in which the questions were presented. */
+    question_order: {
+      type: ParameterType.STRING,
     },
   },
 };
@@ -362,8 +381,6 @@ class SurveySliderPlugin implements JsPsychPlugin<Info> {
         response: JSON.stringify(question_data),
         question_order: JSON.stringify(question_order),
       };
-
-      display_element.innerHTML = "";
 
       // next trial
       this.jsPsych.finishTrial(trial_data);

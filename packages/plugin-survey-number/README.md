@@ -24,7 +24,7 @@ import jsPsychSurveyNumber from '@jspsych-contrib/plugin-survey-number';
 
 ## Compatibility
 
-jsPsych 7.0.0
+jsPsych v8.0. For compatibility with jsPsych v7.0, use version 1.0.0 of this plugin.
 
 ## Documentation
 

@@ -1,7 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "html-multi-response",
+  version: version,
   parameters: {
     /** The HTML string to be displayed */
     stimulus: {
@@ -17,19 +20,25 @@ const info = <const>{
       array: true,
     },
     /**
-     * Array containing the key(s) the subject is allowed to press to respond to the stimulus.
+     * Array containing the key(s) the participant is allowed to press to respond to the stimulus.
      */
     keyboard_choices: {
       type: ParameterType.KEYS,
       pretty_name: "Keyboard Choices",
       default: "NO_KEYS",
     },
-    /** The HTML for creating button. Can create own style. Use the "%choice%" string to indicate where the label from the choices parameter should be inserted. */
+    /**
+     * A function that generates the HTML for each button in the `choices` array.
+     * The function gets the string and index of the item in the `choices` array and should return valid HTML.
+     * If you want to use different markup for each button, you can do that by using a conditional on either parameter.
+     * The default parameter returns a button element with the text label of the choice.
+     */
     button_html: {
-      type: ParameterType.HTML_STRING,
+      type: ParameterType.FUNCTION,
       pretty_name: "Button HTML",
-      default: '<button class="jspsych-btn">%choice%</button>',
-      array: true,
+      default: function (choice: string, choice_index: number) {
+        return `<button class="jspsych-btn">${choice}</button>`;
+      },
     },
     /** Any content here will be displayed under the button(s). */
     prompt: {
@@ -68,13 +77,45 @@ const info = <const>{
       default: true,
     },
   },
+  data: {
+    /**
+     * The response time in milliseconds for the participant to make a response.
+     * The time is measured from when the stimulus first appears on the screen until the participant's response.
+     */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The HTML content that was displayed on the screen. */
+    stimulus: {
+      type: ParameterType.STRING,
+    },
+    /**
+     * Indicates which button the participant pressed. The first button in the `choices` array is 0, the second is 1, and so on.
+     * If the participant responded using the keyboard, then this field will be `null`.
+     */
+    button_response: {
+      type: ParameterType.INT,
+    },
+    /**
+     * Indicates which key the participant pressed.
+     * If the participant responded using button clicks, then this field will be `null`.
+     */
+    keyboard_response: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates the source of the response. This will either be `"button"` or `"keyboard"`. */
+    response_source: {
+      type: ParameterType.STRING,
+    },
+  },
 };
 
 type Info = typeof info;
 
 /**
- * html-multi-response
- * jsPsych plugin for displaying an html stimulus and getting a response
+ * **html-multi-response**
+ *
+ * jsPsych plugin for displaying an HTML stimulus and getting a swipe or keyboard response
  * @author Adam Richie-Halford
  * @see {@link https://www.jspsych.org/plugins/jspsych-html-multi-response/ html-multi-response plugin documentation on jspsych.org}
  */
@@ -87,24 +128,10 @@ class HtmlMultiResponsePlugin implements JsPsychPlugin<Info> {
     // display stimulus
     var html = '<div id="jspsych-html-multi-response-stimulus">' + trial.stimulus + "</div>";
 
-    //display buttons
-    var buttons = [];
-    if (Array.isArray(trial.button_html)) {
-      if (trial.button_html.length == trial.button_choices.length) {
-        buttons = trial.button_html;
-      } else {
-        console.error(
-          "Error in html-multi-response plugin. The length of the button_html array does not equal the length of the button_choices array"
-        );
-      }
-    } else {
-      for (var i = 0; i < trial.button_choices.length; i++) {
-        buttons.push(trial.button_html);
-      }
-    }
     html += '<div id="jspsych-html-multi-response-btngroup">';
+
     for (var i = 0; i < trial.button_choices.length; i++) {
-      var str = buttons[i].replace(/%choice%/g, trial.button_choices[i]);
+      var button_str = trial.button_html(trial.button_choices[i], i);
       html +=
         '<div class="jspsych-html-multi-response-button" style="display: inline-block; margin:' +
         trial.margin_vertical +
@@ -115,18 +142,18 @@ class HtmlMultiResponsePlugin implements JsPsychPlugin<Info> {
         '" data-choice="' +
         i +
         '">' +
-        str +
+        button_str +
         "</div>";
     }
     html += "</div>";
 
-    //show prompt if there is one
+    // show prompt if there is one
     if (trial.prompt !== null) {
       html += trial.prompt;
     }
     display_element.innerHTML = html;
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     var after_keyboard_response = function (info) {
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded
@@ -182,9 +209,6 @@ class HtmlMultiResponsePlugin implements JsPsychPlugin<Info> {
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-
       // kill keyboard listeners
       if (typeof keyboardListener !== "undefined") {
         this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
@@ -199,15 +223,12 @@ class HtmlMultiResponsePlugin implements JsPsychPlugin<Info> {
         response_source: response.source,
       };
 
-      // clear the display
-      display_element.innerHTML = "";
-
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
     };
 
-    // function to handle responses by the subject
-    function after_response(choice) {
+    // function to handle responses by the participant
+    function after_response(choice: string) {
       // measure rt
       var end_time = performance.now();
       var rt = Math.round(end_time - start_time);

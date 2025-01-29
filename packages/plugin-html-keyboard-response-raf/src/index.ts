@@ -1,7 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "html-keyboard-response-raf",
+  version: version,
   parameters: {
     /**
      * The HTML string to be displayed.
@@ -12,7 +15,7 @@ const info = <const>{
       default: undefined,
     },
     /**
-     * Array containing the key(s) the subject is allowed to press to respond to the stimulus.
+     * Array containing the key(s) the participant is allowed to press to respond to the stimulus.
      */
     choices: {
       type: ParameterType.KEYS,
@@ -44,7 +47,7 @@ const info = <const>{
       default: null,
     },
     /**
-     * If true, trial will end when subject makes a response.
+     * If true, trial will end when participant makes a response.
      */
     response_ends_trial: {
       type: ParameterType.BOOL,
@@ -52,12 +55,27 @@ const info = <const>{
       default: true,
     },
     /**
-     * FPS for requestAnimationFrame
+     * Frames per second for requestAnimationFrame.
      */
     fps: {
       type: ParameterType.INT,
       pretty_name: "FPS",
       default: 60,
+    },
+  },
+  data: {
+    /** The response time in milliseconds for the participant to make a response.
+     * The time is measured from when the stimulus first appears on the screen until the participant's response. */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** Indicates which key the participant pressed. */
+    response: {
+      type: ParameterType.STRING,
+    },
+    /** The HTML content that was displayed on the screen. */
+    stimulus: {
+      type: ParameterType.STRING,
     },
   },
 };
@@ -100,8 +118,6 @@ class HtmlKeyboardResponseRafPlugin implements JsPsychPlugin<Info> {
 
     // draw
     this.currAnimationFrameHandler = requestAnimationFrame(() => {
-      const initialDisplayTime = performance.now();
-
       display_element.innerHTML = new_html;
 
       // start the response listener
@@ -125,7 +141,6 @@ class HtmlKeyboardResponseRafPlugin implements JsPsychPlugin<Info> {
         this.endTrialFrameCount = Math.round(trial.trial_duration / (1000 / trial.fps));
       }
 
-      console.log(performance.now());
       this.currAnimationFrameHandler = requestAnimationFrame(checkForEnd);
     });
 
@@ -136,10 +151,8 @@ class HtmlKeyboardResponseRafPlugin implements JsPsychPlugin<Info> {
         display_element.querySelector<HTMLElement>(
           "#jspsych-html-keyboard-response-stimulus"
         ).style.visibility = "hidden";
-        console.log(frame_counter, performance.now());
       }
       if (frame_counter >= this.endTrialFrameCount) {
-        console.log(frame_counter, performance.now());
         end_trial();
       } else {
         this.currAnimationFrameHandler = requestAnimationFrame(checkForEnd);
@@ -162,14 +175,11 @@ class HtmlKeyboardResponseRafPlugin implements JsPsychPlugin<Info> {
         response: response.key,
       };
 
-      // clear the display
-      display_element.innerHTML = "";
-
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
     };
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     const after_response = (info) => {
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded

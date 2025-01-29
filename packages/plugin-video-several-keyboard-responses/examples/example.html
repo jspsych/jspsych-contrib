@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@7"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@1"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@7/css/jspsych.css" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    var video = ["fish-spin.mp4"];
+
+    var preload = {
+      type: jsPsychPreload,
+      auto_preload: true
+    };
+
+    var trial = {
+        type: jsPsychVideoSeveralKeyboardResponses,
+        stimulus: ['fish-spin.mp4'],
+        choices: "ALL_KEYS",
+        prompt: "Press any keys",
+        width: 600,
+        autoplay: true,
+        trial_ends_after_video: true,
+        response_ends_trial: false,
+        response_allowed_while_playing: true,
+        multiple_responses_allowed: true,
+    };  
+
+    jsPsych.run([preload, trial]);
+  </script>
+</html>

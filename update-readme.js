@@ -36,17 +36,15 @@ async function updateRootReadme() {
     .map(getPackageInfo)
     .filter((info) => info !== null);
 
-  const pluginListHead = `
-  ### Plugins\n
-  Plugin | Contributor | Description
-  ----------- | ----------- | -----------\n`;
+  const pluginListHead = `### Plugins\n
+Plugin | Contributor | Description
+----------- | ----------- | -----------\n`;
 
-  const extensionListHead = `
-  \n### Extensions\n
-   Extension | Contributor | Description
-  ----------- | ----------- | -----------\n`;
+  const extensionListHead = `\n### Extensions\n
+Extension | Contributor | Description
+----------- | ----------- | -----------\n`;
 
-  const guidelinesHead = "## Guidelines for contributions\n";
+  const guidelinesHead = "\n## Guidelines for contributions";
 
   let pluginList = "";
   let extensionList = "";

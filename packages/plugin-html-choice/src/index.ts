@@ -1,13 +1,17 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "html-choice",
+  version: version,
   parameters: {
     /** The HTML string to be displayed */
     html_array: {
       type: ParameterType.HTML_STRING,
       pretty_name: "Stimulus",
       default: undefined,
+      array: true,
     },
     /** How long to show the stimulus. */
     stimulus_duration: {
@@ -21,7 +25,7 @@ const info = <const>{
       pretty_name: "Trial duration",
       default: null,
     },
-    /** If true, trial will end when subject makes a response. */
+    /** If true, trial will end when participant makes a response. */
     response_ends_trial: {
       type: ParameterType.BOOL,
       pretty_name: "Response ends trial",
@@ -40,12 +44,33 @@ const info = <const>{
       default: 0,
     },
   },
+  data: {
+    /** The response time in milliseconds for the participant to make a response. The time is measured from
+     * when the stimulus first appears on the screen until the participant makes a response. */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The HTML stimulus displayed. */
+    stimulus: {
+      type: ParameterType.HTML_STRING,
+      array: true,
+    },
+    /** The index of the HTML stimulus chosen */
+    choice: {
+      type: ParameterType.INT,
+    },
+    /** The value associated with the stimulus that was chosen. */
+    value: {
+      type: ParameterType.INT,
+    },
+  },
 };
 
 type Info = typeof info;
 
 /**
- * html-choice
+ * **html-choice**
+ *
  * jsPsych plugin for displaying a stimulus and getting a choice
  * @author Younes Strittmatter
  */
@@ -62,7 +87,7 @@ class HtmlChoicePlugin implements JsPsychPlugin<Info> {
     } else if (trial.values.length === trial.html_array.length) {
       values = trial.values;
     } else {
-      throw new Error("array of html-choices does not have the same length as array of valuse");
+      throw new Error("array of html-choices does not have the same length as array of values");
     }
     // display stimulus
     var html = "<div>";
@@ -103,9 +128,6 @@ class HtmlChoicePlugin implements JsPsychPlugin<Info> {
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-
       // gather the data to store for the trial
       var trial_data = {
         rt: response.rt,
@@ -114,14 +136,11 @@ class HtmlChoicePlugin implements JsPsychPlugin<Info> {
         value: response.value,
       };
 
-      // clear the display
-      display_element.innerHTML = "";
-
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
     };
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     const after_response = (choice, value) => {
       // measure rt
       var end_time = performance.now();
@@ -143,7 +162,6 @@ class HtmlChoicePlugin implements JsPsychPlugin<Info> {
       }
 
       if (trial.response_ends_trial) {
-        this.jsPsych.pluginAPI.clearAllTimeouts();
         this.jsPsych.pluginAPI.setTimeout(end_trial, trial.time_after_response);
       }
     };

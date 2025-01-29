@@ -2,7 +2,7 @@
 
 ## Overview
 
-This plugin implements the same functionality as the html-keyboard-response plugin, but uses requestAnimationFrame internally for timing
+This plugin implements the same functionality as the html-keyboard-response plugin, but uses requestAnimationFrame internally for timing.
 
 ## Loading
 
@@ -24,7 +24,7 @@ import jsPsychHtmlKeyboardResponseRaf from '@jspsych-contrib/plugin-html-keyboar
 
 ## Compatibility
 
-jsPsych 7.0.0
+jsPsych v8.0. For compatibility with jsPsych v7.0, use version 1.0.1 of this plugin.
 
 ## Documentation
 
