@@ -24,6 +24,13 @@ const info = <const>{
       pretty_name: "Trial duration",
       default: 500,
     },
+    /** Flip timestamp array of coherent dots' direction. */
+    flip_timestamps: {
+      type: ParameterType.INT,
+      pretty_name: "Flip timestamps",
+      default: [],
+      array: true,
+    },
     /** If true, then any valid key will end the trial. */
     response_ends_trial: {
       type: ParameterType.BOOL,
@@ -423,6 +430,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     var choices = assignParameterValue(trial.choices, []);
     var correct_choice = assignParameterValue(trial.correct_choice, undefined);
     var trial_duration = assignParameterValue(trial.trial_duration, 500);
+    var flip_timestamps = assignParameterValue(trial.flip_timestamps, []);
     var response_ends_trial = assignParameterValue(trial.response_ends_trial, true);
     var number_of_apertures = assignParameterValue(trial.number_of_apertures, 1);
     var number_of_dots = assignParameterValue(trial.number_of_dots, 300);
@@ -503,7 +511,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
 
     var RDK = RDK_type;
 
-    /** 
+    /**
       Shape of aperture
       1 - Circle
       2 - Ellipse
@@ -703,6 +711,12 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     //Declare global variable to be defined in startKeyboardListener function and to be used in end_trial function
     var keyboardListener;
 
+    //Flip status {1, -1}
+    var flipStatus = 1;
+
+    //Timeout IDs for flipping.
+    var timeoutIDsFlip = [];
+
     //Declare global variable to store the frame rate of the trial
     var frameRate: number | number[] = []; //How often the monitor refreshes, in ms. Currently an array to store all the intervals. Will be converted into a single number (the average) in end_trial function.
 
@@ -767,6 +781,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
         choices: choices, //The set of valid keys
         correct_choice: correct_choice, //The correct choice(s)
         trial_duration: trial_duration, //The trial duration
+        flip_timestamps: flip_timestamps,
         response_ends_trial: response_ends_trial, //If the response ends the trial
         number_of_apertures: number_of_apertures,
         number_of_dots: number_of_dots,
@@ -833,6 +848,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       //If the parameter is set such that the response ends the trial, then kill the timeout and end the trial
       if (response_ends_trial) {
         window.clearTimeout(timeoutID);
+        timeoutIDsFlip.forEach(window.clearTimeout);
         end_trial();
       }
     } //End of after_response
@@ -1127,6 +1143,17 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       }
     }
 
+    //Start updating flip status
+    function startFlip() {
+      flip_timestamps.forEach((timestamp: number) =>
+        timeoutIDsFlip.push(
+          setTimeout(() => {
+            flipStatus *= -1;
+          }, timestamp)
+        )
+      );
+    }
+
     //Draw the dots on the canvas after they're updated
     function draw() {
       //Load in the current set of dot array for easy handling
@@ -1338,10 +1365,10 @@ class RdkPlugin implements JsPsychPlugin<Info> {
 
     //Updates the x and y coordinates by moving it in the x and y coherent directions
     function constantDirectionUpdate(dot) {
-      dot.x += dot.vx;
-      dot.y += dot.vy;
-      dot.latestXMove = dot.vx;
-      dot.latestYMove = dot.vy;
+      dot.x += dot.vx * flipStatus;
+      dot.y += dot.vy * flipStatus;
+      dot.latestXMove = dot.vx * flipStatus;
+      dot.latestYMove = dot.vy * flipStatus;
       return dot;
     }
 
@@ -1400,12 +1427,12 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       //If it is a square or rectangle, re-insert on one of the opposite edges
       if (apertureType == 3 || apertureType == 4) {
         /** The formula for calculating whether a dot appears from the vertical edge (left or right edges) is dependent on the direction of the dot and the ratio of the vertical and horizontal edge lengths.
-          E.g.  
+          E.g.
           Aperture is 100 px high and 200px wide
           Dot is moving 3 px in x direction and 4px in y direction
           Weight on vertical edge (sides)           = (100/(100+200)) * (|3| / (|3| + |4|)) = 1/7
           Weight on horizontal edge (top or bottom) = (200/(100+200)) * (|4| / (|3| + |4|)) = 8/21
-        
+
           The weights above are the ratios to one another.
           E.g. (cont.)
           Ratio (vertical edge : horizontal edge) == (1/7 : 8/21)
@@ -1543,6 +1570,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
 
       //Start to listen to participant's key responses
       startKeyboardListener();
+      startFlip();
 
       //Delare a timestamp
       var previousTimestamp;

@@ -10,7 +10,7 @@
     "test:watch": "npm test -- --watch",
     "build": "npm run build -ws",
     "update-unpkg-links": "gulp updateUnpkgLinks",
-    "update-readme": "node ./update-readme.js",
+    "update-readme": "gulp updateReadme",
     "prepare": "husky install",
     "changeset": "changeset",
     "changeset:version": "changeset version && npm install && npm run update-unpkg-links && npm run update-readme",

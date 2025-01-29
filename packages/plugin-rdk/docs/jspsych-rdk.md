@@ -18,6 +18,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | choices                  | array of strings | jsPsych.ALL_KEYS     | The valid keys that the participant can press as a response. Must be an array of strings. If left unspecified, any key is a valid key. |
 | correct_choice           | array of strings  | *undefined*          | Array containing the key(s) that are considered the correct response for that particular trial. This needs to be linked with the `coherent_direction` parameter (see Examples section below for an illustration). This is used to determine whether the participant chose the correct response. The boolean indicating whether or not the participant chose the correct response is returned in the `correct` key of the data object. |
 | trial_duration           | numeric          | 500                  | The amount of time that the stimulus is displayed on the screen in ms. If -1, the stimulus will be displayed until the participant keys in a valid response. (`choices` parameter must contain valid keys or else the stimuli will run indefinitely). |
+| flip_timestamps          | array of numerics | []                  | Timestamps to flip the direction of coherent dots. |
 | response_ends_trial      | boolean          | true                 | If `true`, then the participant's response will end the trial. If `false`, the stimuli will be presented for the full `trial_duration` (the response will be recorded as long as the participant responds within the trial duration). |
 | number_of_apertures      | numeric          | 1                    | The number of apertures or RDKs on the screen. If set to more than one, remember to set the location (i.e., aperture_center_x and aperture_center_y) parameters to separate them. <br>In addition, each aperture can be customized individually by passing in an array of values as the parameter (see example below). If a single value (not an array) is passed as the parameter, then all apertures will have the same parameter. |
 | number_of_dots           | numeric          | 300                  | Number of dots per set. Equivalent to number of dots per frame. |
@@ -82,19 +83,19 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 ```javascript
 var trial = {
-    type: jsPsychRdk, 
+    type: jsPsychRdk,
     coherent_direction: 0,
     correct_choice: ["p"]
 };
-```    
+```
 
 See `examples/example2.html` for a demo.
-  
+
 ### "Displaying a trial with 2 choices and 1 correct choice"
 
 ```javascript
 var trial = {
-    type: jsPsychRdk, 
+    type: jsPsychRdk,
     post_trial_gap: 0,
     number_of_dots: 200,
     RDK_type: 3,
@@ -103,7 +104,7 @@ var trial = {
     coherent_direction: 180,
     trial_duration: 1000
 };
-``` 
+```
 
 See `examples/example3.html` for a demo.
 
@@ -112,7 +113,7 @@ See `examples/example3.html` for a demo.
 
 ```javascript
 var trial = {
-    type: jsPsychRdk, 
+    type: jsPsychRdk,
     number_of_apertures: 3, //This needs to be set if more than one aperture
     trial_duration: 10000,
     correct_choice: ["a"],
@@ -121,7 +122,7 @@ var trial = {
     number_of_dots: [50, 200, 100], //Different parameter for each aperture. Array length must equal number_of_apertures
     aperture_center_x: [(window.innerWidth/2)-300,window.innerWidth/2,(window.innerWidth/2)+300] //Separate the apertures on the screen (window.innerWidth/2 is the middle of the screen)
 };
-``` 
+```
 
 See `examples/example4.html` for a demo.
 

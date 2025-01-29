@@ -200,6 +200,8 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       source: null,
     };
 
+    // References to container and stimulus
+    const container_div = document.getElementById("jspsych-html-swipe-response-stimulus-container");
     const stimulus_div = document.getElementById("jspsych-html-swipe-response-stimulus");
 
     let position = {
@@ -211,26 +213,35 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     const setPosition = (coordinates) => {
       const { x = 0, y = 0, rotation = 0 } = coordinates;
       position = { x, y, rotation };
+      container_div.style.transform = `translate3D(${x}px, ${y}px, 0)`;
       stimulus_div.style.transform = `translate3D(${x}px, ${y}px, 0) rotate(${rotation}deg)`;
     };
 
+    // Reset the position of the stimulus and container
     const resetPosition = async () => {
-      stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
-        trial.swipe_animation_duration / 1000
-      }s ease-in`;
+      for (const div of [container_div, stimulus_div]) {
+        div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
+          trial.swipe_animation_duration / 1000
+        }s ease-in`;
+      }
       setPosition({ x: 0, y: 0, rotation: 0 });
-      stimulus_div.style.transition = null;
+      for (const div of [container_div, stimulus_div]) {
+        div.style.transition = null;
+      }
     };
 
+    // Handle drag movement of the stimulus and container together
     const dragMoveListener = (event) => {
       const x = position.x + event.delta.x;
       const y = position.y + event.delta.y;
       let rotation = 0;
-      if (position.x > 0) {
-        rotation = Math.min(trial.swipe_animation_max_rotation, position.x / 4);
+
+      if (x > 0) {
+        rotation = Math.min(trial.swipe_animation_max_rotation, x / 4);
       } else {
-        rotation = Math.max(-trial.swipe_animation_max_rotation, position.x / 4);
+        rotation = Math.max(-trial.swipe_animation_max_rotation, x / 4);
       }
+
       setPosition({ x: x, y: y, rotation });
     };
 
@@ -249,9 +260,11 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     }
 
     const sendCardToLeft = async () => {
-      stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
-        trial.swipe_animation_duration / 1000
-      }s ease-in`;
+      for (const div of [container_div, stimulus_div]) {
+        div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
+          trial.swipe_animation_duration / 1000
+        }s ease-in`;
+      }
       setPosition({
         x: -trial.swipe_offscreen_coordinate,
         y: position.y,
@@ -260,9 +273,11 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     };
 
     const sendCardToRight = async () => {
-      stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
-        trial.swipe_animation_duration / 1000
-      }s ease-in`;
+      for (const div of [container_div, stimulus_div]) {
+        div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
+          trial.swipe_animation_duration / 1000
+        }s ease-in`;
+      }
       setPosition({
         x: trial.swipe_offscreen_coordinate,
         y: position.y,
@@ -321,29 +336,31 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       }
     };
 
-    interact(stimulus_div).draggable({
-      inertia: false,
-      autoScroll: true,
-      modifiers: [
-        interact.modifiers.restrictRect({
-          endOnly: true,
-        }),
-      ],
-      listeners: {
-        move: dragMoveListener,
-        end: () => {
-          if (position.x < -trial.swipe_threshold) {
-            sendCardToLeft();
-            after_swipe_response("left");
-          } else if (position.x > trial.swipe_threshold) {
-            sendCardToRight();
-            after_swipe_response("right");
-          } else {
-            resetPosition();
-          }
+    for (const div of [stimulus_div, container_div]) {
+      interact(div).draggable({
+        inertia: false,
+        autoScroll: true,
+        modifiers: [
+          interact.modifiers.restrictRect({
+            endOnly: true,
+          }),
+        ],
+        listeners: {
+          move: dragMoveListener,
+          end: () => {
+            if (position.x < -trial.swipe_threshold) {
+              sendCardToLeft();
+              after_swipe_response("left");
+            } else if (position.x > trial.swipe_threshold) {
+              sendCardToRight();
+              after_swipe_response("right");
+            } else {
+              resetPosition();
+            }
+          },
         },
-      },
-    });
+      });
+    }
 
     // function to handle responses by the participant
     const after_keyboard_response = (info) => {
@@ -422,7 +439,9 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
         this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
       }
 
-      interact(stimulus_div).unset();
+      for (const div of [stimulus_div, container_div]) {
+        interact(div).unset();
+      }
 
       // gather the data to store for the trial
       const trial_data = {

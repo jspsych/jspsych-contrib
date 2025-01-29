@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-rdk
 
+## 1.2.0
+
+### Minor Changes
+
+- [#147](https://github.com/jspsych/jspsych-contrib/pull/147) [`7c775983b5852b5c44949f4bcd5bd7d45b048b3b`](https://github.com/jspsych/jspsych-contrib/commit/7c775983b5852b5c44949f4bcd5bd7d45b048b3b) Thanks [@Hoboki](https://github.com/Hoboki)! - If you want coherent dots to change their directions during a trial, you can set `flip_timestamps` and flip their directions as much as you want.
+
 ## 1.1.0
 
 ### Minor Changes

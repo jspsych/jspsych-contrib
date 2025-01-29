@@ -14,13 +14,13 @@
 			}
 		});
 
-		/* 
-		We would appreciate it if you cited this paper when you use the RDK: 
+		/*
+		We would appreciate it if you cited this paper when you use the RDK:
 		Rajananda, S., Lau, H. & Odegaard, B., (2018). A Random-Dot Kinematogram for Web-Based Vision Research. Journal of Open Research Software. 6(1), p.6. DOI: [http://doi.org/10.5334/jors.194]
 		*/
 
 		//---------Create trials---------
-		
+
 		// Create an array of 2 different trials (different conditions)
 		var RDK_trials = [
 			{ // Condition 1
@@ -29,11 +29,12 @@
 			},
 			{ // Condition 2
 				correct_choice: ['l'], // The correct answer for Condition 2
-				coherent_direction: 0 // The coherent direction for Condition 2 (dots move right)
+				coherent_direction: 0, // The coherent direction for Condition 2 (dots move right)
+				flip_timestamps: [300, 600],
 			},
 		];
-		
-		// The test block where all the trials are nested. The properties here will trickle down to all trials in the timeline unless they have their own properties defined   
+
+		// The test block where all the trials are nested. The properties here will trickle down to all trials in the timeline unless they have their own properties defined
 		var test_block = {
 			type: jsPsychRdk,
 			post_trial_gap: 500, // The Inter Trial Interval. You can either have no ITI, or have an ITI but change the display element to be the same color as the stimuli background to prevent flashing between trials
@@ -45,9 +46,9 @@
 			background_color: "white",
 			dot_color: "black"
 		};
-		
+
 		//---------Run the experiment---------
-		
+
 		jsPsych.run([test_block]);
 
 	</script>
