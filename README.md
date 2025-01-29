@@ -18,20 +18,13 @@ Contributions to `jspsych-contrib` that are broadly useful, well-documented, and
 The jsPsych plugins that have been contributed by community members can be found in the `/packages` directory. 
 The `/packages` directory also contains four template sub-folders that can be used as a starting point for contributing a plugin/extension (see the [Guidelines for contributions](#guidelines-for-contributions) section).
 
-  
-  
-  
-  
-  
-  
-  
-  ### Plugins
+### Plugins
 
-  Plugin | Contributor | Description
-  ----------- | ----------- | -----------
+Plugin | Contributor | Description
+----------- | ----------- | -----------
 [audio-multi-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-audio-multi-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using both button clicks and key presses. 
 [audio-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-audio-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using swipe gestures and keyboard responses. 
-[copying-task](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-copying-task/README.md) | [Andre Sahakian](https://github.com/Andre3582) | foo 
+[copying-task](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-copying-task/README.md) | [Andre Sahakian](https://github.com/Andre3582) | A plugin for running a copying task: a model grid on the left has to be recreated in the middle grid, using items from the right grid. 
 [corsi-blocks](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-corsi-blocks/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays a configurable Corsi blocks task and records a series of click responses. 
 [gamepad](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-gamepad/README.md) | [Shaobin Jiang](https://github.com/Shaobin-Jiang) | This plugin allows one to use gamepads in a jsPsych experiment. 
 [html-choice](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-html-choice/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This plugin displays clickable html elements that can be used to present a choice. 
@@ -48,7 +41,7 @@ The `/packages` directory also contains four template sub-folders that can be us
 [nextcloud-filedrop](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-nextcloud-filedrop/README.md) | [C. Martin Grewe](https://github.com/mgrewe) | This plugin provides permanent storage of data collected during an experiment using a nextcloud instance. 
 [pipe](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-pipe/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | jsPsych plugin to faciliate communication with [DataPipe](https://pipe.jspsych.org) 
 [rdk](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-rdk/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays a Random Dot Kinematogram (RDK) and allows the subject to report the primary direction of motion by pressing a key on the keyboard. 
-[rok](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-rok/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This plugin displays a Random Object Kinematogram (ROK) and allows the subject to report the primary direction of motion or the primary orientation by pressing a key on the keyboard. 
+[rok](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-rok/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This plugin displays a Random Object Kinematogram (ROK) and allows the participant to report the primary direction of motion or the primary orientation by pressing a key on the keyboard. 
 [self-paced-reading](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-self-paced-reading/README.md) | [igmmgi](https://github.com/igmmgi) | Self-paced reading tasks with different display options. 
 [survey-number](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-survey-number/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays a survey question and collects a numeric response. 
 [survey-slider](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-survey-slider/README.md) | [Dominique Makowski](https://github.com/DominiqueMakowski) | Add several analogue scales on the same page for use in questionnaires. 
@@ -56,43 +49,17 @@ The `/packages` directory also contains four template sub-folders that can be us
 [vsl-animate-occlusion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-animate-occlusion/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | he VSL (visual statistical learning) animate occlusion plugin displays an animated sequence of shapes that disappear behind an occluding rectangle while they change from one shape to another. 
 [vsl-grid-scene](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-grid-scene/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) grid scene plugin displays images arranged in a grid. 
 
-  
 
-  
 ### Extensions
 
-   Extension | Contributor | Description
-  ----------- | ----------- | -----------
+Extension | Contributor | Description
+----------- | ----------- | -----------
 [countdown](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-countdown/README.md) | [Shaobin Jiang](https://github.com/Shaobin-Jiang) | This extension adds a countdown during a trial. 
 [device-motion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-device-motion/README.md) | [Pedro Neto](https://github.com/pasoneto) | jsPsych extension for tracking device motion 
 [mediapipe-face-mesh](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-mediapipe-face-mesh/README.md) | [C. Martin Grewe](https://github.com/mgrewe) | This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library. 
-[touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | foo 
+[touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This extension displays touch buttons that allow the participant to respond to stimuli via a touchscreen on mobile devices. 
+
 ## Guidelines for contributions
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Contributions to this repository must:
 
 * Work as described
