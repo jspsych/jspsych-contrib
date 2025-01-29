@@ -45,7 +45,7 @@
   },
   "jest": {
     "projects": [
-      "<rootDir>/packages/*/jest.config.cjs"
+      "<rootDir>/packages/*"
     ]
   }
 }
