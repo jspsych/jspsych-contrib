@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-headphone-check",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Allows for one to check if a participant is wearing headphones using an auditory task. ([Woods et al., 2017](http://mcdermottlab.mit.edu/papers/Woods_etal_2017_headphone_screening.pdf))",
   "type": "module",
   "main": "dist/index.cjs",

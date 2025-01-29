@@ -25,6 +25,7 @@ The `/packages` directory also contains four template sub-folders that can be us
   
   
   
+  
   ### Plugins
 
   Plugin | Contributor | Description
@@ -34,6 +35,7 @@ The `/packages` directory also contains four template sub-folders that can be us
 [copying-task](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-copying-task/README.md) | [Andre Sahakian](https://github.com/Andre3582) | foo 
 [corsi-blocks](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-corsi-blocks/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays a configurable Corsi blocks task and records a series of click responses. 
 [gamepad](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-gamepad/README.md) | [Shaobin Jiang](https://github.com/Shaobin-Jiang) | This plugin allows one to use gamepads in a jsPsych experiment. 
+[headphone-check](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-headphone-check/README.md) | [jadeddelta](https://github.com/jadeddelta) | Allows for one to check if a participant is wearing headphones using an auditory task. ([Woods et al., 2017](http://mcdermottlab.mit.edu/papers/Woods_etal_2017_headphone_screening.pdf)) 
 [html-choice](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-html-choice/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This plugin displays clickable html elements that can be used to present a choice. 
 [html-keyboard-response-raf](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-html-keyboard-response-raf/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin uses the same functionality as the html-keyboard-response plugin, but uses requestAnimationFrame internally for timing 
 [html-keyboard-slider](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-html-keyboard-slider/README.md) | [Max Lovell](https://github.com/Max-Lovell) | Sliders which allow for keyboard responses. 
@@ -68,6 +70,7 @@ The `/packages` directory also contains four template sub-folders that can be us
 [mediapipe-face-mesh](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-mediapipe-face-mesh/README.md) | [C. Martin Grewe](https://github.com/mgrewe) | This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library. 
 [touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | foo 
 ## Guidelines for contributions
+
 
 
 
