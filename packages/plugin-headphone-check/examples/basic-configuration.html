@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-preload@2"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  // --- NOTE: do not use live server as you'll have to deal with a CORS error, just run this experiment from the file explorer ---
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData();
+    }
+  });
+
+  const preload = {
+    type: jsPsychPreload,
+    auto_preload: true
+  }
+
+  // this trial uses the default configuration described in the original headphonecheck
+  // https://github.com/mcdermottLab/HeadphoneCheck?tab=readme-ov-file#configure-and-start-the-headphone-check
+  const trial = {
+    type: jsPsychHeadphoneCheck
+  };
+
+  jsPsych.run([preload, trial])
+</script>
+
+</html>
