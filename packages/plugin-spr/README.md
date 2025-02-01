@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a package built to enable self-paced reading trials. It supports different reading modes including single-word mask and multi-word (hide/show). This package allows you to also customize the format of the text displayed by using CSS.
+This is a plugin built to conduct self-paced reading trials. It supports different reading modes including single-word mask and multi-word (hide/show). This package allows you to also customize the format of the text displayed by using CSS, and how many words display per key press.
 
 ## Loading
 

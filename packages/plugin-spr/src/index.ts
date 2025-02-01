@@ -115,38 +115,38 @@ type Info = typeof info;
  *
  * This is a package built to enable self-paced reading trials.
  *
- * @author Victor Zhang
+ * @author Victor Zhang, jadeddelta
  * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-spr/README.md}}
  */
 class SprPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private index: number = 0;
-  private inner_index: number = -1; // mode 1-2: initialized so that not shown if has an inner_index
-  private current_display_string: string[] = []; // mode 1-2: use this to save iterations
-  private structured_reading_string: string[] | string[][] = [];
+  private innerIndex: number = -1; // mode 1-2: initialized so that not shown if has an innerIndex
+  private currentDisplayString: string[] = []; // mode 1-2: use this to save iterations
+  private readingString: string[] | string[][] = [];
   private mode: 1 | 2 | 3;
   private results = [];
-  private startTime;
+  private startTime: number;
 
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     this.initializeVariables(trial);
     // setup html logic
-    var html = `<p></p>`;
+    var html = `<p id="jspsych-spr-content"></p>`;
     display_element.innerHTML = html;
 
     if (this.mode === 3) {
-      const blank = this.generateBlank(this.structured_reading_string[this.index]);
-      document.querySelector("p")!.innerHTML = blank;
+      const blank = this.generateBlank(this.readingString[this.index]);
+      document.querySelector("#jspsych-spr-content").innerHTML = blank;
       this.addDataPoint(blank, this.index);
       this.index = -1; // this initializes mode in way that allows to start at 0, might not be best way to do it
-    } else document.querySelector("p")!.innerHTML = this.updateDisplayString(); // update this, passing null for TS
+    } else document.querySelector("#jspsych-spr-content").innerHTML = this.updateDisplayString(); // update this, passing null for TS
   }
 
   private endTrial() {
     var trial_data = {
-      stimulus: this.structured_reading_string.flat(),
+      stimulus: this.readingString.flat(),
       mode: this.mode,
       results: this.results,
     };
@@ -157,13 +157,18 @@ class SprPlugin implements JsPsychPlugin<Info> {
 
   private initializeVariables(trial: TrialType<Info>) {
     if (trial.mode === 1 || trial.mode === 2 || trial.mode === 3) this.mode = trial.mode;
-    else throw console.error("Mode declared incorrectly, must be between 1 and 3.");
+    else throw new Error("Mode declared incorrectly, must be between 1 and 3.");
 
-    // creates inital reading string -> TODO: should instead use mode to determine
+    // todo: use mode to determine (not sure what this means @/victor)
     if (trial.structured_reading_string.length > 0) {
-      this.structured_reading_string = trial.structured_reading_string;
+      if (trial.unstructured_reading_string.length > 0)
+        console.warn(
+          "Both structured and unstructured reading strings are defined. Using structured reading string."
+        );
+
+      this.readingString = trial.structured_reading_string;
     } else {
-      this.structured_reading_string = this.createReadingString(
+      this.readingString = this.createReadingString(
         trial.unstructured_reading_string,
         trial.chunk_size,
         trial.line_size
@@ -221,15 +226,15 @@ class SprPlugin implements JsPsychPlugin<Info> {
 
     // handles logic on whether to display blank or show text using boolean/index
     if (this.mode === 1 || this.mode === 2) {
-      const curr_length = this.structured_reading_string[this.index].length;
-      this.inner_index++;
+      const curr_length = this.readingString[this.index].length;
+      this.innerIndex++;
 
-      if (this.inner_index >= curr_length) {
+      if (this.innerIndex >= curr_length) {
         // resets the index and moves onto the next
-        this.inner_index = -1; // ensures will be empty
+        this.innerIndex = -1; // ensures will be empty
         this.index++;
 
-        if (this.index >= this.structured_reading_string.length) {
+        if (this.index >= this.readingString.length) {
           this.endTrial();
           return;
         }
@@ -240,7 +245,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
       // might want to include incrementation here for consistency
       this.index++;
 
-      if (this.index >= this.structured_reading_string.length) {
+      if (this.index >= this.readingString.length) {
         this.endTrial();
         return;
       }
@@ -249,18 +254,16 @@ class SprPlugin implements JsPsychPlugin<Info> {
     }
     // need to handle a keyboard press element where records how long until press a key
 
-    // Add any action you want to happen on spacebar press
-    // e.g., changing the displayed text, ending the trial, etc.
-    document.querySelector("p")!.innerHTML = newHtml;
+    document.querySelector("#jspsych-spr-content").innerHTML = newHtml;
   }
 
   // This helper method assists with mode 1 and 2 to keep efficency when updating indicies and the scren
   private updateDisplayString(info: any = {}): string {
     if (this.mode === 1 || this.mode === 2) {
-      if (this.inner_index === -1) {
+      if (this.innerIndex === -1) {
         // need to update new display string
         const new_display_string: string[] = [];
-        const curr_segment = this.structured_reading_string[this.index];
+        const curr_segment = this.readingString[this.index];
 
         for (var i = 0; i < curr_segment.length; i++) {
           new_display_string.push(
@@ -270,50 +273,50 @@ class SprPlugin implements JsPsychPlugin<Info> {
           );
         }
 
-        this.current_display_string = new_display_string;
-        this.addDataPoint(this.current_display_string.join(" "), this.index, info.key);
+        this.currentDisplayString = new_display_string;
+        this.addDataPoint(this.currentDisplayString.join(" "), this.index, info.key);
       } else {
-        if (this.mode === 1 && this.inner_index > 0) {
-          this.current_display_string[this.inner_index - 1] =
+        if (this.mode === 1 && this.innerIndex > 0) {
+          this.currentDisplayString[this.innerIndex - 1] =
             "<span class='text-after-current-region'>" +
-            this.generateBlank(this.structured_reading_string[this.index][this.inner_index - 1]) +
+            this.generateBlank(this.readingString[this.index][this.innerIndex - 1]) +
             "</span>";
-        } else if (this.mode === 2 && this.inner_index > 0) {
+        } else if (this.mode === 2 && this.innerIndex > 0) {
           // changes classifier
-          this.current_display_string[this.inner_index - 1] =
+          this.currentDisplayString[this.innerIndex - 1] =
             "<span class='text-after-current-region'>" +
-            this.structured_reading_string[this.index][this.inner_index - 1] +
+            this.readingString[this.index][this.innerIndex - 1] +
             "</span>";
         }
 
         // shows next display
-        this.current_display_string[this.inner_index] =
+        this.currentDisplayString[this.innerIndex] =
           "<span class='text-current-region'>" +
-          this.structured_reading_string[this.index][this.inner_index] +
+          this.readingString[this.index][this.innerIndex] +
           "</span>";
 
-        this.addDataPoint(this.current_display_string.join(" "), this.index, info.key);
+        this.addDataPoint(this.currentDisplayString.join(" "), this.index, info.key);
       }
     } else if (this.mode == 3) {
-      var newHtml = "";
+      var stimulus = "";
 
       // accounts for bad user input (not necessary) and could move it up to input
-      if (typeof this.structured_reading_string[this.index] === "string")
-        newHtml = this.structured_reading_string[this.index] as string;
+      if (typeof this.readingString[this.index] === "string")
+        stimulus = this.readingString[this.index] as string;
       else {
-        for (const c of this.structured_reading_string[this.index]) {
-          newHtml += c + " ";
+        for (const c of this.readingString[this.index]) {
+          stimulus += c + " ";
         }
       }
 
-      newHtml = "<p class='text-current-region'>" + newHtml + "</p>";
+      var newHtml = "<p class='text-current-region'>" + stimulus + "</p>";
 
-      this.addDataPoint(newHtml, this.index, info.key);
+      this.addDataPoint(stimulus, this.index, info.key);
       return newHtml;
     }
 
     var displayString = "";
-    for (const s of this.current_display_string) {
+    for (const s of this.currentDisplayString) {
       displayString += s + " "; // include another element
     }
 

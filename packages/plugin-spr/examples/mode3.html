@@ -12,16 +12,15 @@
 <body></body>
 <script>
   const jsPsych = initJsPsych({
-      on_finish: async function() {      
-        jsPsych.data.displayData();  
-      },
-      default_iti: 250
+    on_finish: async function() {      
+      jsPsych.data.displayData();  
+    },
+    default_iti: 250
   });
 
   const trial = {
     type: jsPsychSpr,
-    // structured_reading_string: [["first", "second", "third"], ["fith", "sixth", "seventh"], ["eighth", "ninth", "tenth"]],
-    structured_reading_string: ["first", "second", "third", "fith", "sixth", "seventh", "eighth", "ninth", "tenth"],
+    unstructured_reading_string: "The quick brown fox jumps over the lazy dog.",
     mode: 3
   };
 

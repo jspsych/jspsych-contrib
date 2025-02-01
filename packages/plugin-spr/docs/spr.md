@@ -33,7 +33,7 @@ In addition to the [parameters available in all plugins](https://jspsych.org/lat
 | ------------------- | ---------------- | ------------------ | ---------------------------------------- |
 | unstructured_reading_string | String           | ""             | This is a representation of the input string that can be passed in as a full string and will be split using the splitting parameters of "chunk_size" and "line_size". | 
 | structured_reading_string | List           | []             | This is the explicit declaration for what to display on the string. This should usually be a list of list of strings (list of lines, each line is a list of chunks). When using mode 3 the input can also be a list of strings with each string representing a chunk. | 
-| Mode                | Number           | 1                  | Indicates the mode of text displaying used by the SPR plugin. Mode 1 is a masked presentation where clicking spacebar hides the previous shown words, mode 2 reveals one chunk at time but the chunks but previous ones remain visible. Mode 3 is when one word is displayed with no mask. |
+| mode                | Number           | 1                  | Indicates the mode of text displaying used by the SPR plugin. Mode 1 is a masked presentation where clicking spacebar hides the previous shown words, mode 2 reveals one chunk at time but the chunks but previous ones remain visible. Mode 3 is when one word is displayed with no mask. |
 | chunk_size | String           | int            | Indicates the number of split words in the input string to be included within each chunk. | 
 | line_size | String           | int             | Indicates the number of chunks to be included within each line. | 
 
@@ -86,7 +86,7 @@ import Spr from '@jspsych-contrib/plugin-spr';
 ```javascript
 const trial = {
   type: jsPsychSpr,
-  structured_reading_string: [["first and second", "second and fourth", "third"], ["fith", "sixth", "seventh"], ["eighth", "ninth", "tenth"]],
+  structured_reading_string: [["first and second", "second and fourth", "third"], ["fifth", "sixth", "seventh"], ["eighth", "ninth", "tenth"]],
   mode: 2
 };
 ```
