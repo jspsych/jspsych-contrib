@@ -1,29 +1,7 @@
 # spr
 
-### Modes
-
-This is a package built to enable self paced reading with three distinct modes:
-
-Mode 1: Masked presentation of the text on the screen (with spaces shown in the mask, eg. ___ ____ __ ____). Pressing space bar then reveals one word (or chunk) at a time and masks the previous word (or chunk) so that only one word (or chunk) is visible at a time.
-
-Mode 2: One word (or chunk) is revealed with spacebar but earlier words (or chunks) remain visible.
-
-Mode 3: Only one word (or chunk) is displayed centered on the screen, no mask.
-
-### Styling
-
-To add css and style the text elements, there are three different css classifiers. 
-  1. 'text-current-region' refers to the text being displayed.
-  2. 'text-before-current-region' that has not been displayed.
-  3. 'text-after-current-region' that has already been displayed and shown. 
-
-### Input
-
-There are two different methods to input the string that will be displayed. A structured_reading_string is a strict input where you define every screen using chunks and lines. An unstructured_reading_string is where you pass in the full string and use chunk_size and line_size to denote how you want to split this input. If both are passed in, the structured_reading_string will be prioritized. More details on the distinction between chunks and lines and how to pass in or split your input can be found below. 
-
-### Examples
-
-Examples of the difference between the different modes, styling and the uses of a structured vs unstructured reading strings can be found in the examples folder.
+The self-paced-reading plugin displays a text with three distinct modes of word masking 
+to allow for varied modes of self paced reading trials.
 
 ## Parameters
 
@@ -31,12 +9,18 @@ In addition to the [parameters available in all plugins](https://jspsych.org/lat
 
 | Parameter           | Type             | Default Value      | Description                              |
 | ------------------- | ---------------- | ------------------ | ---------------------------------------- |
-| unstructured_reading_string | String           | ""             | This is a representation of the input string that can be passed in as a full string and will be split using the splitting parameters of "chunk_size" and "line_size". | 
-| structured_reading_string | List           | []             | This is the explicit declaration for what to display on the string. This should usually be a list of list of strings (list of lines, each line is a list of chunks). When using mode 3 the input can also be a list of strings with each string representing a chunk. | 
-| mode                | Number           | 1                  | Indicates the mode of text displaying used by the SPR plugin. Mode 1 is a masked presentation where clicking spacebar hides the previous shown words, mode 2 reveals one chunk at time but the chunks but previous ones remain visible. Mode 3 is when one word is displayed with no mask. |
-| chunk_size | String           | int            | Indicates the number of split words in the input string to be included within each chunk. | 
-| line_size | String           | int             | Indicates the number of chunks to be included within each line. | 
+| sentence | string           | `undefined`             | This is the string of text that will be displayed to the participant during the trial. The text will be split up into segments based on either the space bar or the `delimiter` character if it is present. | 
+| delimiter | string           | `"^"`             | If this character is present in the `sentence` parameter, the text will be split up based on the `delimiter` character. If the `delimiter` character is not present, the text will be split up based on the space character. | 
+| mode | numeric           | 1                  | Indicates the mode of text displaying used by the SPR plugin. Mode 1 is a masked presentation where a valid key press hides the previous shown words, mode 2 reveals one chunk at time but the chunks but previous ones remain visible, and mode 3 is when one word is displayed with no mask. |
+| segments_per_key_press | numeric           | 1            | Indicates how many segments will be revealed upon a key press. | 
+| choices | array of keys | `[" "]` | This array contains the key(s) that the participant is allowed to press in order to advance to the next chunk. Keys should be specified as characters (e.g., `'a'`, `'q'`, `' '`, `'Enter'`, `'ArrowDown'`) - see [this page](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values) and [this page (event.key column)](https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/) for more examples. Any key presses that are not listed in the array will be ignored. The value of `"ALL_KEYS"` means that all keys will be accepted as valid responses. |
 
+### Styling
+
+To add css and style the text elements, there are three different css classifiers. 
+  1. 'jspsych-spr-before-text' that has not already been displayed.
+  2. 'jspsych-spr-current-text' refers to the text being displayed.
+  3. 'jspsych-spr-after-text' that has already been displayed and shown. 
 
 ## Data Generated
 
@@ -46,14 +30,6 @@ In addition to the [default data collected by all plugins](https://jspsych.org/l
 | --------- | ------- | ---------------------------------------- |
 | stimulus  | []      | This value represents the structured_reading_string used to run the experiment. |
 | mode      | number  | This value represents the mode that the self-paced reading experiment was ran using and thus how the text was displayed. |
-
-## Chunks vs Lines
-
-When using this plugin, chunks and lines represent how text is displayed. Chunks can represent either words or multiple words along with characters ("one", "two?", "three four five"). During mode 1 or 2, chunks represents the words that are hidden or shown with each click of the spacebar. Lines on the other hand represent multiple chunks (["one", "two?", "three four five"]) held together in a list. Lines represent what is displayed during each distinct screen and chunks represent how they are grouped together. 
-
-Imagine the line ["one", "two?", "three four five"]. If we are using mode 1, this will initially be represented on the screen as `"___ ____ _____ ____ ____"`. With one spacebar click, the first chunk is revealed and the screen displays `"one ____ _____ ____ ____"`. With the next click, the second chunk is revealed and the first is hidden: `"___ two? _____ ____ ____;"`. Lastly, when the final chunk is revelead: `"___ ____ three four five"`.
-
-When using structured reading strings you have the ability to explicitly define each chunk and line. However when running experiments with longer strings you can also use "chunk_size" to define how many words (delimited by spaces) are included within each chunk and "line_size" to define how many chunks are included within each line.
 
 ## Install
 

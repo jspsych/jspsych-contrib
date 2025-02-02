@@ -12,51 +12,32 @@
 
 <body></body>
 <script>
-    const jsPsych = initJsPsych({
+  const jsPsych = initJsPsych({
     on_finish: async function() {      
       jsPsych.data.displayData();  
     },
     default_iti: 250
   });
 
-  const unstructured_stimulus = [
+  const sentences = [
     { stimulus: "The quick brown fox jumps over the lazy dog." },
     { stimulus: "Portez ce vieux whisky au juge blond qui fume." },
     { stimulus: "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich." }
   ]
 
-  const procedure_with_unstructured = {
+  const procedure = {
     timeline: [
       {
         type: jsPsychSpr,
-        unstructured_reading_string: jsPsych.timelineVariable('stimulus'),
+        sentence: jsPsych.timelineVariable('stimulus'),
         mode: 2,
         line_size: Number.MAX_VALUE,
       }
     ],
-    timeline_variables: unstructured_stimulus
+    timeline_variables: sentences
   };
 
-  // TODO: when removing line_size, flatten the array
-  const structured_stimulus = [
-    { struct_stim: [["This fox is crafty.", "The dog is lazy.", "Can", "they", "be", "friends?"]] },
-    { struct_stim: [["Ce juge est blond.", "Il fume.", "Il", "est", "un", "peu", "bizarre."]] },
-    { struct_stim: [["Der Boxkämpfer ist stark.", "Er", "ist", "schnell."]] }
-  ]
-
-  const procedure_with_structured = {
-    timeline: [
-      {
-        type: jsPsychSpr,
-        structured_reading_string: jsPsych.timelineVariable('struct_stim'),
-        mode: 2,
-        line_size: Number.MAX_VALUE,
-      }
-    ],
-    timeline_variables: structured_stimulus
-  };
-
-  jsPsych.run([procedure_with_unstructured, procedure_with_structured]);
+  jsPsych.run([procedure]);
 </script>
 
 </html>

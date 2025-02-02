@@ -7,23 +7,22 @@ const info = <const>{
   version: version,
   parameters: {
     /**
-     * This is the string of text that will be displayed to the participant during the trial. Without any
-     * ^ characters, the text will be split up based on the space character. If the ^ character is used,
-     * the text will be split up based on the space character.
+     * This is the string of text that will be displayed to the participant during the trial. The text
+     * will be split up into segments based on either the space bar or the `delimiter` character if
+     * it is present.
      */
-    unstructured_reading_string: {
+    sentence: {
       type: ParameterType.STRING,
-      default: "",
+      default: undefined,
     },
     /**
-     * This string acts as a structured version of the `unstructured_reading_string`, where the text is
-     * instead split using different elements of an array. The ^ character is not used as a delimiter
-     * in this string.
+     * If this character is present in the `sentence` parameter, the text will be split up based on the
+     * `delimiter` character. If the `delimiter` character is not present, the text will be split up based
+     * on the space character.
      */
-    structured_reading_string: {
+    delimiter: {
       type: ParameterType.STRING,
-      array: true,
-      default: [],
+      default: "^",
     },
     /**
      * Mode between 1-3 that indicate the different built-in modes for how stimulus will be displayed.
@@ -40,20 +39,9 @@ const info = <const>{
       default: 1,
     },
     /**
-     * Indicates how many words will be included with each chunk when splitting the
-     * `unstructured_reading_string`.
+     * Indicates how many segments will be revealed upon a key press.
      */
-    chunk_size: {
-      type: ParameterType.INT,
-      default: 1,
-    },
-    /**
-     * Indicates how many chunks will be included with each chunk when splitting the
-     * `unstructured_reading_string`.
-     *
-     * !! Unknown if we'll need this !!
-     */
-    line_size: {
+    segments_per_key_press: {
       type: ParameterType.INT,
       default: 1,
     },
@@ -72,8 +60,7 @@ const info = <const>{
     },
   },
   data: {
-    /* The representation of the `structured_reading_string` that was used. Combined with the mode, this 
-    tells what exactly was displayed on the screen during each click. */
+    /* The individual segments that are displayed per key press. */
     stimulus: {
       type: ParameterType.STRING,
       array: true,
@@ -95,11 +82,8 @@ const info = <const>{
         stimulus: {
           type: ParameterType.STRING,
         },
-        /** The line number of the stimulus that was displayed. */
-        line_number: {
-          type: ParameterType.INT,
-        },
-        /** The key that was pressed by the participant. */
+        /** The key that was pressed by the participant. In mode 3, this is `null` for the first word, as it is
+         * masked at the start. */
         key_pressed: {
           type: ParameterType.STRING,
         },
@@ -120,33 +104,32 @@ type Info = typeof info;
  */
 class SprPlugin implements JsPsychPlugin<Info> {
   static info = info;
-  private index: number = 0;
-  private innerIndex: number = -1; // mode 1-2: initialized so that not shown if has an innerIndex
-  private currentDisplayString: string[] = []; // mode 1-2: use this to save iterations
-  private readingString: string[] | string[][] = [];
   private mode: 1 | 2 | 3;
   private results = [];
   private startTime: number;
+
+  /** the sentence, divided into segments. */
+  private readingString: string[];
+  /** stores which indicies of the `readingString` are visible (unmasked). */
+  private isVisible: boolean[];
+  /** the current index the user is on. */
+  private counter: number;
 
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     this.initializeVariables(trial);
     // setup html logic
-    var html = `<p id="jspsych-spr-content"></p>`;
+    var html = `<p id="jspsych-spr-content">${this.generateDisplayString()}</p>`;
     display_element.innerHTML = html;
 
-    if (this.mode === 3) {
-      const blank = this.generateBlank(this.readingString[this.index]);
-      document.querySelector("#jspsych-spr-content").innerHTML = blank;
-      this.addDataPoint(blank, this.index);
-      this.index = -1; // this initializes mode in way that allows to start at 0, might not be best way to do it
-    } else document.querySelector("#jspsych-spr-content").innerHTML = this.updateDisplayString(); // update this, passing null for TS
+    // start timer
+    this.startTime = performance.now();
   }
 
   private endTrial() {
     var trial_data = {
-      stimulus: this.readingString.flat(),
+      stimulus: this.readingString,
       mode: this.mode,
       results: this.results,
     };
@@ -155,25 +138,33 @@ class SprPlugin implements JsPsychPlugin<Info> {
     this.jsPsych.finishTrial(trial_data);
   }
 
+  // todo: put createReadingString into this method
   private initializeVariables(trial: TrialType<Info>) {
     if (trial.mode === 1 || trial.mode === 2 || trial.mode === 3) this.mode = trial.mode;
     else throw new Error("Mode declared incorrectly, must be between 1 and 3.");
 
-    // todo: use mode to determine (not sure what this means @/victor)
-    if (trial.structured_reading_string.length > 0) {
-      if (trial.unstructured_reading_string.length > 0)
-        console.warn(
-          "Both structured and unstructured reading strings are defined. Using structured reading string."
-        );
+    // split text based on delimiter or space
+    const splitText = trial.sentence.includes(trial.delimiter)
+      ? trial.sentence.split(trial.delimiter)
+      : trial.sentence.split(" ");
 
-      this.readingString = trial.structured_reading_string;
-    } else {
-      this.readingString = this.createReadingString(
-        trial.unstructured_reading_string,
-        trial.chunk_size,
-        trial.line_size
-      );
+    this.readingString = [];
+    var currentSegment: string[] = [];
+
+    for (var i = 0; i < splitText.length; i++) {
+      const word = splitText[i];
+      currentSegment.push(word);
+
+      if (currentSegment.length >= trial.segments_per_key_press) {
+        this.readingString.push(currentSegment.join(" "));
+        currentSegment = [];
+      }
     }
+
+    if (currentSegment.length > 0) this.readingString.push(currentSegment.join(" "));
+
+    this.isVisible = new Array(this.readingString.length).fill(false);
+    this.counter = -1;
 
     this.jsPsych.pluginAPI.getKeyboardResponse({
       callback_function: (info) => this.onValidKeyPress(info),
@@ -182,168 +173,85 @@ class SprPlugin implements JsPsychPlugin<Info> {
       persist: true,
       allow_held_key: false,
     });
-
-    this.startTime = performance.now();
   }
 
-  // TODO: create a method that takes an entire string and uses a list of parameters to generate a "structured reading string"
-  private createReadingString(
-    unstructured_reading_string: string,
-    chunk_size: number,
-    line_size: number
-  ): string[] {
-    const split_text = unstructured_reading_string.includes("^")
-      ? unstructured_reading_string.split("^")
-      : unstructured_reading_string.split(" ");
-    const res = [];
-
-    var current_chunk = [];
-    var current_line = [];
-
-    for (var i = 0; i < split_text.length; i++) {
-      const word = split_text[i];
-      current_chunk.push(word);
-
-      if (current_chunk.length >= chunk_size) {
-        current_line.push(current_chunk.join(" "));
-        current_chunk = [];
-
-        if (current_line.length >= line_size) {
-          res.push(current_line);
-          current_line = [];
-        }
-      }
-    }
-
-    if (current_chunk.length > 0) current_line.push(current_chunk);
-    if (current_line.length > 0) res.push(current_line);
-
-    return res;
-  }
-
-  private onValidKeyPress(info?: any) {
-    var newHtml = "";
-
-    // handles logic on whether to display blank or show text using boolean/index
-    if (this.mode === 1 || this.mode === 2) {
-      const curr_length = this.readingString[this.index].length;
-      this.innerIndex++;
-
-      if (this.innerIndex >= curr_length) {
-        // resets the index and moves onto the next
-        this.innerIndex = -1; // ensures will be empty
-        this.index++;
-
-        if (this.index >= this.readingString.length) {
-          this.endTrial();
-          return;
-        }
-      }
-
-      newHtml = `<p>${this.updateDisplayString(info)}</p>`;
-    } else if (this.mode === 3) {
-      // might want to include incrementation here for consistency
-      this.index++;
-
-      if (this.index >= this.readingString.length) {
-        this.endTrial();
-        return;
-      }
-
-      newHtml = this.updateDisplayString(info);
-    }
-    // need to handle a keyboard press element where records how long until press a key
-
-    document.querySelector("#jspsych-spr-content").innerHTML = newHtml;
-  }
-
-  // This helper method assists with mode 1 and 2 to keep efficency when updating indicies and the scren
-  private updateDisplayString(info: any = {}): string {
-    if (this.mode === 1 || this.mode === 2) {
-      if (this.innerIndex === -1) {
-        // need to update new display string
-        const new_display_string: string[] = [];
-        const curr_segment = this.readingString[this.index];
-
-        for (var i = 0; i < curr_segment.length; i++) {
-          new_display_string.push(
-            "<span class='text-before-current-region'>" +
-              this.generateBlank(curr_segment[i]) +
-              "</span>"
-          );
-        }
-
-        this.currentDisplayString = new_display_string;
-        this.addDataPoint(this.currentDisplayString.join(" "), this.index, info.key);
+  /** given the mode, current state of counter, and mask array, generate html string to be displayed */
+  private generateDisplayString(): string {
+    if (this.mode !== 3) {
+      if (this.counter !== -1) {
+        return this.getDisplayArray()
+          .map((text, i) => {
+            if (i < this.counter) {
+              return "<span class='jspsych-spr-before-text'>" + text + "</span>";
+            } else if (i === this.counter) {
+              return "<span class='jspsych-spr-current-text'>" + text + "</span>";
+            } else {
+              return "<span class='jspsych-spr-after-text'>" + text + "</span>";
+            }
+          })
+          .join(" ");
       } else {
-        if (this.mode === 1 && this.innerIndex > 0) {
-          this.currentDisplayString[this.innerIndex - 1] =
-            "<span class='text-after-current-region'>" +
-            this.generateBlank(this.readingString[this.index][this.innerIndex - 1]) +
-            "</span>";
-        } else if (this.mode === 2 && this.innerIndex > 0) {
-          // changes classifier
-          this.currentDisplayString[this.innerIndex - 1] =
-            "<span class='text-after-current-region'>" +
-            this.readingString[this.index][this.innerIndex - 1] +
-            "</span>";
-        }
-
-        // shows next display
-        this.currentDisplayString[this.innerIndex] =
-          "<span class='text-current-region'>" +
-          this.readingString[this.index][this.innerIndex] +
-          "</span>";
-
-        this.addDataPoint(this.currentDisplayString.join(" "), this.index, info.key);
+        return (
+          "<span class='jspsych-spr-before-text'>" +
+          this.readingString.map((text) => this.generateBlank(text)).join(" ") +
+          "</span>"
+        );
       }
-    } else if (this.mode == 3) {
-      var stimulus = "";
-
-      // accounts for bad user input (not necessary) and could move it up to input
-      if (typeof this.readingString[this.index] === "string")
-        stimulus = this.readingString[this.index] as string;
-      else {
-        for (const c of this.readingString[this.index]) {
-          stimulus += c + " ";
-        }
+    } else {
+      if (this.counter !== -1) {
+        return (
+          "<span class='jspsych-spr-before-text'>" + this.readingString[this.counter] + "</span>"
+        );
+      } else {
+        return (
+          "<span class='jspsych-spr-current-text'>" +
+          this.generateBlank(this.readingString[0]) +
+          "</span>"
+        );
       }
-
-      var newHtml = "<p class='text-current-region'>" + stimulus + "</p>";
-
-      this.addDataPoint(stimulus, this.index, info.key);
-      return newHtml;
     }
-
-    var displayString = "";
-    for (const s of this.currentDisplayString) {
-      displayString += s + " "; // include another element
-    }
-
-    return displayString;
   }
 
-  private generateBlank(text: string | string[]): string {
-    const length = text.length;
+  /** returns `readingString` as a processed string array based on visibility */
+  private getDisplayArray(): string[] {
+    return this.readingString.map((text, i) => {
+      if (i < this.counter) {
+        return this.isVisible[i] ? text : this.generateBlank(text);
+      } else if (i === this.counter) {
+        return text;
+      } else {
+        return this.generateBlank(text);
+      }
+    });
+  }
+
+  /** updates sentence, mask array, and counter before regenerating display string */
+  private onValidKeyPress(info?: any) {
+    this.addDataPoint(this.getDisplayArray().join(" "), info.key);
+
+    this.counter++;
+    if (this.counter >= this.readingString.length) {
+      this.endTrial();
+    } else {
+      if (this.counter !== 0) {
+        // keep visible if mode 2
+        this.isVisible[this.counter - 1] = this.mode === 2;
+      }
+      this.isVisible[this.counter] = true;
+      document.querySelector("#jspsych-spr-content").innerHTML = this.generateDisplayString();
+    }
+  }
+
+  private generateBlank(text: string): string {
     var res = "";
 
-    // type of string (in context of plugin: chunk)
-    if (typeof text === "string") {
-      const split = text.split(" "); // checks for spaces to break up underscores
+    const split = text.split(" ");
 
-      if (split.length > 1) {
-        for (var i = 0; i < split.length; i++) {
-          res += "_".repeat(split[i].length) + " ";
-        }
-      } else res = "_".repeat(length);
-    }
-    // type of array (in context of plugin: line)
-    else {
-      // var res = "";
-      for (var i = 0; i < length; i++) {
-        res += this.generateBlank(text[i]) + " ";
+    if (split.length > 1) {
+      for (var i = 0; i < split.length; i++) {
+        res += "_".repeat(split[i].length) + " ";
       }
-    }
+    } else res = "_".repeat(text.length);
 
     return res;
   }
@@ -355,21 +263,12 @@ class SprPlugin implements JsPsychPlugin<Info> {
     return Math.round(now - prev);
   }
 
-  private addDataPoint(stimulus: string, line_number: number, key?: string) {
-    const res = {
+  private addDataPoint(stimulus: string, key: string = null) {
+    this.results.push({
       rt: this.getTimeElapsed(),
       stimulus: stimulus,
-      line_number: line_number,
-    };
-
-    // Add key_pressed if key exists
-    if (key) {
-      res["key_pressed"] = key;
-    } else {
-      res["key_pressed"] = null;
-    }
-
-    this.results.push(res);
+      key_pressed: key,
+    });
   }
 }
 
