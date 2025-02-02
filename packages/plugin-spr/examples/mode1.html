@@ -19,7 +19,9 @@
   });
 
   const sentences = [
+    // regular sentence
     { stimulus: "The quick brown fox jumps over the lazy dog." },
+    // special delimiter "^" is used to separate segments
     { stimulus: "Portez^ce vieux whisky^au juge blond^qui fume." },
   ]
 
@@ -34,6 +36,7 @@
     timeline_variables: sentences
   };
 
+  // each key press will advance the segment by 2 words instead of one
   const segment_size_trial = {
     type: jsPsychSpr,
     sentence: "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich. :)",

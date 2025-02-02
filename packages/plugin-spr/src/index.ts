@@ -60,7 +60,7 @@ const info = <const>{
     },
   },
   data: {
-    /* The individual segments that are displayed per key press. */
+    /** The individual segments that are displayed per key press. */
     stimulus: {
       type: ParameterType.STRING,
       array: true,
@@ -78,12 +78,11 @@ const info = <const>{
         rt: {
           type: ParameterType.INT,
         },
-        /** The stimulus that was displayed to the participant. */
-        stimulus: {
+        /** The segment that was displayed to the participant. */
+        segment: {
           type: ParameterType.STRING,
         },
-        /** The key that was pressed by the participant. In mode 3, this is `null` for the first word, as it is
-         * masked at the start. */
+        /** The key that was pressed by the participant. */
         key_pressed: {
           type: ParameterType.STRING,
         },
@@ -104,21 +103,25 @@ type Info = typeof info;
  */
 class SprPlugin implements JsPsychPlugin<Info> {
   static info = info;
-  private mode: 1 | 2 | 3;
-  private results = [];
-  private startTime: number;
-
   /** the sentence, divided into segments. */
   private readingString: string[];
   /** stores which indicies of the `readingString` are visible (unmasked). */
   private isVisible: boolean[];
   /** the current index the user is on. */
-  private counter: number;
+  private index: number;
+  // --- parameter fields ---
+  private mode: 1 | 2 | 3;
+  // --- data fields ---
+  private results = [];
+  private startTime: number;
 
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     this.initializeVariables(trial);
+    // setup styles
+    var css = `<style id="jspsych-spr-mask>`;
+
     // setup html logic
     var html = `<p id="jspsych-spr-content">${this.generateDisplayString()}</p>`;
     display_element.innerHTML = html;
@@ -138,7 +141,6 @@ class SprPlugin implements JsPsychPlugin<Info> {
     this.jsPsych.finishTrial(trial_data);
   }
 
-  // todo: put createReadingString into this method
   private initializeVariables(trial: TrialType<Info>) {
     if (trial.mode === 1 || trial.mode === 2 || trial.mode === 3) this.mode = trial.mode;
     else throw new Error("Mode declared incorrectly, must be between 1 and 3.");
@@ -164,7 +166,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
     if (currentSegment.length > 0) this.readingString.push(currentSegment.join(" "));
 
     this.isVisible = new Array(this.readingString.length).fill(false);
-    this.counter = -1;
+    this.index = -1;
 
     this.jsPsych.pluginAPI.getKeyboardResponse({
       callback_function: (info) => this.onValidKeyPress(info),
@@ -175,15 +177,15 @@ class SprPlugin implements JsPsychPlugin<Info> {
     });
   }
 
-  /** given the mode, current state of counter, and mask array, generate html string to be displayed */
+  /** given the mode, current index, and mask array, generate html string to be displayed */
   private generateDisplayString(): string {
     if (this.mode !== 3) {
-      if (this.counter !== -1) {
+      if (this.index !== -1) {
         return this.getDisplayArray()
           .map((text, i) => {
-            if (i < this.counter) {
+            if (i < this.index) {
               return "<span class='jspsych-spr-before-text'>" + text + "</span>";
-            } else if (i === this.counter) {
+            } else if (i === this.index) {
               return "<span class='jspsych-spr-current-text'>" + text + "</span>";
             } else {
               return "<span class='jspsych-spr-after-text'>" + text + "</span>";
@@ -198,9 +200,9 @@ class SprPlugin implements JsPsychPlugin<Info> {
         );
       }
     } else {
-      if (this.counter !== -1) {
+      if (this.index !== -1) {
         return (
-          "<span class='jspsych-spr-before-text'>" + this.readingString[this.counter] + "</span>"
+          "<span class='jspsych-spr-before-text'>" + this.readingString[this.index] + "</span>"
         );
       } else {
         return (
@@ -215,9 +217,9 @@ class SprPlugin implements JsPsychPlugin<Info> {
   /** returns `readingString` as a processed string array based on visibility */
   private getDisplayArray(): string[] {
     return this.readingString.map((text, i) => {
-      if (i < this.counter) {
+      if (i < this.index) {
         return this.isVisible[i] ? text : this.generateBlank(text);
-      } else if (i === this.counter) {
+      } else if (i === this.index) {
         return text;
       } else {
         return this.generateBlank(text);
@@ -225,35 +227,30 @@ class SprPlugin implements JsPsychPlugin<Info> {
     });
   }
 
-  /** updates sentence, mask array, and counter before regenerating display string */
+  /** updates sentence, mask array, and index before regenerating display string */
   private onValidKeyPress(info?: any) {
-    this.addDataPoint(this.getDisplayArray().join(" "), info.key);
+    if (this.mode === 3) {
+      if (this.index === -1) this.addDataPoint(this.generateBlank(this.readingString[0]), info.key);
+      else this.addDataPoint(this.readingString[this.index], info.key);
+    } else this.addDataPoint(this.getDisplayArray().join(" "), info.key);
 
-    this.counter++;
-    if (this.counter >= this.readingString.length) {
+    this.index++;
+    if (this.index >= this.readingString.length) {
       this.endTrial();
     } else {
-      if (this.counter !== 0) {
+      if (this.index !== 0) {
         // keep visible if mode 2
-        this.isVisible[this.counter - 1] = this.mode === 2;
+        this.isVisible[this.index - 1] = this.mode === 2;
       }
-      this.isVisible[this.counter] = true;
+      this.isVisible[this.index] = true;
       document.querySelector("#jspsych-spr-content").innerHTML = this.generateDisplayString();
     }
   }
 
   private generateBlank(text: string): string {
-    var res = "";
-
     const split = text.split(" ");
-
-    if (split.length > 1) {
-      for (var i = 0; i < split.length; i++) {
-        res += "_".repeat(split[i].length) + " ";
-      }
-    } else res = "_".repeat(text.length);
-
-    return res;
+    if (split.length > 1) return split.map((word) => "_".repeat(word.length)).join(" ");
+    else return "_".repeat(text.length);
   }
 
   private getTimeElapsed() {
@@ -263,10 +260,10 @@ class SprPlugin implements JsPsychPlugin<Info> {
     return Math.round(now - prev);
   }
 
-  private addDataPoint(stimulus: string, key: string = null) {
+  private addDataPoint(stimulus: string, key: string) {
     this.results.push({
       rt: this.getTimeElapsed(),
-      stimulus: stimulus,
+      segment: stimulus,
       key_pressed: key,
     });
   }

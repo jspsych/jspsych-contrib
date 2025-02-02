@@ -15,28 +15,22 @@ In addition to the [parameters available in all plugins](https://jspsych.org/lat
 | segments_per_key_press | numeric           | 1            | Indicates how many segments will be revealed upon a key press. | 
 | choices | array of keys | `[" "]` | This array contains the key(s) that the participant is allowed to press in order to advance to the next chunk. Keys should be specified as characters (e.g., `'a'`, `'q'`, `' '`, `'Enter'`, `'ArrowDown'`) - see [this page](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values) and [this page (event.key column)](https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/) for more examples. Any key presses that are not listed in the array will be ignored. The value of `"ALL_KEYS"` means that all keys will be accepted as valid responses. |
 
-### Styling
-
-To add css and style the text elements, there are three different css classifiers. 
-  1. 'jspsych-spr-before-text' that has not already been displayed.
-  2. 'jspsych-spr-current-text' refers to the text being displayed.
-  3. 'jspsych-spr-after-text' that has already been displayed and shown. 
-
 ## Data Generated
 
 In addition to the [default data collected by all plugins](https://jspsych.org/latest/overview/plugins.md#data-collected-by-all-plugins), this plugin collects the following data for each trial.
 
 | Name      | Type    | Value                                    |
 | --------- | ------- | ---------------------------------------- |
-| stimulus  | []      | This value represents the structured_reading_string used to run the experiment. |
-| mode      | number  | This value represents the mode that the self-paced reading experiment was ran using and thus how the text was displayed. |
+| stimulus  | array of string | The individual segments that are displayed per key press. |
+| mode      | number  | The mode that the trial was run with. |
+| results   | array of object | The results of the trial, sorted into objects with keys: <br> `results.rt`: The response time in milliseconds from when the stimulus was displayed to when a valid key was pressed. <br> `results.segment`: The segment that was displayed to the participant. <br> `results.key_pressed`: The key that was pressed by the participant. |
 
 ## Install
 
 Using the CDN-hosted JavaScript file:
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-spr"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-spr@3"></script>
 ```
 
 Using the JavaScript file downloaded from a GitHub release dist archive:
