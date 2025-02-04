@@ -118,13 +118,12 @@ class SprPlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    this.initializeVariables(trial);
-    // setup styles
-    var css = `<style id="jspsych-spr-mask>`;
+    // setup styles and trial parameters
+    var css = this.initializeVariables(trial);
 
     // setup html logic
     var html = `<p id="jspsych-spr-content">${this.generateDisplayString()}</p>`;
-    display_element.innerHTML = html;
+    display_element.innerHTML = css + html;
 
     // start timer
     this.startTime = performance.now();
@@ -141,7 +140,8 @@ class SprPlugin implements JsPsychPlugin<Info> {
     this.jsPsych.finishTrial(trial_data);
   }
 
-  private initializeVariables(trial: TrialType<Info>) {
+  /** error checking, generate reading string, and returns CSS for the trial. */
+  private initializeVariables(trial: TrialType<Info>): string {
     if (trial.mode === 1 || trial.mode === 2 || trial.mode === 3) this.mode = trial.mode;
     else throw new Error("Mode declared incorrectly, must be between 1 and 3.");
 
@@ -175,38 +175,63 @@ class SprPlugin implements JsPsychPlugin<Info> {
       persist: true,
       allow_held_key: false,
     });
+
+    var css = `<style>
+    .jspsych-spr-before-region {
+      ${this.mode !== 2 ? "color: white; border-bottom: 1px solid black; user-select: none;" : ""}
+    }
+    .jspsych-spr-after-region {
+      color: white;
+      border-bottom: 1px solid black;
+      user-select: none;
+    }
+    </style>`;
+
+    return css;
   }
 
   /** given the mode, current index, and mask array, generate html string to be displayed */
   private generateDisplayString(): string {
     if (this.mode !== 3) {
       if (this.index !== -1) {
-        return this.getDisplayArray()
+        return this.readingString
           .map((text, i) => {
             if (i < this.index) {
-              return "<span class='jspsych-spr-before-text'>" + text + "</span>";
+              return text
+                .split(" ")
+                .map((word) => "<span class='jspsych-spr-before-region'>" + word + "</span>")
+                .join(" ");
             } else if (i === this.index) {
-              return "<span class='jspsych-spr-current-text'>" + text + "</span>";
+              return text
+                .split(" ")
+                .map((word) => "<span class='jspsych-spr-current-region'>" + word + "</span>")
+                .join(" ");
             } else {
-              return "<span class='jspsych-spr-after-text'>" + text + "</span>";
+              return text
+                .split(" ")
+                .map((word) => "<span class='jspsych-spr-after-region'>" + word + "</span>")
+                .join(" ");
             }
           })
           .join(" ");
       } else {
-        return (
-          "<span class='jspsych-spr-before-text'>" +
-          this.readingString.map((text) => this.generateBlank(text)).join(" ") +
-          "</span>"
-        );
+        return this.readingString
+          .map((text) =>
+            text
+              .split(" ")
+              .map((word) => "<span class='jspsych-spr-after-region'>" + word + "</span>")
+              .join(" ")
+          )
+          .join(" ");
       }
     } else {
       if (this.index !== -1) {
         return (
-          "<span class='jspsych-spr-before-text'>" + this.readingString[this.index] + "</span>"
+          "<span class='jspsych-spr-current-region'>" + this.readingString[this.index] + "</span>"
         );
       } else {
         return (
-          "<span class='jspsych-spr-current-text'>" +
+          "<span class='jspsych-spr-after-region'>" +
           this.generateBlank(this.readingString[0]) +
           "</span>"
         );
@@ -214,25 +239,10 @@ class SprPlugin implements JsPsychPlugin<Info> {
     }
   }
 
-  /** returns `readingString` as a processed string array based on visibility */
-  private getDisplayArray(): string[] {
-    return this.readingString.map((text, i) => {
-      if (i < this.index) {
-        return this.isVisible[i] ? text : this.generateBlank(text);
-      } else if (i === this.index) {
-        return text;
-      } else {
-        return this.generateBlank(text);
-      }
-    });
-  }
-
   /** updates sentence, mask array, and index before regenerating display string */
   private onValidKeyPress(info?: any) {
-    if (this.mode === 3) {
-      if (this.index === -1) this.addDataPoint(this.generateBlank(this.readingString[0]), info.key);
-      else this.addDataPoint(this.readingString[this.index], info.key);
-    } else this.addDataPoint(this.getDisplayArray().join(" "), info.key);
+    if (this.index === -1) this.addDataPoint(this.generateBlank(this.readingString[0]), info.key);
+    else this.addDataPoint(this.readingString[this.index], info.key);
 
     this.index++;
     if (this.index >= this.readingString.length) {
@@ -247,6 +257,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
     }
   }
 
+  // helper function to generate a blank string of input length for data
   private generateBlank(text: string): string {
     const split = text.split(" ");
     if (split.length > 1) return split.map((word) => "_".repeat(word.length)).join(" ");

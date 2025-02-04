@@ -7,7 +7,6 @@
   <script src="https://unpkg.com/@jspsych/plugin-spr"></script>
   <script src="../dist/index.browser.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
-  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body></body>
@@ -20,9 +19,10 @@
   });
 
   const sentences = [
+    // regular sentence
     { stimulus: "The quick brown fox jumps over the lazy dog." },
-    { stimulus: "Portez ce vieux whisky au juge blond qui fume." },
-    { stimulus: "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich." }
+    // special delimiter "^" is used to separate segments
+    { stimulus: "Portez^ce vieux whisky^au juge blond^qui fume." },
   ]
 
   const procedure = {
@@ -30,14 +30,21 @@
       {
         type: jsPsychSpr,
         sentence: jsPsych.timelineVariable('stimulus'),
-        mode: 2,
-        line_size: Number.MAX_VALUE,
+        mode: 2
       }
     ],
     timeline_variables: sentences
   };
 
-  jsPsych.run([procedure]);
+  // each key press will advance the segment by 2 words instead of one
+  const segment_size_trial = {
+    type: jsPsychSpr,
+    sentence: "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich. :)",
+    mode: 2,
+    segments_per_key_press: 2
+  };
+
+  jsPsych.run([procedure, segment_size_trial]);
 </script>
 
 </html>

@@ -18,13 +18,33 @@
     default_iti: 250
   });
 
-  const trial = {
-    type: jsPsychSpr,
-    sentence: "The quick brown fox jumps over the lazy dog.",
-    mode: 3
+  const sentences = [
+    // regular sentence
+    { stimulus: "The quick brown fox jumps over the lazy dog." },
+    // special delimiter "^" is used to separate segments
+    { stimulus: "Portez^ce vieux whisky^au juge blond^qui fume." },
+  ]
+
+  const procedure = {
+    timeline: [
+      {
+        type: jsPsychSpr,
+        sentence: jsPsych.timelineVariable('stimulus'),
+        mode: 3
+      }
+    ],
+    timeline_variables: sentences
   };
 
-  jsPsych.run([trial])
+  // each key press will advance the segment by 2 words instead of one
+  const segment_size_trial = {
+    type: jsPsychSpr,
+    sentence: "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich. :)",
+    mode: 3,
+    segments_per_key_press: 2
+  };
+
+  jsPsych.run([procedure, segment_size_trial]);
 </script>
 
 </html>

@@ -51,25 +51,33 @@ import Spr from '@jspsych-contrib/plugin-spr';
 
 ## Examples
 
-### Using a structured_reading_string 
+### Self-paced-reading trial with simple word-by-word masking
 
 ```javascript
 const trial = {
   type: jsPsychSpr,
-  structured_reading_string: [["first and second", "second and fourth", "third"], ["fifth", "sixth", "seventh"], ["eighth", "ninth", "tenth"]],
-  mode: 2
+  sentence: "The quick brown fox jumps over the lazy dog.",
+  mode: 1,
 };
 ```
 
-### Using an unstructured_reading_string with chunk_size and line_size
+### Custom unmasking of words via delimiter
 
 ```javascript 
 const trial = {
   type: jsPsychSpr,
-  unstructured_reading_string: "this is the reading string and it is super super long, i wonder what will be coming next.",
-  chunk_size: 2,
-  line_size: 2,
+  sentence: "Portez^ce vieux whisky^au juge blond^qui fume.",
   mode: 1
 };
 ```
+
+### Display two words at a time with no other mask present
+
+```javascript
+const trial = {
+  type: jsPsychSpr,
+  sentence: "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich.",
+  mode: 3,
+  segments_per_key_press: 2
+}
 
