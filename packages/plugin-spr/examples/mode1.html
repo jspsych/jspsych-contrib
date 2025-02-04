@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <!-- The plugin is loaded here -->
+  <script src="https://unpkg.com/@jspsych/plugin-spr"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: async function() {      
+      jsPsych.data.displayData();  
+    },
+    default_iti: 250
+  });
+
+  const sentences = [
+    // regular sentence
+    { stimulus: "The quick brown fox jumps over the lazy dog." },
+    // special delimiter "^" is used to separate segments
+    { stimulus: "Portez^ce vieux whisky^au juge blond^qui fume." },
+  ]
+
+  const procedure = {
+    timeline: [
+      {
+        type: jsPsychSpr,
+        sentence: jsPsych.timelineVariable('stimulus'),
+        mode: 1
+      }
+    ],
+    timeline_variables: sentences
+  };
+
+  // each key press will advance the segment by 2 words instead of one
+  const segment_size_trial = {
+    type: jsPsychSpr,
+    sentence: "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich. :)",
+    mode: 1,
+    segments_per_key_press: 2
+  };
+
+  jsPsych.run([procedure, segment_size_trial]);
+</script>
+
+</html>
