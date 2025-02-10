@@ -3,7 +3,8 @@
   "compilerOptions": {
 	"module": "esnext",
     "baseUrl": ".",
-	"types": ["node"]
+	"types": ["node"],
+	"plugins": []
   },
   "include": ["src"]
 }
