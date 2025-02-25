@@ -14,14 +14,11 @@
     "prepare": "husky install",
     "changeset": "changeset",
     "changeset:version": "changeset version && npm install && npm run update-unpkg-links && npm run update-readme",
-    "changeset:publish": "npm run build && changeset publish",
-    "new": "node ./templates/cli/src/index.js"
+    "changeset:publish": "npm run build && changeset publish"
   },
   "dependencies": {
     "canvas": "^2.11.2",
-    "gulp": "^5.0.0",
-    "gulp-replace": "^1.1.4",
-    "npm-link": "^0.0.4"
+    "gulp": "^5.0.0"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.0",

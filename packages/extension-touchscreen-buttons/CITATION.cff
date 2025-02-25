@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use the jsPsych WebGazer plugin in your research, please cite it as below."
+preferred-citation:
+  authors:
+    - family-names: Strittmatter
+      given-names: Younes
+      orcid: "https://orcid.org/0000-0002-3414-2838"
+      affiliation: "Department of Cognitive, Linguistic, and Psychological Sciences, Brown University, Providence, USA"
+    - family-names: Spitzer
+      given-names: Markus W. H.
+      orcid: "https://orcid.org/0000-0001-6040-1939"
+      affiliation: "Department of Psychology, Martin-Luther University Halle-Wittenberg, Halle, Germany"
+    - family-names: Ging-Jehli
+      given-names: Nadja
+      orcid: "https://orcid.org/0000-0002-1071-0693"
+      affiliation: "Department of Cognitive, Linguistic, and Psychological Sciences, Brown University, Providence, USA"
+    - family-names: Musslick
+      given-names: Sebastian
+      orcid: "https://orcid.org/0000-0002-8896-639X"
+      affiliation: 
+        - "Department of Cognitive, Linguistic, and Psychological Sciences, Brown University, Providence, USA"
+        - "Institute of Cognitive Science, Osnabrück University, Osnabrück, Germany"
+  title: "A jsPsych WebGazer Plugin for Behavioral Research on Touch-Enabled Interfaces"
+  doi: "10.31234"
+  url: "https://osf.io/preprints/psyarxiv/akzwj_v1"
+  journal: PsyArXiv Preprints
+  date-published: 2023-11-07
+  abstract:
+    Online experiments are increasingly gaining traction in the behavioral sciences. Despitethis, behavioral researchers have largely continued to use keyboards as the primaryinput devices for such online studies, overlooking the ubiquity of touchscreens ineveryday use. This paper presents an open-source touchscreen extension for jsPsych, aJavaScript framework designed for conducting online experiments. We assess thereliability of our extension by comparing performance metrics fromtouchscreen-administered experiments with those from their keyboard-basedcounterparts, focusing on two distinct perceptual decision-making tasks: therandom-dot kinematogram and the Stroop task. Our findings indicate comparableperformance metrics for each paradigm between the touchscreen and keyboard versionsof the experiments. Specifically, we observe similar psychometric curves in therandom-dot kinematogram across the touchscreen and keyboard versions. Similarly, inthe Stroop task, we detect significant task, congruency, and sequential congruencyeffects in both experiment versions. We conclude that touchscreen devices can serve asreliable tools for data collection in online behavioral experiments in forced-choice tasks.
+  keywords:
+    - WebGazer
+    - jsPsych
+    - eye-tracking
+    - behavioral research
+  license: "MIT"
+  repository-code: "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-webgazer"
