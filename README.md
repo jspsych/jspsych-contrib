@@ -66,69 +66,31 @@ The `/packages` directory also contains four template sub-folders that can be us
 [mediapipe-face-mesh](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-mediapipe-face-mesh/README.md) | [C. Martin Grewe](https://github.com/mgrewe) | This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library. 
 [touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | foo 
 ## Guidelines for contributions
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Contributions to this repository must:
 
 * Work as described
 * Include the complete code for the plugin or extension.
-* Include a `readme.md` file following our [template](readme-template.md).
+* Include a `readme.md` file following our [template]([identical for plugins and extensions](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-plugin/templates/plugin-template-ts/README.md)).
 * Include a `package.json` file.
 
-Optionally, contributions can include:
+Optionally, contributions are encouraged to include:
 
 * A `/docs` directory with documentation matching the template for docs on jspsych.org 
 * An `/examples` directory with a working `.html` demo.
-* A test suite following the testing framework in our `-ts` templates.
+* A test suite following the testing framework in our `-ts` [templates]([plugin test template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-plugin/templates/plugin-template-ts/src/index.spec.ts); [extension test template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-extension/templates/extension-template-ts/src/index.spec.ts)).
 
 
-To submit a contribution, [open a pull request](https://github.com/jspsych/jspsych-contrib/pulls) that contains a directory for your plugin/extension inside the `/packages` directory.
+To submit a contribution, [open a pull request](https://github.com/jspsych/jspsych-contrib/pulls) that contains a directory for your plugin or extension inside the `/packages` directory.
 In the pull request comments, please make it clear how we can verify that the contribution is functional. 
 This could be accomplished with a link to a demonstration experiment, the inclusion of an example file and/or testing files, or through some other means.
 We try to review pull requests quickly and add new contributions as soon as the minimal standards are met.
 
 ## Creating a new plugin or extension
 
-After cloning this repository, run `npm install` and then `npm run new`. 
-This will prompt you through the process of creating a new plugin or extension. 
-The tool will create a new directory in the `/packages` directory with the appropriate files and names. 
+We have a tool for building new plugins and extensions at [jspsych-dev](https://github.com/jspsych/jspsych-dev/tree/main). Instructions for using the tools can be found at the [`README.md`](https://github.com/jspsych/jspsych-dev/blob/main/README.md) of this repository.
 
-You may want to read the jsPsych documentation on [plugin development](https://www.jspsych.org/latest/developers/plugin-development/) to understand how to work with the `index.ts`file (for TypeScript development) and `index.js` file (for JavaScript development).
+You may also want to read the jsPsych documentation on [plugin development](https://www.jspsych.org/latest/developers/plugin-development/) to understand how to work with the `index.ts` file (for TypeScript development) and `index.js` file (for JavaScript development).
 
-### TypeScript template
-
-This template uses TypeScript source files that are complied into JavaScript using Node.js and npm.
-This is the format used for plugins in the main jsPsych repo.
-To use this template, you should edit the `src/index.ts` file, keeping the overall structure but changing the details as appropriate (parameters, trial method, etc.).
-You can then use the `npm run build` command to compile your `index.ts` code into JavaScript files, which will appear in a `/dist` directory.
-This format also allows you to add a Jest test file (optional).
-
-For more details, including setup instructions and detailed explanations of files, please see the jsPsych documentation page: [Configuring the jsPsych development environment](https://www.jspsych.org/latest/developers/configuration).
-You can also read the [plugin development documentation](https://www.jspsych.org/latest/developers/plugin-development/) and look at the plugin/extension folders in the main jsPsych repository `/packages` directory for more examples.
-
-### JavaScript template
-
-This template allows you to put your plugin's JavaScript code directly into a JavaScript template file, rather than using TypeScript and Node.js/npm. 
-To use this template, you should keep the overall structure of the `index.js` file, but change the details as appropriate for your plugin (plugin name, parameters, etc.).
-The JavaScript code that runs the trial goes inside the `trial` method for the plugin class.
-More information about working with the `index.js` file can be found in the [plugin development documentation](https://www.jspsych.org/latest/developers/plugin-development/).
 
 ## jsPsych version compatibility
 
@@ -137,11 +99,11 @@ At the same time, we realize that there may be jsPsych users who have created ve
 Therefore we welcome contributions that are compatible with v6 as well as v7+. 
 
 If you'd like to contribute a **jsPsych v6 plugin**, please do the following:
-* Use the `templates/plugin-template-js` directory as a reference
+* Use the [`templates/plugin-template-js`](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-plugin/templates/plugin-template-js) folder under the [`new-plugin`](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-plugin) directory in [jspsych-dev](https://github.com/jspsych/jspsych-dev/tree/main) as a reference
 * Delete everything inside of the `index.js` template file and replace it with your v6-compatible plugin code
 * In the `package.json` file, change the "jspsych" version field in "devDependencies" to "6.3.1"
 
 And remember to follow the other steps for contributing:
 * Edit the `package.json` file with the information about your plugin
-* Add a `readme.md` file for your plugin, based on the [readme template](https://github.com/jspsych/jspsych-contrib/blob/main/readme-template.md). This must state the jsPsych version that your plugin is compatible with.
+* Add a `readme.md` file for your plugin, based on the [readme template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-plugin/templates/plugin-template-js/README.md). This must state the jsPsych version that your plugin is compatible with.
 * Optional: add a `/docs` directory with a markdown documentation file, and/or `/examples` directory with an HTML example file
