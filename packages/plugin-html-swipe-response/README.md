@@ -11,7 +11,7 @@ The plugin now ensures that both the container (`#jspsych-html-swipe-response-st
 ## Loading
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-html-swipe-response@1.1.3"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-html-swipe-response@2.0.0"></script>
 ```
 
 ## Compatibility

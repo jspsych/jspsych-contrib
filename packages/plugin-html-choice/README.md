@@ -9,7 +9,7 @@ This plugin displays clickable html elements that can be used to present a choic
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-html-choice@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-html-choice@2.0.0"></script>
 ```
 
 ### Via NPM

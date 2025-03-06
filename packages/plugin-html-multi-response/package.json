@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-html-multi-response",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "This plugin collects responses to an arbitrary HTML string using both button clicks and key presses.",
   "type": "module",
   "main": "dist/index.cjs",

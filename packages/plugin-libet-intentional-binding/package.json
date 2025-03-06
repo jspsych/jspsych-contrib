@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-libet-intentional-binding",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "This plugin measures intentional binding using a Libet clock, and allows the participant to estimate the timing of events by adjusting the clock hand themselves.",
   "unpkg": "dist/index.browser.min.js",
   "files": [

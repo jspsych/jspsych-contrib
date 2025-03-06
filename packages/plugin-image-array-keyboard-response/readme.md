@@ -10,7 +10,7 @@ This plugin displays images and records responses generated with the keyboard. T
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-image-array-keyboard-response@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-image-array-keyboard-response@2.0.0"></script>
 ```
 
 ### Via NPM

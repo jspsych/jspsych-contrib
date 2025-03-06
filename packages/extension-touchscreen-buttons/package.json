@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/extension-touchscreen-buttons",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "This extension displays touch buttons that allow the participant to respond to stimuli via a touchscreen on mobile devices.",
   "unpkg": "dist/index.browser.min.js",
   "files": [

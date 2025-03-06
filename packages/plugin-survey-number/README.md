@@ -9,7 +9,7 @@ Collects a number response in a text box
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-survey-number@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-survey-number@2.0.0"></script>
 ```
 
 ### Via NPM

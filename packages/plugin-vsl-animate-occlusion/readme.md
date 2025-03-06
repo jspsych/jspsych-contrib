@@ -12,7 +12,7 @@ Fiser, J., & Aslin, R. N. (2002). Statistical learning of higher-order temporal 
 
 ```js
 <script src="https://unpkg.com/snapsvg@0.5.1/dist/snap.svg-min.js"></script>
-<script src="https://unpkg.com/@jspsych-contrib/plugin-vsl-animate-occlusion@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-vsl-animate-occlusion@2.0.0"></script>
 ```
 
 ### Via NPM
