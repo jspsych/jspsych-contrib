@@ -37,11 +37,11 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-rdk",
   "peerDependencies": {
-    "jspsych": ">=7.0.0"
+    "jspsych": ">=8.0.0"
   },
   "devDependencies": {
-    "@jspsych/config": "^2.0.0",
+    "@jspsych/config": "^3.2.1",
     "@jspsych/test-utils": "^1.0.0",
-    "jspsych": "^7.0.0"
+    "jspsych": "^8.0.0"
   }
 }

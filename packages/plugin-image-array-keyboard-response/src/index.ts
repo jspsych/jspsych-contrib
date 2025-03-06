@@ -1,19 +1,27 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "image-array-keyboard-response",
+  version: version,
   parameters: {
-    /** The image to be displayed */
+    /** The images to be displayed */
     stimulus: {
       type: ParameterType.IMAGE,
       pretty_name: "Stimulus",
       default: undefined,
+      array: true,
     },
-    /** Set the image rectangle in pixels */
+    /**
+     * Set the image rectangle in pixels, each array in the form of [positionX, positionY, width, height].
+     * If width and height are left null, then the image will display at its natural height.
+     */
     stimulus_rect: {
-      type: ParameterType.INT,
+      type: ParameterType.COMPLEX,
       pretty_name: "Image rectangle",
       default: null,
+      array: true,
     },
     /** Maintain the aspect ratio after setting width or height */
     maintain_aspect_ratio: {
@@ -21,7 +29,7 @@ const info = <const>{
       pretty_name: "Maintain aspect ratio",
       default: true,
     },
-    /** Array containing the key(s) the subject is allowed to press to respond to the stimulus. */
+    /** Array containing the key(s) the participant is allowed to press to respond to the stimulus. */
     choices: {
       type: ParameterType.KEYS,
       pretty_name: "Choices",
@@ -39,7 +47,7 @@ const info = <const>{
       pretty_name: "Trial duration",
       default: null,
     },
-    /** If true, trial will end when subject makes a response. */
+    /** If true, trial will end when participant makes a response. */
     response_ends_trial: {
       type: ParameterType.BOOL,
       pretty_name: "Response ends trial",
@@ -55,6 +63,22 @@ const info = <const>{
       default: true,
     },
   },
+  data: {
+    /** The response time in milliseconds for the participant to make a response.
+     * The time is measured from when the stimulus first appears on the screen until the participant's response. */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The paths to the stimuli shown in the trial. */
+    stimulus: {
+      type: ParameterType.STRING,
+      array: true,
+    },
+    /** The key that the participant pressed. */
+    response: {
+      type: ParameterType.STRING,
+    },
+  },
 };
 
 type Info = typeof info;
@@ -65,7 +89,7 @@ type Info = typeof info;
  * jsPsych plugin for displaying an image array and getting a keyboard response
  *
  * @author Younes Strittmatter
- * @see {@link https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-image-array-keyboard-response/README.md image-array-keyboard-response plugin documentation on github.com}
+ * @see {@link https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-image-array-keyboard-response image-array-keyboard-response plugin documentation on github.com}
  */
 class ImageArrayKeyboardResponsePlugin implements JsPsychPlugin<Info> {
   static info = info;
@@ -73,7 +97,7 @@ class ImageArrayKeyboardResponsePlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    let height, width;
+    let height: number, width: number;
     if (trial.render_on_canvas) {
       let image_drawn = [];
       // first clear the display element (because the render_on_canvas method appends to display_element instead of overwriting it with .innerHTML)
@@ -83,8 +107,8 @@ class ImageArrayKeyboardResponsePlugin implements JsPsychPlugin<Info> {
           display_element.removeChild(display_element.firstChild);
         }
       }
-      // create canvas element and image
 
+      // create canvas element and image
       let canvas = document.createElement("canvas");
       canvas.id = "jspsych-image-keyboard-response-stimulus";
       canvas.style.margin = "0";
@@ -104,6 +128,7 @@ class ImageArrayKeyboardResponsePlugin implements JsPsychPlugin<Info> {
           }
         };
         img.src = trial.stimulus[i];
+
         // get/set image height and width - this can only be done after image loads because uses image's naturalWidth/naturalHeight properties
         const getHeightWidth = () => {
           const stimulus_height = trial.stimulus_rect[i][3];
@@ -195,9 +220,6 @@ class ImageArrayKeyboardResponsePlugin implements JsPsychPlugin<Info> {
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-
       // kill keyboard listeners
       if (typeof keyboardListener !== "undefined") {
         this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
@@ -210,14 +232,11 @@ class ImageArrayKeyboardResponsePlugin implements JsPsychPlugin<Info> {
         response: response.key,
       };
 
-      // clear the display
-      display_element.innerHTML = "";
-
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
     };
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     var after_response = (info) => {
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded

@@ -24,7 +24,7 @@ import jsPsychCorsiBlocks from '@jspsych-contrib/plugin-corsi-blocks';
 
 ## Compatibility
 
-jsPsych 7.3.2.
+jsPsych v8.0. For compatibility with jsPsych v7.3.2, use version 1.0.0 of this plugin.
 
 (Earlier versions of jsPsych version 7 will work if you explicitly set the `blocks` parameter in a trial. Using the default `blocks` parameter requires `7.3.2` or later.)
 

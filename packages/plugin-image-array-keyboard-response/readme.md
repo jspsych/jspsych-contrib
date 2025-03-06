@@ -2,7 +2,7 @@
 
 ## Overview
 
-This plugin displays images and records responses generated with the keyboard. The position and size of the images can be specified. The stimulus can be displayed until a response is given, or for a pre-determined amount of time. The trial can be ended automatically if the subject has failed to respond within a fixed length of time.
+This plugin displays images and records responses generated with the keyboard. The position and size of the images can be specified. The stimulus can be displayed until a response is given, or for a pre-determined amount of time. The trial can be ended automatically if the participant has failed to respond within a fixed length of time.
 
 
 ## Loading
@@ -25,7 +25,7 @@ import jsPsychImageArrayKeyboardResponse from '@jspsych-contrib/plugin-image-arr
 
 ## Compatibility
 
-jsPsych v7.0. 
+jsPsych v8.0. For compatibility with jsPsych v7.0, use version 1.0.0 of this plugin.
 
 ## Documentation
 
@@ -33,4 +33,4 @@ See [documentation](docs/jspsych-image-array-keyboard-response.md)
 
 ## Author / Citation
 
-This plugin was created by the [Autonomous Empirical Research Group](https://musslick.github.io/AER_website) (developer: [Younes Strittmatter](https://github.com/younesStrittmatter), PI: [Sebastian Musslick](https://smusslick.com). This research program is supported by Schmidt Science Fellows, in partnership with the Rhodes Trust, as well as the Carney BRAINSTORM program at Brown University.
+This plugin was created by the [Autonomous Empirical Research Group](https://musslick.github.io/AER_website) (developer: [Younes Strittmatter](https://github.com/younesStrittmatter), PI: [Sebastian Musslick](https://smusslick.com)). This research program is supported by Schmidt Science Fellows, in partnership with the Rhodes Trust, as well as the Carney BRAINSTORM program at Brown University.
