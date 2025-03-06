@@ -29,7 +29,7 @@ The `/packages` directory also contains four template sub-folders that can be us
   ----------- | ----------- | -----------
 [audio-multi-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-audio-multi-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using both button clicks and key presses. 
 [audio-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-audio-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using swipe gestures and keyboard responses. 
-[copying-task](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-copying-task/README.md) | [Andre Sahakian](https://github.com/Andre3582) | foo 
+[copying-task](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-copying-task/README.md) | [Andre Sahakian](https://github.com/Andre3582) | _Description for copying-task._ 
 [corsi-blocks](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-corsi-blocks/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays a configurable Corsi blocks task and records a series of click responses. 
 [gamepad](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-gamepad/README.md) | [Shaobin Jiang](https://github.com/Shaobin-Jiang) | This plugin allows one to use gamepads in a jsPsych experiment. 
 [html-choice](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/plugin-html-choice/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This plugin displays clickable html elements that can be used to present a choice. 
@@ -64,7 +64,8 @@ The `/packages` directory also contains four template sub-folders that can be us
 [countdown](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-countdown/README.md) | [Shaobin Jiang](https://github.com/Shaobin-Jiang) | This extension adds a countdown during a trial. 
 [device-motion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-device-motion/README.md) | [Pedro Neto](https://github.com/pasoneto) | jsPsych extension for tracking device motion 
 [mediapipe-face-mesh](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-mediapipe-face-mesh/README.md) | [C. Martin Grewe](https://github.com/mgrewe) | This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library. 
-[touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | foo 
+[touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | _Description for touchscreen-buttons._ 
+
 ## Guidelines for contributions
 Contributions to this repository must:
 
