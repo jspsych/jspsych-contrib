@@ -10,7 +10,7 @@ This plugin displays oriented objects (oobs) that move and allows the participan
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-rok@1.1.1"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-rok@2.0.0"></script>
 ```
 
 ### Via NPM

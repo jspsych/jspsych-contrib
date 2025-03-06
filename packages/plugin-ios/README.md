@@ -7,7 +7,7 @@ This plugin allows for continuous responses on the Inclusion of Other in the Sel
 ## Loading
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-ios@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-ios@2.0.0"></script>
 ```
 
 ## Compatibility

@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-nextcloud-filedrop",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "This plugin provides permanent storage of data collected during an experiment using a nextcloud instance.",
   "unpkg": "dist/index.browser.min.js",
   "files": [

@@ -9,7 +9,7 @@ HTML slider which allows for keyboard responses
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-html-keyboard-slider@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-html-keyboard-slider@2.0.0"></script>
 ```
 
 ### Via NPM

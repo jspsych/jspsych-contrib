@@ -13,7 +13,7 @@ The trial can end when the participant responds, when the audio file has finishe
 ## Loading
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-audio-multi-response@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-audio-multi-response@2.0.0"></script>
 ```
 
 ## Compatibility

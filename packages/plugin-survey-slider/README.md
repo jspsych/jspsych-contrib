@@ -12,7 +12,7 @@ to jspsych-contrib by Max Lovell
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-survey-slider@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-survey-slider@2.0.0"></script>
 ```
 
 ### Via NPM

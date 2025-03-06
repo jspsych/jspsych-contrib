@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-corsi-blocks",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "This plugin displays a configurable Corsi blocks task and records a series of click responses.",
   "type": "module",
   "main": "dist/index.cjs",
