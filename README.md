@@ -62,6 +62,8 @@ Plugin | Contributor | Description
 [touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | _Description for touchscreen-buttons._ 
 
 ## Guidelines for contributions
+
+### Contribution requirements
 Contributions to this repository must:
 
 * Work as described
@@ -75,8 +77,14 @@ Optionally, contributions are encouraged to include:
 * An `/examples` directory with a working `.html` demo.
 * A test suite following the testing framework in our `-ts` [templates]([plugin test template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-plugin/templates/plugin-template-ts/src/index.spec.ts); [extension test template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-extension/templates/extension-template-ts/src/index.spec.ts)).
 
+### To contribute to this repository, follow these steps:
+1. Clone this repository on your machine and run `npm i` to install its packages.
+2. Run `npx @jspsych/new-plugin` or `npx @jspsych/new-extension` and answer the prompts to create a new plugin/extension template under `/packages`. This is a command-line tool we built to make setting up the development of a new plugin/extension easier. Documentation for using this tool can be found in their respective readme files ([new-plugin](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-plugin#readme); [new-extension](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-extension#readme)).
+3. After you are done editing the plugin/extension template, verify that it works by opening `examples/index.html` in your browser.
+4. Run `npm i` in your plugin/extension directory to install all your dependencies.
+5. Add a changeset by running `npm run changeset` in the main directory of the repository. This will prompt you for a description of the changes you made and creates a new changeset file in the `changesets` directory accordingly.
+6. Open a pull request to merge your branch into the `main` branch of this repository.
 
-To submit a contribution, [open a pull request](https://github.com/jspsych/jspsych-contrib/pulls) that contains a directory for your plugin or extension inside the `/packages` directory.
 In the pull request comments, please make it clear how we can verify that the contribution is functional. 
 This could be accomplished with a link to a demonstration experiment, the inclusion of an example file and/or testing files, or through some other means.
 We try to review pull requests quickly and add new contributions as soon as the minimal standards are met.
