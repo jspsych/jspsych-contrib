@@ -12,17 +12,17 @@ This extension accepts one parameter. If unspecified, the extension will not col
 
 | Parameter           | Type             | Default Value      | Description                              |
 | ------------------- | ---------------- | ------------------ | ---------------------------------------- |
-| detection_interval  | numeric      	 | null        | Specifies how often (in ms) the extension takes a snapshot of the user's pupil. |
+| detection_interval  | numeric      	 | null        | Specifies how often (in ms) the extension takes a snapshot of the user's pupil. Due to how JavaScript works, this will typically have a mild error averaging 0.014ms, but up to 0.04ms has been observed. |
 
 ## Data Generated
 
-This extension collects the following data.
+This extension collects the following data. This extension measures the pupil at every interval specified by the parameter detection_interval. However, if the trial ends before the next interval is due, the extension will prematurely take a measurement as the trial ends and cancel the measurement that would occur when the trial no longer exists. For this reason, the last pupil measurement may be very soon after the second last measurement and this will be reflected in the data generated below. Due to how JavaScript works, the last measurement may also delay the trial ending by up to .04 s.
 
 | Name      | Type    | Value                                    |
 | --------- | ------- | ---------------------------------------- |
 | pupil_diameter  | numeric  | The diameter of the user's pupil at the time of snapshot, in pixels relative to the participant's monitor. The participant is assumed to have circular pupils because diameter is reported. |
 | blink_prob  | numeric | The probability that the user was blinking at the time of snapshot. Is between 0 and 1, where 1 indicates that the extension is certain that the user was blinking. |
-| timecode	| numeric	| The seconds (rounded to three decimal places) since the start of the extension-trial dyad that the snapshot was taken, including the moment a trial starts and ends. Due to javascript, this cannot be perfectly accurate and an error of up to 30ms occurs on the developer's computer. |
+| timecode	| numeric	| The seconds (rounded to three decimal places) since the start of the extension-trial dyad that the snapshot was taken, including the moment a trial starts and ends. Due to JavaScript, this cannot be perfectly accurate and an error of up to 30ms occurs on the developer's computer. |
 
 ## Install
 

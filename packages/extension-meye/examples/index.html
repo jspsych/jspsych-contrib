@@ -14,6 +14,7 @@
 	extension. To build it, go to /plugin-meye-config and run npm run build -->
 	<script src="../../plugin-meye-config/dist/index.browser.min.js"></script>
 	<script src="../dist/index.browser.min.js"></script>
+	<script src="../../extension-countdown/dist/index.browser.min.js"></script>
 </head>
 
 <body>
@@ -48,7 +49,7 @@
 
 	var meyeCalibrate = {
 		type: jsPsychMeyeConfig,
-		auto_calibrate: false
+		auto_calibrate: false,
 	};
 
 	const orientblue36 = {
@@ -56,15 +57,13 @@
 			{
 				type: jsPsychHtmlKeyboardResponse,
 				stimulus: '<img src="../../plugin-meye-config/img/cross.png" width="50" height="50"/>',
-				trial_duration: 600, 
-				response_ends_trial: false,
+				trial_duration: 600,
 				extensions: [{ type: jsPsychExtensionMeye, params: {detection_interval: 100} }]
 			},
 			{
 				type: jsPsychHtmlKeyboardResponse,
 				stimulus: '<div><img id="Blue" src="../../plugin-meye-config/img/Picture2.png" height="9%" style="position:absolute; top:46%; left:64%"/></div>',
 				trial_duration: 2000,
-				data: { task: 'webcam1', US: 'no'},
 				extensions: [{ type: jsPsychExtensionMeye, params: {detection_interval: 200} }]
 			}
 		]

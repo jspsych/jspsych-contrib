@@ -22,10 +22,17 @@ const info = <const>{
       default: 20,
     },
 
-    /** An index of pupil area change between frames that triggers a warning on the webpage. This is complicated so see docs for more info. Disabled by default. */
+    /** An index of pupil area change between frames that triggers a warning on the webpage. This applies to the plugin only. This is complicated so see docs for more info. Disabled by default. */
     erratic_area_tolerance: {
       type: ParameterType.FLOAT,
       default: null,
+    },
+
+    /** The model used to identify pupils in the video feed. Uses the original mEye model by default which is recommended unless experimenting with custom models. Note that only TensorFlow models (converted to JSON) are currently supported. */
+    modelUrl: {
+      type: ParameterType.STRING,
+      default:
+        "../../plugin-meye-config/models/meye-segmentation_i128_s4_c1_f16_g1_a-relu-no-subj/model.json",
     },
   },
 };
@@ -45,7 +52,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    console.log("Loaded TensorFlow.js - version: " + tf.version.tfjs);
+    console.log("TensorFlow.js version: " + tf.version.tfjs);
 
     const passedPerformanceCheck = new Event("passedPerformanceCheck", { bubbles: true });
     const passedSetup2 = new Event("passedSetup2", { bubbles: true });
@@ -119,13 +126,32 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       });
 
       mainDisplayElement.addEventListener("passedSetup2", () => {
+        for (const [key, value] of Object.entries(this.jsPsych.extensions)) {
+          if (key == "meye-extension") {
+            (value as any)
+              .setup(
+                idealObject.threshValue,
+                idealObject.avgRx,
+                idealObject.avgRy,
+                idealObject.roiSize,
+                trial.modelUrl
+              )
+              .then(() => {
+                breakLoop = true;
+                data = { settings: idealObject };
+                this.jsPsych.finishTrial(data);
+              });
+            return;
+          }
+        }
+
         data = { settings: idealObject };
         this.jsPsych.finishTrial(data);
       });
 
       // This is so the event stuff above works when the mouse crosses the entire screen, not just the trimmed-down display_element.
       mainDisplayElement.style.height = "100%";
-      mainDisplayElement.style.position = "fixed";
+      mainDisplayElement.style.position = "absolute";
 
       if (trial.auto_calibrate) {
         document.getElementById("info-box").innerHTML = `<h3>Calibration</h3>
@@ -135,7 +161,9 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       calPhaseOneSetup();
     });
 
-    var mainDisplayElement,
+    // TODO: Refactor to improve encapsulation
+    var breakLoop = false,
+      mainDisplayElement,
       input,
       output,
       video,
@@ -153,6 +181,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       rx,
       ry,
       rs,
+      modelUrl,
       calibrateBtn,
       freezeBtn,
       invertGuiBtn,
@@ -227,6 +256,8 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       secondsCalibrationTakes = info.parameters.calibration_duration.default;
     }
 
+    modelUrl = trial.modelUrl;
+
     var rgb = tf.tensor1d([0.2989, 0.587, 0.114]);
     var _255 = tf.scalar(255);
     var timeoutHandler = null;
@@ -244,7 +275,6 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
     const samples = [];
 
     var calibrated = false;
-    var debugMode = false;
     var threshHolder = 0.01;
     var benchmark = 0.0;
 
@@ -283,11 +313,14 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
       loadModel().then(() => {
         var backend = tf.getBackend();
-        var styleClass = backend != "cpu" ? "accelerated" : "non-accelerated";
+        if (backend != "cpu") {
+          backendIndicator.style.color = "green"; // means we have acceleration
+        } else {
+          backendIndicator.style.color = "red";
+        }
 
         backend = backend == "webgl" ? "WebGL" : backend.toUpperCase();
         backendIndicator.textContent = backend;
-        backendIndicator.classList.add(styleClass);
       });
 
       setInterval(computeFps, 1000);
@@ -462,9 +495,6 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
     }
 
     function loadModel() {
-      var modelUrl =
-        "../../plugin-meye-config/models/meye-segmentation_i128_s4_c1_f16_g1_a-relu-no-subj/model.json";
-
       return tf.loadGraphModel(modelUrl).then((loadedModel) => {
         model = loadedModel;
         tf.tidy(() => {
@@ -693,6 +723,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
     }
 
     function predictLoop() {
+      if (breakLoop) return; // predictLoop keeps running after plugin ends so I made breakLoop become true on plugin end.
       if (
         trial.auto_calibrate &&
         (!model || mode == "standby" || (!video.paused && video.readyState < 3))
@@ -702,7 +733,6 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       }
 
       predictOnce().then((outs) => {
-        video.play(); // TODO fix to work without.
         let [timestamp, timecode, pupilArea, blinkProb, pupilX, pupilY] = outs;
 
         // follow eye
@@ -802,7 +832,6 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
     }
 
     function addSample(sample) {
-      // sorry for the spaghetti code uwu
       var [timestamp, timecode, pupilArea, blinkProb, pupilX, pupilY] = sample;
 
       if (mode == "calibrate") {
@@ -821,17 +850,17 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
           if (samples.length == samplesPerThresh) {
             var thresholdDataObject = {
-              avgPa: totalPa / samplesPerThresh,
-              avgPx: totalPx / samplesPerThresh,
-              avgPy: totalPy / samplesPerThresh,
-              avgRx: Math.round(totalRx / samplesPerThresh),
-              avgRy: Math.round(totalRy / samplesPerThresh),
+              avgPa: Math.round((totalPa / samplesPerThresh) * 1e5) / 1e5,
+              avgPx: Math.round((totalPx / samplesPerThresh) * 1e5) / 1e5,
+              avgPy: Math.round((totalPy / samplesPerThresh) * 1e5) / 1e5,
+              avgRx: Math.round((totalRx / samplesPerThresh) * 1e5) / 1e5,
+              avgRy: Math.round((totalRy / samplesPerThresh) * 1e5) / 1e5,
               roiSize: rs,
-              threshValue: parseFloat(threshHolder.toFixed(2)), // More decimal places are unnecessary bc of iteration size of threshold
+              threshValue: Math.round(threshHolder * 1e2) / 1e2,
             };
 
             phaseOneInfoDiv.innerHTML = "<b>" + Math.round(threshHolder * 100) + "%</b> complete";
-            threshAvg.push(thresholdDataObject); // The zeroth threshAvg is when the threshold is at 0.01. The threshold is also a property of the object above.
+            threshAvg.push(thresholdDataObject); // The zeroth threshAvg is when the threshold is at 0.01.
             threshHolder = parseFloat(threshHolder.toString()) + 0.01;
             setThreshold();
             clearData();
@@ -844,9 +873,8 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
         }
       } else if (mode == "performanceCheck") {
         if (trial.auto_calibrate) {
-          if (avgFps > benchmark) {
-            benchmark = avgFps;
-          } else if (avgFps < benchmark) {
+          if (avgFps > benchmark) benchmark = avgFps;
+          else if (avgFps < benchmark) {
             analyzePerformance(benchmark);
             clearData();
             prepForCalibration();
@@ -856,14 +884,15 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
           mode = "standby";
         }
       } else if (mode == "standby" && !trial.auto_calibrate) {
+        // If we aren't auto calibrating then just use the data from the latest (single) pupil snapshot. The 'avg' part of the variables below is a bit of a misnomer in this case.
         idealObject = {
           avgPa: pupilArea,
-          avgPx: pupilX,
-          avgPy: pupilY,
+          avgPx: Math.round(pupilX),
+          avgPy: Math.round(pupilY),
           avgRx: rx,
           avgRy: ry,
           roiSize: rs,
-          threshValue: threshold,
+          threshValue: Math.round(threshold * 1e4) / 1e4,
         };
       }
     }
@@ -892,7 +921,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
     function analyzePerformance(parsedBenchmark) {
       var framesPerThresh = parsedBenchmark / (99 / secondsCalibrationTakes); // if we want all 99 levels to get at least one frame.
-      console.log("Frames per threshold level: " + framesPerThresh + ".");
+      console.log("Frames per threshold level: " + framesPerThresh.toFixed(2) + ".");
       if (framesPerThresh < 1) {
         console.error(
           "Less than one frame per threshhold level would be used for auto calibration. Higher frames per second needed, or the calibration_duration parameter must be set to a higher value."
@@ -924,7 +953,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 										<input type='button' id='invert-gui-btn' value='Hide / show box dragger and resizer'> 
 										<input type='button' id='freeze-btn' value='Freeze / unfreeze box position' disabled>
 									</form>
-									<p>Calibration can take up to 20 seconds and can be reattempted. After you click calibrate below, do not blink nor try to look around while the completion percent rises, and ensure that you are comfortably positioned. Although unlikely, your camera's software may allow you to zoom in or adjust brightness.</p>
+									<p>Calibration can be reattempted. After you click calibrate below, do not blink nor try to look around while the completion percent rises, and ensure that you are comfortably positioned. Although unlikely, your camera's software may allow you to zoom in or adjust brightness.</p>
 									<p>From the moment that calibration starts to the end of participation, the experiment requires that you keep your head and camera as still as possible, and your lighting as constant as possible.</p>
 									<form>
 										<input type='checkbox' id='rule-confirm'>Okay!<br>
