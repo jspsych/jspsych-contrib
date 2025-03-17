@@ -24,8 +24,8 @@ class MeyeExtension implements JsPsychExtension {
   rs: number;
   modelUrl: string;
   videoStream: MediaStream;
-  beginInterval: number;
-  updatePredictionTimeout: number;
+  beginInterval: ReturnType<typeof setInterval>;
+  updatePredictionTimeout: ReturnType<typeof setTimeout>;
   model: tf.GraphModel;
   mode: string;
   timeToSubtract: number;
