@@ -1,10 +1,10 @@
 # html-keyboard-response-raf
 
-This plugin implements the same functionality as the html-keyboard-response plugin, but uses requestAnimationFrame internally for timing
+This plugin implements the same functionality as the html-keyboard-response plugin, but uses requestAnimationFrame internally for timing.
 
 ## Parameters
 
-In addition to the [parameters available in all plugins](https://jspsych.org/latest/overview/plugins.md#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of undefined must be specified. Other parameters can be left unspecified if the default value is acceptable.
+In addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of undefined must be specified. Other parameters can be left unspecified if the default value is acceptable.
 
 | Parameter           | Type             | Default Value      | Description                              |
 | ------------------- | ---------------- | ------------------ | ---------------------------------------- |
@@ -16,7 +16,7 @@ In addition to the [parameters available in all plugins](https://jspsych.org/lat
 | response_ends_trial | boolean          | true               | If true, then the trial will end whenever the participant makes a response (assuming they make their response before the cutoff specified by the `trial_duration` parameter). If false, then the trial will continue until the value for `trial_duration` is reached. You can set this parameter to `false` to force the participant to view a stimulus for a fixed amount of time, even if they respond before the time is complete. |
 ## Data Generated
 
-In addition to the [default data collected by all plugins](https://jspsych.org/latest/overview/plugins.md#data-collected-by-all-plugins), this plugin collects the following data for each trial.
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects the following data for each trial.
 
 | Name      | Type    | Value                                    |
 | --------- | ------- | ---------------------------------------- |

@@ -1,7 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "corsi-blocks",
+  version: version,
   parameters: {
     /**
      * An array of block indexes that specify the order of the sequence to be displayed. For example,
@@ -139,6 +142,41 @@ const info = <const>{
       default: "#ff0000",
     },
   },
+  data: {
+    /** The sequence of block indicies that were displayed. */
+    sequence: {
+      type: ParameterType.INT,
+      array: true,
+    },
+    /** The sequence of blocks that were selected by the participant. */
+    response: {
+      type: ParameterType.INT,
+      array: true,
+    },
+    /** The time, in milliseconds, that the participant took to respond to each block.
+     * These times are cumulative, measured from the onset of the display. */
+    rt: {
+      type: ParameterType.INT,
+      array: true,
+    },
+    /** The x and y coordinates of each block that was displayed. */
+    blocks: {
+      type: ParameterType.COMPLEX,
+      array: true,
+      nested: {
+        x: {
+          type: ParameterType.INT,
+        },
+        y: {
+          type: ParameterType.INT,
+        },
+      },
+    },
+    /** Whether the participant's response was correct. */
+    correct: {
+      type: ParameterType.BOOL,
+    },
+  },
 };
 
 type Info = typeof info;
@@ -147,10 +185,10 @@ type Info = typeof info;
  * **corsi-blocks**
  *
  * This plugin displays a sequence of blocks and then gets the
- * subject's response. The sequence can be displayed in either
+ * participant's response. The sequence can be displayed in either
  * 'display' mode or 'input' mode. In 'display' mode, the
  * sequence is displayed and the trial ends after the sequence
- * is complete. In 'input' mode, the subject must click on the
+ * is complete. In 'input' mode, the participant must click on the
  * blocks in the correct order.
  *
  * @author Josh de Leeuw
@@ -212,7 +250,6 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
     };
 
     const end_trial = () => {
-      display_element.innerHTML = "";
       this.jsPsych.finishTrial(trial_data);
     };
 

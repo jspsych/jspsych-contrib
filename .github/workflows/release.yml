@@ -39,5 +39,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Update README list of plugins and extensions
-        run: npm run update-readme.js
+        run: npm run update-readme
       

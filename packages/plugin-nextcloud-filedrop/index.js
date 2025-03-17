@@ -3,6 +3,7 @@ var jsPsychNextcloudFiledropPlugin = (function (jspsych) {
 
   const info = {
     name: "nextcloud-upload",
+    version: "2.0.0",
     parameters: {
       url: {
         type: jspsych.ParameterType.STRING,
@@ -19,6 +20,20 @@ var jsPsychNextcloudFiledropPlugin = (function (jspsych) {
       generate_download_url_on_error: {
         type: jspsych.ParameterType.BOOL,
         default: false,
+      },
+    },
+    data: {
+      /** The name of the uploaded file. */
+      filename: {
+        type: jspsych.ParameterType.STRING,
+      },
+      /** Whether an error occurred during upload. */
+      error: {
+        type: jspsych.ParameterType.BOOL,
+      },
+      /** The URL to download the file in case of an error. */
+      url: {
+        type: jspsych.ParameterType.STRING,
       },
     },
   };

@@ -173,6 +173,13 @@ var jsPsychExtensionTouchscreenButtons = (function (jspsych) {
 
   jsPsychExtensionTouchscreenButtons.info = {
     name: "touchscreen-buttons",
+    version: "2.1.0",
+    data: {},
+    citations: {
+      apa: "Strittmatter, Y., Spitzer, M. W. H., Ging-Jehil, N., & Musslick, S. (2024). A jsPsych touchscreen extension for behavioral research on touch-enabled interfaces. Behavior Research Methods, 56(7), 7814. https://doi.org/10.3758/s13428-024-02454-9 ",
+      bibtex:
+        "@article{Strittmatter2024jsPsych, 	author = {Strittmatter, Younes and Spitzer, Markus W. H. and Ging-Jehil, Nadja and Musslick, Sebastian}, 	journal = {Behavior Research Methods}, 	doi = {10.3758/s13428-024-02454-9}, 	issn = {1554-3528}, 	number = {7}, 	year = {2024}, 	month = {jul 12}, 	pages = {7814}, 	publisher = {Springer}, 	title = {A {jsPsych} touchscreen extension for behavioral research on touch-enabled interfaces}, 	url = {https://link.springer.com/article/10.3758/s13428-024-02454-9}, 	volume = {56}, }  ",
+    },
   };
 
   return jsPsychExtensionTouchscreenButtons;

@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-{name}",
   "devDependencies": {
-    "@jspsych/config": "^2.0.0",
-    "jspsych": "^7.0.0"
+    "@jspsych/config": "^3.2.1",
+    "jspsych": "^8.0.0"
   }
 }

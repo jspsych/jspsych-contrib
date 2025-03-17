@@ -1,8 +1,12 @@
 import interact from "interactjs";
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
+import { AudioPlayerInterface } from "jspsych/src/modules/plugin-api/AudioPlayer";
+
+import { version } from "../package.json";
 
 const info = <const>{
   name: "audio-swipe-response",
+  version: version,
   parameters: {
     /** The HTML string to be displayed. */
     stimulus: {
@@ -10,7 +14,7 @@ const info = <const>{
       pretty_name: "Stimulus",
       default: undefined,
     },
-    /** Array containing the key(s) the subject is allowed to press to respond to the stimulus. */
+    /** Array containing the key(s) the participant is allowed to press to respond to the stimulus. */
     keyboard_choices: {
       type: ParameterType.KEYS,
       pretty_name: "Keyboard Choices",
@@ -28,7 +32,7 @@ const info = <const>{
       pretty_name: "Trial duration",
       default: null,
     },
-    /** If true, trial will end when subject makes a response. */
+    /** If true, trial will end when participant makes a response. */
     response_ends_trial: {
       type: ParameterType.BOOL,
       pretty_name: "Response ends trial",
@@ -46,7 +50,7 @@ const info = <const>{
       pretty_name: "Response allowed while playing",
       default: true,
     },
-    /** How far away from the center should the subject have to swipe for a
+    /** How far away from the center should the participant have to swipe for a
      * left/right response to be recorded. */
     swipe_threshold: {
       type: ParameterType.INT,
@@ -74,19 +78,44 @@ const info = <const>{
       default: 250,
     },
   },
+  data: {
+    /** The response time in milliseconds for the participant to make a response. The time is measured from when the stimulus
+     * first began playing until the participant made a key response. */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The HTML content that was displayed on the screen. */
+    stimulus: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates which key the participant pressed. If the participant responded using button clicks, then this field will be `null`. */
+    keyboard_response: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates which direction the participant swiped. This will be either `"left"` or `"right"`.
+     * If the participant responded using the keyboard, then this field will be `null`. */
+    swipe_response: {
+      type: ParameterType.INT,
+    },
+    /** Indicates the source of the response. This will either be `"swipe"` or `"keyboard"`. */
+    response_source: {
+      type: ParameterType.STRING,
+    },
+  },
 };
 
 type Info = typeof info;
 
 /**
  * **audio-swipe-response**
+ *
  * jsPsych plugin for playing an audio file and getting a swipe response
  * @author Adam Richie-Halford
  * @see {@link https://www.jspsych.org/plugins/jspsych-audio-swipe-response/ audio-swipe-response plugin documentation on jspsych.org}
  */
 class AudioSwipeResponsePlugin implements JsPsychPlugin<Info> {
   static info = info;
-  private audio;
+  private audio: AudioPlayerInterface;
 
   constructor(private jsPsych: JsPsych) {}
 
@@ -106,20 +135,13 @@ class AudioSwipeResponsePlugin implements JsPsychPlugin<Info> {
     };
 
     // record webaudio context start time
-    var startTime;
+    var startTime: number;
 
     // load audio file
     this.jsPsych.pluginAPI
-      .getAudioBuffer(trial.stimulus)
-      .then((buffer) => {
-        if (context !== null) {
-          this.audio = context.createBufferSource();
-          this.audio.buffer = buffer;
-          this.audio.connect(context.destination);
-        } else {
-          this.audio = buffer;
-          this.audio.currentTime = 0;
-        }
+      .getAudioPlayer(trial.stimulus)
+      .then((player) => {
+        this.audio = player;
         setupTrial();
       })
       .catch((err) => {
@@ -141,12 +163,7 @@ class AudioSwipeResponsePlugin implements JsPsychPlugin<Info> {
       }
 
       // start audio
-      if (context !== null) {
-        startTime = context.currentTime;
-        this.audio.start(startTime);
-      } else {
-        this.audio.play();
-      }
+      this.audio.play();
 
       // start keyboard listener when trial starts or sound ends
       if (trial.response_allowed_while_playing) {
@@ -169,17 +186,10 @@ class AudioSwipeResponsePlugin implements JsPsychPlugin<Info> {
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-
       // stop the audio file if it is playing
-      // remove end event listeners if they exist
-      if (context !== null) {
-        this.audio.stop();
-      } else {
-        this.audio.pause();
-      }
+      this.audio.stop();
 
+      // remove end event listeners if they exist
       this.audio.removeEventListener("ended", end_trial);
       this.audio.removeEventListener("ended", setup_keyboard_listener);
 
@@ -198,8 +208,7 @@ class AudioSwipeResponsePlugin implements JsPsychPlugin<Info> {
         response_source: response.source,
       };
 
-      // clear the display
-      display_element.innerHTML = "";
+      // reset display element position
       resetPosition();
 
       // move on to the next trial
@@ -257,8 +266,8 @@ class AudioSwipeResponsePlugin implements JsPsychPlugin<Info> {
       setPosition({ x: trial.swipe_offscreen_coordinate, y: position.y, rotation: 0 });
     };
 
-    // function to handle swipe responses by the subject
-    const after_swipe_response = (left_or_right) => {
+    // function to handle swipe responses by the participant
+    const after_swipe_response = (left_or_right: "left" | "right") => {
       if (left_or_right !== null) {
         // measure rt
         const end_time = performance.now();
@@ -307,7 +316,7 @@ class AudioSwipeResponsePlugin implements JsPsychPlugin<Info> {
       });
     };
 
-    // function to handle keyboard responses by the subject
+    // function to handle keyboard responses by the participant
     const after_keyboard_response = (info) => {
       // only record the first response
       if (response.key == null) {

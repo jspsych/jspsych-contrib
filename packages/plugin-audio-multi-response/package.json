@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-audio-multi-response",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "This plugin collects responses to an audio file using both button clicks and key presses.",
   "type": "module",
   "main": "dist/index.cjs",
@@ -37,12 +37,12 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-audio-multi-response",
   "peerDependencies": {
-    "jspsych": ">=7.0.0"
+    "jspsych": ">=8.0.0"
   },
   "devDependencies": {
-    "@jspsych/config": "^2.0.0",
+    "@jspsych/config": "^3.2.1",
     "@jspsych/test-utils": "^1.0.0",
-    "jspsych": "^7.0.0"
+    "jspsych": "^8.0.0"
   },
   "dependencies": {
     "interactjs": "^1.10.17"

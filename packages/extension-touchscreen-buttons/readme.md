@@ -2,7 +2,7 @@
 
 ## Overview
 
-This extension displays touch buttons that allow the subject to respond to stimuli via a touchscreen on mobile devices. The touch button sends key press events so that all jsPsych plugins that use keyboard input are compatible.
+This extension displays touch buttons that allow the participant to respond to stimuli via a touchscreen on mobile devices. The touch button sends key press events so that all jsPsych plugins that use keyboard input are compatible.
 
 
 ## Loading
@@ -10,12 +10,12 @@ This extension displays touch buttons that allow the subject to respond to stimu
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/extension-touchscreen-buttons@2.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/extension-touchscreen-buttons@2.1.0"></script>
 ```
 
 ## Compatibility
 
-jsPsych v7.0.
+jsPsych v7.0+.
 
 ## Documentation
 

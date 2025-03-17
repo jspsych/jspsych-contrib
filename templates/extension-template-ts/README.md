@@ -24,7 +24,7 @@ import _globalName_ from '@jspsych-contrib/{full-name}';
 
 ## Compatibility
 
-jsPsych 7.0.0
+jsPsych 8.0.0
 
 ## Documentation
 
