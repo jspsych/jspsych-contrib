@@ -1,7 +1,11 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
+import { AudioPlayer, AudioPlayerInterface } from "jspsych/src/modules/plugin-api/AudioPlayer";
+
+import { version } from "../package.json";
 
 const info = <const>{
   name: "audio-multi-response",
+  version: version,
   parameters: {
     /** The HTML string to be displayed. */
     stimulus: {
@@ -16,18 +20,24 @@ const info = <const>{
       default: [],
       array: true,
     },
-    /** Array containing the key(s) the subject is allowed to press to respond to the stimulus. */
+    /** Array containing the key(s) the participant is allowed to press to respond to the stimulus. */
     keyboard_choices: {
       type: ParameterType.KEYS,
       pretty_name: "Keyboard Choices",
       default: "NO_KEYS",
     },
-    /** The HTML for creating button. Can create own style. Use the "%choice%" string to indicate where the label from the choices parameter should be inserted. */
+    /**
+     * A function that generates the HTML for each button in the `button_choices` array.
+     * The function gets the string and index of the item in the `button_choices` array and should return valid HTML.
+     * If you want to use different markup for each button, you can do that by using a conditional on either parameter.
+     * The default parameter returns a button element with the text label of the choice.
+     */
     button_html: {
-      type: ParameterType.HTML_STRING,
+      type: ParameterType.FUNCTION,
       pretty_name: "Button HTML",
-      default: '<button class="jspsych-btn">%choice%</button>',
-      array: true,
+      default: function (choice: string) {
+        return `<button class="jspsych-btn">${choice}</button>`;
+      },
     },
     /** Any content here will be displayed below the stimulus. */
     prompt: {
@@ -59,7 +69,7 @@ const info = <const>{
       pretty_name: "Margin horizontal",
       default: "8px",
     },
-    /** If true, trial will end when subject makes a response. */
+    /** If true, trial will end when participant makes a response. */
     response_ends_trial: {
       type: ParameterType.BOOL,
       pretty_name: "Response ends trial",
@@ -78,6 +88,31 @@ const info = <const>{
       default: true,
     },
   },
+  data: {
+    /** The response time in milliseconds for the participant to make a response. The time is measured from when the stimulus
+     * first began playing until the participant made a key response. */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The HTML content that was displayed on the screen. */
+    stimulus: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates which key the participant pressed. If the participant responded using button clicks, then this field will be `null`. */
+    keyboard_response: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates which button the participant pressed. The first button in the `button_choices` array is 0,
+     * the second is 1, and so on. If the participant responded using the keyboard,
+     * then this field will be `null`. */
+    button_response: {
+      type: ParameterType.INT,
+    },
+    /** Indicates the source of the response. This will either be `"button"` or `"keyboard"`. */
+    response_source: {
+      type: ParameterType.STRING,
+    },
+  },
 };
 
 type Info = typeof info;
@@ -90,7 +125,7 @@ type Info = typeof info;
  */
 class AudioMultiResponsePlugin implements JsPsychPlugin<Info> {
   static info = info;
-  private audio;
+  private audio: AudioPlayerInterface;
 
   constructor(private jsPsych: JsPsych) {}
 
@@ -110,20 +145,13 @@ class AudioMultiResponsePlugin implements JsPsychPlugin<Info> {
     };
 
     // record webaudio context start time
-    var startTime;
+    var startTime: number;
 
     // load audio file
     this.jsPsych.pluginAPI
-      .getAudioBuffer(trial.stimulus)
-      .then((buffer) => {
-        if (context !== null) {
-          this.audio = context.createBufferSource();
-          this.audio.buffer = buffer;
-          this.audio.connect(context.destination);
-        } else {
-          this.audio = buffer;
-          this.audio.currentTime = 0;
-        }
+      .getAudioPlayer(trial.stimulus)
+      .then((player) => {
+        this.audio = player;
         setupTrial();
       })
       .catch((err) => {
@@ -145,26 +173,10 @@ class AudioMultiResponsePlugin implements JsPsychPlugin<Info> {
         this.audio.addEventListener("ended", enable_buttons);
       }
 
-      //display buttons
-      var buttons = [];
-      if (Array.isArray(trial.button_html)) {
-        if (trial.button_html.length == trial.button_choices.length) {
-          buttons = trial.button_html;
-        } else {
-          console.error(
-            "Error in audio-multi-response plugin. The length of the button_html array does not equal the length of the choices array"
-          );
-        }
-      } else {
-        for (var i = 0; i < trial.button_choices.length; i++) {
-          buttons.push(trial.button_html);
-        }
-      }
-
       let html = '<div id="jspsych-audio-multi-response-btngroup">';
 
       for (var i = 0; i < trial.button_choices.length; i++) {
-        var str = buttons[i].replace(/%choice%/g, trial.button_choices[i]);
+        var str = trial.button_html(trial.button_choices[i]);
         html +=
           '<div class="jspsych-audio-multi-response-button" style="cursor: pointer; display: inline-block; margin:' +
           trial.margin_vertical +
@@ -180,7 +192,7 @@ class AudioMultiResponsePlugin implements JsPsychPlugin<Info> {
       }
       html += "</div>";
 
-      //show prompt if there is one
+      // show prompt if there is one
       if (trial.prompt !== null) {
         if (trial.prompt_above_buttons) {
           html = '<div id="jspsych-audio-multi-response-prompt">' + trial.prompt + "</div>" + html;
@@ -201,13 +213,7 @@ class AudioMultiResponsePlugin implements JsPsychPlugin<Info> {
       // start time
       startTime = performance.now();
 
-      // start audio
-      if (context !== null) {
-        startTime = context.currentTime;
-        this.audio.start(startTime);
-      } else {
-        this.audio.play();
-      }
+      this.audio.play();
 
       // end trial if time limit is set
       if (trial.trial_duration !== null) {
@@ -221,16 +227,7 @@ class AudioMultiResponsePlugin implements JsPsychPlugin<Info> {
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-
-      // stop the audio file if it is playing
-      // remove end event listeners if they exist
-      if (context !== null) {
-        this.audio.stop();
-      } else {
-        this.audio.pause();
-      }
+      this.audio.stop();
 
       this.audio.removeEventListener("ended", end_trial);
       this.audio.removeEventListener("ended", setup_keyboard_listener);
@@ -247,9 +244,6 @@ class AudioMultiResponsePlugin implements JsPsychPlugin<Info> {
         button_response: response.button,
         response_source: response.source,
       };
-
-      // clear the display
-      display_element.innerHTML = "";
 
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
@@ -284,15 +278,12 @@ class AudioMultiResponsePlugin implements JsPsychPlugin<Info> {
       }
     }
 
-    // function to handle responses by the subject
-    function after_button_response(choice) {
+    // function to handle responses by the participant
+    function after_button_response(choice: string) {
       // measure rt
       var endTime = performance.now();
       var rt = Math.round(endTime - startTime);
-      if (context !== null) {
-        endTime = context.currentTime;
-        rt = Math.round((endTime - startTime) * 1000);
-      }
+
       response.button = parseInt(choice);
       response.rt = rt;
       response.source = "button";
@@ -305,7 +296,7 @@ class AudioMultiResponsePlugin implements JsPsychPlugin<Info> {
       }
     }
 
-    // function to handle keyboard responses by the subject
+    // function to handle keyboard responses by the participant
     const after_keyboard_response = (info) => {
       // only record the first response
       if (response.key == null) {

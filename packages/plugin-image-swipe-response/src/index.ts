@@ -1,8 +1,11 @@
 import interact from "interactjs";
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "image-swipe-response",
+  version: version,
   parameters: {
     /** The image to be displayed */
     stimulus: {
@@ -28,7 +31,7 @@ const info = <const>{
       pretty_name: "Maintain aspect ratio",
       default: true,
     },
-    /** Array containing the key(s) the subject is allowed to press to respond to the stimulus. */
+    /** Array containing the key(s) the participant is allowed to press to respond to the stimulus. */
     keyboard_choices: {
       type: ParameterType.KEYS,
       pretty_name: "Keyboard Choices",
@@ -52,13 +55,13 @@ const info = <const>{
       pretty_name: "Trial duration",
       default: null,
     },
-    /** If true, trial will end when subject makes a response. */
+    /** If true, trial will end when participant makes a response. */
     response_ends_trial: {
       type: ParameterType.BOOL,
       pretty_name: "Response ends trial",
       default: true,
     },
-    /** How far away from the center should the subject have to swipe for a
+    /** How far away from the center should the participant have to swipe for a
      * left/right response to be recorded. */
     swipe_threshold: {
       type: ParameterType.INT,
@@ -95,12 +98,39 @@ const info = <const>{
       default: true,
     },
   },
+  data: {
+    /** The response time in milliseconds for the participant to make a response. The time is measured from when the
+     * stimulus first appears on the screen until the participant's response.
+     */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The file path of the image displayed. */
+    stimulus: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates which key the participant pressed. If the participant responded using button clicks,
+     * then this field will be `null`. */
+    keyboard_response: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates which direction the participant swiped. If the participant responded using the keyboard,
+     * then this field will be `null`. */
+    swipe_response: {
+      type: ParameterType.STRING,
+    },
+    /** The source of the response. This will either be `"swipe"` or `"keyboard"`. */
+    response_source: {
+      type: ParameterType.STRING,
+    },
+  },
 };
 
 type Info = typeof info;
 
 /**
  * **image-swipe-response**
+ *
  * jsPsych plugin for displaying a stimulus and getting a swipe response
  * @author Adam Richie-Halford
  * @see {@link https://www.jspsych.org/plugins/jspsych-image-swipe-response/ image-swipe-response plugin documentation on jspsych.org}
@@ -111,7 +141,7 @@ class ImageSwipeResponsePlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    var height, width;
+    var height: number, width: number;
     if (trial.render_on_canvas) {
       var image_drawn = false;
       // first clear the display element (because the render_on_canvas method appends to display_element instead of overwriting it with .innerHTML)
@@ -274,8 +304,8 @@ class ImageSwipeResponsePlugin implements JsPsychPlugin<Info> {
         " responded";
     };
 
-    // function to handle swipe responses by the subject
-    const after_swipe_response = (left_or_right) => {
+    // function to handle swipe responses by the participant
+    const after_swipe_response = (left_or_right: "left" | "right") => {
       toggle_css_respond();
 
       if (left_or_right !== null) {
@@ -324,7 +354,7 @@ class ImageSwipeResponsePlugin implements JsPsychPlugin<Info> {
       },
     });
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     const after_keyboard_response = (info) => {
       toggle_css_respond();
 
@@ -367,9 +397,6 @@ class ImageSwipeResponsePlugin implements JsPsychPlugin<Info> {
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-
       // kill keyboard listeners
       if (typeof keyboardListener !== "undefined") {
         this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
@@ -385,9 +412,6 @@ class ImageSwipeResponsePlugin implements JsPsychPlugin<Info> {
         swipe_response: response.swipe,
         response_source: response.source,
       };
-
-      // clear the display
-      display_element.innerHTML = "";
 
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);

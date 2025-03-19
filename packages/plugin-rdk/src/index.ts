@@ -1,9 +1,12 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "rdk",
+  version: version,
   parameters: {
-    /** Array containing the valid key(s) that the subject can press to indicate a response. */
+    /** Array containing the valid key(s) that the participant can press to indicate a response. */
     choices: {
       type: ParameterType.KEYS,
       pretty_name: "Choices",
@@ -20,6 +23,13 @@ const info = <const>{
       type: ParameterType.INT,
       pretty_name: "Trial duration",
       default: 500,
+    },
+    /** Flip timestamp array of coherent dots' direction. */
+    flip_timestamps: {
+      type: ParameterType.INT,
+      pretty_name: "Flip timestamps",
+      default: [],
+      array: true,
     },
     /** If true, then any valid key will end the trial. */
     response_ends_trial: {
@@ -196,6 +206,179 @@ const info = <const>{
       default: 1,
     },
   },
+  data: {
+    /** The time in milliseconds for the participant to make a response. The time is measured from when the stimulus first
+     * began playing until the participant's response. Will be -1 if the trial has timed out
+     * without the participant pressing a valid key.
+     */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The key that the participant pressed in response to the stimulus. */
+    response: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates if the participant's response was correct or not. */
+    correct: {
+      type: ParameterType.BOOL,
+    },
+    /** Array containing the valid key(s) that the participant can press to indicate a response. */
+    choices: {
+      type: ParameterType.STRING,
+      array: true,
+    },
+    /** Array containing the correct key(s) that the participant could choose. */
+    correct_choice: {
+      type: ParameterType.STRING,
+      array: true,
+    },
+    /** The amount of time that the stimulus is displayed on the screen in ms.
+     * If -1, the stimulus will be displayed until the participant keys in a valid response. */
+    trial_duration: {
+      type: ParameterType.INT,
+    },
+    /** Whether a participant's response will end the trial or not. */
+    response_ends_trial: {
+      type: ParameterType.BOOL,
+    },
+    /** Number of apertures presented during the trial. */
+    number_of_apertures: {
+      type: ParameterType.INT,
+    },
+    /** Number of dots per set, equivalent to dots per frame. */
+    number_of_dots: {
+      type: ParameterType.INT,
+    },
+    /** Number of sets of dots to cycle through. */
+    number_of_sets: {
+      type: ParameterType.INT,
+    },
+    /** The direction of movement for coherent dots in degrees, from 0 degrees = 3 o'clock direction increasing counterclockwise. */
+    coherent_direction: {
+      type: ParameterType.INT,
+    },
+    /** Proportion of dots that move together. */
+    coherence: {
+      type: ParameterType.FLOAT,
+    },
+    /** Proportion of dots moving in the opposite direction as the coherent dots. */
+    opposite_coherence: {
+      type: ParameterType.FLOAT,
+    },
+    /** Radius of each dot in pixels if each dot is of 'circle' type. */
+    dot_radius: {
+      type: ParameterType.INT,
+    },
+    /** Length of each dot side in pixels if each dot is of 'square' type. */
+    dot_side_length: {
+      type: ParameterType.INT,
+    },
+    /** Number of frames a dot will keep following its trajectory before it is redrawn at a new location. */
+    dot_life: {
+      type: ParameterType.INT,
+    },
+    /** Number of pixel lengths a dot will move in each frame. */
+    move_distance: {
+      type: ParameterType.INT,
+    },
+    /** Width of aperture in pixels, along with height of the aperture if it is square, or diameter if it is circle. */
+    aperture_width: {
+      type: ParameterType.INT,
+    },
+    /** Height of the aperture in pixels. Ignored for square or circle apertures. */
+    aperture_height: {
+      type: ParameterType.INT,
+    },
+    /** The color of the dots. */
+    dot_color: {
+      type: ParameterType.STRING,
+    },
+    /** The shape of the dots. */
+    dot_shape: {
+      type: ParameterType.STRING,
+    },
+    /** The background color of the stimulus. */
+    background_color: {
+      type: ParameterType.STRING,
+    },
+    /** The Signal Selection Rule and Noise Type */
+    RDK_type: {
+      type: ParameterType.INT,
+    },
+    /** The shape of the aperture. (1 - Circle, 2 - Ellipse, 3 - Square, 4 - Rectangle) */
+    aperture_type: {
+      type: ParameterType.INT,
+    },
+    /** The type of reinsertion of a dot that has gone out of bounds.
+     * 1 - Randomly appear anywhere in the aperture.
+     * 2 - Appear on the opposite edge of the aperture. */
+    reinsert_type: {
+      type: ParameterType.INT,
+    },
+    /** The average frame rate for the trial, in ms. */
+    frame_rate: {
+      type: ParameterType.FLOAT,
+    },
+    /** The array of frame times in ms for the trial. */
+    frame_rate_array: {
+      type: ParameterType.INT,
+      array: true,
+    },
+    /** The number of frames in the trial. */
+    number_of_frames: {
+      type: ParameterType.INT,
+    },
+    /** The x-coordinate of the center of the aperture, in pixels. */
+    aperture_center_x: {
+      type: ParameterType.INT,
+    },
+    /** The y-coordinate of the center of the aperture, in pixels. */
+    aperture_center_y: {
+      type: ParameterType.INT,
+    },
+    /** If true, a fixation cross was displayed. */
+    fixation_cross: {
+      type: ParameterType.BOOL,
+    },
+    /** The width of the fixation cross in pixels. */
+    fixation_cross_width: {
+      type: ParameterType.INT,
+    },
+    /** The height of the fixation cross in pixels. */
+    fixation_cross_height: {
+      type: ParameterType.INT,
+    },
+    /** The color of the fixation cross. */
+    fixation_cross_color: {
+      type: ParameterType.STRING,
+    },
+    /** The thickness of the fixation cross, in pixels. */
+    fixation_cross_thickness: {
+      type: ParameterType.INT,
+    },
+    /** If true, a border was displayed around the aperture. */
+    border: {
+      type: ParameterType.BOOL,
+    },
+    /** The thickness of the border in pixels. */
+    border_thickness: {
+      type: ParameterType.INT,
+    },
+    /** The color of the border. */
+    border_color: {
+      type: ParameterType.STRING,
+    },
+    /** The width of the canvas in pixels. */
+    canvas_width: {
+      type: ParameterType.INT,
+    },
+    /** The height of the canvas in pixels. */
+    canvas_height: {
+      type: ParameterType.INT,
+    },
+  },
+  // prettier-ignore
+  citations: '__CITATIONS__',
 };
 
 type Info = typeof info;
@@ -247,6 +430,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     var choices = assignParameterValue(trial.choices, []);
     var correct_choice = assignParameterValue(trial.correct_choice, undefined);
     var trial_duration = assignParameterValue(trial.trial_duration, 500);
+    var flip_timestamps = assignParameterValue(trial.flip_timestamps, []);
     var response_ends_trial = assignParameterValue(trial.response_ends_trial, true);
     var number_of_apertures = assignParameterValue(trial.number_of_apertures, 1);
     var number_of_dots = assignParameterValue(trial.number_of_dots, 300);
@@ -327,7 +511,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
 
     var RDK = RDK_type;
 
-    /** 
+    /**
       Shape of aperture
       1 - Circle
       2 - Ellipse
@@ -515,7 +699,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     //Variable to start the timer when the time comes
     var timerHasStarted = false;
 
-    //Initialize object to store the response data. Default values of -1 are used if the trial times out and the subject has not pressed a valid key
+    //Initialize object to store the response data. Default values of -1 are used if the trial times out and the participant has not pressed a valid key
     var response = {
       rt: -1,
       key: "",
@@ -526,6 +710,12 @@ class RdkPlugin implements JsPsychPlugin<Info> {
 
     //Declare global variable to be defined in startKeyboardListener function and to be used in end_trial function
     var keyboardListener;
+
+    //Flip status {1, -1}
+    var flipStatus = 1;
+
+    //Timeout IDs for flipping.
+    var timeoutIDsFlip = [];
 
     //Declare global variable to store the frame rate of the trial
     var frameRate: number | number[] = []; //How often the monitor refreshes, in ms. Currently an array to store all the intervals. Will be converted into a single number (the average) in end_trial function.
@@ -547,9 +737,9 @@ class RdkPlugin implements JsPsychPlugin<Info> {
     const startKeyboardListener = () => {
       //Start the response listener if there are choices for keys
       if (choices != "NO_KEYS") {
-        //Create the keyboard listener to listen for subjects' key response
+        //Create the keyboard listener to listen for participants' key response
         keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
-          callback_function: after_response, //Function to call once the subject presses a valid key
+          callback_function: after_response, //Function to call once the participant presses a valid key
           valid_responses: choices, //The keys that will be considered a valid response and cause the callback function to be called
           rt_method: "performance", //The type of method to record timing information.
           persist: false, //If set to false, keyboard listener will only trigger the first time a valid key is pressed. If set to true, it has to be explicitly cancelled by the cancelKeyboardResponse plugin API.
@@ -575,7 +765,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
         frameRate =
           (frameRate as number[]).reduce((total, current) => total + current) / numberOfFrames; //Sum up all the elements in the array
       } else {
-        frameRate = 0; //Set to zero if the subject presses an answer before a frame is shown (i.e. if frameRate is an empty array)
+        frameRate = 0; //Set to zero if the participant presses an answer before a frame is shown (i.e. if frameRate is an empty array)
       }
 
       //Kill the keyboard listener if keyboardListener has been defined
@@ -586,11 +776,12 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       //Place all the data to be saved from this trial in one data object
       var trial_data = {
         rt: response.rt, //The response time
-        response: response.key, //The key that the subject pressed
-        correct: correctOrNot(), //If the subject response was correct
+        response: response.key, //The key that the participant pressed
+        correct: correctOrNot(), //If the participant response was correct
         choices: choices, //The set of valid keys
         correct_choice: correct_choice, //The correct choice(s)
         trial_duration: trial_duration, //The trial duration
+        flip_timestamps: flip_timestamps,
         response_ends_trial: response_ends_trial, //If the response ends the trial
         number_of_apertures: number_of_apertures,
         number_of_dots: number_of_dots,
@@ -627,9 +818,6 @@ class RdkPlugin implements JsPsychPlugin<Info> {
         canvas_height: canvasHeight,
       };
 
-      //Remove the canvas as the child of the display_element element
-      display_element.innerHTML = "";
-
       //Restore the settings to JsPsych defaults
       body.style.margin = originalMargin;
       body.style.padding = originalPadding;
@@ -650,7 +838,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
 
     //----JsPsych Functions Begin----
 
-    //Function to record the first response by the subject
+    //Function to record the first response by the participant
     function after_response(info) {
       //If the response has not been recorded, record it
       if (response.key == "") {
@@ -660,6 +848,7 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       //If the parameter is set such that the response ends the trial, then kill the timeout and end the trial
       if (response_ends_trial) {
         window.clearTimeout(timeoutID);
+        timeoutIDsFlip.forEach(window.clearTimeout);
         end_trial();
       }
     } //End of after_response
@@ -954,6 +1143,17 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       }
     }
 
+    //Start updating flip status
+    function startFlip() {
+      flip_timestamps.forEach((timestamp: number) =>
+        timeoutIDsFlip.push(
+          setTimeout(() => {
+            flipStatus *= -1;
+          }, timestamp)
+        )
+      );
+    }
+
     //Draw the dots on the canvas after they're updated
     function draw() {
       //Load in the current set of dot array for easy handling
@@ -1165,10 +1365,10 @@ class RdkPlugin implements JsPsychPlugin<Info> {
 
     //Updates the x and y coordinates by moving it in the x and y coherent directions
     function constantDirectionUpdate(dot) {
-      dot.x += dot.vx;
-      dot.y += dot.vy;
-      dot.latestXMove = dot.vx;
-      dot.latestYMove = dot.vy;
+      dot.x += dot.vx * flipStatus;
+      dot.y += dot.vy * flipStatus;
+      dot.latestXMove = dot.vx * flipStatus;
+      dot.latestYMove = dot.vy * flipStatus;
       return dot;
     }
 
@@ -1227,12 +1427,12 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       //If it is a square or rectangle, re-insert on one of the opposite edges
       if (apertureType == 3 || apertureType == 4) {
         /** The formula for calculating whether a dot appears from the vertical edge (left or right edges) is dependent on the direction of the dot and the ratio of the vertical and horizontal edge lengths.
-          E.g.  
+          E.g.
           Aperture is 100 px high and 200px wide
           Dot is moving 3 px in x direction and 4px in y direction
           Weight on vertical edge (sides)           = (100/(100+200)) * (|3| / (|3| + |4|)) = 1/7
           Weight on horizontal edge (top or bottom) = (200/(100+200)) * (|4| / (|3| + |4|)) = 8/21
-        
+
           The weights above are the ratios to one another.
           E.g. (cont.)
           Ratio (vertical edge : horizontal edge) == (1/7 : 8/21)
@@ -1368,8 +1568,9 @@ class RdkPlugin implements JsPsychPlugin<Info> {
       //frameRequestID saves a long integer that is the ID of this frame request. The ID is then used to terminate the request below.
       var frameRequestID = window.requestAnimationFrame(animate);
 
-      //Start to listen to subject's key responses
+      //Start to listen to participant's key responses
       startKeyboardListener();
+      startFlip();
 
       //Delare a timestamp
       var previousTimestamp;
@@ -1386,8 +1587,8 @@ class RdkPlugin implements JsPsychPlugin<Info> {
           //If the timer has not been started and it is set, then start the timer
           if (!timerHasStarted && trial_duration > 0) {
             //If the trial duration is set, then set a timer to count down and call the end_trial function when the time is up
-            //(If the subject did not press a valid keyboard response within the trial duration, then this will end the trial)
-            timeoutID = window.setTimeout(end_trial, trial_duration); //This timeoutID is then used to cancel the timeout should the subject press a valid key
+            //(If the participant did not press a valid keyboard response within the trial duration, then this will end the trial)
+            timeoutID = window.setTimeout(end_trial, trial_duration); //This timeoutID is then used to cancel the timeout should the participant press a valid key
             //The timer has started, so we set the variable to true so it does not start more timers
             timerHasStarted = true;
           }

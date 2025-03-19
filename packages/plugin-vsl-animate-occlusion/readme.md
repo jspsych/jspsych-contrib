@@ -11,7 +11,8 @@ Fiser, J., & Aslin, R. N. (2002). Statistical learning of higher-order temporal 
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-vsl-animate-occlusion@1.0.0"></script>
+<script src="https://unpkg.com/snapsvg@0.5.1/dist/snap.svg-min.js"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-vsl-animate-occlusion@2.0.0"></script>
 ```
 
 ### Via NPM
@@ -26,7 +27,7 @@ import jsPsychVslAnimateOcclusion from '@jspsych-contrib/plugin-vsl-animate-occl
 
 ## Compatibility
 
-jsPsych v7.0.
+jsPsych v8.0. For compatibility with jsPsych v7.0, use version 1.0.0 of this plugin.
 
 ## Documentation
 

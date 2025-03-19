@@ -1,0 +1,40 @@
+cff-version: "1.2.0"
+title: "Studying sense of agency online: Can intentional binding be observed in uncontrolled online settings?"
+authors:
+- family-names: Michael Galang
+  given-names: Carl
+  orcid: "https://orcid.org/0000-0002-4088-8476"
+- family-names: Malik
+  given-names: Rubina
+- family-names: Kinley
+  given-names: Isaac
+  orcid: "https://orcid.org/0000-0003-2057-9606"
+- family-names: Obhi
+  given-names: Sukhvinder S.
+  email: "obhi@mcmaster.ca"
+doi: 10.1016/j.concog.2021.103217
+message: If you use this plugin, please cite our article in Consciousness and Cognition.
+preferred-citation:
+  authors:
+  - family-names: Michael Galang
+    given-names: Carl
+    orcid: "https://orcid.org/0000-0002-4088-8476"
+  - family-names: Malik
+    given-names: Rubina
+  - family-names: Kinley
+    given-names: Isaac
+    orcid: "https://orcid.org/0000-0003-2057-9606"
+  - family-names: Obhi
+    given-names: Sukhvinder S.
+    email: "obhi@mcmaster.ca"
+  date-published: 2021-10-01
+  doi: 10.1016/j.concog.2021.103217
+  issn: 1053-8100
+  journal: Consciousness and Cognition
+  publisher:
+    name: Elsevier
+  start: 103217
+  title: "Studying sense of agency online: Can intentional binding be observed in uncontrolled online settings?"
+  type: article
+  url: "https://www.sciencedirect.com/science/article/abs/pii/S1053810021001434"
+  volume: 95
