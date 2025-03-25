@@ -78,7 +78,7 @@ describe("imag-click-response", () => {
     await expectFinished();
   });
 
-  it("should add (x,y) coordinates to the data structure when the image is clicked", async () => {
+  it("should contain an object with x, y and rt properties when a single click has been performed", async () => {
     const { expectRunning, getHTML, expectFinished, getData, displayElement, jsPsych } =
       await startTimeline([
         {
@@ -101,6 +101,8 @@ describe("imag-click-response", () => {
     console.log(data);
     expect(data).toHaveProperty("points");
     expect(data.points.length).toBe(1);
-    expect(data.points[0].length).toBe(2);
+    expect(data.points[0]).toHaveProperty("x");
+    expect(data.points[0]).toHaveProperty("y");
+    expect(data.points[0]).toHaveProperty("rt");
   });
 });

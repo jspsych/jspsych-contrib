@@ -39,7 +39,7 @@ const info = <const>{
     /** How many dots are required before the trial can be completed */
     minimum_dots_required: {
       type: ParameterType.INT,
-      default: -1,
+      default: 0,
       pretty_name: "Minimum number of dots",
     },
   },
@@ -85,6 +85,7 @@ class ImageClickResponsePlugin implements JsPsychPlugin<Info> {
 
       // Create a circle
       let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("data-rt", (performance.now() - start_time).toString());
 
       // Style the circle
       circle.setAttribute("cx", cx);
@@ -104,6 +105,9 @@ class ImageClickResponsePlugin implements JsPsychPlugin<Info> {
       circle.addEventListener("mouseup", (e) => {
         const target = e.target as HTMLElement;
         svg_container.removeChild(target);
+
+        button.disabled =
+          svg_container.querySelectorAll("circle").length < trial.minimum_dots_required;
       });
       circle.addEventListener("mouseleave", (e) => {
         const target = e.target as HTMLElement;
@@ -158,10 +162,11 @@ class ImageClickResponsePlugin implements JsPsychPlugin<Info> {
       let points = svg_container.querySelectorAll("circle");
       let svgBoundingBox = svg_container.getBoundingClientRect();
       for (let point of points)
-        trial_data.points.push([
-          point.getBoundingClientRect().left - svgBoundingBox.left,
-          point.getBoundingClientRect().top - svgBoundingBox.top,
-        ]);
+        trial_data.points.push({
+          x: point.getBoundingClientRect().left - svgBoundingBox.left,
+          y: point.getBoundingClientRect().top - svgBoundingBox.top,
+          rt: parseFloat(point.getAttribute("data-rt")),
+        });
 
       end_trial();
     }
