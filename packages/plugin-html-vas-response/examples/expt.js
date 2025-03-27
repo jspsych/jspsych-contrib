@@ -30,7 +30,6 @@ timeline.push({
   scale_width: 300,
   scale_height: 100,
   hline_pct: 80,
-  ticks: false,
   marker_type: 'circle',
   labels: ['Left', 'Right']
 })
@@ -43,7 +42,7 @@ timeline.push({
   hline_pct: 90,
   ticks: false,
   marker_type: 'cross',
-  prompt: '<span id="resp-disp"></span><br>',
+  prompt: '<span id="resp-disp">Click the line and I will change!</span><br>',
   resp_fcn: function (ppn) {
     var pct = Math.round(100 * ppn);
     var resp_disp = document.getElementById("resp-disp");
