@@ -4,34 +4,63 @@ var jsPsych = initJsPsych({
   },
 });
 
-var trial = {
+var timeline = [];
+
+timeline.push({
   type: jsPsychHtmlVasResponse,
-  stimulus:
-    "Some people have the experience of finding themselves in a place and have no idea how they got there.<br>Select the number to show what percentage of the time this happens to you.",
-  prompt: '<span id="resp-disp"></span><br>',
-  ticks: false,
+  stimulus: 'Basic example',
+  scale_width: 200,
+  labels: ['Left', 'Middle', 'Right'],
+  prompt: '[Prompt]'
+})
+
+timeline.push({
+  type: jsPsychHtmlVasResponse,
+  stimulus: 'Wider and larger clickable area (also, ticks hidden)',
   scale_width: 500,
-  scale_colour: "black",
-  labels: [
-    "0%<br>Never",
-    "10%",
-    "20%",
-    "30%",
-    "40%",
-    "50%",
-    "60%",
-    "70%",
-    "80%",
-    "90%",
-    "100%<br>Always",
-  ],
-  marker_type: 'cross',
+  scale_height: 120,
+  ticks: false,
+  labels: ['Left', 'Middle-left', 'Middle', 'Middle-right', 'Right'],
+  prompt: '[Prompt]'
+})
+
+timeline.push({
+  type: jsPsychHtmlVasResponse,
+  stimulus: 'Different marker shape.<br>Also, clickable area extends beyond horizontal line (making extremes easier to select)',
+  scale_width: 300,
+  scale_height: 100,
+  hline_pct: 80,
+  ticks: false,
+  marker_type: 'circle',
+  labels: ['Left', 'Right']
+})
+
+timeline.push({
+  type: jsPsychHtmlVasResponse,
+  stimulus: 'Responsive prompt',
+  scale_width: 300,
+  scale_height: 100,
   hline_pct: 90,
+  ticks: false,
+  marker_type: 'cross',
+  prompt: '<span id="resp-disp"></span><br>',
   resp_fcn: function (ppn) {
     var pct = Math.round(100 * ppn);
     var resp_disp = document.getElementById("resp-disp");
-    resp_disp.textContent = pct + "% of the time";
+    resp_disp.textContent = pct + "%";
   },
-};
+})
 
-jsPsych.run([trial]);
+timeline.push({
+  type: jsPsychHtmlVasResponse,
+  stimulus: 'Extra marker customization',
+  scale_width: 300,
+  scale_height: 100,
+  hline_pct: 90,
+  ticks: false,
+  marker_type: 'square',
+  marker_size: 30,
+  marker_svg_attrs: 'stroke="blue" stroke-width="2" stroke-opacity="1" rx="8"'
+})
+
+jsPsych.run(timeline);

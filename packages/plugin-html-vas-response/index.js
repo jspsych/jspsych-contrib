@@ -280,7 +280,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
 
       // add prompt
       if (trial.prompt !== null) {
-        html += trial.prompt;
+        html += '<div>' + trial.prompt + '</div>';
       }
 
       // Submit button
