@@ -44,7 +44,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         pretty_name: "Marker draggable",
         default: true,
       },
-      /** The width of the VAS in pixels.
+      /** The width of the clickable region around the VAS in pixels.
        * If left `null`, then the width will be equal to the widest element in the display. */
       scale_width: {
         type: jspsych.ParameterType.INT,
@@ -56,6 +56,13 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         type: jspsych.ParameterType.INT,
         pretty_name: "VAS height",
         default: 40,
+      },
+      /** The width of the horizontal line as a percentage of the width of the clickable region.
+       * Setting this to less than 100 makes it easier to select the extreme ends of the scale. */
+      hline_pct: {
+        type: jspsych.ParameterType.INT,
+        pretty_name: "Horizontal line width percentage",
+        default: 100,
       },
       /** The colour of the scale (the horizontal line). Anything that would make a valid CSS `background` property can be used here. */
       scale_colour: {
@@ -200,20 +207,21 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         ';">';
       // Draw horizontal line in VAS container
       html +=
-        '<div style="position: relative; background: ' +
-        trial.scale_colour +
-        "; width: 100%; height: 2px; top: " +
-        (trial.scale_height / 2 - 1) +
-        'px"></div>';
+        '<div id="jspsych-html-vas-response-hline" style="position: relative; background: ' +
+        trial.scale_colour + "; " +
+        'width: ' + trial.hline_pct + '%; ' +
+        'left: ' + (100 - trial.hline_pct)/2 + '%; ' + // Keep the horizontal line centred within clickable region
+        'height: 2px; ' +
+        'top: ' + (trial.scale_height / 2 - 1) + 'px">';
       // Draw vertical line, but hide it at first
       html +=
-        '<div id="jspsych-html-vas-response-vline" style="visibility: hidden; position: absolute; left: 0px; background-color: ' +
-        trial.marker_colour +
-        "; height: " +
-        trial.scale_height +
-        'px; width: 2px; top: 0px"></div>';
-      html += "</div>";
-      html += "<div>";
+        '<div id="jspsych-html-vas-response-vline" style="visibility: hidden; position: absolute; left: 0px; ' + 
+        'background-color: ' + trial.marker_colour + '; ' +
+        'height: ' + trial.scale_height + 'px; ' +
+        'top: ' + (-trial.scale_height/2 + 1) + 'px; ' +
+        'width: 2px"></div>';
+
+      html += "<div>"; // special alignment div
       for (var j = 0; j < trial.labels.length; j++) {
         var label_width_perc = 100 / (trial.labels.length - 1);
         var percent_of_range = j * (100 / (trial.labels.length - 1));
@@ -221,6 +229,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         var offset = (percent_dist_from_center * half_thumb_width) / 100;
         html +=
           '<div style="border: 1px solid transparent; display: inline-block; position: absolute; ' +
+          'top: ' + trial.scale_height/2 + 'px; ' +
           "left:calc(" +
           percent_of_range +
           "% - (" +
@@ -233,10 +242,14 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         html += '<span style="text-align: center; font-size: 80%;">' + trial.labels[j] + "</span>";
         html += "</div>";
       }
-      html += "</div>";
-      html += "</div>";
-      html += "</div>";
+      html += "</div>"; // special alignment div
 
+      html += "</div>"; // horizontal line
+      html += "</div>"; // clickable region
+      html += "</div>"; // response container
+      html += "</div>"; // response wrapper
+
+      // add prompt
       if (trial.prompt !== null) {
         html += trial.prompt;
       }
@@ -277,30 +290,29 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         if (!vas_enabled) {
           return;
         }
-        var vas = document.getElementById("jspsych-html-vas-response-vas");
-        var vas_rect = vas.getBoundingClientRect();
+        var hline = document.getElementById("jspsych-html-vas-response-hline");
+        var hline_rect = hline.getBoundingClientRect();
         // What's the x coord of the interaction? Depends on whether e is a click or touch
         var interaction_x = e.clientX ?? e.touches[e.touches.length - 1].clientX;
-        if (interaction_x <= vas_rect.right && interaction_x >= vas_rect.left) {
-          // Compute click location as a proportion of VAS line
-          ppn_tick = (interaction_x - vas_rect.left) / vas_rect.width; // Marker location as a proportion from 0 - 1
-          // Round to nearest increment, if needed
-          if (trial.n_scale_points) {
-            ppn_tick =
-              Math.round(ppn_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
-          }
-          var vline = document.getElementById("jspsych-html-vas-response-vline");
-          vline.style.left = ppn_tick * vas_rect.width - 1 + "px";
-          vline.style.visibility = "visible";
-          // vas.appendChild(vline);
-          var continue_button = document.getElementById("jspsych-html-vas-response-next");
-          continue_button.disabled = false;
-          // record time series of clicks
-          clicks.push({ time: clickTime, location: ppn_tick });
-          // call
-          if (trial.resp_fcn) {
-            trial.resp_fcn(ppn_tick);
-          }
+        // Compute click location as a proportion of VAS horizontal line
+        ppn_tick = (interaction_x - hline_rect.left) / hline_rect.width; // Marker location as a proportion from 0 - 1
+        ppn_tick = Math.max(Math.min(ppn_tick, 1), 0); // Constrain to 0 - 1
+        // Round to nearest increment, if needed
+        if (trial.n_scale_points) {
+          ppn_tick =
+            Math.round(ppn_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
+        }
+        var vline = document.getElementById("jspsych-html-vas-response-vline");
+        vline.style.left = ppn_tick * hline_rect.width - 1 + "px";
+        vline.style.visibility = "visible";
+        // vas.appendChild(vline);
+        var continue_button = document.getElementById("jspsych-html-vas-response-next");
+        continue_button.disabled = false;
+        // record time series of clicks
+        clicks.push({ time: clickTime, location: ppn_tick });
+        // call
+        if (trial.resp_fcn) {
+          trial.resp_fcn(ppn_tick);
         }
       };
       // Dragging makes an ugly "operation forbidden" cursor appear---easiest to just prevent any dragging
