@@ -315,10 +315,10 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         // document.addEventListener("dblclick", function() {mouse_state = 'down'});
         document.addEventListener("mouseup", function() {mouse_state = 'up'});
         document.addEventListener("dragend", function() {mouse_state = 'up'});
-        function drag_update(e, test) {
+        function drag_update(e, test_mouse_state) {
           var do_update = true;
-          test = test ?? true;
-          if (test) {
+          test_mouse_state = test_mouse_state ?? true; // test by default
+          if (test_mouse_state) {
             if (mouse_state == 'up') {
               do_update = false
             }
@@ -330,7 +330,8 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         vas.addEventListener("mousemove", drag_update);
         vas.addEventListener("drag", drag_update);
         vas.addEventListener("touchmove", function(e) {
-          drag_update(e, false)
+          e.preventDefault(); // So that whole screen doesn't move in MS Edge
+          drag_update(e, false) // Don't test whether mouse is down
         });
       }
 
