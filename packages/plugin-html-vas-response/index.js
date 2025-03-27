@@ -38,11 +38,23 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         pretty_name: "Number of scale points",
         default: null,
       },
+      /* Marker type. Options are "vline" (vertical line, default), "cross" (X shape), "circle", and "square". */
+      marker_type: {
+        type: jspsych.ParameterType.STRING,
+        pretty_name: "Marker type",
+        default: 'vline'
+      },
       /** Allows the user to drag the response marker */
       marker_draggable: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Marker draggable",
         default: true,
+      },
+      /* Size of marker in pixels */
+      marker_size: {
+        type: jspsych.ParameterType.INT,
+        pretty_name: "Marker size",
+        default: 30,
       },
       /** The width of the clickable region around the VAS in pixels.
        * If left `null`, then the width will be equal to the widest element in the display. */
@@ -76,11 +88,11 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         pretty_name: "Scale cursor",
         default: "pointer",
       },
-      /** The colour of the participant's response marker. Anything that would make a valid CSS `background` property can be used here. */
-      marker_colour: {
+      /** Additional attributes of the response marker SVG. Changing this can further customize the marker's appearance*/
+      marker_svg_attrs: {
         type: jspsych.ParameterType.STRING,
-        pretty_name: "Marker colour",
-        default: "rgba(0, 0, 0, 0.5)",
+        pretty_name: "Marker attributes",
+        default: 'stroke="black" stroke-width="2" stroke-opacity="0.5"',
       },
       /** The colour of the tick marks on the scale. Anything that would make a valid CSS `background` property can be used here. */
       tick_colour: {
@@ -202,6 +214,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         html += "width:auto;";
       }
       html += '">';
+      
       // Create clickable container for VAS
       html +=
         '<div id="jspsych-html-vas-response-vas" style="position: relative; left: 0px; top: 0px; height: ' +
@@ -210,7 +223,8 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         "cursor: " +
         trial.scale_cursor +
         ';">';
-      // Draw horizontal line in VAS container
+      
+      // Draw horizontal line in clickable VAS container
       html +=
         '<div id="jspsych-html-vas-response-hline" style="position: relative; background: ' +
         trial.scale_colour + "; " +
@@ -218,14 +232,24 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         'left: ' + (100 - trial.hline_pct)/2 + '%; ' + // Keep the horizontal line centred within clickable region
         'height: 2px; ' +
         'top: ' + (trial.scale_height / 2 - 1) + 'px">';
-      // Draw vertical line, but hide it at first
-      html +=
-        '<div id="jspsych-html-vas-response-vline" style="visibility: hidden; position: absolute; left: 0px; ' + 
-        'background-color: ' + trial.marker_colour + '; ' +
-        'height: ' + trial.scale_height + 'px; ' +
-        'top: ' + (-trial.scale_height/2 + 1) + 'px; ' +
-        'width: 2px"></div>';
+      
+      // Draw response marker, but hide it at first
+      var svg = '<svg width="' + trial.marker_size + '" height="' + trial.marker_size + '" ' + 
+        'id="jspsych-html-vas-response-marker" style="visibility: hidden; position: absolute; left: 0px; top: ' + -(trial.marker_size/2 - 1) + 'px; ' +
+        'xmlns="http://www.w3.org/2000/svg">';
+      if (trial.marker_type == 'vline') {
+        svg += '<line x1="' + (trial.marker_size/2) + '" x2="' + (trial.marker_size/2) + '" y1="0" y2="' + trial.marker_size + '" ' + trial.marker_svg_attrs + '/>';
+      } else if (trial.marker_type == 'cross') {
+        svg += '<line x1="1" y1="1" x2="' + (trial.marker_size - 1) + '" y2="' + (trial.marker_size - 1) + '" ' + trial.marker_svg_attrs + '/>' +
+          '<line x1="1" y1="' + (trial.marker_size - 1) + '" x2="' + (trial.marker_size - 1) + '" y2="1" ' + trial.marker_svg_attrs + '/>';
+      } else if (trial.marker_type == 'circle') {
+        svg += '<circle cx="' + (trial.marker_size/2) + '" cy="' + (trial.marker_size/2) + '" r="' + (trial.marker_size/2 - 2) + '" fill="none" ' + trial.marker_svg_attrs + '/>';
+      } else if (trial.marker_type == 'square') {
+        svg += '<rect width="' + (trial.marker_size - 2) + '" height="' + (trial.marker_size - 2) + '" x="1" y="1" fill="none" ' + trial.marker_svg_attrs + '/>'
+      }
+      html += svg + '</svg>';
 
+      // Add labels
       html += "<div>"; // special alignment div
       for (var j = 0; j < trial.labels.length; j++) {
         var label_width_perc = 100 / (trial.labels.length - 1);
@@ -307,10 +331,9 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
           ppn_tick =
             Math.round(ppn_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
         }
-        var vline = document.getElementById("jspsych-html-vas-response-vline");
-        vline.style.left = ppn_tick * hline_rect.width - 1 + "px";
-        vline.style.visibility = "visible";
-        // vas.appendChild(vline);
+        var marker = document.getElementById("jspsych-html-vas-response-marker");
+        marker.style.left = (ppn_tick * hline_rect.width - trial.marker_size/2) + "px";
+        marker.style.visibility = "visible"; // idempotent
         var continue_button = document.getElementById("jspsych-html-vas-response-next");
         continue_button.disabled = false;
         // record time series of clicks
@@ -322,8 +345,9 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       };
       // Dragging makes an ugly "operation forbidden" cursor appear---easiest to just prevent any dragging
       document.addEventListener("dragstart", function(e) {e.preventDefault()});
-      // Make responsive to both clicks and touches
-      vas.onclick = update_vas;
+      // Default interaction listeners
+      vas.addEventListener("mousedown", update_vas);
+      vas.addEventListener("touchstart", update_vas);
       // Logic is more complex for dragging
       if (trial.marker_draggable) {
         // Track mouse state---whether to respond to mouse position depends on mouse position

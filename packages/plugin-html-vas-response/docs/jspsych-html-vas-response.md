@@ -17,6 +17,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | resp_fcn                     | function           | `null`     | A function called when the participant clicks on the scale. The current location of the participant's response (between 0 and 1) is provided as an input. |
 | ticks                     | Boolean           | `true`     | Specifies whether smaller vertical tick marks should accompany the labels. |
 | n_scale_points                     | integer           | `null`     | If the scale should have some set of discrete clickable points (such that the tick mark will be rounded to the nearest such point), this parameter can be used specify the number of such points. If not, set this to `null`. |
+| marker_type | String | `'vline'` | Marker type. Options are "vline" (vertical line, default), "cross" (X shape), "circle", and "square". |
 | marker_draggable | Boolean | true | Allows the user to drag the response marker |
 | scale_width | integer | `null` |  The width of the VAS in pixels. If left `null`, then the width will be equal to the widest element in the display. |
 | scale_height | integer | 40 | The height of the clickable region around the VAS in pixels. |

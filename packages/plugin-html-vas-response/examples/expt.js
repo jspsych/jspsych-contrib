@@ -25,6 +25,7 @@ var trial = {
     "90%",
     "100%<br>Always",
   ],
+  marker_type: 'cross',
   hline_pct: 90,
   resp_fcn: function (ppn) {
     var pct = Math.round(100 * ppn);
