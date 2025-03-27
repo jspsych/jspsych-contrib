@@ -88,7 +88,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         pretty_name: "Scale cursor",
         default: "pointer",
       },
-      /** Additional attributes of the response marker SVG. Changing this can further customize the marker's appearance*/
+      /** Additional attributes of the response marker SVG. Changing this can further customize the marker's appearance. */
       marker_svg_attrs: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Marker attributes",
