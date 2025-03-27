@@ -1,7 +1,7 @@
 {
-  "name": "@jspsych-contrib/plugin-html-vas-response",
-  "version": "2.0.0",
-  "description": "This plugin collects responses to an arbitrary HTML string using a point-and-click visual analogue scale.",
+  "name": "@jspsych-contrib/plugin-survey-vas",
+  "version": "1.0.0",
+  "description": "This plugin displays a series of questions with point-and-click visual analogue scales.",
   "unpkg": "dist/index.browser.min.js",
   "files": [
     "index.js",
@@ -14,7 +14,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
-    "directory": "packages/plugin-html-vas-response"
+    "directory": "packages/plugin-survey-vas"
   },
   "author": {
     "name": "Isaac Kinley",
@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-html-vas-response",
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-survey-vas",
   "devDependencies": {
     "@jspsych/config": "^3.2.1",
     "jspsych": "^8.0.0"

@@ -1,22 +1,22 @@
-# html-vas-response
+# survey-vas
 
 ## Overview
 
-This plugin collects responses to an arbitrary HTML string using a point-and-click visual analogue scale.
+This plugin displays a series of questions with point-and-click visual analogue scales.
 
 ## Loading
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-html-vas-response@2.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-survey-vas@1.0.0"></script>
 ```
 
 ## Compatibility
 
-jsPsych v8.0. For compatibility with jsPsych v7.0, use version 1.2.0 of this plugin.
+jsPsych v8.0.
 
 ## Documentation
 
-See [documentation](docs/jspsych-html-vas-response.md)
+See [documentation](docs/jspsych-survey-vas.md)
 
 ## Author / Citation
 

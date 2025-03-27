@@ -5,31 +5,23 @@ var jsPsych = initJsPsych({
 });
 
 var trial = {
-  type: jsPsychHtmlVasResponse,
-  stimulus:
-    "Some people have the experience of finding themselves in a place and have no idea how they got there.<br>Select the number to show what percentage of the time this happens to you.",
-  prompt: '<span id="resp-disp"></span><br>',
-  ticks: false,
-  scale_width: 500,
-  scale_colour: "black",
-  labels: [
-    "0%<br>Never",
-    "10%",
-    "20%",
-    "30%",
-    "40%",
-    "50%",
-    "60%",
-    "70%",
-    "80%",
-    "90%",
-    "100%<br>Always",
+  type: jsPsychSurveyVas,
+  preamble: 'Answer the following questions',
+  questions: [
+    {prompt: 'Q1', labels: ['a', 'b']},
+    {prompt: 'Q2', labels: ['a', 'b', 'c']},
+    {prompt: 'Q3', labels: ['a', 'b']},
+    {prompt: 'Important!', labels: ['a', 'b'], required: true},
+    {prompt: 'Also Important!', labels: ['a', 'b'], required: true}
   ],
-  resp_fcn: function (ppn) {
-    var pct = Math.round(100 * ppn);
-    var resp_disp = document.getElementById("resp-disp");
-    resp_disp.textContent = pct + "% of the time";
-  },
-};
+  ticks: true,
+  hline_pct: 90,
+  scale_width: 300,
+  // scale_height: 20,
+  marker_type: 'cross',
+  randomize_question_order: true,
+  n_scale_points: 5
+}
+  
 
 jsPsych.run([trial]);
