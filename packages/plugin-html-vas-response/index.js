@@ -38,6 +38,12 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         pretty_name: "Number of scale points",
         default: null,
       },
+      /** Allows the user to drag the response marker */
+      marker_draggable: {
+        type: jspsych.ParameterType.BOOL,
+        pretty_name: "Marker draggable",
+        default: false,
+      },
       /** The width of the VAS in pixels.
        * If left `null`, then the width will be equal to the widest element in the display. */
       scale_width: {
@@ -263,38 +269,70 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       }
 
       // Function to move vertical tick
-      var pct_tick = null;
+      var ppn_tick = null;
       var vas_enabled = true;
       var clicks = [];
-      vas.onclick = function (e) {
+      function update_vas(e) {
         var clickTime = performance.now() - startTime;
         if (!vas_enabled) {
           return;
         }
         var vas = document.getElementById("jspsych-html-vas-response-vas");
         var vas_rect = vas.getBoundingClientRect();
-        if (e.clientX <= vas_rect.right && e.clientX >= vas_rect.left) {
+        // What's the x coord of the interaction? Depends on whether e is a click or touch
+        var interaction_x = e.clientX ?? e.touches[e.touches.length - 1].clientX;
+        if (interaction_x <= vas_rect.right && interaction_x >= vas_rect.left) {
           // Compute click location as a proportion of VAS line
-          pct_tick = (e.clientX - vas_rect.left) / vas_rect.width;
+          ppn_tick = (interaction_x - vas_rect.left) / vas_rect.width; // Marker location as a proportion from 0 - 1
           // Round to nearest increment, if needed
           if (trial.n_scale_points) {
-            pct_tick =
-              Math.round(pct_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
+            ppn_tick =
+              Math.round(ppn_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
           }
           var vline = document.getElementById("jspsych-html-vas-response-vline");
-          vline.style.left = pct_tick * vas_rect.width - 1 + "px";
+          vline.style.left = ppn_tick * vas_rect.width - 1 + "px";
           vline.style.visibility = "visible";
           // vas.appendChild(vline);
           var continue_button = document.getElementById("jspsych-html-vas-response-next");
           continue_button.disabled = false;
           // record time series of clicks
-          clicks.push({ time: clickTime, location: pct_tick });
+          clicks.push({ time: clickTime, location: ppn_tick });
           // call
           if (trial.resp_fcn) {
-            trial.resp_fcn(pct_tick);
+            trial.resp_fcn(ppn_tick);
           }
         }
       };
+      // Dragging makes an ugly "operation forbidden" cursor appear---easiest to just prevent any dragging
+      document.addEventListener("dragstart", function(e) {e.preventDefault()});
+      // Make responsive to both clicks and touches
+      vas.onclick = update_vas;
+      // Logic is more complex for dragging
+      if (trial.marker_draggable) {
+        // Track mouse state---whether to respond to mouse position depends on mouse position
+        var mouse_state = "up"; // or "down"
+        document.addEventListener("mousedown", function() {mouse_state = 'down'});
+        // document.addEventListener("dblclick", function() {mouse_state = 'down'});
+        document.addEventListener("mouseup", function() {mouse_state = 'up'});
+        document.addEventListener("dragend", function() {mouse_state = 'up'});
+        function drag_update(e, test) {
+          var do_update = true;
+          test = test ?? true;
+          if (test) {
+            if (mouse_state == 'up') {
+              do_update = false
+            }
+          }
+          if (do_update) {
+            update_vas(e);
+          }
+        }
+        vas.addEventListener("mousemove", drag_update);
+        vas.addEventListener("drag", drag_update);
+        vas.addEventListener("touchmove", function(e) {
+          drag_update(e, false)
+        });
+      }
 
       var response = {
         rt: null,
@@ -319,7 +357,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         // measure response time
         var endTime = performance.now();
         response.rt = Math.round(endTime - startTime);
-        response.response = pct_tick;
+        response.response = ppn_tick;
         if (trial.response_ends_trial) {
           end_trial();
         } else {
