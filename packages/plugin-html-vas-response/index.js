@@ -42,7 +42,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       marker_draggable: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Marker draggable",
-        default: false,
+        default: true,
       },
       /** The width of the VAS in pixels.
        * If left `null`, then the width will be equal to the widest element in the display. */

@@ -12,7 +12,6 @@ var trial = {
   ticks: false,
   scale_width: 500,
   scale_colour: "black",
-  marker_draggable: true,
   labels: [
     "0%<br>Never",
     "10%",
