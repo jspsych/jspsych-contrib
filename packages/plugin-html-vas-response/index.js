@@ -204,7 +204,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       }
       // half of the thumb width value from jspsych.css, used to adjust the label positions
       var half_thumb_width = 7.5;
-      var html = '<div id="jspsych-html-vas-response-wrapper" style="margin: 100px 0px;">';
+      var html = '<div id="jspsych-html-vas-response-wrapper" style="margin: 50px 0px;">';
       html += '<div id="jspsych-html-vas-response-stimulus">' + trial.stimulus + "</div>";
       html +=
         '<div class="jspsych-html-vas-response-container" style="position:relative; margin: 0 auto 3em auto; ';
