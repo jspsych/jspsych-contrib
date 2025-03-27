@@ -57,8 +57,8 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         pretty_name: "VAS height",
         default: 40,
       },
-      /** The width of the horizontal line as a percentage of the width of the clickable region.
-       * Setting this to less than 100 makes it easier to select the extreme ends of the scale. */
+      /** The width of the horizontal line as a percentage of the width of the clickable region (capped at 100).
+       * Setting this to less than 100 makes it easier for the user to select the extreme ends of the scale. */
       hline_pct: {
         type: jspsych.ParameterType.INT,
         pretty_name: "Horizontal line width percentage",
@@ -185,6 +185,11 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       this.jsPsych = jsPsych;
     }
     trial(display_element, trial) {
+      // constrain hline_pct to < 100
+      if (trial.hline_pct > 100) {
+        console.log('hline_pct is greater than 100! This makes no sense. Setting to 100.');
+        trial.hline_pct = 100;
+      }
       // half of the thumb width value from jspsych.css, used to adjust the label positions
       var half_thumb_width = 7.5;
       var html = '<div id="jspsych-html-vas-response-wrapper" style="margin: 100px 0px;">';

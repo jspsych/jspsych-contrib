@@ -20,6 +20,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | marker_draggable | Boolean | true | Allows the user to drag the response marker |
 | scale_width | integer | `null` |  The width of the VAS in pixels. If left `null`, then the width will be equal to the widest element in the display. |
 | scale_height | integer | 40 | The height of the clickable region around the VAS in pixels. |
+| hline_pct | integer | 100 | The width of the horizontal line as a percentage of the width of the clickable region (capped at 100). Setting this to less than 100 makes it easier for the user to select the extreme ends of the scale. |
 | scale_colour | string | `'black'` | The colour of the scale (the horizontal line). Anything that would make a valid CSS `background` property can be used here; e.g., `'linear-gradient(to right, blue, red)'` |
 | scale_cursor | string | `'pointer'` | The style of the cursor when the clickable part of the scale is hovered over. |
 | marker_colour | string | `'rgba(0, 0, 0, 0.5)'` | The colour of the participant's response marker. Anything that would make a valid CSS `background` property can be used here; e.g., `'linear-gradient(to top, blue, red)'` |
