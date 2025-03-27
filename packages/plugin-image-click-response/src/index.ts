@@ -125,7 +125,7 @@ class ImageClickResponsePlugin implements JsPsychPlugin<Info> {
     // Create layout
     let html = "";
     let preamble_html = `<div id="jspsych-survey-text-preamble" class="jspsych-survey-text-preamble">${trial.preamble}</div>`;
-    let button_html = `<div><button id='image-click-response-button'>${trial.button_label}</button></div>`;
+    let button_html = `<div><button id='image-click-response-button' class='jspsych-btn'>${trial.button_label}</button></div>`;
     let svg_html = `<div><svg id='image-click-response-svg'><image id='image-click-response-image' href='${trial.stimulus}'></svg></div>`;
     display_element.innerHTML = preamble_html + svg_html + button_html;
 
