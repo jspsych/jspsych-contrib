@@ -24,7 +24,7 @@ import jsPsychImageClickResponse from '@jspsych-contrib/plugin-image-click-respo
 
 ## Compatibility
 
-jsPsych 7.0.0
+jsPsych 8.0+
 
 ## Documentation
 
