@@ -21,7 +21,7 @@ If you use the plugin, please make sure to also load the JSZip library as indica
 
 ```js
 <script src="https://unpkg.com/jszip/dist/jszip.js"/></script>
-<script src="https://unpkg.com/@jspsych-contrib/plugin-nextcloud-filedrop@1.0.0"/></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-nextcloud-filedrop@2.0.0"/></script>
 ```
 
 ### Via NPM
@@ -36,10 +36,9 @@ import jsPsychNextcloudFiledropPlugin from '@jspsych-contrib/plugin-nextcloud-fi
 
 ## Compatibility
 
-This extension was developed for, and tested with jsPsych v7.3.0. 
+jsPsych v8.0. For compatibility with jsPsych v7.3+, use version 1.0.0 of this plugin.
 
 ## Documentation
-
 
 ### Create File Drop Folder
 
@@ -59,13 +58,30 @@ The contents of the directory, e.g., previously uploaded files, will not be visi
 The files will not be overriden. 
 Files with the same filename will automatically be enumerated.
 
-> **_IMPORTANT:_**  Please ensure secure data transfer via SSL/TLS encryption, i.e., use https instead of http. 
+> **_IMPORTANT:_** Please ensure secure data transfer via SSL/TLS encryption, i.e., use https instead of http. 
 
 ### Trial Parameters
 
-This plulgin accepts the following parameters
+In addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins), this plugin accepts the following parameters:
 
+Parameter | Type | Default Value | Description
+----------|------|---------------|------------
+url | STRING | undefined | The URL of the nextcloud instance.
+folder | STRING | undefined | The random string copy-pasted from the share link ([see](#create-file-drop-folder)).
+filename | FUNCTION | null | A function `(this.jsPsych) => { return ... }` returning the name of the zip file that will be uploaded. If `null`, the filename will be generated from the actual date.
+generate_download_url_on_error | BOOL | false | When the upload failed, should the browser generate an internal URL for the generated ZIP file. This URL may be used by the user for download the ZIP file such that the data can be transferred later.
 
+### Trial Data
+
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects the following data for each trial:
+
+| Name             | Type        | Value                                    |
+| ---------------- | ----------- | ---------------------------------------- |
+| filename         | STRING      | The name of the uploaded file.           |
+| error            | BOOLEAN     | If there was an error in upload or not.  |
+| url              | STRING      | In case of an error, the url to download the file. |
+
+### Example
 ```js
 var trial = {
     type: jsPsychNextcloudFiledropPlugin,
@@ -75,17 +91,8 @@ var trial = {
     folder: 'Z6oaSWW9W9edmyk',
     filename: null,
     generate_download_url_on_error: true
-  });
+  };
 ```
-
-Parameter | Type | Default Value | Description
-----------|------|---------------|------------
-url | STRING | undefined | The URL of the nextcloud instance.
-folder | STRING | undefined | The random string copy-pasted from the share link ([see](#create-file-drop-folder)).
-filename | FUNCTION | null | A function `(this.jsPsych) => { return ... }` returning the name of the zip file that will be uploaded. If `null`, the filename will be generated from the actual date.
-generate_download_url_on_error | BOOL | false | When the upload failed, should the browser generate an internal URL for the generated ZIP file. This URL may be used by the user for download the ZIP file such that the data can be transferred later.
-
-
 
 ## Nextcloud docker image
 
@@ -102,7 +109,7 @@ Create and run the docker container as a daemon and provide the nextcloud insanc
 
 ``` sh
 docker run -d --name nextcloud -p 8081:80 docker.io/library/nextcloud
-````
+```
 
 ### 2. Setup Nextcloud
 
@@ -115,7 +122,7 @@ The nextcloud instance need to accept CORS from the webserver.
 We adapt the example apache configuration from [here](https://github.com/perry-mitchell/webdav-client/issues/116#issuecomment-496032465).
 Execute the following two lines.
 
-``` sh
+```sh
 RULES='
 # Add security and privacy related headers 
 SetEnvIf Origin "http(s)?://(.*)$" AccessControlAllowOrigin=$0 
@@ -134,7 +141,7 @@ RewriteRule ^(.*)$ $1 [R=200,L]
 '
 ```
 
-``` sh
+```sh
 docker exec nextcloud sh -c "echo '$RULES' >> /var/www/html/.htaccess"
 ```
 

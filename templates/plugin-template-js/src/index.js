@@ -26,6 +26,11 @@ var _globalName_ = (function (jspsych) {
         type: ParameterType.STRING,
       },
     },
+    citation: {
+      // These should be manually added.
+      apa: "",
+      bibtex: "",
+    },
   };
 
   /**

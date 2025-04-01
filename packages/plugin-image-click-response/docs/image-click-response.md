@@ -13,7 +13,7 @@ In addition to the [parameters available in all plugins](https://jspsych.org/lat
 | dot_radius            | INT    | 5| Radius of the dot in pixels|
 | dot_color             | STRING | lightblue| Color name for the dot|
 | button_label          | STRING | Continue| Label for the continue button |
-| minimum_dots_required | INT    | 0| Minimum number of dots required before the Continue button becomes active|
+| minimum_dots_required | INT    | 0| Minimum number of dots required before the Continue button becomes active.|
 
 ## Data Generated
 
@@ -23,7 +23,7 @@ In addition to the [default data collected by all plugins](https://jspsych.org/l
 | --------- | ------- | ---------------------------------------- |
 | stimulus  | IMAGE   | URL to the image that will be displayed  |
 | rt        | INT     | Time in milliseconds to compete the trial                                         |
-| points    | ARRAY   | Array of (x,y) coordinates for each point on the image                                         |
+| points    | ARRAY   | Array of objects with x, y and rt properties representing the location of the dot (using the top left corner as the origin), and the time the dot was made in milliseconds|
 
 ## Install
 

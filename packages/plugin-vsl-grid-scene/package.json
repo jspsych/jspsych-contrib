@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-vsl-grid-scene",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "The VSL (visual statistical learning) grid scene plugin displays images arranged in a grid.",
   "type": "module",
   "main": "dist/index.cjs",
@@ -40,7 +40,7 @@
     "jspsych": ">=7"
   },
   "devDependencies": {
-    "@jspsych/config": "^2.0.0",
+    "@jspsych/config": "^3.2.1",
     "@jspsych/test-utils": "^1.0.0",
     "jspsych": "^7.0.0"
   }
