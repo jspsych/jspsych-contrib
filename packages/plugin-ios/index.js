@@ -17,11 +17,11 @@ var jsPsychIos = (function (jspsych) {
         pretty_name: "Movable circle",
         default: "right",
       },
-      /** Specifies if both circles move (`true`), or just one of them (`false`). */
+      /** Specifies if both circles move (`true`, default), or just one of them (`false`). */
       both_move: {
         type: jspsych.ParameterType.BOOL,
         pretty_name: "Both circles move?",
-        default: "one",
+        default: true,
       },
       /** Specifies which circle is in front of the other. */
       front_circle: {
@@ -426,23 +426,22 @@ var jsPsychIos = (function (jspsych) {
         }
       };
       // Handle touch events
-      clickable_area.ontouchstart = function (e) {
+      clickable_area.addEventListener('touchstart', function (e) {
         circles_movable = true;
         update_circles(e.changedTouches[e.changedTouches.length - 1].clientX);
         var continue_button = document.getElementById("jspsych-ios-next");
         continue_button.disabled = false;
-      };
-      clickable_area.ontouchend = function (e) {
-        circles_movable = false;
-      };
-      clickable_area.ontouchleave = function (e) {
-        circles_movable = false;
-      };
-      clickable_area.ontouchmove = function (e) {
+      });
+      clickable_area.addEventListener('touchend', function(e) {circles_movable = false;});
+      clickable_area.addEventListener('touchleave', function(e) {circles_movable = false;});
+      clickable_area.addEventListener('touchmove', function (e) {
+        e.preventDefault(); // So that whole screen doesn't move in MS Edge
         if (circles_movable) {
           update_circles(e.changedTouches[e.changedTouches.length - 1].clientX);
         }
-      };
+      });
+      // Handle drag events
+      document.addEventListener("dragstart", function(e) {e.preventDefault()});
 
       // Data storage
       var response = {
