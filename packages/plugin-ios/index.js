@@ -435,6 +435,7 @@ var jsPsychIos = (function (jspsych) {
       clickable_area.addEventListener('touchend', function(e) {circles_movable = false;});
       clickable_area.addEventListener('touchleave', function(e) {circles_movable = false;});
       clickable_area.addEventListener('touchmove', function (e) {
+        e.preventDefault(); // So that whole screen doesn't move in MS Edge
         if (circles_movable) {
           update_circles(e.changedTouches[e.changedTouches.length - 1].clientX);
         }
