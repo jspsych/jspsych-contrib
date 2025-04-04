@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-ios
 
+## 2.0.1
+
+### Patch Changes
+
+- [#163](https://github.com/jspsych/jspsych-contrib/pull/163) [`3c3cd7170a95683ab6e0358f61bf495a5e81f126`](https://github.com/jspsych/jspsych-contrib/commit/3c3cd7170a95683ab6e0358f61bf495a5e81f126) Thanks [@kinleyid](https://github.com/kinleyid)! - Handling drag events and making plugin touch-responsive
+
 ## 2.0.0
 
 ### Major Changes
