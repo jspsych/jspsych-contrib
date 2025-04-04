@@ -38,7 +38,13 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         pretty_name: "Number of scale points",
         default: null,
       },
-      /** The width of the VAS in pixels.
+      /** Allows the user to drag the response marker */
+      marker_draggable: {
+        type: jspsych.ParameterType.BOOL,
+        pretty_name: "Marker draggable",
+        default: true,
+      },
+      /** The width of the clickable region around the VAS in pixels.
        * If left `null`, then the width will be equal to the widest element in the display. */
       scale_width: {
         type: jspsych.ParameterType.INT,
@@ -50,6 +56,13 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         type: jspsych.ParameterType.INT,
         pretty_name: "VAS height",
         default: 40,
+      },
+      /** The width of the horizontal line as a percentage of the width of the clickable region (capped at 100).
+       * Setting this to less than 100 makes it easier for the user to select the extreme ends of the scale. */
+      hline_pct: {
+        type: jspsych.ParameterType.INT,
+        pretty_name: "Horizontal line width percentage",
+        default: 100,
       },
       /** The colour of the scale (the horizontal line). Anything that would make a valid CSS `background` property can be used here. */
       scale_colour: {
@@ -172,6 +185,11 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       this.jsPsych = jsPsych;
     }
     trial(display_element, trial) {
+      // constrain hline_pct to < 100
+      if (trial.hline_pct > 100) {
+        console.log('hline_pct is greater than 100! This makes no sense. Setting to 100.');
+        trial.hline_pct = 100;
+      }
       // half of the thumb width value from jspsych.css, used to adjust the label positions
       var half_thumb_width = 7.5;
       var html = '<div id="jspsych-html-vas-response-wrapper" style="margin: 100px 0px;">';
@@ -194,20 +212,21 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         ';">';
       // Draw horizontal line in VAS container
       html +=
-        '<div style="position: relative; background: ' +
-        trial.scale_colour +
-        "; width: 100%; height: 2px; top: " +
-        (trial.scale_height / 2 - 1) +
-        'px"></div>';
+        '<div id="jspsych-html-vas-response-hline" style="position: relative; background: ' +
+        trial.scale_colour + "; " +
+        'width: ' + trial.hline_pct + '%; ' +
+        'left: ' + (100 - trial.hline_pct)/2 + '%; ' + // Keep the horizontal line centred within clickable region
+        'height: 2px; ' +
+        'top: ' + (trial.scale_height / 2 - 1) + 'px">';
       // Draw vertical line, but hide it at first
       html +=
-        '<div id="jspsych-html-vas-response-vline" style="visibility: hidden; position: absolute; left: 0px; background-color: ' +
-        trial.marker_colour +
-        "; height: " +
-        trial.scale_height +
-        'px; width: 2px; top: 0px"></div>';
-      html += "</div>";
-      html += "<div>";
+        '<div id="jspsych-html-vas-response-vline" style="visibility: hidden; position: absolute; left: 0px; ' + 
+        'background-color: ' + trial.marker_colour + '; ' +
+        'height: ' + trial.scale_height + 'px; ' +
+        'top: ' + (-trial.scale_height/2 + 1) + 'px; ' +
+        'width: 2px"></div>';
+
+      html += "<div>"; // special alignment div
       for (var j = 0; j < trial.labels.length; j++) {
         var label_width_perc = 100 / (trial.labels.length - 1);
         var percent_of_range = j * (100 / (trial.labels.length - 1));
@@ -215,6 +234,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         var offset = (percent_dist_from_center * half_thumb_width) / 100;
         html +=
           '<div style="border: 1px solid transparent; display: inline-block; position: absolute; ' +
+          'top: ' + trial.scale_height/2 + 'px; ' +
           "left:calc(" +
           percent_of_range +
           "% - (" +
@@ -227,10 +247,14 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         html += '<span style="text-align: center; font-size: 80%;">' + trial.labels[j] + "</span>";
         html += "</div>";
       }
-      html += "</div>";
-      html += "</div>";
-      html += "</div>";
+      html += "</div>"; // special alignment div
 
+      html += "</div>"; // horizontal line
+      html += "</div>"; // clickable region
+      html += "</div>"; // response container
+      html += "</div>"; // response wrapper
+
+      // add prompt
       if (trial.prompt !== null) {
         html += trial.prompt;
       }
@@ -263,38 +287,70 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       }
 
       // Function to move vertical tick
-      var pct_tick = null;
+      var ppn_tick = null;
       var vas_enabled = true;
       var clicks = [];
-      vas.onclick = function (e) {
+      function update_vas(e) {
         var clickTime = performance.now() - startTime;
         if (!vas_enabled) {
           return;
         }
-        var vas = document.getElementById("jspsych-html-vas-response-vas");
-        var vas_rect = vas.getBoundingClientRect();
-        if (e.clientX <= vas_rect.right && e.clientX >= vas_rect.left) {
-          // Compute click location as a proportion of VAS line
-          pct_tick = (e.clientX - vas_rect.left) / vas_rect.width;
-          // Round to nearest increment, if needed
-          if (trial.n_scale_points) {
-            pct_tick =
-              Math.round(pct_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
-          }
-          var vline = document.getElementById("jspsych-html-vas-response-vline");
-          vline.style.left = pct_tick * vas_rect.width - 1 + "px";
-          vline.style.visibility = "visible";
-          // vas.appendChild(vline);
-          var continue_button = document.getElementById("jspsych-html-vas-response-next");
-          continue_button.disabled = false;
-          // record time series of clicks
-          clicks.push({ time: clickTime, location: pct_tick });
-          // call
-          if (trial.resp_fcn) {
-            trial.resp_fcn(pct_tick);
-          }
+        var hline = document.getElementById("jspsych-html-vas-response-hline");
+        var hline_rect = hline.getBoundingClientRect();
+        // What's the x coord of the interaction? Depends on whether e is a click or touch
+        var interaction_x = e.clientX ?? e.touches[e.touches.length - 1].clientX;
+        // Compute click location as a proportion of VAS horizontal line
+        ppn_tick = (interaction_x - hline_rect.left) / hline_rect.width; // Marker location as a proportion from 0 - 1
+        ppn_tick = Math.max(Math.min(ppn_tick, 1), 0); // Constrain to 0 - 1
+        // Round to nearest increment, if needed
+        if (trial.n_scale_points) {
+          ppn_tick =
+            Math.round(ppn_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
+        }
+        var vline = document.getElementById("jspsych-html-vas-response-vline");
+        vline.style.left = ppn_tick * hline_rect.width - 1 + "px";
+        vline.style.visibility = "visible";
+        // vas.appendChild(vline);
+        var continue_button = document.getElementById("jspsych-html-vas-response-next");
+        continue_button.disabled = false;
+        // record time series of clicks
+        clicks.push({ time: clickTime, location: ppn_tick });
+        // call
+        if (trial.resp_fcn) {
+          trial.resp_fcn(ppn_tick);
         }
       };
+      // Dragging makes an ugly "operation forbidden" cursor appear---easiest to just prevent any dragging
+      document.addEventListener("dragstart", function(e) {e.preventDefault()});
+      // Make responsive to both clicks and touches
+      vas.onclick = update_vas;
+      // Logic is more complex for dragging
+      if (trial.marker_draggable) {
+        // Track mouse state---whether to respond to mouse position depends on mouse position
+        var mouse_state = "up"; // or "down"
+        document.addEventListener("mousedown", function() {mouse_state = 'down'});
+        // document.addEventListener("dblclick", function() {mouse_state = 'down'});
+        document.addEventListener("mouseup", function() {mouse_state = 'up'});
+        document.addEventListener("dragend", function() {mouse_state = 'up'});
+        function drag_update(e, test_mouse_state) {
+          var do_update = true;
+          test_mouse_state = test_mouse_state ?? true; // test by default
+          if (test_mouse_state) {
+            if (mouse_state == 'up') {
+              do_update = false
+            }
+          }
+          if (do_update) {
+            update_vas(e);
+          }
+        }
+        vas.addEventListener("mousemove", drag_update);
+        vas.addEventListener("drag", drag_update);
+        vas.addEventListener("touchmove", function(e) {
+          e.preventDefault(); // So that whole screen doesn't move in MS Edge
+          drag_update(e, false) // Don't test whether mouse is down
+        });
+      }
 
       var response = {
         rt: null,
@@ -319,7 +375,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         // measure response time
         var endTime = performance.now();
         response.rt = Math.round(endTime - startTime);
-        response.response = pct_tick;
+        response.response = ppn_tick;
         if (trial.response_ends_trial) {
           end_trial();
         } else {

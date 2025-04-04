@@ -25,6 +25,7 @@ var trial = {
     "90%",
     "100%<br>Always",
   ],
+  hline_pct: 90,
   resp_fcn: function (ppn) {
     var pct = Math.round(100 * ppn);
     var resp_disp = document.getElementById("resp-disp");
