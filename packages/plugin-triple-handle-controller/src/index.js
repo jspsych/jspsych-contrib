@@ -62,7 +62,8 @@ var jsTripleHandleController = (function (jspsych) {
           "Indices of the game controller axis that will control measurement axis 3.",
       },
       axis_location: {
-        type: jspsych.ParameterType.COMPLEX,
+        type: jspsych.ParameterType.STRING,
+        array: true,
         default: ["L", "H", "R"],
         description:
           "The location of the axes on the screen. L = left, H = hidden, R = right.",
