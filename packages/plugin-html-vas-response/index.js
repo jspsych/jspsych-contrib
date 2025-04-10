@@ -3,7 +3,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
 
   const info = {
     name: "html-vas-response",
-    version: "2.0.0",
+    version: "2.1.0",
     parameters: {
       /** The string to be displayed. */
       stimulus: {
@@ -42,7 +42,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
       marker_type: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Marker type",
-        default: 'vline'
+        default: "vline",
       },
       /** Allows the user to drag the response marker */
       marker_draggable: {
@@ -199,7 +199,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
     trial(display_element, trial) {
       // constrain hline_pct to < 100
       if (trial.hline_pct > 100) {
-        console.log('hline_pct is greater than 100! This makes no sense. Setting to 100.');
+        console.log("hline_pct is greater than 100! This makes no sense. Setting to 100.");
         trial.hline_pct = 100;
       }
       // half of the thumb width value from jspsych.css, used to adjust the label positions
@@ -214,59 +214,130 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         html += "width:auto;";
       }
       html += '">';
-      
+
       // Create clickable container for VAS
       html +=
-        '<div id="jspsych-html-vas-response-clickable" style="position: relative; left: 0px; top: 0px; ' + 
-        'height: ' + trial.scale_height + 'px; ' +
-        'width: 100%; ' +
-        'z-index: 999; ' +
-        "cursor: " + trial.scale_cursor + ';' + 
+        '<div id="jspsych-html-vas-response-clickable" style="position: relative; left: 0px; top: 0px; ' +
+        "height: " +
+        trial.scale_height +
+        "px; " +
+        "width: 100%; " +
+        "z-index: 999; " +
+        "cursor: " +
+        trial.scale_cursor +
+        ";" +
         '">';
-      
+
       // Draw horizontal line in clickable VAS container
       html +=
         '<div id="jspsych-html-vas-response-hline" style="position: relative; background: ' +
-        trial.scale_colour + "; " +
-        'width: ' + trial.hline_pct + '%; ' +
-        'left: ' + (100 - trial.hline_pct)/2 + '%; ' + // Keep the horizontal line centred within clickable region
-        'height: 2px; ' +
-        'top: ' + (trial.scale_height / 2 - 1) + 'px">';
-      
+        trial.scale_colour +
+        "; " +
+        "width: " +
+        trial.hline_pct +
+        "%; " +
+        "left: " +
+        (100 - trial.hline_pct) / 2 +
+        "%; " + // Keep the horizontal line centred within clickable region
+        "height: 2px; " +
+        "top: " +
+        (trial.scale_height / 2 - 1) +
+        'px">';
+
       // Draw response marker, but hide it at first
-      var svg = '<svg width="' + trial.marker_size + '" height="' + trial.marker_size + '" ' + 
-        'id="jspsych-html-vas-response-marker" style="visibility: hidden; position: absolute; left: 0px; top: ' + -(trial.marker_size/2 - 1) + 'px; ' +
+      var svg =
+        '<svg width="' +
+        trial.marker_size +
+        '" height="' +
+        trial.marker_size +
+        '" ' +
+        'id="jspsych-html-vas-response-marker" style="visibility: hidden; position: absolute; left: 0px; top: ' +
+        -(trial.marker_size / 2 - 1) +
+        "px; " +
         'xmlns="http://www.w3.org/2000/svg">';
-      if (trial.marker_type == 'vline') {
-        svg += '<line x1="' + (trial.marker_size/2) + '" x2="' + (trial.marker_size/2) + '" y1="0" y2="' + trial.marker_size + '" ' + trial.marker_svg_attrs + '/>';
-      } else if (trial.marker_type == 'cross') {
-        svg += '<line x1="1" y1="1" x2="' + (trial.marker_size - 1) + '" y2="' + (trial.marker_size - 1) + '" ' + trial.marker_svg_attrs + '/>' +
-          '<line x1="1" y1="' + (trial.marker_size - 1) + '" x2="' + (trial.marker_size - 1) + '" y2="1" ' + trial.marker_svg_attrs + '/>';
-      } else if (trial.marker_type == 'circle') {
-        svg += '<circle cx="' + (trial.marker_size/2) + '" cy="' + (trial.marker_size/2) + '" r="' + (trial.marker_size/2 - 2) + '" fill="none" ' + trial.marker_svg_attrs + '/>';
-      } else if (trial.marker_type == 'square') {
-        svg += '<rect width="' + (trial.marker_size - 2) + '" height="' + (trial.marker_size - 2) + '" x="1" y="1" fill="none" ' + trial.marker_svg_attrs + '/>'
+      if (trial.marker_type == "vline") {
+        svg +=
+          '<line x1="' +
+          trial.marker_size / 2 +
+          '" x2="' +
+          trial.marker_size / 2 +
+          '" y1="0" y2="' +
+          trial.marker_size +
+          '" ' +
+          trial.marker_svg_attrs +
+          "/>";
+      } else if (trial.marker_type == "cross") {
+        svg +=
+          '<line x1="1" y1="1" x2="' +
+          (trial.marker_size - 1) +
+          '" y2="' +
+          (trial.marker_size - 1) +
+          '" ' +
+          trial.marker_svg_attrs +
+          "/>" +
+          '<line x1="1" y1="' +
+          (trial.marker_size - 1) +
+          '" x2="' +
+          (trial.marker_size - 1) +
+          '" y2="1" ' +
+          trial.marker_svg_attrs +
+          "/>";
+      } else if (trial.marker_type == "circle") {
+        svg +=
+          '<circle cx="' +
+          trial.marker_size / 2 +
+          '" cy="' +
+          trial.marker_size / 2 +
+          '" r="' +
+          (trial.marker_size / 2 - 2) +
+          '" fill="none" ' +
+          trial.marker_svg_attrs +
+          "/>";
+      } else if (trial.marker_type == "square") {
+        svg +=
+          '<rect width="' +
+          (trial.marker_size - 2) +
+          '" height="' +
+          (trial.marker_size - 2) +
+          '" x="1" y="1" fill="none" ' +
+          trial.marker_svg_attrs +
+          "/>";
       }
-      html += svg + '</svg>';
+      html += svg + "</svg>";
 
       html += "</div>"; // horizontal line
       html += "</div>"; // clickable region
 
       // Add labels
-      html += '<div style="position: relative; ' + // div to align label centers with appropriate points on horizontal line
-        'width: ' + trial.hline_pct + '%; ' +
-        'left: ' + (100 - trial.hline_pct)/2 + '%; ' +
-         '">';
+      html +=
+        '<div style="position: relative; ' + // div to align label centers with appropriate points on horizontal line
+        "width: " +
+        trial.hline_pct +
+        "%; " +
+        "left: " +
+        (100 - trial.hline_pct) / 2 +
+        "%; " +
+        '">';
       for (var j = 0; j < trial.labels.length; j++) {
         var label_width_perc = 100 / (trial.labels.length - 1);
         var percent_of_range = j * (100 / (trial.labels.length - 1));
         var percent_dist_from_center = ((percent_of_range - 50) / 50) * 100;
         var offset = (percent_dist_from_center * half_thumb_width) / 100;
-        html += '<div style="display: inline-block; position: absolute; ' + 
-          'left: ' + percent_of_range + '%; ' +
-          '">'
-        // html += '<span style="text-align: center; font-size: 80%">' + trial.labels[j] + "</span>";
-        html += '<span style="font-size: 80%; position: relative; left: -50%;">' + trial.labels[j] + "</span>";
+        html +=
+          '<div style="border: 1px solid transparent; display: inline-block; position: absolute; ' +
+          "top: " +
+          trial.scale_height / 2 +
+          "px; " +
+          "left:calc(" +
+          percent_of_range +
+          "% - (" +
+          label_width_perc +
+          "% / 2) - " +
+          offset +
+          "px); text-align: center; width: " +
+          label_width_perc +
+          '%;">';
+        html += '<span style="text-align: center; font-size: 80%;">' + trial.labels[j] + "</span>";
         html += "</div>";
       }
       html += "</div>"; // special alignment div
@@ -276,7 +347,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
 
       // add prompt
       if (trial.prompt !== null) {
-        html += '<div>' + trial.prompt + '</div>';
+        html += "<div>" + trial.prompt + "</div>";
       }
 
       // Submit button
@@ -299,7 +370,7 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
           mtick.style.position = "absolute";
           mtick.style.height = trial.scale_height / 2 + "px";
           mtick.style.width = "2px";
-          mtick.style.top = -(trial.scale_height/4 - 1) + "px";
+          mtick.style.top = -(trial.scale_height / 4 - 1) + "px";
           mtick.style.background = trial.tick_colour;
           mtick.style.left = (pct_of_range / 100) * hline.clientWidth - 1 + "px";
           hline.appendChild(mtick);
@@ -324,11 +395,10 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         ppn_tick = Math.max(Math.min(ppn_tick, 1), 0); // Constrain to 0 - 1
         // Round to nearest increment, if needed
         if (trial.n_scale_points) {
-          ppn_tick =
-            Math.round(ppn_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
+          ppn_tick = Math.round(ppn_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
         }
         var marker = document.getElementById("jspsych-html-vas-response-marker");
-        marker.style.left = (ppn_tick * hline_rect.width - trial.marker_size/2) + "px";
+        marker.style.left = ppn_tick * hline_rect.width - trial.marker_size / 2 + "px";
         marker.style.visibility = "visible"; // idempotent
         var continue_button = document.getElementById("jspsych-html-vas-response-next");
         continue_button.disabled = false;
@@ -338,38 +408,44 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         if (trial.resp_fcn) {
           trial.resp_fcn(ppn_tick);
         }
-      };
-      var clickable = document.getElementById("jspsych-html-vas-response-clickable")
+      }
       // Dragging makes an ugly "operation forbidden" cursor appear---easiest to just prevent any dragging
-      document.addEventListener("dragstart", function(e) {e.preventDefault()});
-      // Default interaction listeners
-      clickable.addEventListener("mousedown", update_vas);
-      clickable.addEventListener("touchstart", update_vas);
+      document.addEventListener("dragstart", function (e) {
+        e.preventDefault();
+      });
+      // Make responsive to both clicks and touches
+      vas.onclick = update_vas;
       // Logic is more complex for dragging
       if (trial.marker_draggable) {
         // Track mouse state---whether to respond to mouse position depends on mouse position
         var mouse_state = "up"; // or "down"
-        document.addEventListener("mousedown", function() {mouse_state = 'down'});
+        document.addEventListener("mousedown", function () {
+          mouse_state = "down";
+        });
         // document.addEventListener("dblclick", function() {mouse_state = 'down'});
-        document.addEventListener("mouseup", function() {mouse_state = 'up'});
-        document.addEventListener("dragend", function() {mouse_state = 'up'});
+        document.addEventListener("mouseup", function () {
+          mouse_state = "up";
+        });
+        document.addEventListener("dragend", function () {
+          mouse_state = "up";
+        });
         function drag_update(e, test_mouse_state) {
           var do_update = true;
           test_mouse_state = test_mouse_state ?? true; // test by default
           if (test_mouse_state) {
-            if (mouse_state == 'up') {
-              do_update = false
+            if (mouse_state == "up") {
+              do_update = false;
             }
           }
           if (do_update) {
             update_vas(e);
           }
         }
-        clickable.addEventListener("mousemove", drag_update);
-        clickable.addEventListener("drag", drag_update);
-        clickable.addEventListener("touchmove", function(e) {
+        vas.addEventListener("mousemove", drag_update);
+        vas.addEventListener("drag", drag_update);
+        vas.addEventListener("touchmove", function (e) {
           e.preventDefault(); // So that whole screen doesn't move in MS Edge
-          drag_update(e, false) // Don't test whether mouse is down
+          drag_update(e, false); // Don't test whether mouse is down
         });
       }
 
