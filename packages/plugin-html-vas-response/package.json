@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-html-vas-response",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "This plugin collects responses to an arbitrary HTML string using a point-and-click visual analogue scale.",
   "unpkg": "dist/index.browser.min.js",
   "files": [
