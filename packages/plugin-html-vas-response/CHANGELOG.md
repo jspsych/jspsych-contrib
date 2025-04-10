@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-html-vas-response
 
+## 2.1.0
+
+### Minor Changes
+
+- [#160](https://github.com/jspsych/jspsych-contrib/pull/160) [`50fc8db40def03a7eacfd3a8f7b5b5263cf72466`](https://github.com/jspsych/jspsych-contrib/commit/50fc8db40def03a7eacfd3a8f7b5b5263cf72466) Thanks [@kinleyid](https://github.com/kinleyid)! - Fixes an issue where drag events caused the scale to become unresponsive and the `not-allowed` cursor to appear.
+
 ## 2.0.0
 
 ### Major Changes
