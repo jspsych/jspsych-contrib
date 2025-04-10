@@ -324,20 +324,16 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
         var percent_dist_from_center = ((percent_of_range - 50) / 50) * 100;
         var offset = (percent_dist_from_center * half_thumb_width) / 100;
         html +=
-          '<div style="border: 1px solid transparent; display: inline-block; position: absolute; ' +
-          "top: " +
-          trial.scale_height / 2 +
-          "px; " +
-          "left:calc(" +
+          '<div style="display: inline-block; position: absolute; ' +
+          "left: " +
           percent_of_range +
-          "% - (" +
-          label_width_perc +
-          "% / 2) - " +
-          offset +
-          "px); text-align: center; width: " +
-          label_width_perc +
-          '%;">';
-        html += '<span style="text-align: center; font-size: 80%;">' + trial.labels[j] + "</span>";
+          "%; " +
+          '">';
+        // html += '<span style="text-align: center; font-size: 80%">' + trial.labels[j] + "</span>";
+        html +=
+          '<span style="font-size: 80%; position: relative; left: -50%;">' +
+          trial.labels[j] +
+          "</span>";
         html += "</div>";
       }
       html += "</div>"; // special alignment div
@@ -409,12 +405,14 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
           trial.resp_fcn(ppn_tick);
         }
       }
+      var clickable = document.getElementById("jspsych-html-vas-response-clickable");
       // Dragging makes an ugly "operation forbidden" cursor appear---easiest to just prevent any dragging
       document.addEventListener("dragstart", function (e) {
         e.preventDefault();
       });
-      // Make responsive to both clicks and touches
-      vas.onclick = update_vas;
+      // Default interaction listeners
+      clickable.addEventListener("mousedown", update_vas);
+      clickable.addEventListener("touchstart", update_vas);
       // Logic is more complex for dragging
       if (trial.marker_draggable) {
         // Track mouse state---whether to respond to mouse position depends on mouse position
@@ -441,9 +439,9 @@ var jsPsychHtmlVasResponse = (function (jspsych) {
             update_vas(e);
           }
         }
-        vas.addEventListener("mousemove", drag_update);
-        vas.addEventListener("drag", drag_update);
-        vas.addEventListener("touchmove", function (e) {
+        clickable.addEventListener("mousemove", drag_update);
+        clickable.addEventListener("drag", drag_update);
+        clickable.addEventListener("touchmove", function (e) {
           e.preventDefault(); // So that whole screen doesn't move in MS Edge
           drag_update(e, false); // Don't test whether mouse is down
         });
