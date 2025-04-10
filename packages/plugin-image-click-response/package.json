@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-image-click-response",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "This plugin shows an image on which the user can place points by clicking/touching the image. The location of each point is recorded as data.",
   "type": "module",
   "main": "dist/index.cjs",
