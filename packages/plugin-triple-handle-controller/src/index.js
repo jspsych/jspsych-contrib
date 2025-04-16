@@ -31,7 +31,7 @@ var jsTripleHandleController = (function (jspsych) {
   /* Set up constants */
   const info = {
     name: "3-axis video annotation",
-    version: "0.1.0",
+    version: "1.0.0",
     parameters: {
       title: {
         type: jspsych.ParameterType.STRING,
