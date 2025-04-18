@@ -19,7 +19,7 @@
  *  - **video_src**: The source URL of the video to be annotated.
  *  - **axis_1**, **axis_2**, **axis_3**: Indices of the game controller axes to be used.
  *  - **axis_location**: The location of the axes on the screen. L = left, H = hidden, R = right.
- *  - **mode**: Mode of operation (e.g., "DEBUG").
+ *  - **debug**: Enables or disables debug mode.
  *  - **axes_labels**: Labels for each axis.
  *  - **axis1_labels**, **axis2_labels**, **axis3_labels**: Labels for the scales of each axis.
  *  - **rate**: The sampling rate (in milliseconds) for recording data.
@@ -68,10 +68,10 @@ var jsTripleHandleController = (function (jspsych) {
         description:
           "The location of the axes on the screen. L = left, H = hidden, R = right.",
       },
-      mode: {
-        type: jspsych.ParameterType.STRING,
-        default: "DEBUG",
-        description: "Mode of operation (e.g., 'DEBUG').",
+      debug: {
+        type: jspsych.ParameterType.BOOLEAN,
+        default: false,
+        description: "Enable debugging mode. Defaults to false.",
       },
       axes_labels: {
         type: jspsych.ParameterType.COMPLEX,
@@ -313,7 +313,7 @@ var jsTripleHandleController = (function (jspsych) {
         this.recordingFeedback.innerText = "";
         return;
       }
-      if (this.mode == "DEBUG") {
+      if (this.debug == true) {
         this.recordingFeedback.innerText = "Recording";
       }
       let i = this.dataArrays.length - 1;
@@ -539,7 +539,7 @@ var jsTripleHandleController = (function (jspsych) {
       this.currentAxis3 = null;
       this.controllers = {};
       this.rate = trial.rate;
-      this.mode = trial.mode ? trial.mode : "DEBUG";
+      this.debug = trial.debug ? trial.debug : true;
       this.interval = null;
       this.axis1 = trial.axis_1;
       this.axis2 = trial.axis_2;
@@ -985,7 +985,7 @@ var jsTripleHandleController = (function (jspsych) {
       this.recordingData = false;
 
       this.recordingFeedback = document.getElementById("recording-feedback");
-      if (this.mode !== "DEBUG") {
+      if (this.debug !== true) {
         this.recordingFeedback.style.display = "none";
       }
 
