@@ -23,6 +23,8 @@
  *  - **axes_labels**: Labels for each axis.
  *  - **axis1_labels**, **axis2_labels**, **axis3_labels**: Labels for the scales of each axis.
  *  - **rate**: The sampling rate (in milliseconds) for recording data.
+ *  - **controller_detection_message**: The message to tell the user to connect or activate a controller.
+ *  - **play_string**, **pause_string**, **record_string**, **try_again_string**, **save_string**: Strings for button labels.
  */
 
 var jsTripleHandleController = (function (jspsych) {
@@ -97,6 +99,38 @@ var jsTripleHandleController = (function (jspsych) {
         type: jspsych.ParameterType.INT,
         default: 1000,
         description: "The sampling rate in milliseconds",
+      },
+      controller_detection_message: {
+        type: jspsych.ParameterType.STRING,
+        default: `A controller with throttles has not been detected. \n
+          If you have already plugged one in, please try pressing any \n
+          of its buttons or sliding its throttles to activate it.`,
+        description: "Message to tell the user to connect or activate a controller."
+      },
+      play_string: {
+        type: jspsych.ParameterType.STRING,
+        default: "Play",
+        description: "String to represent the play button.",
+      },
+      pause_string: {
+        type: jspsych.ParameterType.STRING,
+        default: "Pause",
+        description: "String to represnt the pause button.",
+      },
+      record_string: {
+        type: jspsych.ParameterType.STRING,
+        default: "Record",
+        description: "String to represnt the record button.",
+      },
+      try_again_string: {
+        type: jspsych.ParameterType.STRING,
+        default: "Try again",
+        description: "String to represnt the 'Try Again' button.",
+      },
+      save_string: {
+        type: jspsych.ParameterType.STRING,
+        default: "Save",
+        description: "String to represnt the save button.",
       },
     },
   };
@@ -547,6 +581,12 @@ var jsTripleHandleController = (function (jspsych) {
       this.axis_location = trial.axis_location;
       this.dataArrays = [{ axis1Array: [], axis2Array: [], axis3Array: [] }];
       this.videoSrc = trial.video_src;
+      this.controller_detection_message = trial.controller_detection_message;
+      this.play_string = trial.play_string;
+      this.pause_string = trial.pause_string;
+      this.record_string = trial.record_string;
+      this.try_again_string = trial.try_again_string;
+      this.save_string = trial.save_string;
       /* actual zero on the throttle is `sticky,` so to avoid 
       forcing users to apply an excess of strength to move 
       the throttle out of 0, we slightly reduce the scale */
@@ -653,6 +693,10 @@ var jsTripleHandleController = (function (jspsych) {
           axis3Index = axisColValue;
         }
       }
+
+      this.playStr = `► ${this.play_string}`;
+      this.pauseStr = `⏸ ${this.pause_string}`;
+      this.recordStr = `● ${this.record_string}`;
 
       display_element.innerHTML =
         `
@@ -835,10 +879,6 @@ var jsTripleHandleController = (function (jspsych) {
           line-height: 1.4;
         }
 
-        .player-btn {
-          word-spacing: 0.5rem;
-        }
-
         #play-btn {
           color: seagreen;
           border-color: seagreen;
@@ -884,9 +924,7 @@ var jsTripleHandleController = (function (jspsych) {
       </style>
       <div id="thc-overlay">
         <p>
-          A controller with throttles has not been detected.
-          If you have already plugged one in, please try pressing any 
-          of its buttons or sliding its throttles to activate it.
+          ${this.controller_detection_message}
         </p>
       </div>
       <div id="recording-feedback">...</div>
@@ -899,14 +937,14 @@ var jsTripleHandleController = (function (jspsych) {
             }"></video>
             <div id="thc-video-toolbar">
               <div class="thc-toolbar-group">
-                <button id="play-btn" class="jspsych-btn player-btn">► Play</button>
-                <button id="record-btn" class="jspsych-btn player-btn">● Record</button>
+                <button id="play-btn" class="jspsych-btn player-btn">► ${this.play_string}</button>
+                <button id="record-btn" class="jspsych-btn player-btn">● ${this.record_string}</button>
               </div>
               <span></span>
 
               <div class="thc-toolbar-group">
-                <button id="reset-btn" class="jspsych-btn" disabled>Try again</button>
-                <button id="save-btn" class="jspsych-btn" disabled>Save</button>
+                <button id="reset-btn" class="jspsych-btn" disabled>${this.try_again_string}</button>
+                <button id="save-btn" class="jspsych-btn" disabled>${this.save_string}</button>
               </div>
             </div>
           </div>
@@ -972,10 +1010,6 @@ var jsTripleHandleController = (function (jspsych) {
             : ``
         }
       </div>`;
-
-      this.playStr = "► Play";
-      this.pauseStr = "⏸ Pause";
-      this.recordStr = "● Record";
 
       this.playBtn = document.getElementById("play-btn");
       this.recordBtn = document.getElementById("record-btn");
