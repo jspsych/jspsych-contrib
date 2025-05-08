@@ -107,8 +107,8 @@ var jsTripleHandleController = (function (jspsych) {
    * This plugin collects responses to an video file in real time
    * using a game controller.
    *
-   * @author Caluã de Lacerda Pataca calua.pataca@gmail.com
-   * @author Russell Lee rl2939@rit.edu
+   * @author Caluã de Lacerda Pataca <calua.pataca@gmail.com>
+   * @author Russell Lee <rl2939@rit.edu>
    */
   class jsTripleHandleControllerPlugin {
     constructor(jsPsych) {
