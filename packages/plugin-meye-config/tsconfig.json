@@ -1,0 +1,11 @@
+{
+  "extends": "@jspsych/config/tsconfig.contrib.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "baseUrl": ".",
+    "types": ["node"],
+    "plugins": [],
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}
