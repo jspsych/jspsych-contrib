@@ -102,8 +102,8 @@ var jsTripleHandleController = (function (jspsych) {
       },
       controller_detection_message: {
         type: jspsych.ParameterType.STRING,
-        default: `A controller with throttles has not been detected. \n
-          If you have already plugged one in, please try pressing any \n
+        default: `A controller with throttles has not been detected.
+          If you have already plugged one in, please try pressing any
           of its buttons or sliding its throttles to activate it.`,
         description: "Message to tell the user to connect or activate a controller."
       },
