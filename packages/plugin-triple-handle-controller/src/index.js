@@ -539,7 +539,7 @@ var jsTripleHandleController = (function (jspsych) {
       this.currentAxis3 = null;
       this.controllers = {};
       this.rate = trial.rate;
-      this.debug = trial.debug ? trial.debug : true;
+      this.debug = (typeof trial.debug === "boolean") ? trial.debug : false;
       this.interval = null;
       this.axis1 = trial.axis_1;
       this.axis2 = trial.axis_2;
