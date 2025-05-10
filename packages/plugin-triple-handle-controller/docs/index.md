@@ -22,6 +22,12 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | axis1_labels  | complex | ["low", "neutral", "high"]          | An array of labels for axis 1. The label in index 1 appears near the bottom of the axis, the one in index 2 appears near the middle, and the one in index 3 appears near the top.                                                     |
 | axis2_labels  | complex | ["negative", "neutral", "positive"] | An array of labels for axis 2. The label in index 1 appears near the bottom of the axis, the one in index 2 appears near the middle, and the one in index 3 appears near the top.                                                     |
 | axis3_labels  | complex | ["a", "b", "c"]                     | An array of labels for axis 3. The label in index 1 appears near the bottom of the axis, the one in index 2 appears near the middle, and the one in index 3 appears near the top.                                                     |
+| controller_detection_message | string | A controller with throttles has not been detected. \n If you have already plugged one in, please try pressing any \n of its buttons or sliding its throttles to activate it. | The message to tell the user to connect or activate a controller. |
+| play_string 	| string | Play 								| String to represent the play button. |
+| pause_string 	| string | Pause 								| String to represent the pause button. |  
+| record_string | string | Record 								| String to represent the record button. |
+| try_again_string | string | Try again 						| String to represent the "Try again" button. |
+| save_string 	| string | Save 								| String to represent the save button.|
 | rate          | numeric | 1000                                | Number of miliseconds between each data call.                                                                                                                                                                                         |
 
 ## Data Generated
