@@ -9,8 +9,7 @@ describe("my plugin", () => {
     const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
       {
         type: jsPsychPluginMindlessClicking,
-        parameter_name: 1,
-        parameter_name2: "img.png",
+        required_clicks: 5,
       },
     ]);
 
