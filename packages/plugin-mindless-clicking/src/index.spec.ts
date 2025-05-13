@@ -6,14 +6,15 @@ jest.useFakeTimers();
 
 describe("my plugin", () => {
   it("should load", async () => {
-    const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
-      {
-        type: jsPsychPluginMindlessClicking,
-        required_clicks: 5,
-      },
-    ]);
+    const { expectFinished, expectRunning, getHTML, getData, displayElement, jsPsych } =
+      await startTimeline([
+        {
+          type: jsPsychPluginMindlessClicking,
+          required_clicks: 5,
+        },
+      ]);
 
-    await expectFinished();
+    await expectRunning();
   });
   it("should finish when the button is clicked the required number of times", async () => {
     const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
