@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>jsPsychPluginMindlessClicking Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <!-- Load the published plugin package here, e.g.
+<script src="https://unpkg.com/plugin-mindless-clicking"></script>
+<script src="../dist/index.browser.js"></script> -->
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych();
+
+  const trial = {
+    type: jsPsychPluginMindlessClicking,
+    required_clicks: 10
+  };
+
+  jsPsych.run([trial])
+</script>
+
+</html>
