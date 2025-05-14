@@ -1,5 +1,13 @@
 # @jspsych-contrib/plugin-html-vas-response
 
+## 3.0.0
+
+### Major Changes
+
+- [#161](https://github.com/jspsych/jspsych-contrib/pull/161) [`865516a75ab54f55ec5822d2a78cb3797bce8586`](https://github.com/jspsych/jspsych-contrib/commit/865516a75ab54f55ec5822d2a78cb3797bce8586) Thanks [@kinleyid](https://github.com/kinleyid)! - Switching from using a div to draw the response marker to using an SVG image. This enables more shapes (e.g., cross). Rather than using `marker_colour` to control the marker's appearance, the new argument is `marker_svg_attrs` to edit the marker's SVG attributes.
+
+  html-vas-response 2.1.0
+
 ## 2.1.0
 
 ### Minor Changes
