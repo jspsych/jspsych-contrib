@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "esbuild index.js --bundle --minify --sourcemap --outfile=dist/index.browser.min.js",
+    "build": "esbuild src/index.js --bundle --minify --sourcemap --outfile=dist/index.browser.min.js",
     "build:watch": "npm run build -- --watch"
   },
   "repository": {
