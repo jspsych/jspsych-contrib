@@ -20,7 +20,7 @@
 
   const sentences = [
     // regular sentence
-    { stimulus: "The quick brown fox jumps over the lazy dog." },
+    { stimulus: "The quick brown fox\n jumps over the lazy dog." },
     // special delimiter "^" is used to separate segments
     { stimulus: "Portez^ce vieux whisky^au juge blond^qui fume." },
   ]
@@ -41,7 +41,8 @@
     type: jsPsychSpr,
     sentence: "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich. :)",
     mode: 1,
-    segments_per_key_press: 2
+    segments_per_key_press: 2,
+    gap_character: "|"
   };
 
   jsPsych.run([procedure, segment_size_trial]);

@@ -46,6 +46,13 @@ const info = <const>{
       default: 1,
     },
     /**
+     * Character that will be used to separate each word of text. This is only used in mode 1 and 2.
+     */
+    gap_character: {
+      type: ParameterType.STRING,
+      default: " ",
+    },
+    /**
      * This array contains the key(s) that the participant is allowed to press in order to advance
      * to the next chunk. Keys should be specified as characters (e.g., `'a'`, `'q'`, `' '`, `'Enter'`, `'ArrowDown'`) - see
      * {@link https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values this page}
@@ -111,6 +118,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
   private index: number;
   // --- parameter fields ---
   private mode: 1 | 2 | 3;
+  private gapCharacter: string;
   // --- data fields ---
   private results = [];
   private startTime: number;
@@ -144,6 +152,12 @@ class SprPlugin implements JsPsychPlugin<Info> {
   private initializeVariables(trial: TrialType<Info>): string {
     if (trial.mode === 1 || trial.mode === 2 || trial.mode === 3) this.mode = trial.mode;
     else throw new Error("Mode declared incorrectly, must be between 1 and 3.");
+
+    if (this.mode === 3 && trial.gap_character !== " ") {
+      console.warn("gap_character is not used in mode 3, so it will be ignored.");
+      this.gapCharacter = " ";
+    }
+    this.gapCharacter = trial.gap_character;
 
     // split text based on delimiter or space
     const splitText = trial.sentence.includes(trial.delimiter)
@@ -200,29 +214,29 @@ class SprPlugin implements JsPsychPlugin<Info> {
               return text
                 .split(" ")
                 .map((word) => "<span class='jspsych-spr-before-region'>" + word + "</span>")
-                .join(" ");
+                .join(this.gapCharacter);
             } else if (i === this.index) {
               return text
                 .split(" ")
                 .map((word) => "<span class='jspsych-spr-current-region'>" + word + "</span>")
-                .join(" ");
+                .join(this.gapCharacter);
             } else {
               return text
                 .split(" ")
                 .map((word) => "<span class='jspsych-spr-after-region'>" + word + "</span>")
-                .join(" ");
+                .join(this.gapCharacter);
             }
           })
-          .join(" ");
+          .join(this.gapCharacter);
       } else {
         return this.readingString
           .map((text) =>
             text
               .split(" ")
               .map((word) => "<span class='jspsych-spr-after-region'>" + word + "</span>")
-              .join(" ")
+              .join(this.gapCharacter)
           )
-          .join(" ");
+          .join(this.gapCharacter);
       }
     } else {
       if (this.index !== -1) {

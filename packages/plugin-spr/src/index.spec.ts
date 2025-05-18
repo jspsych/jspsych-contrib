@@ -155,4 +155,17 @@ describe("spr plugin", () => {
       expect(getData().values()[0].results[i].rt).toBe(100);
     }
   });
+
+  test("using custom gap character works", async () => {
+    const { expectFinished, getData, displayElement } = await startTimeline([
+      {
+        type: jsPsychSpr,
+        sentence: "Five big booms",
+        mode: 1,
+        gap_character: "X",
+      },
+    ]);
+
+    expect(displayElement.innerHTML).toMatch(/.+X.+X./);
+  });
 });
