@@ -9,7 +9,8 @@ const info = <const>{
     /**
      * This is the string of text that will be displayed to the participant during the trial. The text
      * will be split up into segments based on either the space bar or the `delimiter` character if
-     * it is present.
+     * it is present. Line breaks can be displayed, but must be attached to the start or end of a word,
+     * not as its own word.
      */
     sentence: {
       type: ParameterType.STRING,
@@ -51,6 +52,14 @@ const info = <const>{
     gap_character: {
       type: ParameterType.STRING,
       default: " ",
+    },
+    /**
+     * If `true`, the gap character will replace the space between segments. Otherwise,
+     * the gap character within a segment will be a space.
+     */
+    intra_segment_character: {
+      type: ParameterType.BOOL,
+      default: true,
     },
     /**
      * This array contains the key(s) that the participant is allowed to press in order to advance
@@ -119,6 +128,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
   // --- parameter fields ---
   private mode: 1 | 2 | 3;
   private gapCharacter: string;
+  private intraGapCharacter: string;
   // --- data fields ---
   private results = [];
   private startTime: number;
@@ -158,6 +168,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
       this.gapCharacter = " ";
     }
     this.gapCharacter = trial.gap_character;
+    this.intraGapCharacter = trial.intra_segment_character ? this.gapCharacter : " ";
 
     // split text based on delimiter or space
     const splitText = trial.sentence.includes(trial.delimiter)
@@ -168,7 +179,10 @@ class SprPlugin implements JsPsychPlugin<Info> {
     var currentSegment: string[] = [];
 
     for (var i = 0; i < splitText.length; i++) {
-      const word = splitText[i];
+      const word = splitText[i].replaceAll("\n", "<br>");
+      if (word === "<br>")
+        throw new Error("plugin-spr: Newline characters must be attached to a word.");
+
       currentSegment.push(word);
 
       if (currentSegment.length >= trial.segments_per_key_press) {
@@ -214,17 +228,17 @@ class SprPlugin implements JsPsychPlugin<Info> {
               return text
                 .split(" ")
                 .map((word) => "<span class='jspsych-spr-before-region'>" + word + "</span>")
-                .join(this.gapCharacter);
+                .join(this.intraGapCharacter);
             } else if (i === this.index) {
               return text
                 .split(" ")
                 .map((word) => "<span class='jspsych-spr-current-region'>" + word + "</span>")
-                .join(this.gapCharacter);
+                .join(this.intraGapCharacter);
             } else {
               return text
                 .split(" ")
                 .map((word) => "<span class='jspsych-spr-after-region'>" + word + "</span>")
-                .join(this.gapCharacter);
+                .join(this.intraGapCharacter);
             }
           })
           .join(this.gapCharacter);
@@ -234,7 +248,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
             text
               .split(" ")
               .map((word) => "<span class='jspsych-spr-after-region'>" + word + "</span>")
-              .join(this.gapCharacter)
+              .join(this.intraGapCharacter)
           )
           .join(this.gapCharacter);
       }

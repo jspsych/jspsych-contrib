@@ -9,11 +9,12 @@ In addition to the [parameters available in all plugins](https://jspsych.org/lat
 
 | Parameter           | Type             | Default Value      | Description                              |
 | ------------------- | ---------------- | ------------------ | ---------------------------------------- |
-| sentence | string           | `undefined`             | This is the string of text that will be displayed to the participant during the trial. The text will be split up into segments based on either the space bar or the `delimiter` character if it is present. | 
+| sentence | string           | `undefined`             | This is the string of text that will be displayed to the participant during the trial. The text will be split up into segments based on either the space bar or the `delimiter` character if it is present. Line breaks can be displayed, but must be attached to the start or end of a word, not as its own word. | 
 | delimiter | string           | `"^"`             | If this character is present in the `sentence` parameter, the text will be split up based on the `delimiter` character. If the `delimiter` character is not present, the text will be split up based on the space character. | 
 | mode | numeric           | 1                  | Indicates the mode of text displaying used by the SPR plugin. Mode 1 is a masked presentation where a valid key press hides the previous shown words, mode 2 reveals one chunk at time but the chunks but previous ones remain visible, and mode 3 is when one word is displayed with no mask. |
 | segments_per_key_press | numeric           | 1            | Indicates how many segments will be revealed upon a key press. | 
 | gap_character | string | `" "` | Character that will be used to separate each word of text. This is only used in mode 1 and 2. |
+| intra_segment_character | bool | `true` | If `true`, the gap character will replace the space between segments. Otherwise, the gap character within a segment will be a space. |
 | choices | array of keys | `[" "]` | This array contains the key(s) that the participant is allowed to press in order to advance to the next chunk. Keys should be specified as characters (e.g., `'a'`, `'q'`, `' '`, `'Enter'`, `'ArrowDown'`) - see [this page](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values) and [this page (event.key column)](https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/) for more examples. Any key presses that are not listed in the array will be ignored. The value of `"ALL_KEYS"` means that all keys will be accepted as valid responses. |
 
 ## Data Generated

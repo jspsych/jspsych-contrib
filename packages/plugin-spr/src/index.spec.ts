@@ -168,4 +168,19 @@ describe("spr plugin", () => {
 
     expect(displayElement.innerHTML).toMatch(/.+X.+X./);
   });
+
+  test("intra gap characters are removed", async () => {
+    const { expectFinished, getData, displayElement } = await startTimeline([
+      {
+        type: jsPsychSpr,
+        sentence: "What^does that^mean? Fish",
+        mode: 1,
+        gap_character: "X",
+        intra_gap_character: false,
+      },
+    ]);
+
+    // only X should appear at delimiter marks
+    expect(displayElement.innerHTML).toMatch(/.+X.+X./);
+  });
 });
