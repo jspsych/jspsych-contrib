@@ -156,6 +156,90 @@ describe("spr plugin", () => {
     }
   });
 
+  test("mode 1 + delimiter displays proper text", async () => {
+    const { expectFinished, getData, displayElement } = await startTimeline([
+      {
+        type: jsPsychSpr,
+        sentence: "What is^going^on right now?",
+        mode: 1,
+      },
+    ]);
+
+    expect(
+      containsWords(displayElement, ["What", "is", "going", "on", "right", "now?"], "after")
+    ).toBe(true);
+
+    jest.advanceTimersByTime(100);
+    pressKey(" ");
+
+    expect(containsWords(displayElement, ["What", "is"], "current")).toBe(true);
+    expect(containsWords(displayElement, ["going", "on", "right", "now?"], "after")).toBe(true);
+
+    jest.advanceTimersByTime(100);
+    pressKey(" ");
+
+    expect(containsWords(displayElement, ["What", "is"], "before")).toBe(true);
+    expect(containsWord(displayElement, "going", "current")).toBe(true);
+    expect(containsWords(displayElement, ["on", "right", "now?"], "after")).toBe(true);
+
+    jest.advanceTimersByTime(100);
+    pressKey(" ");
+
+    expect(containsWords(displayElement, ["What", "is", "going"], "before")).toBe(true);
+    expect(containsWords(displayElement, ["on", "right", "now?"], "current")).toBe(true);
+
+    jest.advanceTimersByTime(100);
+    pressKey(" ");
+
+    await expectFinished();
+
+    // check blanked out word as data
+    expect(getData().values()[0].results[0].segment).toBe("____ __");
+    expect(getData().values()[0].results[1].segment).toBe("What is");
+  });
+
+  test("mode 2 + delimiter displays proper text", async () => {
+    const { expectFinished, getData, displayElement } = await startTimeline([
+      {
+        type: jsPsychSpr,
+        sentence: "What is^going^on right now?",
+        mode: 2,
+      },
+    ]);
+
+    expect(
+      containsWords(displayElement, ["What", "is", "going", "on", "right", "now?"], "after")
+    ).toBe(true);
+
+    jest.advanceTimersByTime(100);
+    pressKey(" ");
+
+    expect(containsWords(displayElement, ["What", "is"], "current")).toBe(true);
+    expect(containsWords(displayElement, ["going", "on", "right", "now?"], "after")).toBe(true);
+
+    jest.advanceTimersByTime(100);
+    pressKey(" ");
+
+    expect(containsWords(displayElement, ["What", "is"], "before")).toBe(true);
+    expect(containsWord(displayElement, "going", "current")).toBe(true);
+    expect(containsWords(displayElement, ["on", "right", "now?"], "after")).toBe(true);
+
+    jest.advanceTimersByTime(100);
+    pressKey(" ");
+
+    expect(containsWords(displayElement, ["What", "is", "going"], "before")).toBe(true);
+    expect(containsWords(displayElement, ["on", "right", "now?"], "current")).toBe(true);
+
+    jest.advanceTimersByTime(100);
+    pressKey(" ");
+
+    await expectFinished();
+
+    // check blanked out word as data
+    expect(getData().values()[0].results[0].segment).toBe("____ __");
+    expect(getData().values()[0].results[1].segment).toBe("What is");
+  });
+
   test("using custom gap character works", async () => {
     const { expectFinished, getData, displayElement } = await startTimeline([
       {
