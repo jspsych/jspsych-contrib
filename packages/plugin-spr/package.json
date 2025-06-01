@@ -28,9 +28,15 @@
     "directory": "packages/plugin-spr"
   },
   "author": {
-    "name": "Victor Zhang",
-    "url": "https://github.com/vzhang03"
+    "name": "jade",
+    "url": "https://github.com/jadeddelta"
   },
+  "contributors": [
+    {
+      "name": "Victor Zhang",
+      "url": "https://github.com/vzhang03"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"

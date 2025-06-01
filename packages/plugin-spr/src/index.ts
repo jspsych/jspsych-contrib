@@ -47,6 +47,14 @@ const info = <const>{
       default: 1,
     },
     /**
+     * If `true`, everything will be blanked out initially, and the user will need to press a key
+     * to show the first segment. If `false`, the first segment will be shown immediately.
+     */
+    show_first_blank: {
+      type: ParameterType.BOOL,
+      default: true,
+    },
+    /**
      * Character that will be used to separate each word of text. This is only used in mode 1 and 2.
      */
     gap_character: {
@@ -58,6 +66,24 @@ const info = <const>{
      * the gap character within a segment will be a space.
      */
     intra_segment_character: {
+      type: ParameterType.BOOL,
+      default: true,
+    },
+    /**
+     * If this character is not an empty string, it will fill the masked segments of the stimulus.
+     * This can be multiple characters, and will be repeated to fill the entire segment. It is
+     * important to note, this will force all text to be monospaced in order to ensure alignment.
+     */
+    mask_character: {
+      type: ParameterType.STRING,
+      default: "",
+    },
+    /**
+     * If `true`, the masked segments will be underlined. It's recommended to only make this `false`
+     * if the `mask_character` is not an empty string, as it will be difficult for participants to
+     * distinguish between the masked and unmasked segments.
+     */
+    mask_underline: {
       type: ParameterType.BOOL,
       default: true,
     },
@@ -112,9 +138,10 @@ type Info = typeof info;
 /**
  * **spr**
  *
- * This is a package built to enable self-paced reading trials.
+ * This is a package built to enable self-paced reading trials, utilizing the DOM.
  *
- * @author Victor Zhang, jadeddelta
+ * @author jadeddelta
+ * @author Victor Zhang
  * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-spr/README.md}}
  */
 class SprPlugin implements JsPsychPlugin<Info> {
@@ -125,6 +152,8 @@ class SprPlugin implements JsPsychPlugin<Info> {
   private isVisible: boolean[];
   /** the current index the user is on. */
   private index: number;
+  /** the length of each word, for masking purposes. */
+  private wordLengths: number[];
   // --- parameter fields ---
   private mode: 1 | 2 | 3;
   private gapCharacter: string;
@@ -138,6 +167,8 @@ class SprPlugin implements JsPsychPlugin<Info> {
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     // setup styles and trial parameters
     var css = this.initializeVariables(trial);
+
+    console.log(this.readingString);
 
     // setup html logic
     var html = `<p id="jspsych-spr-content">${this.generateDisplayString()}</p>`;
@@ -176,7 +207,8 @@ class SprPlugin implements JsPsychPlugin<Info> {
       : trial.sentence.split(" ");
 
     this.readingString = [];
-    var currentSegment: string[] = [];
+    this.wordLengths = [];
+    let currentSegment: string[] = [];
 
     for (var i = 0; i < splitText.length; i++) {
       const word = splitText[i].replaceAll("\n", "<br>");
@@ -184,6 +216,12 @@ class SprPlugin implements JsPsychPlugin<Info> {
         throw new Error("plugin-spr: Newline characters must be attached to a word.");
 
       currentSegment.push(word);
+      this.wordLengths = this.wordLengths.concat(
+        word
+          .replaceAll("<br>", "")
+          .split(" ")
+          .map((w) => w.length)
+      );
 
       if (currentSegment.length >= trial.segments_per_key_press) {
         this.readingString.push(currentSegment.join(" "));
@@ -194,7 +232,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
     if (currentSegment.length > 0) this.readingString.push(currentSegment.join(" "));
 
     this.isVisible = new Array(this.readingString.length).fill(false);
-    this.index = -1;
+    this.index = trial.show_first_blank ? -1 : 0;
 
     this.jsPsych.pluginAPI.getKeyboardResponse({
       callback_function: (info) => this.onValidKeyPress(info),
@@ -204,15 +242,58 @@ class SprPlugin implements JsPsychPlugin<Info> {
       allow_held_key: false,
     });
 
+    // css time!
+    const mask = `color: white; user-select: none; ${
+      trial.mask_underline ? "border-bottom: 1px solid black;" : ""
+    }`;
+
+    let characterMaskGeneral = "";
+    let characterMaskClasses = "";
+
+    if (trial.mask_character) {
+      characterMaskGeneral = `
+      p {
+        font-family: monospace, monospace;
+      }
+      .jspsych-spr-before-region::before, .jspsych-spr-after-region::before {
+        color: black;
+        position: fixed;
+      }
+      `;
+
+      const lengthSet = new Set(this.wordLengths);
+      for (const length of lengthSet) {
+        characterMaskClasses +=
+          this.mode !== 2
+            ? `
+        .jspsych-spr-before-region[data-length="${length}"]::before {
+          content: "${
+            trial.mask_character.repeat(length / trial.mask_character.length) +
+            trial.mask_character.slice(0, length % trial.mask_character.length)
+          }";
+        }
+        `
+            : "";
+        characterMaskClasses += `
+        .jspsych-spr-after-region[data-length="${length}"]::before {
+          content: "${
+            trial.mask_character.repeat(length / trial.mask_character.length) +
+            trial.mask_character.slice(0, length % trial.mask_character.length)
+          }";
+        }
+        `;
+      }
+    }
+
     var css = `<style>
     .jspsych-spr-before-region {
-      ${this.mode !== 2 ? "color: white; border-bottom: 1px solid black; user-select: none;" : ""}
+      ${this.mode !== 2 ? mask : ""}
     }
     .jspsych-spr-after-region {
-      color: white;
-      border-bottom: 1px solid black;
-      user-select: none;
+      ${mask}
     }
+    ${characterMaskGeneral}
+    ${characterMaskClasses}
     </style>`;
 
     return css;
@@ -224,22 +305,16 @@ class SprPlugin implements JsPsychPlugin<Info> {
       if (this.index !== -1) {
         return this.readingString
           .map((text, i) => {
-            if (i < this.index) {
-              return text
-                .split(" ")
-                .map((word) => "<span class='jspsych-spr-before-region'>" + word + "</span>")
-                .join(this.intraGapCharacter);
-            } else if (i === this.index) {
-              return text
-                .split(" ")
-                .map((word) => "<span class='jspsych-spr-current-region'>" + word + "</span>")
-                .join(this.intraGapCharacter);
-            } else {
-              return text
-                .split(" ")
-                .map((word) => "<span class='jspsych-spr-after-region'>" + word + "</span>")
-                .join(this.intraGapCharacter);
-            }
+            let regionType = i < this.index ? "before" : i === this.index ? "current" : "after";
+            return text
+              .split(" ")
+              .map(
+                (word) =>
+                  `<span class='jspsych-spr-${regionType}-region' data-length='${
+                    word.replaceAll("<br>", "").length
+                  }'>${word}</span>`
+              )
+              .join(this.intraGapCharacter);
           })
           .join(this.gapCharacter);
       } else {
@@ -247,7 +322,14 @@ class SprPlugin implements JsPsychPlugin<Info> {
           .map((text) =>
             text
               .split(" ")
-              .map((word) => "<span class='jspsych-spr-after-region'>" + word + "</span>")
+              .map(
+                (word) =>
+                  `<span class='jspsych-spr-after-region' data-length='${
+                    word.replaceAll("<br>", "").length
+                  }'>` +
+                  word +
+                  "</span>"
+              )
               .join(this.intraGapCharacter)
           )
           .join(this.gapCharacter);
@@ -258,11 +340,17 @@ class SprPlugin implements JsPsychPlugin<Info> {
           "<span class='jspsych-spr-current-region'>" + this.readingString[this.index] + "</span>"
         );
       } else {
-        return (
-          "<span class='jspsych-spr-after-region'>" +
-          this.generateBlank(this.readingString[0]) +
-          "</span>"
-        );
+        return this.readingString[0]
+          .split(" ")
+          .map(
+            (word) =>
+              `<span class='jspsych-spr-after-region' data-length='${
+                word.replaceAll("<br>", "").length
+              }'>` +
+              word +
+              "</span>"
+          )
+          .join(" ");
       }
     }
   }

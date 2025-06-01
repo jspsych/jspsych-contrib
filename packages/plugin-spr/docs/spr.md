@@ -13,8 +13,11 @@ In addition to the [parameters available in all plugins](https://jspsych.org/lat
 | delimiter | string           | `"^"`             | If this character is present in the `sentence` parameter, the text will be split up based on the `delimiter` character. If the `delimiter` character is not present, the text will be split up based on the space character. | 
 | mode | numeric           | 1                  | Indicates the mode of text displaying used by the SPR plugin. Mode 1 is a masked presentation where a valid key press hides the previous shown words, mode 2 reveals one chunk at time but the chunks but previous ones remain visible, and mode 3 is when one word is displayed with no mask. |
 | segments_per_key_press | numeric           | 1            | Indicates how many segments will be revealed upon a key press. | 
+| show_first_blank | bool | `true` | If `true`, everything will be blanked out initially, and the user will need to press a key to show the first segment. If `false`, the first segment will be shown immediately. |
 | gap_character | string | `" "` | Character that will be used to separate each word of text. This is only used in mode 1 and 2. |
 | intra_segment_character | bool | `true` | If `true`, the gap character will replace the space between segments. Otherwise, the gap character within a segment will be a space. |
+| mask_character | string | `""` | If this character is not an empty string, it will fill the masked segments of the stimulus. This can be multiple characters, and will be repeated to fill the entire segment. It is important to note, this will force all text to be monospaced in order to ensure alignment. |
+| mask_underline | bool | `true` | If `true`, the masked segments will be underlined. It's recommended to only make this `false` if the `mask_character` is not an empty string, as it will be difficult for participants to distinguish between the masked and unmasked segments. |
 | choices | array of keys | `[" "]` | This array contains the key(s) that the participant is allowed to press in order to advance to the next chunk. Keys should be specified as characters (e.g., `'a'`, `'q'`, `' '`, `'Enter'`, `'ArrowDown'`) - see [this page](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values) and [this page (event.key column)](https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/) for more examples. Any key presses that are not listed in the array will be ignored. The value of `"ALL_KEYS"` means that all keys will be accepted as valid responses. |
 
 ## Data Generated
@@ -52,6 +55,7 @@ import Spr from '@jspsych-contrib/plugin-spr';
 ```
 
 ## Examples
+A more exhaustive list of all the different parameters you can use are found in the `examples` folder.
 
 ### Self-paced-reading trial with simple word-by-word masking
 
@@ -82,4 +86,5 @@ const trial = {
   mode: 3,
   segments_per_key_press: 2
 }
+```
 

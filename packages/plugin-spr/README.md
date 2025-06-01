@@ -32,4 +32,4 @@ See [documentation](https://github.com/jspsych/jspsych-contrib/blob/main/package
 
 ## Author / Citation
 
-[Victor Zhang](https://github.com/vzhang03)
+Initial sketch by [Victor Zhang](https://github.com/vzhang03). Full implementation by [jade](https://github.com/jadeddelta).

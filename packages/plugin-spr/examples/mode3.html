@@ -6,6 +6,7 @@
   <!-- The plugin is loaded here -->
   <script src="https://unpkg.com/@jspsych/plugin-spr"></script>
   <script src="../dist/index.browser.js"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
 </head>
 
@@ -18,33 +19,38 @@
     default_iti: 250
   });
 
-  const sentences = [
-    // regular sentence
-    { stimulus: "The quick brown fox jumps over the lazy dog." },
-    // special delimiter "^" is used to separate segments
-    { stimulus: "Portez^ce vieux whisky^au juge blond^qui fume." },
-  ]
-
-  const procedure = {
-    timeline: [
-      {
-        type: jsPsychSpr,
-        sentence: jsPsych.timelineVariable('stimulus'),
-        mode: 3
-      }
-    ],
-    timeline_variables: sentences
-  };
-
-  // each key press will advance the segment by 2 words instead of one
-  const segment_size_trial = {
+  // basic trial, each key press advances the sentence by one word (segment)
+  // mode 3: each segment is displayed individually, switching to the next on key press
+  const regular_trial = {
     type: jsPsychSpr,
-    sentence: "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich. :)",
-    mode: 3,
-    segments_per_key_press: 2
-  };
+    sentence: "Pa's wijze lynx bezag vroom het fikse aquaduct.",
+    mode: 3, 
+  }
 
-  jsPsych.run([procedure, segment_size_trial]);
+  const choice_primer = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: '<p>Press F if the word has an even amount of characters, J if odd.<br>Press SPACE to continue on.</p>',
+    choices: [' ']
+  }
+
+  // you can have multiple choices per segment!
+  const choice_trial = {
+    type: jsPsychSpr,
+    sentence: "Příliš žluťoučký kůň úpěl ďábelské ódy.",
+    mode: 3,
+    choices: ["f", "j"],
+    show_first_blank: false // do not show the first segment as a blank
+  }
+
+  // for fun, you can also use this display method to display vertical lines bit by bit
+  const iroha_trial = {
+    type: jsPsychSpr,
+    sentence: "い\nろ\nは\nに\nほ\nへ\nと ち\nり\nぬ\nる\nを わ\nか\nよ\nた\nれ\nそ つ\nね\nな\nら\nむ う\nゐ\nの\nお\nく\nや\nま け\nふ\nこ\nえ\nて あ\nさ\nき\nゆ\nめ\nみ\nし ゑ\nひ\nも\nせ\nす",
+    mode: 3,
+    show_first_blank: false
+  }
+
+  jsPsych.run([regular_trial, choice_primer, choice_trial, iroha_trial]);
 </script>
 
 </html>
