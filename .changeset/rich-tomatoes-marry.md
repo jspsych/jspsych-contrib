@@ -2,4 +2,4 @@
 "@jspsych-contrib/plugin-self-paced-reading": major
 ---
 
-Inital version of SPR plugin
+initial version of self-paced reading (DOM version) plugin
