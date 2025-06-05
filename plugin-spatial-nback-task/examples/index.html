@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spatial N-Back Task</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <script src="https://unpkg.com/jspsych@8.2.1"></script>
+    <script src="../src/index.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
+    <link href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <style>
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            .jspsych-display-element {
+                font-size: 16px !important;
+            }
+            
+            /* Prevent zoom on input focus */
+            input, select, textarea, button {
+                font-size: 16px !important;
+            }
+            
+            /* Ensure content fits mobile screens */
+            body {
+                margin: 0;
+                padding: 0;
+                overflow-x: hidden;
+            }
+        }
+        
+        /* Prevent text selection and touch callouts */
+        * {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Allow text selection for specific elements */
+        p, span, div.instructions {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+    </style>
+</head>
+<body></body>
+<script>
+
+const jsPsych = initJsPsych({
+    on_finish: function(data) {
+        // Show custom summary first
+      jsPsych.data.displayData();
+
+      //displaySummary(data);
+    }
+});
+
+// Instructions trial - Mobile responsive
+const instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    response_ends_trial: true,
+    on_load: function() {
+        document.body.addEventListener('pointerdown', function endTrialOnClick() {
+            jsPsych.finishTrial();
+            document.body.removeEventListener('pointerdown', endTrialOnClick);
+        });
+    },
+    stimulus: `
+        <div style="text-align: center; font-size: clamp(16px, 4vw, 20px); line-height: 1.5; padding: 10px; max-width: 90vw; margin: 0 auto;">
+            <h2 style="font-size: clamp(20px, 5vw, 28px); margin-bottom: 20px;">Spatial N-Back Task</h2>
+            <p style="margin-bottom: 15px;">In this task, you will see a grid with blue squares appearing in different positions.</p>
+            <p style="margin-bottom: 15px;">Your job is to click the MATCH button whenever the current position is the same as the position from <strong>1 trial ago</strong>.</p>
+            <p style="margin-bottom: 15px;">Try to respond as quickly and accurately as possible.</p>
+            <p style="font-weight: bold; color: #2196F3;">Press any key or tap anywhere to begin the task.</p>
+        </div>https://github.com/ahfarhat
+    `,
+    choices: "ALL_KEYS"
+};
+
+// Main N-back task - Mobile optimized
+const nback_task = {
+    type: jsPsychPluginSpatialNbackTask,
+    rows: 3,
+    cols: 3,
+    n_back_level: 2,
+    total_trials: 10,
+    target_percentage: 40,
+    stimulus_duration: 1000,
+    isi_duration: 750,
+    feedback_duration: 750, //only shown if feedback or feedback_border is enabled
+    show_feedback: true,
+    show_feedback_border: true,
+    progress_bar: true,
+    showFeedbackNoResponse: true,
+    cell_size: 80,
+    instructions: "Click MATCH when the position matches the one from {n} trial(s) ago",
+    button_text: "MATCH",
+    stimulus_color: "#2196F3",
+    correct_color: "#4CAF50",
+    incorrect_color: "#F44336",
+};
+
+// Create timeline
+const timeline = [instructions, nback_task];
+
+// Custom function to display summary
+function displaySummary(data) {
+    const nback_data = data.filter({trial_type: 'plugin-spatial-nback-task'}).values()[0];
+    
+    if (nback_data) {
+        const summary_html = `
+            <div style="text-align: center; font-family: Arial, sans-serif; padding: 20px;">
+                <h2>Task Complete!</h2>
+                <div style="background-color: #f0f0f0; padding: 20px; border-radius: 10px; display: inline-block; margin: 20px;">
+                    <h3>Your Performance:</h3>
+                    <p><strong>Overall Accuracy:</strong> ${(nback_data.overall_accuracy * 100).toFixed(1)}%</p>
+                    <p><strong>Hit Rate:</strong> ${(nback_data.hit_rate * 100).toFixed(1)}%</p>
+                    <p><strong>False Alarm Rate:</strong> ${(nback_data.false_alarm_rate * 100).toFixed(1)}%</p>
+                    <p><strong>Total Duration:</strong> ${(nback_data.total_duration / 1000).toFixed(1)} seconds</p>
+                </div>
+                <div style="margin-top: 20px;">
+                    <button id="download-data-btn" style="padding: 10px 20px; font-size: 16px; margin: 5px;">Download Data</button>
+                    <button id="show-raw-data-btn" style="padding: 10px 20px; font-size: 16px; margin: 5px;">Show Raw Data</button>                    
+                    <button id="back-to-summary-btn" style="padding: 10px 20px; font-size: 16px; margin: 5px; display: none;">Back to Summary</button>
+                </div>
+                <div id="raw-data-container" style="display: none; margin-top: 20px; text-align: left;">
+                    <h3>Raw Data (JSON):</h3>
+                    <pre style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; overflow: auto; max-height: 400px; text-align: left;">${JSON.stringify(data.values(), null, 2)}</pre>
+                </div>
+            </div>
+        `;
+        
+        document.body.innerHTML = summary_html;
+        
+        // Add event listeners after HTML is inserted
+        document.getElementById('show-raw-data-btn').addEventListener('click', showRawData);
+        document.getElementById('download-data-btn').addEventListener('click', downloadData);
+        document.getElementById('back-to-summary-btn').addEventListener('click', hideRawData);
+    }
+}
+
+// Function to show raw data
+function showRawData() {
+    document.getElementById('raw-data-container').style.display = 'block';
+    document.getElementById('show-raw-data-btn').style.display = 'none';
+    document.getElementById('back-to-summary-btn').style.display = 'inline-block';
+}
+
+// Function to hide raw data
+function hideRawData() {
+    document.getElementById('raw-data-container').style.display = 'none';
+    document.getElementById('show-raw-data-btn').style.display = 'inline-block';
+    document.getElementById('back-to-summary-btn').style.display = 'none';
+}
+
+// Function to download data as CSV
+function downloadData() {
+    jsPsych.data.get().localSave('csv', 'nback_data.csv');
+}
+
+// Run the experiment
+jsPsych.run(timeline);
+
+</script>
+</html>
