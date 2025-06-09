@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych"></script>
+    <!-- The plugin is loaded here -->
+    <script src="https://unpkg.com/@jspsych/plugin-maze"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+
+    const trial = {
+      type: jsPsychMaze,
+      sent: "Boñjour deoc'h tout!",
+      on_finish: function () {
+        jsPsych.data.displayData('csv');
+      },
+    };
+
+    jsPsych.run([trial])
+  </script>
+</html>
