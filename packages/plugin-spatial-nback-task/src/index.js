@@ -184,13 +184,15 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
       // Generate stimulus sequence with targets
       function generateSequence(trial_params) {
         const total_positions = trial_params.rows * trial_params.cols;
-        const n_targets = Math.round((trial_params.target_percentage / 100) * trial_params.total_trials);
-        
+        const n_targets = Math.round(
+          (trial_params.target_percentage / 100) * trial_params.total_trials
+        );
+
         // Generate random positions for first n trials
         for (let i = 0; i < trial_params.n_back_level; i++) {
           stimulus_positions.push({
             row: Math.floor(Math.random() * trial_params.rows),
-            col: Math.floor(Math.random() * trial_params.cols)
+            col: Math.floor(Math.random() * trial_params.cols),
           });
           target_sequence.push(false);
         }
@@ -199,12 +201,12 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
         let targets_placed = 0;
         for (let i = trial_params.n_back_level; i < trial_params.total_trials; i++) {
           let is_target = false;
-          
+
           if (targets_placed < n_targets && Math.random() < 0.5) {
             // Make this a target trial
             stimulus_positions.push({
               row: stimulus_positions[i - trial_params.n_back_level].row,
-              col: stimulus_positions[i - trial_params.n_back_level].col
+              col: stimulus_positions[i - trial_params.n_back_level].col,
             });
             is_target = true;
             targets_placed++;
@@ -214,7 +216,7 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
             do {
               new_position = {
                 row: Math.floor(Math.random() * trial_params.rows),
-                col: Math.floor(Math.random() * trial_params.cols)
+                col: Math.floor(Math.random() * trial_params.cols),
               };
             } while (
               new_position.row === stimulus_positions[i - trial_params.n_back_level].row &&
@@ -222,7 +224,7 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
             );
             stimulus_positions.push(new_position);
           }
-          
+
           target_sequence.push(is_target);
         }
       }
@@ -244,9 +246,12 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
             box-sizing: border-box;
             padding: 20px;
           ">`;
-        
+
         // Combined Instructions and Progress bar container
-        const instructions_text = trial_params.instructions.replace('{n}', trial_params.n_back_level);
+        const instructions_text = trial_params.instructions.replace(
+          "{n}",
+          trial_params.n_back_level
+        );
         html += `<div id="nback-header" style="
           position: absolute;
           top: 10vh;
@@ -257,13 +262,13 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
           text-align: center;
           z-index: 10;
         ">`;
-        
+
         // Instructions
         html += `<div id="nback-instructions" style="
           font-size: clamp(14px, 2vmin, 18px);
           margin-bottom: 20px;
         ">${instructions_text}</div>`;
-        
+
         // Progress bar (if enabled)
         if (trial.progress_bar) {
           html += `<div id="nback-progress-container" style="
@@ -281,15 +286,15 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
             width: 0%;
             transition: width 0.3s;
           "></div>`;
-          html += '</div>';
+          html += "</div>";
           html += `<div id="nback-progress-text" style="
             font-size: clamp(12px, 1.5vmin, 16px);
             margin-top: 5px;
           ">Trial 0 of ${trial_params.total_trials}</div>`;
-          html += '</div>';
+          html += "</div>";
         }
-        
-        html += '</div>'; // Close combined header container
+
+        html += "</div>"; // Close combined header container
 
         // Calculate grid size to fit screen
         const grid_size = Math.min(50, 80 / Math.max(trial_params.rows, trial_params.cols));
@@ -306,7 +311,7 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
           display: inline-block;
           z-index: 5;
         ">`;
-        
+
         for (let row = 0; row < trial_params.rows; row++) {
           html += '<div style="display: flex;">';
           for (let col = 0; col < trial_params.cols; col++) {
@@ -320,9 +325,9 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
               min-height: ${Math.max(40, trial_params.cell_size * 0.5)}px;
             "></div>`;
           }
-          html += '</div>';
+          html += "</div>";
         }
-        html += '</div>';
+        html += "</div>";
 
         // Response button - fixed position at bottom
         html += `<div id="nback-button-container" style="
@@ -344,8 +349,8 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
           box-shadow: 0 4px 8px rgba(0,0,0,0.2);
           transition: all 0.2s;
         " disabled>${trial_params.button_text}</button>`;
-        html += '</div>';
-        
+        html += "</div>";
+
         // Feedback area - fixed position
         html += `<div id="nback-feedback" style="
           position: absolute;
@@ -359,26 +364,26 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
           z-index: 10;
           width: 80%;
         "></div>`;
-        
-        html += '</div>';
-        
+
+        html += "</div>";
+
         display_element.innerHTML = html;
 
         // Add button hover effects
-        const button = document.getElementById('nback-response-btn');
-        button.addEventListener('mouseenter', () => {
+        const button = document.getElementById("nback-response-btn");
+        button.addEventListener("mouseenter", () => {
           if (!button.disabled) {
-            button.style.backgroundColor = '#1976D2';
-            button.style.transform = 'translateY(-2px)';
+            button.style.backgroundColor = "#1976D2";
+            button.style.transform = "translateY(-2px)";
           }
         });
-        button.addEventListener('mouseleave', () => {
-          button.style.backgroundColor = '#2196F3';
-          button.style.transform = 'translateY(0)';
+        button.addEventListener("mouseleave", () => {
+          button.style.backgroundColor = "#2196F3";
+          button.style.transform = "translateY(0)";
         });
 
         // Add button event listener
-        button.addEventListener('click', handleResponse);
+        button.addEventListener("click", handleResponse);
       }
 
       function startTrial() {
@@ -390,14 +395,16 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
         // Update progress
         if (trial.progress_bar) {
           const progress = ((current_trial + 1) / trial.total_trials) * 100;
-          document.getElementById('nback-progress-bar').style.width = progress + '%';
-          document.getElementById('nback-progress-text').textContent = `Trial ${current_trial + 1} of ${trial.total_trials}`;
+          document.getElementById("nback-progress-bar").style.width = progress + "%";
+          document.getElementById("nback-progress-text").textContent = `Trial ${
+            current_trial + 1
+          } of ${trial.total_trials}`;
         }
 
         // Clear previous stimulus and feedback
         clearGrid();
-        document.getElementById('nback-feedback').textContent = '';
-        
+        document.getElementById("nback-feedback").textContent = "";
+
         // Show stimulus
         const position = stimulus_positions[current_trial];
         const cell = document.getElementById(`cell-${position.row}-${position.col}`);
@@ -406,12 +413,12 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
         // Enable response
         response_allowed = true;
         trial_start_time = performance.now();
-        document.getElementById('nback-response-btn').disabled = false;
+        document.getElementById("nback-response-btn").disabled = false;
 
         // Set timeout to hide stimulus
         stimulus_timeout = setTimeout(() => {
-          cell.style.backgroundColor = 'white';
-          
+          cell.style.backgroundColor = "white";
+
           // Set timeout for ISI
           isi_timeout = setTimeout(() => {
             if (response_allowed) {
@@ -458,50 +465,51 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
       }
 
       function showFeedback(is_correct, response_time) {
-        
         // if no feedback is shown, just proceed to next trial
-        if(!trial.show_feedback && !trial.show_feedback_border) return nextTrial();
+        if (!trial.show_feedback && !trial.show_feedback_border) return nextTrial();
 
         // Disable the button during feedback to prevent user interaction until the feedback is complete
-        const button = document.getElementById('nback-response-btn');
+        const button = document.getElementById("nback-response-btn");
         button.disabled = true;
-        button.style.opacity = '0.6';
+        button.style.opacity = "0.6";
 
         //if there is no response and feedback must not be shown for no response,
         // match feedback speed and then proceed to next trial
         // this makes the task's speed consistent, even if the participant does not respond
-        if(response_time === null && !trial.showFeedbackNoResponse){
+        if (response_time === null && !trial.showFeedbackNoResponse) {
           setTimeout(() => {
             nextTrial();
-            button.style.opacity = '1';}, trial.feedback_duration);
+            button.style.opacity = "1";
+          }, trial.feedback_duration);
           return;
         }
-        
+
         //initialize feedback elements
-        const grid = document.getElementById('nback-grid');
-        const feedback_div = document.getElementById('nback-feedback');
+        const grid = document.getElementById("nback-grid");
+        const feedback_div = document.getElementById("nback-feedback");
 
         // Show border feedback - keep same total width, change style and color
         if (trial.show_feedback_border) {
-          grid.style.border = `6px solid ${is_correct ? trial.correct_color : trial.incorrect_color}`;
+          grid.style.border = `6px solid ${
+            is_correct ? trial.correct_color : trial.incorrect_color
+          }`;
         }
 
         // Show text feedback
         if (trial.show_feedback) {
-          let feedback_text = is_correct ? 'Correct!' : 'Incorrect!';
+          let feedback_text = is_correct ? "Correct!" : "Incorrect!";
           if (response_time !== null) {
             feedback_text += ` (${Math.round(response_time)}ms)`;
           }
           feedback_div.textContent = feedback_text;
           feedback_div.style.color = is_correct ? trial.correct_color : trial.incorrect_color;
         }
-      
 
         // Wait for feedback duration before proceeding
         setTimeout(() => {
-          grid.style.border = '2px solid #000';
-          feedback_div.textContent = '';
-          button.style.opacity = '1';
+          grid.style.border = "2px solid #000";
+          feedback_div.textContent = "";
+          button.style.opacity = "1";
           nextTrial();
         }, trial.feedback_duration);
       }
@@ -514,23 +522,23 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
       function clearGrid() {
         for (let row = 0; row < trial.rows; row++) {
           for (let col = 0; col < trial.cols; col++) {
-            document.getElementById(`cell-${row}-${col}`).style.backgroundColor = 'white';
+            document.getElementById(`cell-${row}-${col}`).style.backgroundColor = "white";
           }
         }
       }
 
       function endTask() {
         const total_duration = performance.now() - task_start_time;
-        
+
         // Calculate performance metrics
         const hits = accuracy.filter((acc, i) => target_sequence[i] && acc).length;
         const false_alarms = accuracy.filter((acc, i) => !target_sequence[i] && !acc).length;
-        const total_targets = target_sequence.filter(t => t).length;
-        const total_non_targets = target_sequence.filter(t => !t).length;
-        
+        const total_targets = target_sequence.filter((t) => t).length;
+        const total_non_targets = target_sequence.filter((t) => !t).length;
+
         const hit_rate = total_targets > 0 ? hits / total_targets : 0;
         const false_alarm_rate = total_non_targets > 0 ? false_alarms / total_non_targets : 0;
-        const overall_accuracy = accuracy.filter(a => a).length / accuracy.length;
+        const overall_accuracy = accuracy.filter((a) => a).length / accuracy.length;
 
         // Prepare trial data
         const trial_data = {
@@ -542,11 +550,11 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
           overall_accuracy: overall_accuracy,
           hit_rate: hit_rate,
           false_alarm_rate: false_alarm_rate,
-          total_duration: Math.round(total_duration)
+          total_duration: Math.round(total_duration),
         };
 
         // Clear display
-        display_element.innerHTML = '';
+        display_element.innerHTML = "";
 
         // End trial
         jsPsych.finishTrial(trial_data);
@@ -572,5 +580,4 @@ var jsPsychPluginSpatialNbackTask = (function (jspsych) {
 
   SpatialNbackTaskPlugin.info = info;
   return SpatialNbackTaskPlugin;
-
 })(jsPsychModule);
