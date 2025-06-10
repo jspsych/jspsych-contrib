@@ -6,9 +6,10 @@ const info = <const>{
   name: "maze",
   version: version,
   parameters: {
-    /** TODO: Provide a clear description of the parameter_name that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
-    sent: {
+    /** Array of [word, foil] couples */
+    sentence: {
       type: ParameterType.COMPLEX,
+      array: true,
     },
     canvas_border: {
       type: ParameterType.STRING,
@@ -46,32 +47,70 @@ const info = <const>{
       pretty_name: "Font weight",
       default: "normal",
     },
+    keys: {
+      type: ParameterType.COMPLEX,
+      pretty_name: "Validation keys",
+      default: { left: "f", right: "j" },
+      nested: {
+        left: {
+          type: ParameterType.STRING,
+          pretty_name: "Left key",
+        },
+        right: {
+          type: ParameterType.STRING,
+          pretty_name: "Right key",
+        },
+      },
+    },
+    position_left: {
+      type: ParameterType.COMPLEX,
+      pretty_name: "Position of the left element.",
+      default: { x: null, y: null },
+      nested: {
+        x: {
+          type: ParameterType.FLOAT,
+          pretty_name: "Horizontal position",
+        },
+      },
+      y: {
+        type: ParameterType.FLOAT,
+        pretty_name: "Vertical position",
+      },
+    },
+    position_right: {
+      type: ParameterType.COMPLEX,
+      pretty_name: "Position of the right element ",
+      default: { x: null, y: null },
+      nested: {
+        x: {
+          type: ParameterType.FLOAT,
+          pretty_name: "Horizontal position",
+        },
+      },
+      y: {
+        type: ParameterType.FLOAT,
+        pretty_name: "Vertical position",
+      },
+    },
     translate_origin: {
       type: ParameterType.BOOL,
       pretty_name: "Translate origin",
       default: true,
     },
-    xy_position: {
-      type: ParameterType.INT,
-      array: true,
-      pretty_name: "XY position",
-      default: [0, 0],
-    },
-    x_align: {
-      type: ParameterType.STRING,
-      pretty_name: "X alignment",
-      default: "center",
-    },
-    y_align: {
-      type: ParameterType.STRING,
-      pretty_name: "Y alignment",
-      default: "top",
-    },
   },
   data: {
-    /** Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
+    /** TODO: Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
     report: {
       type: ParameterType.COMPLEX,
+      array: true,
+      nested: {
+        correct: { type: ParameterType.BOOL },
+        foil: { type: ParameterType.STRING },
+        rt: { type: ParameterType.INT },
+        side: { type: ParameterType.STRING },
+        word: { type: ParameterType.STRING },
+        word_number: { type: ParameterType.INT },
+      },
     },
   },
   // prettier-ignore
@@ -95,6 +134,7 @@ function set_canvas(
   }
   ctx.fillStyle = colour;
   ctx.fillRect(canvas_rect[0], canvas_rect[1], canvas_rect[2], canvas_rect[3]);
+  ctx.beginPath();
   return canvas_rect;
 }
 
@@ -126,15 +166,35 @@ class MazePlugin implements JsPsychPlugin<Info> {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const ctx = canvas.getContext("2d");
     const canvas_rect = set_canvas(canvas, ctx, trial.canvas_colour, trial.translate_origin);
+    const canvas_center = {
+      x: canvas_rect[0] + canvas_rect[2] / 2,
+      y: canvas_rect[1] + canvas_rect[3] / 2,
+    };
+
+    const position_left = {
+      x:
+        trial.position_left.x !== null
+          ? trial.position_left.x
+          : canvas_rect[0] + canvas_rect[2] / 3,
+      y: trial.position_left.y !== null ? trial.position_left.y : canvas_center.y,
+    };
+    const position_right = {
+      x:
+        trial.position_right.x !== null
+          ? trial.position_right.x
+          : canvas_rect[0] + (2 * canvas_rect[2]) / 3,
+      y: trial.position_right.y !== null ? trial.position_right.y : canvas_center.y,
+    };
 
     ctx.textAlign = trial.x_align as CanvasTextAlign;
     ctx.textBaseline = "middle";
 
+    let word_on_the_left: Array<boolean>;
     let word_number: number;
     let last_display_time: number;
 
     let trial_data = {
-      sentence: "",
+      sentence: trial.sentence.map((x) => x[0]).join(" "),
       events: [],
     };
 
@@ -144,32 +204,49 @@ class MazePlugin implements JsPsychPlugin<Info> {
       ctx.font = trial.canvas_colour;
       ctx.fillStyle = trial.canvas_colour;
       ctx.fillRect(canvas_rect[0], canvas_rect[1], canvas_rect[2], canvas_rect[3]);
+      ctx.beginPath();
     };
 
-    const display_word = (word: string) => {
+    const display_word = (left_word: string, right_word: string) => {
       clear_canvas();
       ctx.font = sentence_font;
       ctx.fillStyle = trial.font_colour;
       // TODO: debounce?
-      ctx.fillText(word, trial.xy_position[0], trial.xy_position[1]);
+      ctx.fillText(left_word, position_left.x, position_left.y);
+      ctx.fillText(right_word, position_right.x, position_right.y);
     };
 
-    const after_response = (info: { rt: any }) => {
+    const display_message = (message: string) => {
+      clear_canvas();
+      ctx.font = sentence_font;
+      ctx.fillStyle = trial.font_colour;
+      ctx.fillText(message, canvas_center.x, canvas_center.y);
+    };
+
+    const after_response = (info: { rt: number; key: string }) => {
       if (undefined === last_display_time) {
         last_display_time = 0;
       }
-      if (word_number > 0) {
+      // FIXME: maybe we want to pre-allocate this stuff for more reactivity?
+      if (word_number >= 0) {
+        const correct = word_on_the_left[word_number]
+          ? info.key == trial.keys.left
+          : info.key == trial.keys.righ;
+        const [word, foil] = trial.sentence[word_number];
         trial_data.events.push({
-          foil: "foil",
+          correct: correct,
+          foil: foil,
           rt: info.rt - last_display_time,
-          side: "left",
-          word: trial.sent[word_number],
+          side: word_on_the_left[word_number] ? "left" : "right",
+          word: word,
           word_number: word_number,
         });
       }
-      if (word_number < trial.sent.length - 1) {
+      if (word_number < trial.sentence.length - 1) {
         word_number++;
-        display_word(trial.sent[word_number]);
+        const [word, foil] = trial.sentence[word_number];
+        const [left, right] = word_on_the_left[word_number] ? [word, foil] : [foil, word];
+        display_word(left, right);
         last_display_time = info.rt;
       } else {
         end_trial();
@@ -178,10 +255,14 @@ class MazePlugin implements JsPsychPlugin<Info> {
 
     const start_trial = () => {
       word_number = -1;
-      display_word("Press SPACE to start");
+      word_on_the_left = Array.from(
+        { length: trial.sentence.length },
+        (_value, _index) => Math.random() < 0.5
+      );
+      display_message(`Press ${trial.keys.left} or ${trial.keys.right} to start`);
       keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
-        valid_responses: [" "],
+        valid_responses: [trial.keys.left, trial.keys.right],
         rt_method: "performance",
         persist: true,
         allow_held_key: false,
