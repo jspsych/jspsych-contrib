@@ -4,19 +4,22 @@ Based on [video-keyboard-response](https://github.com/jspsych/jsPsych/tree/main/
 
 ## Parameters
 
-In addition to the [parameters available in all plugins](https://www.jspsych.org/overview/plugins#parameters-available-in-all-plugins) and [video-keyboard-response](https://github.com/jspsych/jsPsych/blob/main/docs/plugins/video-keyboard-response.md) plugin, this plugin accepts the following parameters. Parameters with a default value of _undefined_ must be specified. Other parameters can be left unspecified if the default value is acceptable.
+In addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins) and [video-keyboard-response](https://github.com/jspsych/jsPsych/blob/main/docs/plugins/video-keyboard-response.md) plugin, this plugin accepts the following parameters. Parameters with a default value of _undefined_ must be specified. Other parameters can be left unspecified if the default value is acceptable.
 
-| Parameter                  | Type | Default Value | Description                                                                                                                                    |
-| -------------------------- | ---- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter                  | Type | Default Value | Description                      |
+| -------------------------- | ---- | ------------- | -------------------------------- |
 | multiple_responses_allowed | bool | true          | If true, multiple responses are recorded. If false, only the first response will be recorded, thus behaving as video-keyboard-response plugin. |
 
 ## Data Generated
 
-In addition to the [default data collected by all plugins](https://www.jspsych.org/overview/plugins#data-collected-by-all-plugins), this plugin collects the following data for each trial.
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects the following data for each trial.
 
 | Name       | Type     | Value                                                            |
 | ---------- | -------- | ---------------------------------------------------------------- |
-| video_time | number[] | Array of playback positions of video when response was given (s) |
+| rt         | number[] | An array of the response time in milliseconds for each key press from the participant. The time is measured from when the stimulus first began playing until the participant's response. |
+| stimulus   | string   | The stimulus displayed to the participant. |
+| response   | string[] | An array of the keys that the participant pressed in order. |
+| video_time | number[] | An array of playback positions of video when response(s) was given. |
 
 ## Example
 

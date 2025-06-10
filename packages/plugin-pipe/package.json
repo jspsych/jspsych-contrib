@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-pipe",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "jsPsych plugin to faciliate communication with [DataPipe](https://pipe.jspsych.org)",
   "type": "module",
   "main": "dist/index.cjs",
@@ -37,11 +37,11 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-pipe",
   "peerDependencies": {
-    "jspsych": ">=7.0.0"
+    "jspsych": ">=8.0.0"
   },
   "devDependencies": {
-    "@jspsych/config": "^2.0.0",
+    "@jspsych/config": "^3.2.2",
     "@jspsych/test-utils": "^1.0.0",
-    "jspsych": "^7.0.0"
+    "jspsych": "^8.0.0"
   }
 }

@@ -48,12 +48,15 @@ describe("plugin-html-multi-response", () => {
   });
 
   test("display button html", async () => {
+    const buttonHtmlFn = jest.fn();
+    buttonHtmlFn.mockReturnValue("<button class='jspsych-custom-button'>buttonChoice</button>");
+
     const { getHTML } = await startTimeline([
       {
         type: htmlMultiResponse,
         stimulus: "this is html",
         button_choices: ["buttonChoice"],
-        button_html: '<button class="jspsych-custom-button">%choice%</button>',
+        button_html: buttonHtmlFn,
       },
     ]);
 

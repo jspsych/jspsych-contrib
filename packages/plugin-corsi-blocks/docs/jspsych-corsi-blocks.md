@@ -1,10 +1,10 @@
 # jspsych-corsi-blocks plugin
 
-This plugin displays a sequence of blocks and then gets the subject's response. The sequence can be displayed in either 'display' mode or 'input' mode. In 'display' mode, the sequence is displayed and the trial ends after the sequence is complete. In 'input' mode, the subject must click on the blocks in the correct order.
+This plugin displays a sequence of blocks and then gets the participant's response. The sequence can be displayed in either 'display' mode or 'input' mode. In 'display' mode, the sequence is displayed and the trial ends after the sequence is complete. In 'input' mode, the participant must click on the blocks in the correct order.
 
 ## Parameters
 
-In addition to the [parameters available in all plugins](https://www.jspsych.org/overview/plugins#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of *undefined* must be specified. Parameters can be left unspecified if the default value is acceptable.
+In addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of *undefined* must be specified. Parameters can be left unspecified if the default value is acceptable.
 
 | Parameter | Type | Default Value | Description |
 | ----------|------|---------------|------------ |
@@ -26,19 +26,19 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 
 ## Data Generated
 
-In addition to the [default data collected by all plugins](../overview/plugins.md#data-collected-by-all-plugins), this plugin collects the following data for each trial.
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects the following data for each trial.
 
 | Name      | Type    | Value                                    |
 | --------- | ------- | ---------------------------------------- |
 | sequence | array   | The sequence of block indexes that was displayed. |
-| response | array   | The sequence of block indexes that was selected by the subject. |
-| correct | boolean | Whether the subject's response was correct. |
-| rt | array | The time, in milliseconds, that the subject took to respond to each block. These times are cumulative, measured from the onset of the display. |
+| response | array   | The sequence of block indexes that was selected by the participant. |
+| correct | boolean | Whether the participant's response was correct. |
+| rt | array | The time, in milliseconds, that the participant took to respond to each block. These times are cumulative, measured from the onset of the display. |
 | blocks | array | The coordinates of the blocks that were displayed. |
 
 ## Examples
 
-### Displaying a two-item sequence and then getting the subject's response.
+### Displaying a two-item sequence and then getting the participant's response.
 
 ```javascript
 const show_sequence = {

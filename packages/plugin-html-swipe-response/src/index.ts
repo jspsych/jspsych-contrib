@@ -1,8 +1,11 @@
 import interact from "interactjs";
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "html-swipe-response",
+  version: version,
   parameters: {
     /** The HTML string to be displayed. */
     stimulus: {
@@ -17,18 +20,24 @@ const info = <const>{
       default: [],
       array: true,
     },
-    /** Array containing the key(s) the subject is allowed to press to respond to the stimulus. */
+    /** Array containing the key(s) the participant is allowed to press to respond to the stimulus. */
     keyboard_choices: {
       type: ParameterType.KEYS,
       pretty_name: "Keyboard Choices",
       default: ["ArrowLeft", "ArrowRight"],
     },
-    /** The HTML for creating button. Can create own style. Use the "%choice%" string to indicate where the label from the choices parameter should be inserted. */
+    /**
+     * A function that generates the HTML for each button in the `choices` array.
+     * The function gets the string and index of the item in the `choices` array and should return valid HTML.
+     * If you want to use different markup for each button, you can do that by using a conditional on either parameter.
+     * The default parameter returns a button element with the text label of the choice.
+     */
     button_html: {
-      type: ParameterType.HTML_STRING,
+      type: ParameterType.FUNCTION,
       pretty_name: "Button HTML",
-      default: '<button class="jspsych-btn">%choice%</button>',
-      array: true,
+      default: function (choice: string, choice_index: number) {
+        return `<button class="jspsych-btn">${choice}</button>`;
+      },
     },
     /** Any content here will be displayed below the stimulus. */
     prompt: {
@@ -60,13 +69,13 @@ const info = <const>{
       pretty_name: "Margin horizontal",
       default: "8px",
     },
-    /** If true, trial will end when subject makes a response. */
+    /** If true, trial will end when participant makes a response. */
     response_ends_trial: {
       type: ParameterType.BOOL,
       pretty_name: "Response ends trial",
       default: true,
     },
-    /** How far away from the center should the subject have to swipe for a
+    /** How far away from the center should the participant have to swipe for a
      * left/right response to be recorded. */
     swipe_threshold: {
       type: ParameterType.INT,
@@ -94,12 +103,52 @@ const info = <const>{
       default: 250,
     },
   },
+  data: {
+    /**
+     * The response time in milliseconds for the participant to make a response.
+     * The time is measured from when the stimulus first appears on the screen until the participant's response.
+     */
+    rt: {
+      type: ParameterType.INT,
+    },
+    /** The HTML content that was displayed on the screen. */
+    stimulus: {
+      type: ParameterType.STRING,
+    },
+    /**
+     * Indicates which button the participant pressed. The first button in the `choices` array is 0, the second is 1, and so on.
+     * If the participant responded using the keyboard, then this field will be `null`.
+     */
+    button_response: {
+      type: ParameterType.INT,
+    },
+    /**
+     * Indicates which key the participant pressed.
+     * If the participant responded using button clicks, then this field will be `null`.
+     */
+    keyboard_response: {
+      type: ParameterType.STRING,
+    },
+    /**
+     * Indicates which direction the participant swiped.
+     * This will be either `"left"` or `"right"`. If the participant responded using the keyboard,
+     * then this field will be `null`.
+     */
+    swipe_response: {
+      type: ParameterType.STRING,
+    },
+    /** Indicates the source of the response. This will either be `"button"` or `"keyboard"`. */
+    response_source: {
+      type: ParameterType.STRING,
+    },
+  },
 };
 
 type Info = typeof info;
 
 /**
  * **html-swipe-response**
+ *
  * jsPsych plugin for displaying a stimulus and getting a swipe response
  * @author Adam Richie-Halford
  * @see {@link https://www.jspsych.org/plugins/jspsych-html-swipe-response/ html-swipe-response plugin documentation on jspsych.org}
@@ -116,25 +165,9 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       trial.stimulus +
       "</div></div>";
 
-    //display buttons
-    var buttons = [];
-    if (Array.isArray(trial.button_html)) {
-      if (trial.button_html.length == trial.button_choices.length) {
-        buttons = trial.button_html;
-      } else {
-        console.error(
-          "Error in html-swipe-response plugin. The length of the button_html array does not equal the length of the button_choices array"
-        );
-      }
-    } else {
-      for (var i = 0; i < trial.button_choices.length; i++) {
-        buttons.push(trial.button_html);
-      }
-    }
-
     html += '<div id="jspsych-html-swipe-response-btngroup">';
     for (var i = 0; i < trial.button_choices.length; i++) {
-      var str = buttons[i].replace(/%choice%/g, trial.button_choices[i]);
+      var button_str = trial.button_html(trial.button_choices[i], i);
       html +=
         '<div class="jspsych-html-swipe-response-button" style="display: inline-block; margin:' +
         trial.margin_vertical +
@@ -145,7 +178,7 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
         '" data-choice="' +
         i +
         '">' +
-        str +
+        button_str +
         "</div>";
     }
     html += "</div>";
@@ -167,6 +200,8 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       source: null,
     };
 
+    // References to container and stimulus
+    const container_div = document.getElementById("jspsych-html-swipe-response-stimulus-container");
     const stimulus_div = document.getElementById("jspsych-html-swipe-response-stimulus");
 
     let position = {
@@ -178,26 +213,35 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     const setPosition = (coordinates) => {
       const { x = 0, y = 0, rotation = 0 } = coordinates;
       position = { x, y, rotation };
+      container_div.style.transform = `translate3D(${x}px, ${y}px, 0)`;
       stimulus_div.style.transform = `translate3D(${x}px, ${y}px, 0) rotate(${rotation}deg)`;
     };
 
+    // Reset the position of the stimulus and container
     const resetPosition = async () => {
-      stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
-        trial.swipe_animation_duration / 1000
-      }s ease-in`;
+      for (const div of [container_div, stimulus_div]) {
+        div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
+          trial.swipe_animation_duration / 1000
+        }s ease-in`;
+      }
       setPosition({ x: 0, y: 0, rotation: 0 });
-      stimulus_div.style.transition = null;
+      for (const div of [container_div, stimulus_div]) {
+        div.style.transition = null;
+      }
     };
 
+    // Handle drag movement of the stimulus and container together
     const dragMoveListener = (event) => {
       const x = position.x + event.delta.x;
       const y = position.y + event.delta.y;
       let rotation = 0;
-      if (position.x > 0) {
-        rotation = Math.min(trial.swipe_animation_max_rotation, position.x / 4);
+
+      if (x > 0) {
+        rotation = Math.min(trial.swipe_animation_max_rotation, x / 4);
       } else {
-        rotation = Math.max(-trial.swipe_animation_max_rotation, position.x / 4);
+        rotation = Math.max(-trial.swipe_animation_max_rotation, x / 4);
       }
+
       setPosition({ x: x, y: y, rotation });
     };
 
@@ -216,9 +260,11 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     }
 
     const sendCardToLeft = async () => {
-      stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
-        trial.swipe_animation_duration / 1000
-      }s ease-in`;
+      for (const div of [container_div, stimulus_div]) {
+        div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
+          trial.swipe_animation_duration / 1000
+        }s ease-in`;
+      }
       setPosition({
         x: -trial.swipe_offscreen_coordinate,
         y: position.y,
@@ -227,9 +273,11 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     };
 
     const sendCardToRight = async () => {
-      stimulus_div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
-        trial.swipe_animation_duration / 1000
-      }s ease-in`;
+      for (const div of [container_div, stimulus_div]) {
+        div.style.transition = `${trial.swipe_animation_duration / 1000}s ease-in-out, ${
+          trial.swipe_animation_duration / 1000
+        }s ease-in`;
+      }
       setPosition({
         x: trial.swipe_offscreen_coordinate,
         y: position.y,
@@ -240,11 +288,11 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     // after a valid response, the stimulus will have the CSS class 'responded'
     // which can be used to provide visual feedback that a response was recorded
     const toggle_css_respond = (idx: number) => {
-      //responded class for stimulus
+      // responded class for stimulus
       display_element.querySelector("#jspsych-html-swipe-response-stimulus").className +=
         " responded";
 
-      //responded class for button
+      // responded class for button
       document
         .querySelectorAll(`#jspsych-html-swipe-response-button-${idx} > button`)
         .forEach((element) => {
@@ -259,8 +307,8 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       });
     };
 
-    // function to handle swipe responses by the subject
-    const after_swipe_response = (left_or_right) => {
+    // function to handle swipe responses by the participant
+    const after_swipe_response = (left_or_right: "left" | "right") => {
       if (left_or_right !== null) {
         // measure rt
         const end_time = performance.now();
@@ -288,31 +336,33 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       }
     };
 
-    interact(stimulus_div).draggable({
-      inertia: false,
-      autoScroll: true,
-      modifiers: [
-        interact.modifiers.restrictRect({
-          endOnly: true,
-        }),
-      ],
-      listeners: {
-        move: dragMoveListener,
-        end: () => {
-          if (position.x < -trial.swipe_threshold) {
-            sendCardToLeft();
-            after_swipe_response("left");
-          } else if (position.x > trial.swipe_threshold) {
-            sendCardToRight();
-            after_swipe_response("right");
-          } else {
-            resetPosition();
-          }
+    for (const div of [stimulus_div, container_div]) {
+      interact(div).draggable({
+        inertia: false,
+        autoScroll: true,
+        modifiers: [
+          interact.modifiers.restrictRect({
+            endOnly: true,
+          }),
+        ],
+        listeners: {
+          move: dragMoveListener,
+          end: () => {
+            if (position.x < -trial.swipe_threshold) {
+              sendCardToLeft();
+              after_swipe_response("left");
+            } else if (position.x > trial.swipe_threshold) {
+              sendCardToRight();
+              after_swipe_response("right");
+            } else {
+              resetPosition();
+            }
+          },
         },
-      },
-    });
+      });
+    }
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     const after_keyboard_response = (info) => {
       // only record the first response
       if (response.key == null) {
@@ -342,8 +392,8 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
       }
     };
 
-    // function to handle responses by the subject
-    const after_button_response = (choice) => {
+    // function to handle responses by the participant
+    const after_button_response = (choice: string) => {
       // measure rt
       var end_time = performance.now();
       var rt = Math.round(end_time - start_time);
@@ -384,15 +434,14 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-
       // kill keyboard listeners
       if (typeof keyboardListener !== "undefined") {
         this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
       }
 
-      interact(stimulus_div).unset();
+      for (const div of [stimulus_div, container_div]) {
+        interact(div).unset();
+      }
 
       // gather the data to store for the trial
       const trial_data = {
@@ -403,9 +452,6 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
         swipe_response: response.swipe,
         response_source: response.source,
       };
-
-      // clear the display
-      display_element.innerHTML = "";
 
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
