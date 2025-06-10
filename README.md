@@ -67,25 +67,6 @@ The `/packages` directory also contains four template sub-folders that can be us
 [mediapipe-face-mesh](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-mediapipe-face-mesh/README.md) | [C. Martin Grewe](https://github.com/mgrewe) | This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library. 
 [touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | foo 
 ## Guidelines for contributions
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Contributions to this repository must:
 
 * Work as described
