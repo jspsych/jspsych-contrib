@@ -1,4 +1,5 @@
-# maze
+Maze
+====
 
 A jsPsych plugin for running Maze experiments
 
@@ -34,7 +35,7 @@ Using the JavaScript file downloaded from a GitHub release dist archive:
 
 Using NPM:
 
-```
+```bash
 npm install @jspsych-contrib/plugin-maze
 ```
 
