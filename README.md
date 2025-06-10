@@ -62,7 +62,6 @@ Plugin | Contributor | Description
 [touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/@jspsych-contrib/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | _Description for touchscreen-buttons._ 
 
 ## Guidelines for contributions
-
 ### Contribution requirements
 Contributions to this repository must:
 
