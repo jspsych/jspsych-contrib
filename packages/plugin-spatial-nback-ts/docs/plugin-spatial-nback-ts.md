@@ -1,6 +1,6 @@
-# plugin-spatial-nback-task
+# plugin-spatial-nback-ts
 
-creates number of back to back grids with specified targets and a button for user response
+spatial grid n-back task
 
 ## Parameters
 
@@ -28,6 +28,6 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 ```javascript
 var trial = {
-  type: jsPsychPluginSpatialNbackTask
+  type: jsPsychPluginSpatialNbackTs
 }
 ```

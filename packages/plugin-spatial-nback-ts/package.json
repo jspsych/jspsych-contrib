@@ -1,0 +1,53 @@
+{
+  "name": "plugin-spatial-nback-ts",
+  "version": "0.0.1",
+  "description": "spatial grid n-back task",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "typings": "dist/index.d.ts",
+  "unpkg": "dist/index.browser.min.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "source": "src/index.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
+    "tsc": "tsc",
+    "build": "rollup --config",
+    "build:watch": "npm run build -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahfarhat/JsPsychTemplates/",
+    "directory": ""
+  },
+  "keywords": [
+    "jsPsych"
+  ],
+  "author": {
+    "name": "A. Hunter Farhat",
+    "url": "github.com/ahfarhat"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ahfarhat/JsPsychTemplates//issues"
+  },
+  "homepage": "/plugin-spatial-nback-ts/README.md",
+  "dependencies": {
+    "@citation-js/core": "^0.7.14",
+    "@citation-js/plugin-bibtex": "^0.7.14",
+    "@citation-js/plugin-cff": "^0.6.1",
+    "@citation-js/plugin-software-formats": "^0.6.1",
+    "jspsych": "^8.2.1"
+  },
+  "devDependencies": {
+    "@jspsych/config": "^3.2.2",
+    "@jspsych/test-utils": "^1.0.0"
+  }
+}
