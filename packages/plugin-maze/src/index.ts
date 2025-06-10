@@ -97,6 +97,12 @@ const info = <const>{
       pretty_name: "Translate origin",
       default: true,
     },
+    /** How long to wait after showing a word and before registering keypresses (in ms) */
+    waiting_time: {
+      type: ParameterType.INT,
+      pretty_name: "Waiting time",
+      default: 0,
+    },
   },
   data: {
     /** TODO: Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
@@ -186,7 +192,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
       y: trial.position_right.y !== null ? trial.position_right.y : canvas_center.y,
     };
 
-    ctx.textAlign = trial.x_align as CanvasTextAlign;
+    ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
     let word_on_the_left: Array<boolean>;
@@ -211,7 +217,6 @@ class MazePlugin implements JsPsychPlugin<Info> {
       clear_canvas();
       ctx.font = sentence_font;
       ctx.fillStyle = trial.font_colour;
-      // TODO: debounce?
       ctx.fillText(left_word, position_left.x, position_left.y);
       ctx.fillText(right_word, position_right.x, position_right.y);
     };
@@ -227,6 +232,10 @@ class MazePlugin implements JsPsychPlugin<Info> {
       if (undefined === last_display_time) {
         last_display_time = 0;
       }
+      const rt = info.rt - last_display_time;
+      if (rt < trial.waiting_time) {
+        return;
+      }
       // FIXME: maybe we want to pre-allocate this stuff for more reactivity?
       if (word_number >= 0) {
         const correct = word_on_the_left[word_number]
@@ -236,7 +245,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
         trial_data.events.push({
           correct: correct,
           foil: foil,
-          rt: info.rt - last_display_time,
+          rt: rt,
           side: word_on_the_left[word_number] ? "left" : "right",
           word: word,
           word_number: word_number,

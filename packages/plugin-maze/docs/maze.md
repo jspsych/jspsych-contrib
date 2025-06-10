@@ -48,6 +48,7 @@ import Maze from '@jspsych-contrib/plugin-maze';
 
 ```javascript
 var trial = {
+  
   type: jsPsychMaze
 }
 ```
