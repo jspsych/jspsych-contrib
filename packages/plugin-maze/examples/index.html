@@ -16,14 +16,19 @@
   <script>
     const jsPsych = initJsPsych();
 
-    const trial = {
-      type: jsPsychMaze,
-      sent: ["Boñjour", ",", "deoc'h", "tout","!", "Mont", "a", "ra","!"],
-      on_finish: function () {
-        jsPsych.data.displayData('json');
-      },
+    const procedure = {
+      timeline : [
+        {
+          type: jsPsychMaze,
+          sentence: jsPsych.timelineVariable('sentence'),
+          on_finish: function () {
+            jsPsych.data.displayData('json');
+          },
+        }
+      ],
+      timeline_variables: data,
     };
 
-    jsPsych.run([trial])
+    jsPsych.run(procedure)
   </script>
 </html>
