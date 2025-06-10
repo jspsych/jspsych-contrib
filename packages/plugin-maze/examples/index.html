@@ -5,6 +5,10 @@
     <!-- The plugin is loaded here -->
     <script src="https://unpkg.com/@jspsych/plugin-maze"></script>
     <script src="../dist/index.browser.js"></script>
+
+    <!-- Ugly trick to keep the data separate while not having to think of how to fetch it -->
+    <script src="stimuli.js"></script>
+
     <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
   </head>
 
@@ -14,9 +18,9 @@
 
     const trial = {
       type: jsPsychMaze,
-      sent: "Boñjour deoc'h tout!",
+      sent: ["Boñjour", ",", "deoc'h", "tout","!", "Mont", "a", "ra","!"],
       on_finish: function () {
-        jsPsych.data.displayData('csv');
+        jsPsych.data.displayData('json');
       },
     };
 
