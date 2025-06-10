@@ -19,7 +19,7 @@ const info = <const>{
       /** Size of each cell in pixels, this will affect size of whole grid also */
       cell_size: {
         type: ParameterType.INT,
-        default: 100,
+        default: 125,
       },
       /** Row position of the stimulus (0-indexed) */
       stimulus_row: {
@@ -39,7 +39,7 @@ const info = <const>{
       /** Duration the stimulus is displayed (ms) */
       stimulus_duration: {
         type: ParameterType.INT,
-        default: 500,
+        default: 750,
       },
       /** Inter-stimulus interval (ms) */
       // I recommend using feedback_duration as ISI if you have any type of feedback showing
@@ -76,7 +76,7 @@ const info = <const>{
       /** Text for the response button */
       button_text: {
         type: ParameterType.STRING,
-        default: "",
+        default: "MATCH",
       },
       /** Color of the stimulus square */
       stimulus_color: {
@@ -96,7 +96,7 @@ const info = <const>{
       /** Instructions to display above the grid */
       instructions: {
         type: ParameterType.STRING,
-        default: "Click MATCH when this is a target trial.",
+        default: "Click MATCH",
       },
     },
     data: {
