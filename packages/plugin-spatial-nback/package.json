@@ -1,5 +1,5 @@
 {
-  "name": "plugin-spatial-nback-ts",
+  "name": "@jspsych-contrib/plugin-spatial-nback",
   "version": "0.0.1",
   "description": "spatial grid n-back task",
   "type": "module",
@@ -32,11 +32,11 @@
   ],
   "author": {
     "name": "A. Hunter Farhat",
-    "url": "github.com/ahfarhat"
+    "url": "github.com/farhat60"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ahfarhat/JsPsychTemplates//issues"
+    "url": "https://github.com/farhat60/JsPsychTemplates//issues"
   },
   "homepage": "/plugin-spatial-nback-ts/README.md",
   "dependencies": {

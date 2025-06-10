@@ -3,7 +3,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import { version } from "../package.json";
 
 const info = <const>{
-  name: "plugin-spatial-nback-ts",
+  name: "@jspsych-contrib/plugin-spatial-nback",
   version: version,
   parameters: {
       /** Number of rows in the spatial grid */
@@ -131,15 +131,15 @@ const info = <const>{
 type Info = typeof info;
 
 /**
- * **plugin-spatial-nback-ts**
+ * **plugin-spatial-nback**
  *
  * Single trial spatial grid stimulus with response collection
  *
  * @author A. Hunter Farhat
  * @version 1.0.0
- * @see {@link https://github.com/farhat60/JsPsychTemplates/blob/main/plugin-spatial-nback-ts}
+ * @see {@link https://github.com/farhat60/jspsych-contrib/packages/plugin-spatial-nback}
  */
-class SpatialNbackTsPlugin implements JsPsychPlugin<Info> {
+class SpatialNbackPlugin implements JsPsychPlugin<Info> {
   static info = info;
 
   constructor(private jsPsych: JsPsych) {}
@@ -476,4 +476,4 @@ class SpatialNbackTsPlugin implements JsPsychPlugin<Info> {
   }
 }
 
-export default SpatialNbackTsPlugin;
+export default SpatialNbackPlugin;
