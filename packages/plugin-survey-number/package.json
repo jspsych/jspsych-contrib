@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-survey-number",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "This plugin displays a survey question and collects a numeric response.",
   "type": "module",
   "main": "dist/index.cjs",
@@ -37,11 +37,11 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-survey-number",
   "peerDependencies": {
-    "jspsych": ">=7.0.0"
+    "jspsych": ">=8.0.0"
   },
   "devDependencies": {
-    "@jspsych/config": "^2.0.0",
+    "@jspsych/config": "^3.2.2",
     "@jspsych/test-utils": "^1.0.0",
-    "jspsych": "^7.0.0"
+    "jspsych": "^8.0.0"
   }
 }

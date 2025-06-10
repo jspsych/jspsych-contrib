@@ -1,14 +1,14 @@
 {
   "name": "@jspsych-contrib/plugin-copying-task",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "A plugin for running a copying task: a model grid on the left has to be recreated in the middle grid, using items from the right grid.",
   "unpkg": "dist/index.browser.min.js",
   "files": [
     "index.js",
     "dist"
   ],
   "scripts": {
-    "build": "babel src/index.js --presets @babel/preset-env,minify --source-maps --out-file dist/index.browser.min.js",
+    "build": "esbuild src/index.js --bundle --minify --sourcemap --outfile=dist/index.browser.min.js",
     "build:watch": "npm run build -- --watch"
   },
   "repository": {
@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-copying-task",
   "devDependencies": {
-    "@jspsych/config": "^2.0.0",
-    "jspsych": "^7.3.0"
+    "@jspsych/config": "^3.2.2",
+    "jspsych": "^8.0.0",
+    "esbuild": "0.23.1"
   }
 }

@@ -1,4 +1,5 @@
 import { clickTarget, pressKey, simulateTimeline, startTimeline } from "@jspsych/test-utils";
+import interact from "interactjs";
 
 import htmlSwipeResponse from ".";
 
@@ -51,12 +52,15 @@ describe("plugin-html-swipe-response", () => {
   });
 
   test("display button html", async () => {
+    const buttonHtmlFn = jest.fn();
+    buttonHtmlFn.mockReturnValue("<button class='jspsych-custom-button'>buttonChoice</button>");
+
     const { getHTML } = await startTimeline([
       {
         type: htmlSwipeResponse,
         stimulus: "this is html",
         button_choices: ["buttonChoice"],
-        button_html: '<button class="jspsych-custom-button">%choice%</button>',
+        button_html: buttonHtmlFn,
       },
     ]);
 
@@ -289,6 +293,34 @@ describe("plugin-html-swipe-response", () => {
       expect(element.getAttribute("disabled")).toBe("disabled");
     });
   });
+
+  test("should move container and stimulus together during drag", async () => {
+    const { displayElement } = await startTimeline([
+      {
+        type: htmlSwipeResponse,
+        stimulus: "this is html",
+        swipe_animation_duration: 0,
+      },
+    ]);
+
+    const container = displayElement.querySelector<HTMLElement>(
+      "#jspsych-html-swipe-response-stimulus-container"
+    );
+    const stimulus = displayElement.querySelector<HTMLElement>(
+      "#jspsych-html-swipe-response-stimulus"
+    );
+
+    // Simulate drag event manually using interact.js drag events
+    interact(container).fire({
+      type: "dragmove",
+      target: container,
+      delta: { x: 100, y: 50 },
+    });
+
+    // Now test if the transforms are applied correctly
+    expect(container.style.transform).toBe("translate3D(100px, 50px, 0)");
+    expect(stimulus.style.transform).toBe("translate3D(100px, 50px, 0) rotate(20deg)");
+  });
 });
 
 describe("html-swipe-response simulation", () => {
@@ -344,6 +376,7 @@ describe("html-swipe-response simulation", () => {
     const buttonResponse = getData().values()[0].button_response;
     const keyboardResponse = getData().values()[0].keyboard_response;
     const responseSource = getData().values()[0].response_source;
+
     expect(getData().values()[0].rt).toBeGreaterThan(0);
     if (responseSource == "keyboard") {
       expect(typeof keyboardResponse).toBe("string");

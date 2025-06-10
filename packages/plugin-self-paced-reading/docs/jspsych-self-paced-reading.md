@@ -4,7 +4,7 @@ jsPsych plugin for self-paced reading experiments.
 
 ## Parameters
 
-In addition to the [parameters available in all plugins](https://www.jspsych.org/overview/plugins#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of _undefined_ must be specified. Other parameters can be left unspecified if the default value is acceptable.
+In addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of _undefined_ must be specified. Other parameters can be left unspecified if the default value is acceptable.
 
 | Parameter           | Type     | Default Value    | Description                                     |
 | ------------------- | -------- | ---------------- | ----------------------------------------------- |
@@ -34,7 +34,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 
 ## Data Generated
 
-In addition to the [default data collected by all plugins](https://www.jspsych.org/overview/plugins#data-collected-by-all-plugins), this plugin collects the following data for each trial.
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects the following data for each trial.
 
 | Name     | Type     | Value                                                      |
 | -------- | -------- | ---------------------------------------------------------- |

@@ -1,0 +1,44 @@
+cff-version: "1.2.0"
+title: "A Random-Dot Kinematogram for Web-Based Vision Research"
+authors:
+- family-names: Rajananda
+  given-names: Sivananda
+  orcid: "https://orcid.org/0000-0002-0356-1095"
+  email: "vrsivananda@gmail.com"
+- family-names: Lau
+  given-names: Hakwan
+  orcid: "https://orcid.org/0000-0001-8433-4232"
+- family-names: Odegaard
+  given-names: Brian
+  orcid: "https://orcid.org/0000-0002-5459-1884"
+contact:
+- family-names: Rajananda
+  given-names: Sivananda
+  orcid: "https://orcid.org/0000-0002-0356-1095"
+  email: "vrsivananda@gmail.com"
+doi: 10.5334/jors.194
+message: If you use this plugin, please cite our article in the Journal of Open Research Software.
+preferred-citation:
+  authors:
+  - family-names: Rajananda
+    given-names: Sivananda
+    orcid: "https://orcid.org/0000-0002-0356-1095"
+    email: "vrsivananda@gmail.com"
+  - family-names: Lau
+    given-names: Hakwan
+    orcid: "https://orcid.org/0000-0001-8433-4232"
+  - family-names: Odegaard
+    given-names: Brian
+    orcid: "https://orcid.org/0000-0002-5459-1884"
+  date-published: 2018-01-27
+  doi: 10.5334/jors.194
+  issn: 2049-9647
+  issue: 1
+  journal: Journal of Open Research Software
+  publisher:
+    name: Ubiquity Press
+  start: 6
+  title: "A Random-Dot Kinematogram for Web-Based Vision Research"
+  type: article
+  url: "https://openresearchsoftware.metajnl.com/articles/10.5334/jors.194"
+  volume: 6

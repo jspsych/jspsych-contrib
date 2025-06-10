@@ -28,7 +28,7 @@ function getPackageInfo(packageDir) {
   };
 }
 
-function updateRootReadme() {
+async function updateRootReadme() {
   const packageInfos = fs
     .readdirSync(packagesDir)
     .map((dir) => path.join(packagesDir, dir))
@@ -36,37 +36,37 @@ function updateRootReadme() {
     .map(getPackageInfo)
     .filter((info) => info !== null);
 
-  const pluginListHead = `
-  ### Plugins\n
-  Plugin | Contributor | Description
-  ----------- | ----------- | -----------\n`;
+  const pluginListHead = `### Plugins\n
+Plugin | Contributor | Description
+----------- | ----------- | -----------\n`;
 
-  const extensionListHead = `
-  \n### Extensions\n
-   Extension | Contributor | Description
-  ----------- | ----------- | -----------\n`;
+  const extensionListHead = `\n### Extensions\n
+Extension | Contributor | Description
+----------- | ----------- | -----------\n`;
 
-  const guidelinesHead = "## Guidelines for contributions\n";
+  const guidelinesHead = "\n## Guidelines for contributions";
 
   let pluginList = "";
   let extensionList = "";
 
   packageInfos.map((info) => {
-    const packageReadmeLink = `https://github.com/jspsych/jspsych-contrib/blob/main/packages/${info.name}/README.md`;
+    const packageName = info.name.replace(/^\@jspsych-contrib\//g, "");
+    const packageReadmeLink = `https://github.com/jspsych/jspsych-contrib/blob/main/packages/${packageName}/README.md`;
+
+    const authorRender = info.authorUrl != "" ? `[${info.author}](${info.authorUrl})` : info.author;
     if (info.name.match(/^\@jspsych-contrib\/plugin-/g)) {
-      const pluginName = info.name.replace(/^\@jspsych-contrib\/plugin-/g, "");
-      const authorRender =
-        info.authorUrl != "" ? `[${info.author}](${info.authorUrl})` : info.author;
+      const pluginName = packageName.replace(/^plugin-/g, "");
       pluginList = pluginList.concat(
         `[${pluginName}](${packageReadmeLink}) | ${authorRender} | ${
           info.description ? info.description : "foo"
         } \n`
       );
     } else {
+      const extensionName = packageName.replace(/^extension-/g, "");
       extensionList = extensionList.concat(
-        `[${info.name.replace(/^\@jspsych-contrib\/extension-/g, "")}](${packageReadmeLink}) | [${
-          info.author
-        }](${info.authorUrl}) | ${info.description ? info.description : "foo"} \n`
+        `[${extensionName}](${packageReadmeLink}) | ${authorRender} | ${
+          info.description ? info.description : "foo"
+        } \n`
       );
     }
   });
@@ -90,4 +90,4 @@ function updateRootReadme() {
   series(generatePluginTable, generateExtensionTable)();
 }
 
-export { updateRootReadme };
+export default updateRootReadme;

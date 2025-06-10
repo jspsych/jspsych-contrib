@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-html-vas-response",
-  "version": "1.2.0",
+  "version": "2.1.0",
   "description": "This plugin collects responses to an arbitrary HTML string using a point-and-click visual analogue scale.",
   "unpkg": "dist/index.browser.min.js",
   "files": [
@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "babel index.js --presets @babel/preset-env,minify --source-maps --out-file dist/index.browser.min.js",
+    "build": "esbuild index.js --bundle --minify --sourcemap --outfile=dist/index.browser.min.js",
     "build:watch": "npm run build -- --watch"
   },
   "repository": {
@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-html-vas-response",
   "devDependencies": {
-    "@jspsych/config": "^2.0.0",
-    "jspsych": "^7.0.0"
+    "@jspsych/config": "^3.2.2",
+    "jspsych": "^8.0.0",
+    "esbuild": "0.23.1"
   }
 }

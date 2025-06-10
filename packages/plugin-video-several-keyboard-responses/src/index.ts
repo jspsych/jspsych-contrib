@@ -1,7 +1,10 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "video-several-keyboard-responses",
+  version: version,
   parameters: {
     /** Array of the video file(s) to play. Video can be provided in multiple file formats for better cross-browser support. */
     stimulus: {
@@ -10,7 +13,7 @@ const info = <const>{
       default: undefined,
       array: true,
     },
-    /** Array containing the key(s) the subject is allowed to press to respond to the stimulus. */
+    /** Array containing the key(s) the participant is allowed to press to respond to the stimulus. */
     choices: {
       type: ParameterType.KEYS,
       pretty_name: "Choices",
@@ -40,7 +43,7 @@ const info = <const>{
       pretty_name: "Autoplay",
       default: true,
     },
-    /** If true, the subject will be able to pause the video or move the playback to any point in the video. */
+    /** If true, the participant will be able to pause the video or move the playback to any point in the video. */
     controls: {
       type: ParameterType.BOOL,
       pretty_name: "Controls",
@@ -76,7 +79,7 @@ const info = <const>{
       pretty_name: "Trial duration",
       default: null,
     },
-    /** If true, the trial will end when subject makes a response. */
+    /** If true, the trial will end when participant makes a response. */
     response_ends_trial: {
       type: ParameterType.BOOL,
       pretty_name: "Response ends trial",
@@ -93,6 +96,28 @@ const info = <const>{
       type: ParameterType.BOOL,
       pretty_name: "Multiple responses allowed",
       default: true,
+    },
+  },
+  data: {
+    /** An array of the response time in milliseconds for each key press from the participant.
+     * The time is measured from when the stimulus first began playing until the participant's response. */
+    rt: {
+      type: ParameterType.INT,
+      array: true,
+    },
+    /** The stimulus displayed to the participant. */
+    stimulus: {
+      type: ParameterType.STRING,
+    },
+    /** An array of the keys that the participant pressed in order. */
+    response: {
+      type: ParameterType.STRING,
+      array: true,
+    },
+    /** An array of the times in seconds that the keys were pressed relative to the start of the video. */
+    video_time: {
+      type: ParameterType.FLOAT,
+      array: true,
     },
   },
 };
@@ -257,9 +282,6 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
 
     // function to end trial when it is time
     const end_trial = () => {
-      // kill any remaining setTimeout handlers
-      this.jsPsych.pluginAPI.clearAllTimeouts();
-
       // kill keyboard listeners
       this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
 
@@ -280,14 +302,11 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
         video_time: response.video_time,
       };
 
-      // clear the display
-      display_element.innerHTML = "";
-
       // move on to the next trial
       this.jsPsych.finishTrial(trial_data);
     };
 
-    // function to handle responses by the subject
+    // function to handle responses by the participant
     var after_response = (info) => {
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded
@@ -295,14 +314,8 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
         "#jspsych-video-several-keyboard-responses-stimulus"
       ).className += " responded";
 
-      // by default only record the first response
       if (response.key == null) {
-        if (!trial.multiple_responses_allowed) {
-          // Would make sense to add it to a list, but then it would not be backwards compatible?
-          response = { rt: info.rt, key: info.key, video_time: video_element.currentTime };
-        } else {
-          response = { rt: [info.rt], key: [info.key], video_time: [video_element.currentTime] };
-        }
+        response = { rt: [info.rt], key: [info.key], video_time: [video_element.currentTime] };
       } else if (trial.multiple_responses_allowed) {
         response.rt.push(info.rt);
         response.key.push(info.key);
@@ -366,7 +379,9 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
 
     const respond = () => {
       if (data.rt !== null) {
-        this.jsPsych.pluginAPI.pressKey(data.response, data.rt);
+        for (let i = 0; i < data.rt.length; i++) {
+          this.jsPsych.pluginAPI.pressKey(data.response[i], data.rt[i]);
+        }
       }
     };
 
@@ -378,16 +393,31 @@ class VideoSeveralKeyboardResponsesPlugin implements JsPsychPlugin<Info> {
   }
 
   private create_simulation_data(trial: TrialType<Info>, simulation_options) {
+    let n_responses = this.jsPsych.randomization.randomInt(1, 5);
+    if (!trial.multiple_responses_allowed) {
+      n_responses = 1;
+    }
+
+    const rts = [];
+    const responses = [];
+    let last_rt = 0;
+    for (let i = 0; i < n_responses; i++) {
+      const rt = Math.round(this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true));
+      rts.push(rt + last_rt);
+      last_rt = rt;
+      responses.push(this.jsPsych.pluginAPI.getValidKey(trial.choices));
+    }
+
     const default_data = {
       stimulus: trial.stimulus,
-      rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
-      response: this.jsPsych.pluginAPI.getValidKey(trial.choices),
-      video_time: 0,
+      response: responses,
+      rt: rts,
+      video_time: rts,
     };
 
     const data = this.jsPsych.pluginAPI.mergeSimulationData(default_data, simulation_options);
 
-    this.jsPsych.pluginAPI.ensureSimulationDataConsistency(trial, data);
+    //this.jsPsych.pluginAPI.ensureSimulationDataConsistency(trial, data);
 
     return data;
   }
