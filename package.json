@@ -14,8 +14,7 @@
     "prepare": "husky install",
     "changeset": "changeset",
     "changeset:version": "changeset version && npm install && npm run update-unpkg-links && npm run update-readme",
-    "changeset:publish": "npm run build && changeset publish",
-    "new": "node ./templates/cli/src/index.js"
+    "changeset:publish": "npm run build && changeset publish"
   },
   "dependencies": {
     "gulp": "^5.0.0",
