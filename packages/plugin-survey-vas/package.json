@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "babel index.js --presets @babel/preset-env,minify --source-maps --out-file dist/index.browser.min.js",
+    "build": "esbuild index.js --bundle --minify --sourcemap --outfile=dist/index.browser.min.js",
     "build:watch": "npm run build -- --watch"
   },
   "repository": {
