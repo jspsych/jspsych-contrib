@@ -16,10 +16,10 @@
 
     // N-back task parameters
     const n_back_level = 1;
-    const total_trials = 6;
+    const total_trials = 15;
     const target_percentage = 50;
-    const rows = 4;
-    const cols = 4;
+    const rows = 20;
+    const cols = 50;
 
     // Generate stimulus sequence
     function generateNBackSequence(total_trials, n_back_level, target_percentage, rows, cols) {
@@ -85,7 +85,7 @@
         stimulus_duration: 750,
         isi_duration: 1000,
         feedback_duration: 1000,
-        show_feedback: true,
+        show_feedback_time: true,
         show_feedback_border: true,
         showFeedbackNoResponse: true,
         feedbackWaitNoResponse: true,

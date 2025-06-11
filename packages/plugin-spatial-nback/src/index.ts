@@ -145,6 +145,20 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
+    // Validate grid dimensions
+    if (trial.rows <= 1 && trial.cols <= 1) {
+      throw new Error("Grid must have more than one cell. Both rows and cols cannot be 1 or less.");
+    }
+    
+    // Additional validations (optional but recommended)
+    if (trial.rows <= 0 || trial.cols <= 0) {
+      throw new Error("Grid dimensions must be positive integers. Rows and cols must be greater than 0.");
+    }
+    
+    if (trial.stimulus_row >= trial.rows || trial.stimulus_col >= trial.cols) {
+      throw new Error(`Stimulus position (${trial.stimulus_row}, ${trial.stimulus_col}) is outside grid bounds (${trial.rows}x${trial.cols}).`);
+    }
+
     let trial_start_time: number;
     let response_allowed = false;
     let response_given = false;
@@ -160,77 +174,102 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       let html = `
         <div id="nback-container" style="
           position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+          top: 0;
+          left: 0;
           width: 100vw;
           height: 100vh;
           display: flex;
           flex-direction: column;
-          justify-content: center;
+          justify-content: space-between;
           align-items: center;
           font-family: Arial, sans-serif;
           box-sizing: border-box;
-          padding: 20px;
+          padding: 2vh;
         ">`;
       
-      // Instructions
+      // Instructions at top
       html += `<div id="nback-instructions" style="
-        position: absolute;
-        top: 15vh;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80%;
-        max-width: 520px;
+        flex: 0 0 auto;
         text-align: center;
         font-size: clamp(14px, 2vmin, 18px);
-        z-index: 10;
+        margin-bottom: 2vh;
       ">${trial.instructions}</div>`;
 
-      // Calculate grid size to fit screen
-      const grid_size = Math.min(50, 80 / Math.max(trial.rows, trial.cols));
-      const cell_size = `${grid_size / Math.max(trial.rows, trial.cols)}vmin`;
+      // Grid in center (will take available space)
+      html += `<div style="
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 0;
+      ">`;
+      
+      // Calculate grid dimensions based on cell_size parameter
+      const cell_size_px = trial.cell_size;
+      const grid_width = trial.cols * cell_size_px;
+      const grid_height = trial.rows * cell_size_px;
+      
+      // Check if grid fits in viewport (with some padding)
+      const max_width = window.innerWidth * 0.8
+      const max_height = window.innerHeight * 0.6
+      
+      let final_cell_size: number;
+      if (grid_width <= max_width && grid_height <= max_height) {
+        // Grid fits, use specified cell size
+        final_cell_size = cell_size_px;
+      } else {
+        // Scale down to fit viewport
+        const scale_for_width = max_width / grid_width;
+        const scale_for_height = max_height / grid_height;
+        const scale = Math.min(scale_for_width, scale_for_height);
+        final_cell_size = Math.floor(cell_size_px * scale);
+      }
 
-      // Grid - centered and responsive
       html += `<div id="nback-grid" style="
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
         border: 2px solid #000;
         box-sizing: border-box;
         display: inline-block;
-        z-index: 5;
       ">`;
       
       for (let row = 0; row < trial.rows; row++) {
         html += '<div style="display: flex;">';
         for (let col = 0; col < trial.cols; col++) {
           html += `<div id="cell-${row}-${col}" style="
-            width: ${cell_size};
-            height: ${cell_size};
+            width: ${final_cell_size}px;
+            height: ${final_cell_size}px;
             border: 1px solid #ccc;
             background-color: white;
             box-sizing: border-box;
-            min-width: ${Math.max(40, trial.cell_size * 0.5)}px;
-            min-height: ${Math.max(40, trial.cell_size * 0.5)}px;
           "></div>`;
         }
         html += '</div>';
       }
-      html += '</div>';
+      html += '</div></div>'; // Close grid and center container
 
-      // Response button
-      html += `<div id="nback-button-container" style="
-        position: absolute;
-        bottom: 15vh;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 10;
+      // Button and feedback at bottom
+      html += `<div style="
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75vh;
+        margin-bottom: clamp(12px, 4vmin, 24px);
       ">`;
+      
+      // Feedback text first (directly under grid)
+      html += `<div id="nback-feedback" style="
+        height: 40px;
+        padding: clamp(6px, 1vmin, 24px);
+        font-size: clamp(14px, 2vmin, 20px);
+        font-weight: bold;
+        text-align: center;
+        width: 100%;
+      "></div>`;
+      
+      // Button second (under feedback text)
       html += `<button id="nback-response-btn" style="
         font-size: clamp(18px, 3vmin, 26px);
-        padding: clamp(18px, 2.5vmin, 30px) clamp(35px, 5vmin, 60px);
+        padding: clamp(18px, 4vmin, 40px) clamp(35px, 5vmin, 60px);
         background-color: #2196F3;
         color: white;
         border: none;
@@ -240,23 +279,8 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         transition: all 0.2s;
       " disabled>${trial.button_text}</button>`;
-      html += '</div>';
       
-      // Feedback area
-      html += `<div id="nback-feedback" style="
-        position: absolute;
-        bottom: 8vh;
-        left: 50%;
-        transform: translateX(-50%);
-        height: 40px;
-        font-size: clamp(14px, 2vmin, 20px);
-        font-weight: bold;
-        text-align: center;
-        z-index: 10;
-        width: 80%;
-      "></div>`;
-      
-      html += '</div>';
+      html += '</div></div>'; // Close bottom container and main container
       
       display_element.innerHTML = html;
 
