@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-survey-vas",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "This plugin displays a series of questions with point-and-click visual analogue scales.",
   "unpkg": "dist/index.browser.min.js",
   "files": [
