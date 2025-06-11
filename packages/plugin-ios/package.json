@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-ios",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "This plugin implements a continuous version of the Inclusion of Other in the Self (IOS) Scale ([Aron et al., 1992](https://psycnet.apa.org/doiLanding?doi=10.1037%2F0022-3514.63.4.596)).",
   "unpkg": "dist/index.browser.min.js",
   "files": [
@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "babel index.js --presets @babel/preset-env,minify --source-maps --out-file dist/index.browser.min.js",
+    "build": "esbuild index.js --bundle --minify --sourcemap --outfile=dist/index.browser.min.js",
     "build:watch": "npm run build -- --watch"
   },
   "repository": {
@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-ios",
   "devDependencies": {
-    "@jspsych/config": "^3.2.1",
-    "jspsych": "^8.0.0"
+    "@jspsych/config": "^3.2.2",
+    "jspsych": "^8.0.0",
+    "esbuild": "0.23.1"
   }
 }

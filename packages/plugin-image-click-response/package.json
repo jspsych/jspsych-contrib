@@ -1,7 +1,7 @@
 {
-  "name": "@jspsych-contrib/extension-countdown",
-  "version": "1.1.0",
-  "description": "This extension adds a countdown during a trial.",
+  "name": "@jspsych-contrib/plugin-image-click-response",
+  "version": "1.0.0",
+  "description": "This plugin shows an image on which the user can place points by clicking/touching the image. The location of each point is recorded as data.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -25,17 +25,17 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
-    "directory": "packages/extension-countdown"
+    "directory": "packages/plugin-image-click-response"
   },
   "author": {
-    "name": "Shaobin Jiang",
-    "url": "https://github.com/Shaobin-Jiang"
+    "name": "Christophe Bossens",
+    "url": "https://github.com/ChristopheBossens"
   },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-countdown",
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-image-click-response",
   "peerDependencies": {
     "jspsych": ">=7.0.0"
   },

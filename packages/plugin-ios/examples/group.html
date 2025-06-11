@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<script src="https://unpkg.com/jspsych@8"></script>
-		<script src="../dist/index.browser.js"></script>
+		<script src="../index.js"></script>
 		<link href="https://unpkg.com/jspsych@8/css/jspsych.css" rel="stylesheet" type="text/css" />
 	</head>
 <body>
@@ -19,8 +19,12 @@
 	  type: jsPsychIos,
 	  prompt: 'Move the circles so that they represent your relationship',
 	  left_label: 'Self',
-	  right_label: 'Other',
-	  movable_circle: 'left'
+	  right_label: 'Group',
+	  movable_circle: 'left',
+	  both_move: false,
+	  left_diam: 100,
+	  right_diam: 200,
+	  arrows: true
 	};
 
 	jsPsych.run([trial]);
