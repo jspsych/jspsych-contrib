@@ -9,7 +9,18 @@ describe("my plugin", () => {
     const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
       {
         type: jsPsychMaze,
-        sent: "yo",
+        sentence: [
+          ["After", "x-x-x"],
+          ["a", "so"],
+          ["bit", "pot"],
+          ["of", "if"],
+          ["success", "singing"],
+          ["the", "ate"],
+          ["stocks", "winter"],
+          ["took", "walk"],
+          ["a", "we"],
+          ["dive", "toad"],
+        ],
       },
     ]);
 
