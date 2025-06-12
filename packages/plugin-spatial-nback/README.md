@@ -2,20 +2,33 @@
 
 ## Overview
 
-A jsPsych plugin for a spatial grid with stimulus. Made for the n-back task.
+A jsPsych plugin for presenting a spatial grid stimulus, designed for spatial n-back tasks. The plugin displays a customizable grid, highlights a cell as the stimulus, and collects participant responses with optional feedback and instructions.
 
 ## Loading
 
-*Enter instructions for loading the plugin package here.*
+**CDN:**
+```html
+<script src="https://unpkg.com/@jspsych-contrib/plugin-spatial-nback@1.0.0"></script>
+```
+
+**NPM:**
+```sh
+npm install @jspsych-contrib/plugin-spatial-nback
+```
+```js
+import jsPsychSpatialNback from '@jspsych-contrib/plugin-spatial-nback';
+```
 
 ## Compatibility
 
-`plugin-spatial-nback` requires jsPsych v8.0.0 or later.
+jsPsych v8.0. For compatibility with jsPsych v7.0, use version 1.0.1 of this plugin.
 
 ## Documentation
 
-See [documentation](/plugin-spatial-nback-ts/README.md)
+See the [full documentation](./docs/plugin-spatial-nback.md) for parameter details, usage examples, and integration instructions.
 
 ## Author / Citation
 
-[A. Hunter Farhat](github.com/farhat60)
+A. Hunter Farhat  
+[GitHub](https://github.com/farhat60)  
+[ORCID](https://orcid.org/0009-0008-7042-469X)

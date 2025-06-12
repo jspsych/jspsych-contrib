@@ -48,12 +48,6 @@ Using the CDN-hosted JavaScript file:
 <script src="https://unpkg.com/@jspsych-contrib/plugin-spatial-nback@1.0.0"></script>
 ```
 
-Using the JavaScript file downloaded from a GitHub release dist archive:
-
-```js
-<script src="jspsych/plugin-spatial-nback.js"></script>
-```
-
 Using NPM:
 
 ```
