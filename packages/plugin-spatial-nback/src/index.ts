@@ -145,17 +145,21 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
+
     // Validate grid dimensions
     if (trial.rows <= 1 && trial.cols <= 1) {
+      console.log('About to throw grid error'); // Add this line
       throw new Error("Grid must have more than one cell. Both rows and cols cannot be 1 or less.");
     }
     
-    // Additional validations (optional but recommended)
+    // Additional validations
     if (trial.rows <= 0 || trial.cols <= 0) {
+      console.log('About to throw dimension error'); // Add this line
       throw new Error("Grid dimensions must be positive integers. Rows and cols must be greater than 0.");
     }
     
     if (trial.stimulus_row >= trial.rows || trial.stimulus_col >= trial.cols) {
+      console.log('About to throw position error'); // Add this line
       throw new Error(`Stimulus position (${trial.stimulus_row}, ${trial.stimulus_col}) is outside grid bounds (${trial.rows}x${trial.cols}).`);
     }
 
@@ -171,6 +175,8 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
     const stimulus_col = trial.stimulus_col ?? Math.floor(Math.random() * trial.cols);
 
     const createDisplay = (): void => {
+      
+      
       let html = `
         <div id="nback-container" style="
           position: fixed;

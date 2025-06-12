@@ -1,6 +1,7 @@
 import { startTimeline } from "@jspsych/test-utils";
 
 import jsPsychPluginSpatialNback from ".";
+import { JsPsych } from "jspsych"; // adjust import if needed
 
 // Use fake timers to control time-based operations in tests
 jest.useFakeTimers();
@@ -82,7 +83,6 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Allow stimulus to appear
-    jest.advanceTimersByTime(100);
     
     // Check that stimulus cell has correct background color
     const stimulusCell = document.getElementById("cell-1-2") as HTMLElement;
@@ -106,7 +106,6 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Wait briefly then respond
-    jest.advanceTimersByTime(100);
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(2250);
     
@@ -156,7 +155,6 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Respond to target trial
-    jest.advanceTimersByTime(100);
     document.getElementById("nback-response-btn")?.click();
     
     // Check that feedback appears
@@ -181,7 +179,6 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Make a response
-    jest.advanceTimersByTime(100);
     document.getElementById("nback-response-btn")?.click();
     
     // Verify no feedback text appears
@@ -208,7 +205,6 @@ describe("plugin-spatial-nback", () => {
     expect(getHTML()).toContain("TARGET");
 
     // Complete the trial
-    jest.advanceTimersByTime(100);
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(2250);
   });
@@ -229,7 +225,6 @@ describe("plugin-spatial-nback", () => {
     expect(getHTML()).toContain("Press button when you see a match");
 
     // Complete the trial
-    jest.advanceTimersByTime(100);
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(2250);
   });
@@ -249,17 +244,16 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Check stimulus is visible during duration
-    jest.advanceTimersByTime(100);
     const stimulusCell = document.getElementById("cell-1-1") as HTMLElement;
     expect(stimulusCell.style.backgroundColor).not.toBe("white");
 
     // Check stimulus is hidden after duration expires
-    jest.advanceTimersByTime(150); // Total 250ms > 200ms duration
+    jest.advanceTimersByTime(200); // Total 250ms > 200ms duration
     expect(stimulusCell.style.backgroundColor).toBe("white");
 
     // Complete the trial
     document.getElementById("nback-response-btn")?.click();
-    jest.advanceTimersByTime(2250);
+    jest.advanceTimersByTime(1000+500);
   });
 
   /**
@@ -277,7 +271,6 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Respond to trigger feedback
-    jest.advanceTimersByTime(100);
     document.getElementById("nback-response-btn")?.click();
     
     // Verify feedback is visible during feedback period
@@ -303,7 +296,6 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Check custom stimulus color is applied
-    jest.advanceTimersByTime(100);
     const stimulusCell = document.getElementById("cell-0-0") as HTMLElement;
     expect(stimulusCell.style.backgroundColor).toBe("rgb(18, 52, 86)"); // #123456 in RGB
 
@@ -378,7 +370,6 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Respond to non-target (incorrect behavior)
-    jest.advanceTimersByTime(100);
     document.getElementById("nback-response-btn")?.click();
 
     // Check incorrect feedback appears
@@ -407,7 +398,7 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Make a response to generate complete data
-    jest.advanceTimersByTime(100);
+    jest.advanceTimersByTime(1); // Allow stimulus to appear
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(2250);
     
@@ -430,15 +421,14 @@ describe("plugin-spatial-nback", () => {
    * Test 17: Grid Dimension Validation - Both Dimensions Too Small
    * Tests error thrown when both rows and cols are 1 or less
    */
-  it("should throw error when both rows and cols are 1 or less", async () => {
+  it("should throw error when both rows and cols are 1 or less", () => {
+    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const mockElement = document.createElement("div");
     expect(() => {
-      startTimeline([
-        {
-          type: jsPsychPluginSpatialNback,
-          rows: 1,
-          cols: 1,
-        },
-      ]);
+      plugin.trial(mockElement, {
+        rows: 1,
+        cols: 1,
+      } as any);
     }).toThrow("Grid must have more than one cell. Both rows and cols cannot be 1 or less.");
   });
 
@@ -446,15 +436,14 @@ describe("plugin-spatial-nback", () => {
    * Test 18: Grid Dimension Validation - Zero Rows
    * Tests error thrown when rows is zero
    */
-  it("should throw error when rows is zero", async () => {
+  it("should throw error when rows is zero", () => {
+    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const mockElement = document.createElement("div");
     expect(() => {
-      startTimeline([
-        {
-          type: jsPsychPluginSpatialNback,
-          rows: 0,
-          cols: 3,
-        },
-      ]);
+      plugin.trial(mockElement, {
+        rows: 0,
+        cols: 3,
+      } as any);
     }).toThrow("Grid dimensions must be positive integers. Rows and cols must be greater than 0.");
   });
 
@@ -462,15 +451,14 @@ describe("plugin-spatial-nback", () => {
    * Test 19: Grid Dimension Validation - Negative Columns
    * Tests error thrown when cols is negative
    */
-  it("should throw error when cols is negative", async () => {
+  it("should throw error when cols is negative", () => {
+    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const mockElement = document.createElement("div");
     expect(() => {
-      startTimeline([
-        {
-          type: jsPsychPluginSpatialNback,
-          rows: 3,
-          cols: -2,
-        },
-      ]);
+      plugin.trial(mockElement, {
+        rows: 3,
+        cols: -2,
+      } as any);
     }).toThrow("Grid dimensions must be positive integers. Rows and cols must be greater than 0.");
   });
 
@@ -478,17 +466,16 @@ describe("plugin-spatial-nback", () => {
    * Test 20: Stimulus Position Validation - Row Out of Bounds
    * Tests error thrown when stimulus_row exceeds grid bounds
    */
-  it("should throw error when stimulus position is out of bounds (row)", async () => {
+  it("should throw error when stimulus position is out of bounds (row)", () => {
+    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const mockElement = document.createElement("div");
     expect(() => {
-      startTimeline([
-        {
-          type: jsPsychPluginSpatialNback,
-          rows: 3,
-          cols: 3,
-          stimulus_row: 5, // Out of bounds
-          stimulus_col: 1,
-        },
-      ]);
+      plugin.trial(mockElement, {
+        rows: 3,
+        cols: 3,
+        stimulus_row: 5, // Out of bounds
+        stimulus_col: 1,
+      } as any);
     }).toThrow("Stimulus position (5, 1) is outside grid bounds (3x3).");
   });
 
@@ -496,17 +483,16 @@ describe("plugin-spatial-nback", () => {
    * Test 21: Stimulus Position Validation - Column Out of Bounds
    * Tests error thrown when stimulus_col exceeds grid bounds
    */
-  it("should throw error when stimulus position is out of bounds (col)", async () => {
+  it("should throw error when stimulus position is out of bounds (col)", () => {
+    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const mockElement = document.createElement("div");
     expect(() => {
-      startTimeline([
-        {
-          type: jsPsychPluginSpatialNback,
-          rows: 4,
-          cols: 2,
-          stimulus_row: 1,
-          stimulus_col: 3, // Out of bounds
-        },
-      ]);
+      plugin.trial(mockElement, {
+        rows: 4,
+        cols: 2,
+        stimulus_row: 1,
+        stimulus_col: 3, // Out of bounds
+      } as any);
     }).toThrow("Stimulus position (1, 3) is outside grid bounds (4x2).");
   });
 
@@ -531,7 +517,6 @@ describe("plugin-spatial-nback", () => {
     }
 
     // Complete trial
-    jest.advanceTimersByTime(100);
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(2250);
 
@@ -561,7 +546,6 @@ describe("plugin-spatial-nback", () => {
     }
 
     // Complete trial
-    jest.advanceTimersByTime(100);
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(2250);
 
@@ -592,7 +576,6 @@ describe("plugin-spatial-nback", () => {
     expect(getHTML()).toContain('id="cell-19-19"');
 
     // Complete trial
-    jest.advanceTimersByTime(100);
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(2250);
   });
@@ -660,7 +643,6 @@ describe("plugin-spatial-nback", () => {
       },
     ]);
 
-    jest.advanceTimersByTime(100);
     
     // Click button multiple times rapidly
     const button = document.getElementById("nback-response-btn");
@@ -695,7 +677,6 @@ describe("plugin-spatial-nback", () => {
     expect(getHTML()).toContain('id="cell-0-0"');
 
     // Complete trial
-    jest.advanceTimersByTime(100);
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(2250);
   });
@@ -717,7 +698,9 @@ describe("plugin-spatial-nback", () => {
     // Respond exactly when stimulus should disappear
     jest.advanceTimersByTime(200);
     document.getElementById("nback-response-btn")?.click();
-    jest.advanceTimersByTime(2250);
+    jest.advanceTimersByTime(300+500);
+    await expectFinished();
+    // Verify experiment finished at correct time 
 
     const data = getData().values()[0];
     expect(data.response).toBe(true);
@@ -742,7 +725,6 @@ describe("plugin-spatial-nback", () => {
     expect(button.textContent).toBe("");
 
     // Should still function
-    jest.advanceTimersByTime(100);
     button.click();
     jest.advanceTimersByTime(2250);
   });
@@ -762,7 +744,6 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Should not crash, just use invalid colors
-    jest.advanceTimersByTime(100);
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(2250);
   });
@@ -790,8 +771,7 @@ describe("plugin-spatial-nback", () => {
         },
       ]);
 
-      jest.advanceTimersByTime(100);
-      document.getElementById("nback-response-btn")?.click();
+        document.getElementById("nback-response-btn")?.click();
       jest.advanceTimersByTime(2250);
 
       const data = getData().values()[0];
