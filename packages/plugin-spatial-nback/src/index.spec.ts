@@ -779,4 +779,144 @@ describe("plugin-spatial-nback", () => {
       expect(data.stimulus_col).toBe(pos.col);
     }
   });
+
+  /**
+   * Test 33: Handles negative stimulus_row and stimulus_col (should throw)
+   */
+  it("should throw error for negative stimulus_row", () => {
+    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const mockElement = document.createElement("div");
+    expect(() => {
+      plugin.trial(mockElement, {
+        rows: 3,
+        cols: 3,
+        stimulus_row: -1,
+        stimulus_col: 1,
+      } as any);
+    }).toThrow();
+  });
+
+  it("should throw error for negative stimulus_col", () => {
+    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const mockElement = document.createElement("div");
+    expect(() => {
+      plugin.trial(mockElement, {
+        rows: 3,
+        cols: 3,
+        stimulus_row: 1,
+        stimulus_col: -2,
+      } as any);
+    }).toThrow();
+  });
+
+  /**
+   * Test 34: Handles non-integer grid dimensions (should throw)
+   */
+  it("should throw error for non-integer rows or cols", () => {
+    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const mockElement = document.createElement("div");
+    expect(() => {
+      plugin.trial(mockElement, {
+        rows: 2.5,
+        cols: 3,
+        cell_size: 125,
+        stimulus_row: 0,
+        stimulus_col: 0,
+        is_target: false,
+        stimulus_duration: 750,
+        isi_duration: 1000,
+        feedback_duration: 500,
+        show_feedback_time: true,
+        show_feedback_border: true,
+        showFeedbackNoResponse: true,
+        feedbackWaitNoResponse: true,
+        button_text: "MATCH",
+        stimulus_color: "#0066cc",
+        correct_color: "#00cc00",
+        incorrect_color: "#cc0000",
+        instructions: "Click MATCH",
+      } as any);
+    }).toThrow();
+  });
+
+  /**
+   * Test 35: Handles non-integer cell_size (should just work)
+   * Verifies that the plugin rounds non-integer cell_size values to the nearest integer.
+   */
+  it("should round non-integer cell_size to the nearest integer", async () => {
+    const { expectFinished, getHTML } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        cell_size: 50.7, // Non-integer value
+        rows: 2,
+        cols: 2,
+      },
+    ]);
+    // Should still create grid cells
+    expect(getHTML()).toContain('id="cell-0-0"');
+    const cell = document.getElementById("cell-0-0") as HTMLElement;
+    // Check the rendered width and height
+    expect(cell.style.width).toBe("50.7px");
+    expect(cell.style.height).toBe("50.7px");
+    document.getElementById("nback-response-btn")?.click();
+    jest.advanceTimersByTime(2250);
+  });
+
+  /**
+   * Test 36: Handles extremely large cell_size (should not overflow)
+   */
+  it("should handle extremely large cell_size", async () => {
+    const { expectFinished, getHTML } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        cell_size: 1000,
+        rows: 2,
+        cols: 2,
+      },
+    ]);
+    expect(getHTML()).toContain('id="cell-0-0"');
+    document.getElementById("nback-response-btn")?.click();
+    jest.advanceTimersByTime(2250);
+  });
+
+  /**
+   * Test 37: Handles extremely small feedback_duration (should not hang)
+   */
+  it("should handle extremely small feedback_duration", async () => {
+    const { expectFinished } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        feedback_duration: 1,
+      },
+    ]);
+    document.getElementById("nback-response-btn")?.click();
+    jest.advanceTimersByTime(1751);
+    await expectFinished();
+  });
+
+  /**
+   * Test 38: Handles rapid trial restart (should not leak timeouts)
+   */
+  it("should not leak timeouts on rapid restart", async () => {
+    const { expectFinished } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        stimulus_duration: 10,
+        isi_duration: 10,
+        feedback_duration: 10,
+      },
+      {
+        type: jsPsychPluginSpatialNback,
+        stimulus_duration: 10,
+        isi_duration: 10,
+        feedback_duration: 10,
+      },
+    ]);
+    document.getElementById("nback-response-btn")?.click();
+    jest.advanceTimersByTime(30);
+    document.getElementById("nback-response-btn")?.click();
+    jest.advanceTimersByTime(30);
+    await expectFinished();
+  });
+
 });
