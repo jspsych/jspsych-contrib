@@ -66,16 +66,16 @@ Contributions to this repository must:
 
 * Work as described
 * Include the complete code for the plugin or extension.
-* Include a `readme.md` file following our [template]([identical for plugins and extensions](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-plugin/templates/plugin-template-ts/README.md)).
+* Include a `README.md` file following our [template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-plugin/templates/plugin-template-ts/README.md) (identical for plugins and extensions).
 * Include a `package.json` file.
 
 Optionally, contributions are encouraged to include:
 
 * A `/docs` directory with documentation matching the template for docs on jspsych.org 
 * An `/examples` directory with a working `.html` demo.
-* A test suite following the testing framework in our `-ts` [templates]([plugin test template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-plugin/templates/plugin-template-ts/src/index.spec.ts); [extension test template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-extension/templates/extension-template-ts/src/index.spec.ts)).
+* A test suite following the testing framework in our `-ts` templates ([plugin test template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-plugin/templates/plugin-template-ts/src/index.spec.ts); [extension test template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-extension/templates/extension-template-ts/src/index.spec.ts)).
 
-### To contribute to this repository, follow these steps:
+### To contribute a new plugin or extension to this repository, follow these steps:
 1. Clone this repository on your machine and run `npm i` to install its packages.
 2. Run `npx @jspsych/new-plugin` or `npx @jspsych/new-extension` and answer the prompts to create a new plugin/extension template under `/packages`. This is a command-line tool we built to make setting up the development of a new plugin/extension easier. Documentation for using this tool can be found in their respective readme files ([new-plugin](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-plugin#readme); [new-extension](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-extension#readme)).
 3. After you are done editing the plugin/extension template, verify that it works by opening `examples/index.html` in your browser.
@@ -89,7 +89,7 @@ We try to review pull requests quickly and add new contributions as soon as the 
 
 ## Creating a new plugin or extension
 
-We have a tool for building new plugins and extensions at [jspsych-dev](https://github.com/jspsych/jspsych-dev/tree/main). Instructions for using the tools can be found at the [`README.md`](https://github.com/jspsych/jspsych-dev/blob/main/README.md) of this repository.
+We have a tool for building new plugins and extensions at [jspsych-dev](https://github.com/jspsych/jspsych-dev/tree/main), with instructions for using the tools at the repository's [`README.md`](https://github.com/jspsych/jspsych-dev/blob/main/README.md).
 
 You may also want to read the jsPsych documentation on [plugin development](https://www.jspsych.org/latest/developers/plugin-development/) to understand how to work with the `index.ts` file (for TypeScript development) and `index.js` file (for JavaScript development).
 
