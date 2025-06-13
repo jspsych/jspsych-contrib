@@ -1,4 +1,4 @@
-# maze
+# Maze
 
 ## Overview
 

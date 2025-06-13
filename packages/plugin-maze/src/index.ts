@@ -11,6 +11,11 @@ const info = <const>{
       type: ParameterType.COMPLEX,
       array: true,
     },
+    /** Object with key "text", "correct", "wrong". Can't give a schema of it gets non-nullable. **/
+    question: {
+      type: ParameterType.COMPLEX,
+      default: null,
+    },
     canvas_border: {
       type: ParameterType.STRING,
       pretty_name: "Canvas border",
@@ -105,8 +110,10 @@ const info = <const>{
     },
   },
   data: {
-    /** TODO: Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
-    report: {
+    sentence: {
+      type: ParameterType.STRING,
+    },
+    events: {
       type: ParameterType.COMPLEX,
       array: true,
       nested: {
@@ -116,6 +123,9 @@ const info = <const>{
         side: { type: ParameterType.STRING },
         word: { type: ParameterType.STRING },
         word_number: { type: ParameterType.INT },
+      },
+      question: {
+        type: ParameterType.COMPLEX,
       },
     },
   },
@@ -191,6 +201,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
           : canvas_rect[0] + (2 * canvas_rect[2]) / 3,
       y: trial.position_right.y !== null ? trial.position_right.y : canvas_center.y,
     };
+    const position_text = { x: canvas_center.x, y: (canvas_center.y + canvas_rect[1]) / 2 };
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -202,6 +213,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
     let trial_data = {
       sentence: trial.sentence.map((x) => x[0]).join(" "),
       events: [],
+      question: null,
     };
 
     let keyboardListener: { (e: KeyboardEvent): void; (e: KeyboardEvent): void };
@@ -213,12 +225,15 @@ class MazePlugin implements JsPsychPlugin<Info> {
       ctx.beginPath();
     };
 
-    const display_word = (left_word: string, right_word: string) => {
+    const display_words = (left_word: string, right_word: string, text: string = null) => {
       clear_canvas();
       ctx.font = sentence_font;
       ctx.fillStyle = trial.font_colour;
       ctx.fillText(left_word, position_left.x, position_left.y);
       ctx.fillText(right_word, position_right.x, position_right.y);
+      if (text !== null) {
+        ctx.fillText(text, position_text.x, position_text.y);
+      }
     };
 
     const display_message = (message: string) => {
@@ -255,10 +270,14 @@ class MazePlugin implements JsPsychPlugin<Info> {
         word_number++;
         const [word, foil] = trial.sentence[word_number];
         const [left, right] = word_on_the_left[word_number] ? [word, foil] : [foil, word];
-        display_word(left, right);
+        display_words(left, right);
         last_display_time = info.rt;
       } else {
-        end_trial();
+        if (trial.question !== null) {
+          ask_question();
+        } else {
+          end_trial();
+        }
       }
     };
 
@@ -271,6 +290,30 @@ class MazePlugin implements JsPsychPlugin<Info> {
       display_message(`Press ${trial.keys.left} or ${trial.keys.right} to start`);
       keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
+        valid_responses: [trial.keys.left, trial.keys.right],
+        rt_method: "performance",
+        persist: true,
+        allow_held_key: false,
+      });
+    };
+
+    const ask_question = () => {
+      this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
+      const correct_on_the_left = Math.random() < 0.5;
+      const [left, right] = correct_on_the_left
+        ? [trial.question.correct, trial.question.wrong]
+        : [trial.question.wrong, trial.question.correct];
+      display_words(left, right, trial.question.text);
+      keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+        callback_function: (info: { rt: number; key: string }) => {
+          trial_data.question = {
+            question: trial.question,
+            correct: correct_on_the_left
+              ? info.key == trial.keys.left
+              : info.key == trial.keys.right,
+          };
+          end_trial();
+        },
         valid_responses: [trial.keys.left, trial.keys.right],
         rt_method: "performance",
         persist: true,
