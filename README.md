@@ -96,16 +96,8 @@ You may also want to read the jsPsych documentation on [plugin development](http
 
 ## jsPsych version compatibility
 
-We would like to encourage you to contribute plugins and extensions that are compatible with the latest jsPsych version. 
-At the same time, we realize that there may be jsPsych users who have created very useful plugins/extensions with jsPsych v6 that they would like to share with the community, but don't have the time/resources to convert into the jsPsych v7+ Node package format. 
-Therefore we welcome contributions that are compatible with v6 as well as v7+. 
+We would like to encourage you to contribute plugins and extensions that are compatible with jsPsych v7+, as this will make your contributions maximally accessible to other jsPsych users. jsPsych has gone through major changes in upgrading to v7 and later versions, so it will be difficult to maintain backwards compatability for plugins/extensions using versions earlier than v7.
 
-If you'd like to contribute a **jsPsych v6 plugin**, please do the following:
-* Use the [`templates/plugin-template-js`](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-plugin/templates/plugin-template-js) folder under the [`new-plugin`](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-plugin) directory in [jspsych-dev](https://github.com/jspsych/jspsych-dev/tree/main) as a reference
-* Delete everything inside of the `index.js` template file and replace it with your v6-compatible plugin code
-* In the `package.json` file, change the "jspsych" version field in "devDependencies" to "6.3.1"
+At the same time, we realize that there may be jsPsych users who have created very useful plugins/extensions with jsPsych v6 that they would like to share with the community, but don't know how to or have the time/resources to convert their contributions into the jsPsych v7+ Node package format.
 
-And remember to follow the other steps for contributing:
-* Edit the `package.json` file with the information about your plugin
-* Add a `readme.md` file for your plugin, based on the [readme template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-plugin/templates/plugin-template-js/README.md). This must state the jsPsych version that your plugin is compatible with.
-* Optional: add a `/docs` directory with a markdown documentation file, and/or `/examples` directory with an HTML example file
+As a first step to helping make this conversion easier, we offer a general migration guide for [v6.x to v7.x](https://www.jspsych.org/latest/support/migration-v7/) and for [v7.x to v8.x](https://www.jspsych.org/latest/support/migration-v8/). If you have suggestions/requests for additional documentation on migration, please open a thread on our [discussion board](https://github.com/jspsych/jsPsych/discussions/).
