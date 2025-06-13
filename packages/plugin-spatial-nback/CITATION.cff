@@ -4,7 +4,7 @@ message: 'If you use this software, please cite it as below.'
 type: software
 authors:
   - family-names: Farhat
-    given-names: Abdullah Hunter
+    given-names: A. Hunter
     email: abdullahfarhat.60@gmail.com
     orcid: 'https://orcid.org/0009-0008-7042-469X'
 repository-code: >-
