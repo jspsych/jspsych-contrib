@@ -12,6 +12,11 @@ const data = [
       ["a", "we"],
       ["dive", "toad"],
     ],
+    question: {
+      text: "Did the stocks take a dive?",
+      correct: "yes",
+      wrong: "no",
+    },
   },
   {
     sentence: [
@@ -25,5 +30,10 @@ const data = [
       ["her", "why"],
       ["appearance", "sandwiches"],
     ],
+    question: {
+      text: "Who was self-conscious?",
+      correct: "The model",
+      wrong: "The designer",
+    },
   },
 ];

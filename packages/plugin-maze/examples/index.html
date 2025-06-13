@@ -21,6 +21,7 @@
         {
           type: jsPsychMaze,
           sentence: jsPsych.timelineVariable('sentence'),
+          question: jsPsych.timelineVariable('question'),
           waiting_time: 200,
           on_finish: () => {
             jsPsych.data.displayData('json');
