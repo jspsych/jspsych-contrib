@@ -231,7 +231,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
       ctx.fillStyle = trial.font_colour;
       ctx.fillText(left_word, position_left.x, position_left.y);
       ctx.fillText(right_word, position_right.x, position_right.y);
-      if (text !== null) {
+      if (null !== text) {
         ctx.fillText(text, position_text.x, position_text.y);
       }
     };
@@ -248,9 +248,6 @@ class MazePlugin implements JsPsychPlugin<Info> {
         last_display_time = 0;
       }
       const rt = info.rt - last_display_time;
-      if (rt < trial.waiting_time) {
-        return;
-      }
       // FIXME: maybe we want to pre-allocate this stuff for more reactivity?
       if (word_number >= 0) {
         const correct = word_on_the_left[word_number]
@@ -273,7 +270,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
         display_words(left, right);
         last_display_time = info.rt;
       } else {
-        if (trial.question !== null) {
+        if (undefined !== trial.question) {
           ask_question();
         } else {
           end_trial();
@@ -294,6 +291,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
         rt_method: "performance",
         persist: true,
         allow_held_key: false,
+        minimum_valid_rt: trial.waiting_time,
       });
     };
 
