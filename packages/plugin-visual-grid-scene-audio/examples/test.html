@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>jsPsychPluginVisualSceneGridAudio Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-preload"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response"></script>
+  <!-- Load the published plugin package here, e.g.
+<script src="https://unpkg.com/plugin-visual-scene-grid-audio"></script>
+<script src="../dist/index.global.js"></script> -->
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych();
+
+  var timeline = [];
+
+  const preload = {
+    type: jsPsychPreload,
+    audio: ['./assets/ringtone.mp3'],
+    images: ['./assets/couch.png', './assets/plant.png', './assets/vacuum.PNG', './assets/fork.png'],
+  };
+
+  const userGesture = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: 'Click the button to continue.',
+    choices: ['Continue']
+  };
+
+  const trial = {
+    type: jsPsychPluginVisualGridSceneAudio,
+    stimulus_audio: './assets/ringtone.mp3',
+    stimulus_images: [['./assets/couch.png', './assets/plant.png'], ['./assets/vacuum.PNG', './assets/fork.png']]
+  };
+
+  timeline.push([preload, userGesture, trial]);
+
+  jsPsych.run([timeline])
+</script>
+
+</html>
