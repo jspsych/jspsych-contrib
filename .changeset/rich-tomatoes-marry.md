@@ -1,5 +1,5 @@
 ---
-"@jspsych-contrib/plugin-self-paced-reading": major
+"@jspsych-contrib/plugin-spr": major
 ---
 
 initial version of self-paced reading (DOM version) plugin
