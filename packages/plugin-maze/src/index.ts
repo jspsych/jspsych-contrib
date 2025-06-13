@@ -16,10 +16,10 @@ const info = <const>{
       type: ParameterType.COMPLEX,
       default: null,
     },
-    canvas_border: {
+    canvas_style: {
       type: ParameterType.STRING,
-      pretty_name: "Canvas border",
-      default: "0px solid black",
+      pretty_name: "Extra canvas style",
+      default: "border: 0px solid black;",
     },
     canvas_colour: {
       type: ParameterType.STRING,
@@ -173,7 +173,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
         id="canvas"
         width="${trial.canvas_size[0]}"
         height="${trial.canvas_size[1]}"
-        style="border:${trial.canvas_border};"
+        style="${trial.canvas_style}"
       ></canvas>
       </div>`;
 
