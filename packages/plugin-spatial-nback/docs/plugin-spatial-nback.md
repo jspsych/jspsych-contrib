@@ -19,8 +19,8 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | feedback_duration        | int     | 500                                     | Duration of feedback display (ms)                             |
 | show_feedback_time       | bool    | true                                    | Whether to show feedback with response time after response    |
 | show_feedback_border     | bool    | true                                    | Whether to show feedback border around the grid               |
-| showFeedbackNoResponse   | bool    | true                                    | Whether to show feedback when there is no response            |
-| feedbackWaitNoResponse   | bool    | true                                    | Whether to wait for feedback duration before ending trial when no response |
+| show_feedback_no_click   | bool    | true                                    | Whether to show feedback when there is no response            |
+| feedback_wait_no_click   | bool    | true                                    | Whether to wait for feedback duration before ending trial when no response |
 | button_text              | string  | "MATCH"                                 | Text for the response button                                   |
 | stimulus_color           | string  | "#0066cc"                               | Color of the stimulus square                                   |
 | correct_color            | string  | "#00cc00"                               | Color of correct feedback border                               |

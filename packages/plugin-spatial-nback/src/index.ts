@@ -63,13 +63,13 @@ const info = <const>{
         default: true,
       },
       /** Whether to show feedback when there is no response */
-      showFeedbackNoResponse: {
+      show_feedback_no_click: {
         type: ParameterType.BOOL,
         default: true,
       },
       /** Whether to wait for feedback duration before ending trial when no response */
       /** if using feedback_duration as interstimulus response, keep this true */
-      feedbackWaitNoResponse: {
+      feedback_wait_no_click: {
         type: ParameterType.BOOL,
         default: true,
       },
@@ -406,7 +406,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         total_feedback_duration = remaining_isi_time + trial.feedback_duration;
       } else {
         // No response - use standard feedback duration if configured
-        if (trial.feedbackWaitNoResponse) {
+        if (trial.feedback_wait_no_click) {
           total_feedback_duration = trial.feedback_duration;
         } else {
           endTrial(is_correct, response_time, made_response);
@@ -415,8 +415,8 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       }
 
       // If there is no response and feedback must not be shown for no response
-      if (response_time === null && !trial.showFeedbackNoResponse) {
-        if (trial.feedbackWaitNoResponse) {
+      if (response_time === null && !trial.show_feedback_no_click) {
+        if (trial.feedback_wait_no_click) {
           setTimeout(() => {
             endTrial(is_correct, response_time, made_response);
           }, total_feedback_duration);

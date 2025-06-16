@@ -309,13 +309,13 @@ describe("plugin-spatial-nback", () => {
 
   /**
    * Test 13: No-Response Feedback Control
-   * Tests the showFeedbackNoResponse parameter functionality
+   * Tests the show_feedback_no_click parameter functionality
    */
-  it("should handle showFeedbackNoResponse parameter", async () => {
+  it("should handle show_feedback_no_click parameter", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
         type: jsPsychPluginSpatialNback,
-        showFeedbackNoResponse: false, // Disable feedback for no response
+        show_feedback_no_click: false, // Disable feedback for no response
         stimulus_duration: 200,
         isi_duration: 200,
         is_target: true, // Target trial with no response should show "Incorrect" if feedback enabled
@@ -333,13 +333,13 @@ describe("plugin-spatial-nback", () => {
 
   /**
    * Test 14: No-Response Wait Control  
-   * Tests the feedbackWaitNoResponse parameter functionality
+   * Tests the feedback_wait_no_click parameter functionality
    */
-  it("should handle feedbackWaitNoResponse parameter", async () => {
+  it("should handle feedback_wait_no_click parameter", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
         type: jsPsychPluginSpatialNback,
-        feedbackWaitNoResponse: false, // Don't wait for feedback duration on no response
+        feedback_wait_no_click: false, // Don't wait for feedback duration on no response
         stimulus_duration: 200,
         isi_duration: 200,
         feedback_duration: 500,
@@ -828,8 +828,8 @@ describe("plugin-spatial-nback", () => {
         feedback_duration: 500,
         show_feedback_time: true,
         show_feedback_border: true,
-        showFeedbackNoResponse: true,
-        feedbackWaitNoResponse: true,
+        show_feedback_no_click: true,
+        feedback_wait_no_click: true,
         button_text: "MATCH",
         stimulus_color: "#0066cc",
         correct_color: "#00cc00",
