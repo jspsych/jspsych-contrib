@@ -275,6 +275,12 @@ class MazePlugin implements JsPsychPlugin<Info> {
       });
     };
 
+    const step_display = (n) => {
+      const [word, foil] = trial.sentence[word_number];
+      const [left, right] = word_on_the_left[word_number] ? [word, foil] : [foil, word];
+      display_words(left, right);
+    };
+
     const after_response = (info: { rt: number; key: string }) => {
       const rt = info.rt - last_display_time;
       const correct = word_on_the_left[word_number]
@@ -292,9 +298,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
       });
       if (word_number < trial.sentence.length - 1 && (correct || !trial.halt_on_error)) {
         word_number++;
-        const [word, foil] = trial.sentence[word_number];
-        const [left, right] = word_on_the_left[word_number] ? [word, foil] : [foil, word];
-        display_words(left, right);
+        step_display(word_number);
         last_display_time = info.rt;
       } else {
         if (undefined !== trial.question) {
@@ -305,8 +309,9 @@ class MazePlugin implements JsPsychPlugin<Info> {
       }
     };
 
-    const start_trial = () => {
-      last_display_time = 0;
+    const start_trial = (info: { rt: number; key: string }) => {
+      step_display(0);
+      last_display_time = info.rt;
       keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
         valid_responses: [trial.keys.left, trial.keys.right],
