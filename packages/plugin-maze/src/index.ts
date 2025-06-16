@@ -11,7 +11,7 @@ const info = <const>{
       type: ParameterType.COMPLEX,
       array: true,
     },
-    /** Object with key "text", "correct", "wrong". Can't give a schema of it gets non-nullable. **/
+    /** Object with key "text", "correct", "wrong". Can't give a schema or it gets non-nullable. **/
     question: {
       type: ParameterType.COMPLEX,
       default: null,
@@ -51,6 +51,13 @@ const info = <const>{
       type: ParameterType.STRING,
       pretty_name: "Font weight",
       default: "normal",
+    },
+    /** Whether to stop the trial on the first error and go directly to the question (if any) or
+     * exit. */
+    halt_on_error: {
+      type: ParameterType.BOOL,
+      pretty_name: "Halt on error",
+      default: false,
     },
     keys: {
       type: ParameterType.COMPLEX,
@@ -219,7 +226,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
     let keyboardListener: { (e: KeyboardEvent): void; (e: KeyboardEvent): void };
 
     const clear_canvas = () => {
-      ctx.font = trial.canvas_colour;
+      ctx.font = trial.canvas_font;
       ctx.fillStyle = trial.canvas_colour;
       ctx.fillRect(canvas_rect[0], canvas_rect[1], canvas_rect[2], canvas_rect[3]);
       ctx.beginPath();
@@ -249,8 +256,9 @@ class MazePlugin implements JsPsychPlugin<Info> {
       }
       const rt = info.rt - last_display_time;
       // FIXME: maybe we want to pre-allocate this stuff for more reactivity?
+      let correct;
       if (word_number >= 0) {
-        const correct = word_on_the_left[word_number]
+        correct = word_on_the_left[word_number]
           ? info.key == trial.keys.left
           : info.key == trial.keys.righ;
         const [word, foil] = trial.sentence[word_number];
@@ -263,7 +271,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
           word_number: word_number,
         });
       }
-      if (word_number < trial.sentence.length - 1) {
+      if (word_number < trial.sentence.length - 1 && (correct || !trial.halt_on_error)) {
         word_number++;
         const [word, foil] = trial.sentence[word_number];
         const [left, right] = word_on_the_left[word_number] ? [word, foil] : [foil, word];
