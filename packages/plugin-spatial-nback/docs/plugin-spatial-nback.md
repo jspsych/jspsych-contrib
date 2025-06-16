@@ -17,7 +17,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | stimulus_duration        | int     | 750                                     | Duration the stimulus is displayed (ms)                       |
 | isi_duration             | int     | 1000                                    | Inter-stimulus interval (ms)                                   |
 | feedback_duration        | int     | 500                                     | Duration of feedback display (ms)                             |
-| show_feedback_time       | bool    | true                                    | Whether to show feedback with response time after response    |
+| show_feedback_text       | bool    | true                                    | Whether to show feedback with response time after response    |
 | show_feedback_border     | bool    | true                                    | Whether to show feedback border around the grid               |
 | show_feedback_no_click   | bool    | true                                    | Whether to show feedback when there is no response            |
 | feedback_wait_no_click   | bool    | true                                    | Whether to wait for feedback duration before ending trial when no response |
@@ -85,7 +85,7 @@ var trial = {
   stimulus_duration: 750,
   isi_duration: 1500,
   feedback_duration: 800,
-  show_feedback_time: true,
+  show_feedback_text: true,
   show_feedback_border: true,
   stimulus_color: "#ff6600",
   correct_color: "#00ff00",
@@ -103,7 +103,7 @@ var trial = {
   stimulus_row: 0,
   stimulus_col: 1,
   is_target: false,
-  show_feedback_time: false,
+  show_feedback_text: false,
   show_feedback_border: false,
   button_text: "TARGET"
 }

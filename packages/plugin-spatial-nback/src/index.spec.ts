@@ -148,7 +148,7 @@ describe("plugin-spatial-nback", () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
         type: jsPsychPluginSpatialNback,
-        show_feedback_time: true,
+        show_feedback_text: true,
         show_feedback_border: true,
         is_target: true,
       },
@@ -173,7 +173,7 @@ describe("plugin-spatial-nback", () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
         type: jsPsychPluginSpatialNback,
-        show_feedback_time: false,
+        show_feedback_text: false,
         show_feedback_border: false,
       },
     ]);
@@ -265,7 +265,7 @@ describe("plugin-spatial-nback", () => {
       {
         type: jsPsychPluginSpatialNback,
         feedback_duration: 300,
-        show_feedback_time: true,
+        show_feedback_text: true,
         is_target: true,
       },
     ]);
@@ -364,7 +364,7 @@ describe("plugin-spatial-nback", () => {
       {
         type: jsPsychPluginSpatialNback,
         is_target: false, // Non-target trial
-        show_feedback_time: true,
+        show_feedback_text: true,
         incorrect_color: "#ff0000",
       },
     ]);
@@ -826,7 +826,7 @@ describe("plugin-spatial-nback", () => {
         stimulus_duration: 750,
         isi_duration: 1000,
         feedback_duration: 500,
-        show_feedback_time: true,
+        show_feedback_text: true,
         show_feedback_border: true,
         show_feedback_no_click: true,
         feedback_wait_no_click: true,

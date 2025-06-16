@@ -53,7 +53,7 @@ const info = <const>{
         default: 500,
       },
       /** Whether to show feedback "Incorrect! (231ms)" after response */
-      show_feedback_time: {
+      show_feedback_text: {
         type: ParameterType.BOOL,
         default: true,
       },
@@ -62,7 +62,7 @@ const info = <const>{
         type: ParameterType.BOOL,
         default: true,
       },
-      /** Whether to show feedback when there is no response */
+      /** Whether to show feedback when there is no response, will whichever feedback options are enabled (border or text) */
       show_feedback_no_click: {
         type: ParameterType.BOOL,
         default: true,
@@ -360,7 +360,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
 
     const showFeedback = (is_correct: boolean, response_time: number | null, made_response: boolean): void => {
       // If no feedback is shown, handle timing appropriately
-      if (!trial.show_feedback_time && !trial.show_feedback_border) {
+      if (!trial.show_feedback_text && !trial.show_feedback_border) {
         if (made_response && !stimulus_hidden) {
           // Response during stimulus - wait for stimulus + feedback duration, then ISI
           const elapsed_time = performance.now() - trial_start_time;
@@ -437,7 +437,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       }
 
       // Show text feedback
-      if (trial.show_feedback_time) {
+      if (trial.show_feedback_text) {
         let feedback_text = is_correct ? 'Correct!' : 'Incorrect!';
         if (response_time !== null) {
           feedback_text += ` (${Math.round(response_time)}ms)`;
