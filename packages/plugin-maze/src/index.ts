@@ -37,20 +37,10 @@ const info = <const>{
       pretty_name: "Font colour",
       default: "black",
     },
-    font_family: {
-      type: ParameterType.STRING,
-      pretty_name: "Font family",
-      default: "monospace",
-    },
-    font_size: {
+    font_style: {
       type: ParameterType.STRING,
       pretty_name: "Font size",
-      default: "24px",
-    },
-    font_weight: {
-      type: ParameterType.STRING,
-      pretty_name: "Font weight",
-      default: "normal",
+      default: "normal 24px monospace",
     },
     /** Whether to stop the trial on the first error and go directly to the question (if any) or
      * exit. */
@@ -184,10 +174,9 @@ class MazePlugin implements JsPsychPlugin<Info> {
       ></canvas>
       </div>`;
 
-    const sentence_font = `${trial.font_weight} ${trial.font_size} ${trial.font_family}`;
-
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const ctx = canvas.getContext("2d");
+    ctx.font = trial.font_style;
     const canvas_rect = set_canvas(canvas, ctx, trial.canvas_colour, trial.translate_origin);
     const canvas_center = {
       x: canvas_rect[0] + canvas_rect[2] / 2,
@@ -226,7 +215,6 @@ class MazePlugin implements JsPsychPlugin<Info> {
     let keyboardListener: { (e: KeyboardEvent): void; (e: KeyboardEvent): void };
 
     const clear_canvas = () => {
-      ctx.font = trial.canvas_font;
       ctx.fillStyle = trial.canvas_colour;
       ctx.fillRect(canvas_rect[0], canvas_rect[1], canvas_rect[2], canvas_rect[3]);
       ctx.beginPath();
@@ -234,7 +222,6 @@ class MazePlugin implements JsPsychPlugin<Info> {
 
     const display_words = (left_word: string, right_word: string, text: string = null) => {
       clear_canvas();
-      ctx.font = sentence_font;
       ctx.fillStyle = trial.font_colour;
       ctx.fillText(left_word, position_left.x, position_left.y);
       ctx.fillText(right_word, position_right.x, position_right.y);
@@ -245,7 +232,6 @@ class MazePlugin implements JsPsychPlugin<Info> {
 
     const display_message = (message: string) => {
       clear_canvas();
-      ctx.font = sentence_font;
       ctx.fillStyle = trial.font_colour;
       ctx.fillText(message, canvas_center.x, canvas_center.y);
     };
