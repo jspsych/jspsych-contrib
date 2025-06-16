@@ -309,6 +309,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
             correct: correct_on_the_left
               ? info.key == trial.keys.left
               : info.key == trial.keys.right,
+            rt: info.rt,
           };
           end_trial();
         },
