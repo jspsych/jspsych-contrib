@@ -250,59 +250,6 @@ class MazePlugin implements JsPsychPlugin<Info> {
       ctx.fillText(message, canvas_center.x, canvas_center.y);
     };
 
-    const after_response = (info: { rt: number; key: string }) => {
-      if (undefined === last_display_time) {
-        last_display_time = 0;
-      }
-      const rt = info.rt - last_display_time;
-      // FIXME: maybe we want to pre-allocate this stuff for more reactivity?
-      let correct;
-      if (word_number >= 0) {
-        correct = word_on_the_left[word_number]
-          ? info.key == trial.keys.left
-          : info.key == trial.keys.righ;
-        const [word, foil] = trial.sentence[word_number];
-        trial_data.events.push({
-          correct: correct,
-          foil: foil,
-          rt: rt,
-          side: word_on_the_left[word_number] ? "left" : "right",
-          word: word,
-          word_number: word_number,
-        });
-      }
-      if (word_number < trial.sentence.length - 1 && (correct || !trial.halt_on_error)) {
-        word_number++;
-        const [word, foil] = trial.sentence[word_number];
-        const [left, right] = word_on_the_left[word_number] ? [word, foil] : [foil, word];
-        display_words(left, right);
-        last_display_time = info.rt;
-      } else {
-        if (undefined !== trial.question) {
-          ask_question();
-        } else {
-          end_trial();
-        }
-      }
-    };
-
-    const start_trial = () => {
-      word_number = -1;
-      word_on_the_left = Array.from(
-        { length: trial.sentence.length },
-        (_value, _index) => Math.random() < 0.5
-      );
-      display_message(`Press ${trial.keys.left} or ${trial.keys.right} to start`);
-      keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
-        callback_function: after_response,
-        valid_responses: [trial.keys.left, trial.keys.right],
-        rt_method: "performance",
-        persist: true,
-        allow_held_key: false,
-        minimum_valid_rt: trial.waiting_time,
-      });
-    };
-
     const ask_question = () => {
       this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
       const correct_on_the_left = Math.random() < 0.5;
@@ -328,12 +275,69 @@ class MazePlugin implements JsPsychPlugin<Info> {
       });
     };
 
+    const after_response = (info: { rt: number; key: string }) => {
+      const rt = info.rt - last_display_time;
+      const correct = word_on_the_left[word_number]
+        ? info.key == trial.keys.left
+        : info.key == trial.keys.righ;
+      const [word, foil] = trial.sentence[word_number];
+      // FIXME: maybe we want to pre-allocate trial_data.events for more reactivity?
+      trial_data.events.push({
+        correct: correct,
+        foil: foil,
+        rt: rt,
+        side: word_on_the_left[word_number] ? "left" : "right",
+        word: word,
+        word_number: word_number,
+      });
+      if (word_number < trial.sentence.length - 1 && (correct || !trial.halt_on_error)) {
+        word_number++;
+        const [word, foil] = trial.sentence[word_number];
+        const [left, right] = word_on_the_left[word_number] ? [word, foil] : [foil, word];
+        display_words(left, right);
+        last_display_time = info.rt;
+      } else {
+        if (undefined !== trial.question) {
+          ask_question();
+        } else {
+          end_trial();
+        }
+      }
+    };
+
+    const start_trial = () => {
+      last_display_time = 0;
+      keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+        callback_function: after_response,
+        valid_responses: [trial.keys.left, trial.keys.right],
+        rt_method: "performance",
+        persist: true,
+        allow_held_key: false,
+        minimum_valid_rt: trial.waiting_time,
+      });
+    };
+
     const end_trial = () => {
       this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
       this.jsPsych.finishTrial(trial_data);
     };
 
-    start_trial();
+    const setup = () => {
+      word_number = 0;
+      word_on_the_left = Array.from(
+        { length: trial.sentence.length },
+        (_value, _index) => Math.random() < 0.5
+      );
+      display_message(`Press ${trial.keys.left} or ${trial.keys.right} to start`);
+      keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+        callback_function: start_trial,
+        valid_responses: [trial.keys.left, trial.keys.right],
+        persist: false,
+        allow_held_key: false,
+      });
+    };
+
+    setup();
   }
 }
 
