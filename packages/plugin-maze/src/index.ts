@@ -276,8 +276,8 @@ class MazePlugin implements JsPsychPlugin<Info> {
     };
 
     const step_display = (n) => {
-      const [word, foil] = trial.sentence[word_number];
-      const [left, right] = word_on_the_left[word_number] ? [word, foil] : [foil, word];
+      const [word, foil] = trial.sentence[n];
+      const [left, right] = word_on_the_left[n] ? [word, foil] : [foil, word];
       display_words(left, right);
     };
 
