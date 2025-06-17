@@ -19,8 +19,8 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | `font_style`      | `str`                                       | `"normal 24px monospace"`    | The font style for the text.                                                                                                     |
 | `halt_on_error`   | `bool`                                      | `false`                      | If true, any error ends the trial and sends the subject directly to the question (if any), then exit.                            |
 | `keys`            | `{left: string, right: string}`             | `{left: "f", right: "j"}`    | The choice/navigation keys.                                                                                                      |
-| `position_left`   | `{x: number?, y: number?}`                  | `{x: null, y: null;}`        | The position of the left word. A null `x` is set to 1/3 of the canvas' width and null `y` is set to half of the canvas' height.  |
-| `position_right`  | `{x: number?, y: number?}`                  | `{x: null, y: null;}`        | The position of the right word. A null `x` is set to 2/3 of the canvas' width and null `y` is set to half of the canvas' height. |
+| `position_left`   | `{x: number?, y: number?}`                  | `{x: null, y: null}`         | The position of the left word. A null `x` is set to 1/3 of the canvas' width and null `y` is set to half of the canvas' height.  |
+| `position_right`  | `{x: number?, y: number?}`                  | `{x: null, y: null}`         | The position of the right word. A null `x` is set to 2/3 of the canvas' width and null `y` is set to half of the canvas' height. |
 | `tranlate_origin` | `bool`                                      | `true`                       | If true, the coordinates are transposed to have `(0, 0)` be the center of the canvas.                                            |
 | `waiting_time`    | `number`                                    | `0`                          | The minimum time (in ms) before the subject is allowed to chose a word.                                                          |
 
