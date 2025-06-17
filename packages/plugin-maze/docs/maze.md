@@ -1,7 +1,8 @@
 Maze
 ====
 
-A jsPsych plugin for running Maze experiments
+A jsPsych plugin for running Maze (Forster et al., 2009) experiments, a version of self-paced
+reading that asks to chose between the correct next word and a distractor.
 
 ## Parameters
 
@@ -59,11 +60,31 @@ import Maze from '@jspsych-contrib/plugin-maze';
 
 ## Examples
 
-### Title of Example
-
 ```javascript
-var trial = {
-  
-  type: jsPsychMaze
+
+const trial = {
+  type: jsPsychMaze,
+  sentence: [
+      ["After", "x-x-x"],
+      ["a", "so"],
+      ["bit", "pot"],
+      ["of", "if"],
+      ["success", "singing"],
+      ["the", "ate"],
+      ["stocks", "winter"],
+      ["took", "walk"],
+      ["a", "we"],
+      ["dive", "toad"],
+    ],
+  question: {
+    text: "Did the stocks take a dive?",
+    correct: "yes",
+    wrong: "no",
+  },
+  waiting_time: 200,
 }
 ```
+
+## Bibliography
+
+- Forster, Kenneth I., Christine Guerrera, and Lisa Elliot. 2009. ‘The Maze Task: Measuring Forced Incremental Sentence Processing Time’. Behavior Research Methods 41 (1): 163–71. <https://doi.org/10.3758/BRM.41.1.163>.
