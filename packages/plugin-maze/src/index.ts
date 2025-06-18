@@ -280,7 +280,6 @@ class MazePlugin implements JsPsychPlugin<Info> {
         rt: rt,
         side: word_on_the_left[word_number] ? "left" : "right",
         word: word,
-        word_number: word_number,
       });
       if (word_number < trial.sentence.length - 1 && (correct || !trial.halt_on_error)) {
         word_number++;
