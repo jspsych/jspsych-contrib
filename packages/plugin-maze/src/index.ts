@@ -204,13 +204,62 @@ class MazePlugin implements JsPsychPlugin<Info> {
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     this.display_element = display_element;
-    this.display_element.innerHTML = `<div>
-      <canvas
-        id="canvas"
-        width="${trial.canvas_size[0]}"
-        height="${trial.canvas_size[1]}"
-        style="${trial.canvas_style}"
-      ></canvas>
+    this.display_element.innerHTML = `
+      <div
+        id="jspsych-maze-display_parent"
+        style="
+          border: 1px solid green;
+          position: relative;
+          width: ${trial.canvas_size[0]}px;
+          height: ${trial.canvas_size[1]}px;
+        "
+      >
+        <div
+          id="jspsych-maze-text_display"
+          style="
+            border: 1px solid red;
+            position: relative;
+            top: 25%;
+          "
+        >
+          Some text that's meant to be longer lmai
+        </div>
+        <div
+          id="jspsych-maze-left_display"
+          style="
+            border: 1px solid black;
+            position: relative;
+            left: calc(100% / 3);
+            top: 50%;
+            width: max-content;
+            float: left;
+            transform: translateX(-50%);
+          "
+        >
+          left
+        </div>
+        <div
+          id="jspsych-maze-right_display"
+          style="
+            border: 1px solid black;
+            position: relative;
+            left: calc(2 * (100% / 3));
+            top: 50%;
+            width: max-content;
+            float: left;
+            transform: translateX(-50%); // Center the element at the position
+          "
+        >
+          right
+        </div>
+      </div>
+      <div>
+        <canvas
+          id="canvas"
+          width="${trial.canvas_size[0]}"
+          height="${trial.canvas_size[1]}"
+          style="${trial.canvas_style}; visible: false;"
+        ></canvas>
       </div>`;
 
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
