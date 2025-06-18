@@ -17,32 +17,17 @@ const info = <const>{
       type: ParameterType.COMPLEX,
       default: null,
     },
-    canvas_style: {
-      type: ParameterType.STRING,
-      pretty_name: "Extra canvas style",
-      default: "border: 0px solid black;",
-    },
-    canvas_colour: {
-      type: ParameterType.STRING,
-      pretty_name: "Canvas colour",
-      default: "white",
-    },
     canvas_size: {
-      type: ParameterType.INT,
+      type: ParameterType.STRING,
       array: true,
       pretty_name: "Canvas size",
-      default: [1280, 960],
+      default: ["1280px", "960px"],
     },
     /** How long to wait on a blank screen before displaying the question. */
     end_interval: {
       type: ParameterType.INT,
       pretty_name: "End interval",
       default: 0,
-    },
-    font_colour: {
-      type: ParameterType.STRING,
-      pretty_name: "Font colour",
-      default: "black",
     },
     font_style: {
       type: ParameterType.STRING,
@@ -171,6 +156,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
   keys: { left: string; right: string };
   left_display: HTMLElement;
   right_display: HTMLElement;
+  style: HTMLElement;
   text_display: HTMLElement;
 
   constructor(private jsPsych: JsPsych) {}
@@ -178,55 +164,48 @@ class MazePlugin implements JsPsychPlugin<Info> {
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     this.display_element = display_element;
     this.display_element.innerHTML = `
-      <div
-        id="jspsych-maze-display_parent"
-        style="
-          position: relative;
-          width: ${trial.canvas_size[0]}px;
-          height: ${trial.canvas_size[1]}px;
-        "
-      >
-        <div
-          id="jspsych-maze-center_display"
-          style="
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 100%;
-            z-index: -1;
-          "
-        ></div>
-        <div
-          id="jspsych-maze-text_display"
-          style="
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%) translateY(-5em);
-            width: 100%;
-          "
-        ></div>
-        <div
-          id="jspsych-maze-left_display"
-          style="
-            position: absolute;
-            left: calc(100% / 3);
-            top: 50%;
-            width: max-content;
-            transform: translate(-50%, -50%);
-          "
-        ></div>
-        <div
-          id="jspsych-maze-right_display"
-          style="
-            position: absolute;
-            left: calc(2 * (100% / 3));
-            top: 50%;
-            width: max-content;
-            transform: translate(-50%, -50%);
-          "
-        ></div>
-      </div>
-      <div>`;
+      <div id="jspsych-maze-display_parent">
+        <div id="jspsych-maze-center_display"></div>
+        <div id="jspsych-maze-text_display"></div>
+        <div id="jspsych-maze-left_display"></div>
+        <div id="jspsych-maze-right_display"></div>
+      </div>`;
+    this.style = document.createElement("style");
+    this.style.innerHTML = `
+      #jspsych-maze-display_parent {
+        position: relative;
+        width: ${trial.canvas_size[0]};
+        height: ${trial.canvas_size[1]};
+      }
+      #jspsych-maze-center_display {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+        z-index: -1;
+      }
+      #jspsych-maze-text_display {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%) translateY(-5em);
+        width: 100%;
+      }
+      #jspsych-maze-left_display {
+        position: absolute;
+        left: calc(100% / 3);
+        top: 50%;
+        width: max-content;
+        transform: translate(-50%, -50%);
+      }
+      #jspsych-maze-right_display {
+        position: absolute;
+        left: calc(2 * (100% / 3));
+        top: 50%;
+        width: max-content;
+        transform: translate(-50%, -50%);
+      }
+      </div>`;
+    document.head.appendChild(this.style);
     this.center_display = document.getElementById("jspsych-maze-center_display");
     this.left_display = document.getElementById("jspsych-maze-left_display");
     this.right_display = document.getElementById("jspsych-maze-right_display");
