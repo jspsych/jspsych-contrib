@@ -29,11 +29,6 @@ const info = <const>{
       pretty_name: "End interval",
       default: 0,
     },
-    font_style: {
-      type: ParameterType.STRING,
-      pretty_name: "Font size",
-      default: "normal 24px monospace",
-    },
     /** Whether to stop the trial on the first error and go directly to the question (if any) or
      * exit. */
     halt_on_error: {
@@ -60,36 +55,6 @@ const info = <const>{
           type: ParameterType.STRING,
           pretty_name: "Right key",
         },
-      },
-    },
-    position_left: {
-      type: ParameterType.COMPLEX,
-      pretty_name: "Position of the left element.",
-      default: { x: null, y: null },
-      nested: {
-        x: {
-          type: ParameterType.FLOAT,
-          pretty_name: "Horizontal position",
-        },
-      },
-      y: {
-        type: ParameterType.FLOAT,
-        pretty_name: "Vertical position",
-      },
-    },
-    position_right: {
-      type: ParameterType.COMPLEX,
-      pretty_name: "Position of the right element ",
-      default: { x: null, y: null },
-      nested: {
-        x: {
-          type: ParameterType.FLOAT,
-          pretty_name: "Horizontal position",
-        },
-      },
-      y: {
-        type: ParameterType.FLOAT,
-        pretty_name: "Vertical position",
       },
     },
     /** The minimum time (in ms) before the subject is allowed to chose a word. */
