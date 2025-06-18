@@ -14,8 +14,9 @@ const data = [
     ],
     question: {
       text: "Did the stocks take a dive?",
-      correct: "yes",
-      wrong: "no",
+      left: "yes",
+      right: "no",
+      correct: "left",
     },
   },
   {
@@ -32,8 +33,9 @@ const data = [
     ],
     question: {
       text: "Who was self-conscious?",
-      correct: "The model",
-      wrong: "The designer",
+      left: "The designer",
+      right: "The model",
+      correct: "right",
     },
   },
 ];

@@ -2,6 +2,7 @@
 <html>
   <head>
     <script src="https://unpkg.com/jspsych"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.3"></script>
     <!-- The plugin is loaded here -->
     <script src="https://unpkg.com/@jspsych/plugin-maze"></script>
     <script src="../dist/index.browser.js"></script>
@@ -19,26 +20,45 @@
 
   <body></body>
   <script>
-    const jsPsych = initJsPsych();
+    const jsPsych = initJsPsych({
+      on_finish: () => {
+        jsPsych.data.displayData("json");
+      },
+    });
 
     const procedure = {
-      timeline : [
+      timeline: [
         {
           type: jsPsychMaze,
-          sentence: jsPsych.timelineVariable('sentence'),
-          question: jsPsych.timelineVariable('question'),
+          sentence: jsPsych.timelineVariable("sentence"),
           inter_word_interval: 100,
           end_interval: 500,
           pre_answer_interval: 200,
           halt_on_error: true,
-          on_finish: () => {
-            jsPsych.data.displayData('json');
-          },
-        }
+        },
+        {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: () => jsPsych.evaluateTimelineVariable("question").text,
+          choices: ["f", "j"],
+          prompt: () => `
+            <span style="margin: 5em 8em 0 8em; display: inline-block;">${
+              jsPsych.evaluateTimelineVariable("question").left
+            }</span>
+            <span style="margin: 5em 8em 0 8em; display: inline-block;">${
+              jsPsych.evaluateTimelineVariable("question").right
+            }</span>`,
+          on_finish: () =>
+            (data.correct = jsPsych.pluginAPI.compareKeys(
+              data.response,
+              "left" === jsPsych.evaluateTimelineVariable("question").correct
+                ? "f"
+                : "j"
+            )),
+        },
       ],
       timeline_variables: data,
     };
 
-    jsPsych.run(procedure)
+    jsPsych.run(procedure);
   </script>
 </html>
