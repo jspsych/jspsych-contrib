@@ -20,11 +20,11 @@ specified. Other parameters can be left unspecified if the default value is acce
 | `canvas_size`     | `[number, number]`                          | `[1280, 960]`                | The dimensions of the canvas.                                                                                                    |
 | `font_colour`     | `str`                                       | `"black"`                    | The font colour for the text.                                                                                                    |
 | `font_style`      | `str`                                       | `"normal 24px monospace"`    | The font style for the text.                                                                                                     |
-| `halt_on_error`   | `bool`                                      | `false`                      | If true, any error ends the trial and sends the subject directly to the question (if any), then exit.                            |
+| `halt_on_error`   | `boolean`                                   | `false`                      | If true, any error ends the trial and sends the subject directly to the question (if any), then exit.                            |
 | `keys`            | `{left: string, right: string}`             | `{left: "f", right: "j"}`    | The choice/navigation keys.                                                                                                      |
 | `position_left`   | `{x: number?, y: number?}`                  | `{x: null, y: null}`         | The position of the left word. A null `x` is set to 1/3 of the canvas' width and null `y` is set to half of the canvas' height.  |
 | `position_right`  | `{x: number?, y: number?}`                  | `{x: null, y: null}`         | The position of the right word. A null `x` is set to 2/3 of the canvas' width and null `y` is set to half of the canvas' height. |
-| `tranlate_origin` | `bool`                                      | `true`                       | If true, the coordinates are transposed to have `(0, 0)` be the center of the canvas.                                            |
+| `tranlate_origin` | `boolean`                                   | `true`                       | If true, the coordinates are transposed to have `(0, 0)` be the center of the canvas.                                            |
 | `waiting_time`    | `number`                                    | `0`                          | The minimum time (in ms) before the subject is allowed to chose a word.                                                          |
 
 ## Data Generated
@@ -33,11 +33,11 @@ In addition to the [default data collected by all
 plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this
 plugin collects the following data for each trial.
 
-| Name       | Type                                                                                  | Value                                                                       |
-|------------|---------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| `sentence` | `string`                                                                              | The sentence used in the trial (joined with spaces)                         |
-| `events`   | `Array<{correct: bool, foil: string, rt: number, word: string}>` | The parameters, choice and interaction time for each word of the sentence   |
-| `question` | `{question: {text: string, correct: str, wrong: str}, correct: bool, rt: number}>`    | The parameters, choice and interaction time for the final question (if any) |
+| Name       | Type                                                                                       | Value                                                                       |
+|------------|--------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| `sentence` | `string`                                                                                   | The sentence used in the trial (joined with spaces)                         |
+| `events`   | `Array<{correct: boolean, foil: string, rt: number, word: string}>`                        | The parameters, choice and interaction time for each word of the sentence   |
+| `question` | `{question: {text: string, correct: string, wrong: string}, correct: boolean, rt: number}` | The parameters, choice and interaction time for the final question (if any) |
 
 ## Install
 
