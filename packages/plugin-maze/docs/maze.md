@@ -2,11 +2,14 @@ Maze
 ====
 
 A jsPsych plugin for running Maze (Forster et al., 2009) experiments, a version of self-paced
-reading that asks to chose between the correct next word and a distractor.
+reading that asks to choose between the correct next word and a distractor.
 
 ## Parameters
 
-In addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of undefined must be specified. Other parameters can be left unspecified if the default value is acceptable.
+In addition to the [parameters available in all
+plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins), this
+plugin accepts the following parameters. Parameters with a default value of undefined must be
+specified. Other parameters can be left unspecified if the default value is acceptable.
 
 | Parameter         | Type                                        | Default Value                | Description                                                                                                                      |
 |-------------------|---------------------------------------------|------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
@@ -26,7 +29,9 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 
 ## Data Generated
 
-In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects the following data for each trial.
+In addition to the [default data collected by all
+plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this
+plugin collects the following data for each trial.
 
 | Name       | Type                                                                                  | Value                                                                       |
 |------------|---------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
@@ -87,4 +92,6 @@ const trial = {
 
 ## Bibliography
 
-- Forster, Kenneth I., Christine Guerrera, and Lisa Elliot. 2009. ‘The Maze Task: Measuring Forced Incremental Sentence Processing Time’. Behavior Research Methods 41 (1): 163–71. <https://doi.org/10.3758/BRM.41.1.163>.
+- Forster, Kenneth I., Christine Guerrera, and Lisa Elliot. 2009. ‘The Maze Task: Measuring Forced
+  Incremental Sentence Processing Time’. Behavior Research Methods 41 (1): 163–71.
+  <https://doi.org/10.3758/BRM.41.1.163>.
