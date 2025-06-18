@@ -23,6 +23,7 @@
           sentence: jsPsych.timelineVariable('sentence'),
           question: jsPsych.timelineVariable('question'),
           waiting_time: 200,
+          halt_on_error: true,
           on_finish: () => {
             jsPsych.data.displayData('json');
           },
