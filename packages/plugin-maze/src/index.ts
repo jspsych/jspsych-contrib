@@ -12,25 +12,14 @@ const info = <const>{
       type: ParameterType.COMPLEX,
       array: true,
     },
-    /** Object with key "text", "correct", "wrong". Can't give a schema or it gets non-nullable. **/
-    question: {
-      type: ParameterType.COMPLEX,
-      default: null,
-    },
     canvas_size: {
       type: ParameterType.STRING,
       array: true,
       pretty_name: "Canvas size",
       default: ["1280px", "960px"],
     },
-    /** How long to wait on a blank screen before displaying the question. */
-    end_interval: {
-      type: ParameterType.INT,
-      pretty_name: "End interval",
-      default: 0,
-    },
-    /** Whether to stop the trial on the first error and go directly to the question (if any) or
-     * exit. */
+
+    /** Whether to stop the trial on the first error.*/
     halt_on_error: {
       type: ParameterType.BOOL,
       pretty_name: "Halt on error",
@@ -83,9 +72,6 @@ const info = <const>{
         side: { type: ParameterType.STRING },
         word: { type: ParameterType.STRING },
         word_number: { type: ParameterType.INT },
-      },
-      question: {
-        type: ParameterType.COMPLEX,
       },
     },
   },
@@ -181,15 +167,9 @@ class MazePlugin implements JsPsychPlugin<Info> {
     const results: {
       sentence: string;
       events: Array<Response>;
-      question: {
-        question: { text: string; correct: string; wrong: string };
-        correct: boolean;
-        rt: number;
-      } | null;
     } = {
       sentence: trial.sentence.map((x) => x[0]).join(" "),
       events: [],
-      question: null,
     };
 
     let last_display_time: number;
@@ -198,28 +178,6 @@ class MazePlugin implements JsPsychPlugin<Info> {
       { length: trial.sentence.length },
       (_value, _index) => Math.random() < 0.5
     );
-
-    const ask_question = () => {
-      const correct_on_the_left = Math.random() < 0.5;
-      const [left, right] = correct_on_the_left
-        ? [trial.question.correct, trial.question.wrong]
-        : [trial.question.wrong, trial.question.correct];
-      this.display_words(left, right, trial.question.text);
-      this.keyboard_listener = this.jsPsych.pluginAPI.getKeyboardResponse({
-        callback_function: (info: { rt: number; key: string }) => {
-          results.question = {
-            question: trial.question,
-            correct: correct_on_the_left ? info.key == this.keys.left : info.key == this.keys.right,
-            rt: info.rt,
-          };
-          end_trial();
-        },
-        valid_responses: [this.keys.left, this.keys.right],
-        rt_method: "performance",
-        persist: true,
-        allow_held_key: false,
-      });
-    };
 
     const step_display = (n: number) => {
       const [word, foil] = trial.sentence[n];
@@ -250,13 +208,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
         );
         last_display_time = info.rt + trial.inter_word_interval;
       } else {
-        this.jsPsych.pluginAPI.cancelKeyboardResponse(this.keyboard_listener);
-        if (undefined !== trial.question) {
-          this.clear_display();
-          this.jsPsych.pluginAPI.setTimeout(() => ask_question(), trial.end_interval);
-        } else {
-          end_trial();
-        }
+        end_trial();
       }
     };
 
