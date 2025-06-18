@@ -165,10 +165,10 @@ class MazePlugin implements JsPsychPlugin<Info> {
     this.display_element = display_element;
     this.display_element.innerHTML = `
       <div id="jspsych-maze-display_parent">
-        <div id="jspsych-maze-center_display"></div>
-        <div id="jspsych-maze-text_display"></div>
-        <div id="jspsych-maze-left_display"></div>
-        <div id="jspsych-maze-right_display"></div>
+        <div id="jspsych-maze-center_display" class="jspsych-maze-display"></div>
+        <div id="jspsych-maze-text_display" class="jspsych-maze-display"></div>
+        <div id="jspsych-maze-left_display" class="jspsych-maze-display jspsy-maze-answer"></div>
+        <div id="jspsych-maze-right_display" class="jspsych-maze-display jspsy-maze-answer"></div>
       </div>`;
     this.style = document.createElement("style");
     this.style.innerHTML = `
@@ -177,34 +177,33 @@ class MazePlugin implements JsPsychPlugin<Info> {
         width: ${trial.canvas_size[0]};
         height: ${trial.canvas_size[1]};
       }
-      #jspsych-maze-center_display {
+      .jspsych-maze-display{
         position: absolute;
+      }
+      .jspsych-maze-answer{
+        width: max-content;
+      }
+      #jspsych-maze-center_display {
         top: 50%;
         transform: translateY(-50%);
         width: 100%;
-        z-index: -1;
       }
       #jspsych-maze-text_display {
-        position: absolute;
         top: 50%;
         transform: translateY(-50%) translateY(-5em);
         width: 100%;
       }
       #jspsych-maze-left_display {
-        position: absolute;
         left: calc(100% / 3);
         top: 50%;
-        width: max-content;
         transform: translate(-50%, -50%);
       }
       #jspsych-maze-right_display {
-        position: absolute;
         left: calc(2 * (100% / 3));
         top: 50%;
-        width: max-content;
         transform: translate(-50%, -50%);
       }
-      </div>`;
+      `;
     document.head.appendChild(this.style);
     this.center_display = document.getElementById("jspsych-maze-center_display");
     this.left_display = document.getElementById("jspsych-maze-left_display");
