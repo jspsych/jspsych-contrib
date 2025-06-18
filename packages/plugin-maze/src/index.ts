@@ -157,6 +157,14 @@ interface Position {
   y: number;
 }
 
+interface Response {
+  correct: boolean;
+  foil: string;
+  rt: number;
+  side: "left" | "right";
+  word: string;
+}
+
 /**
  * **maze**
  *
@@ -236,13 +244,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
 
     const results: {
       sentence: string;
-      events: Array<{
-        correct: boolean;
-        foil: string;
-        rt: number;
-        side: "left" | "right";
-        word: string;
-      }>;
+      events: Array<Response>;
       question: {
         question: { text: string; correct: string; wrong: string };
         correct: boolean;
@@ -303,7 +305,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
         rt: rt,
         side: word_on_the_left[word_number] ? "left" : "right",
         word: word,
-      });
+      } as Response);
       if (word_number < trial.sentence.length - 1 && (correct || !trial.halt_on_error)) {
         word_number++;
         step_display(word_number);

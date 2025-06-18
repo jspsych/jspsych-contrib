@@ -21,11 +21,16 @@ describe("The maze jspsych plugin", () => {
       {
         type: jsPsychMaze,
         sentence: sentence,
+        waiting_time: 50,
       },
     ]);
 
     // Start
     jest.advanceTimersByTime(100);
+    pressKey("f");
+
+    // This one is too fast and should be ignored
+    jest.advanceTimersByTime(10);
     pressKey("f");
 
     for (const [_word, _foil] of sentence) {
@@ -36,8 +41,14 @@ describe("The maze jspsych plugin", () => {
     await expectFinished();
 
     // Unclear to me why the values are wrapped in length 1 array
-    for (const e of getData().select("events").values[0]) {
-      expect(e.rt).toBe(100);
+    for (const [i, [word, foil], r] of getData()
+      .select("events")
+      .values[0].map((r: Response, i: number) => [i, sentence[i], r])) {
+      expect(r.word).toBe(word);
+      expect(r.foil).toBe(foil);
+      // FIXME: make this better, probably with different rts
+      // We first waited 10s before the first word
+      expect(r.rt).toBe(0 === i ? 110 : 100);
     }
   });
   it("Asks questions", async () => {
@@ -78,9 +89,14 @@ describe("The maze jspsych plugin", () => {
     pressKey("f");
 
     await expectFinished();
+
     // Unclear to me why the values are wrapped in length 1 array
-    for (const e of getData().select("events").values[0]) {
-      expect(e.rt).toBe(100);
+    for (const [[word, foil], r] of getData()
+      .select("events")
+      .values[0].map((r: Response, i: number) => [sentence[i], r])) {
+      expect(r.word).toBe(word);
+      expect(r.foil).toBe(foil);
+      expect(r.rt).toBe(100);
     }
   });
 });
