@@ -33,11 +33,11 @@ In addition to the [default data collected by all
 plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this
 plugin collects the following data for each trial.
 
-| Name       | Type                                                                                       | Value                                                                       |
-|------------|--------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| `sentence` | `string`                                                                                   | The sentence used in the trial (joined with spaces)                         |
-| `events`   | `Array<{correct: boolean, foil: string, rt: number, word: string}>`                        | The parameters, choice and interaction time for each word of the sentence   |
-| `question` | `{question: {text: string, correct: string, wrong: string}, correct: boolean, rt: number}` | The parameters, choice and interaction time for the final question (if any) |
+| Name       | Type                                                                                        | Value                                                                       |
+|------------|---------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| `sentence` | `string`                                                                                    | The sentence used in the trial (joined with spaces)                         |
+| `events`   | `Array<{correct: boolean, foil: string, rt: number, side: "left" | "right", word: string}>` | The parameters, choice and interaction time for each word of the sentence   |
+| `question` | `{question: {text: string, correct: string, wrong: string}, correct: boolean, rt: number}`  | The parameters, choice and interaction time for the final question (if any) |
 
 ## Install
 
