@@ -33,6 +33,12 @@ const info = <const>{
       pretty_name: "Canvas size",
       default: [1280, 960],
     },
+    /** How long to wait on a blank screen before displaying the question. */
+    end_interval: {
+      type: ParameterType.INT,
+      pretty_name: "End interval",
+      default: 0,
+    },
     font_colour: {
       type: ParameterType.STRING,
       pretty_name: "Font colour",
@@ -49,6 +55,12 @@ const info = <const>{
       type: ParameterType.BOOL,
       pretty_name: "Halt on error",
       default: false,
+    },
+    /** How long to wait on a blank screen before displaying the next word. */
+    inter_word_interval: {
+      type: ParameterType.INT,
+      pretty_name: "Inter-words interval",
+      default: 0,
     },
     keys: {
       type: ParameterType.COMPLEX,
@@ -95,16 +107,16 @@ const info = <const>{
         pretty_name: "Vertical position",
       },
     },
+    /** The minimum time (in ms) before the subject is allowed to chose a word. */
+    pre_answer_interval: {
+      type: ParameterType.INT,
+      pretty_name: "Waiting time",
+      default: 0,
+    },
     translate_origin: {
       type: ParameterType.BOOL,
       pretty_name: "Translate origin",
       default: true,
-    },
-    /** How long to wait after showing a word and before registering keypresses (in ms) */
-    waiting_time: {
-      type: ParameterType.INT,
-      pretty_name: "Waiting time",
-      default: 0,
     },
   },
   data: {
@@ -264,7 +276,6 @@ class MazePlugin implements JsPsychPlugin<Info> {
     );
 
     const ask_question = () => {
-      this.jsPsych.pluginAPI.cancelKeyboardResponse(this.keyboard_listener);
       const correct_on_the_left = Math.random() < 0.5;
       const [left, right] = correct_on_the_left
         ? [trial.question.correct, trial.question.wrong]
@@ -308,11 +319,17 @@ class MazePlugin implements JsPsychPlugin<Info> {
       } as Response);
       if (word_number < trial.sentence.length - 1 && (correct || !trial.halt_on_error)) {
         word_number++;
-        step_display(word_number);
-        last_display_time = info.rt;
+        this.clear_display();
+        this.jsPsych.pluginAPI.setTimeout(
+          () => step_display(word_number),
+          trial.inter_word_interval
+        );
+        last_display_time = info.rt + trial.inter_word_interval;
       } else {
+        this.jsPsych.pluginAPI.cancelKeyboardResponse(this.keyboard_listener);
         if (undefined !== trial.question) {
-          ask_question();
+          this.clear_display();
+          this.jsPsych.pluginAPI.setTimeout(() => ask_question(), trial.end_interval);
         } else {
           end_trial();
         }
@@ -322,13 +339,16 @@ class MazePlugin implements JsPsychPlugin<Info> {
     const start_trial = (info: { rt: number; key: string }) => {
       step_display(0);
       last_display_time = 0;
+      // TODO: there's trickery here: by enforcing at least inter_word_interval beteween keypresses,
+      // we ensure that keypresses before display will be ignored (since the display happens at
+      // inter_word_interval).
       this.keyboard_listener = this.jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
         valid_responses: [this.keys.left, this.keys.right],
         rt_method: "performance",
         persist: true,
         allow_held_key: false,
-        minimum_valid_rt: trial.waiting_time,
+        minimum_valid_rt: trial.inter_word_interval + trial.pre_answer_interval,
       });
     };
 
@@ -350,14 +370,14 @@ class MazePlugin implements JsPsychPlugin<Info> {
     setup();
   }
 
-  clear_canvas() {
+  clear_display() {
     this.ctx.fillStyle = this.canvas_colour;
     this.ctx.fillRect(...this.canvas_rect);
     this.ctx.beginPath();
   }
 
   display_words(left_word: string, right_word: string, text: string = null) {
-    this.clear_canvas();
+    this.clear_display();
     this.ctx.fillStyle = this.font_colour;
     this.ctx.fillText(left_word, this.position_left.x, this.position_left.y);
     this.ctx.fillText(right_word, this.position_right.x, this.position_right.y);
@@ -367,7 +387,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
   }
 
   display_message(message: string) {
-    this.clear_canvas();
+    this.clear_display();
     this.ctx.fillStyle = this.font_colour;
     this.ctx.fillText(message, this.canvas_center.x, this.canvas_center.y);
   }

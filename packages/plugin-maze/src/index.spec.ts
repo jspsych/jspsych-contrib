@@ -21,7 +21,9 @@ describe("The maze jspsych plugin", () => {
       {
         type: jsPsychMaze,
         sentence: sentence,
-        waiting_time: 50,
+        inter_word_interval: 2,
+        end_interval: 50,
+        pre_answer_interval: 20,
       },
     ]);
 
@@ -46,9 +48,12 @@ describe("The maze jspsych plugin", () => {
       .values[0].map((r: Response, i: number) => [i, sentence[i], r])) {
       expect(r.word).toBe(word);
       expect(r.foil).toBe(foil);
-      // FIXME: make this better, probably with different rts
-      // We first waited 10s before the first word
-      expect(r.rt).toBe(0 === i ? 110 : 100);
+
+      // FIXME: make this better, probably with different rts.
+
+      // We first waited 10s before the first word and for the other words, the inter-word interval
+      // is substracted from the elapsed time
+      expect(r.rt).toBe(0 === i ? 110 : 98);
     }
   });
   it("Asks questions", async () => {
