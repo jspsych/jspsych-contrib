@@ -195,8 +195,12 @@ class MazePlugin implements JsPsychPlugin<Info> {
 
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
     this.canvas_colour = trial.canvas_colour;
+
     this.ctx = this.canvas.getContext("2d");
     this.ctx.font = trial.font_style;
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
+
     this.canvas_rect = set_canvas(
       this.canvas,
       this.ctx,
