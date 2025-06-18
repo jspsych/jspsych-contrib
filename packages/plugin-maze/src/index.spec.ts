@@ -34,6 +34,11 @@ describe("The maze jspsych plugin", () => {
     }
 
     await expectFinished();
+
+    // Unclear to me why the values are wrapped in length 1 array
+    for (const e of getData().select("events").values[0]) {
+      expect(e.rt).toBe(100);
+    }
   });
   it("Asks questions", async () => {
     const sentence = [
@@ -73,5 +78,9 @@ describe("The maze jspsych plugin", () => {
     pressKey("f");
 
     await expectFinished();
+    // Unclear to me why the values are wrapped in length 1 array
+    for (const e of getData().select("events").values[0]) {
+      expect(e.rt).toBe(100);
+    }
   });
 });
