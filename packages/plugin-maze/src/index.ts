@@ -319,7 +319,7 @@ class MazePlugin implements JsPsychPlugin<Info> {
 
     const start_trial = (info: { rt: number; key: string }) => {
       step_display(0);
-      last_display_time = info.rt;
+      last_display_time = 0;
       this.keyboard_listener = this.jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
         valid_responses: [this.keys.left, this.keys.right],
