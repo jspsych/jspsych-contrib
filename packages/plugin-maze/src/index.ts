@@ -188,8 +188,8 @@ class MazePlugin implements JsPsychPlugin<Info> {
     const after_response = (info: { rt: number; key: string }) => {
       const rt = info.rt - last_display_time;
       const correct = word_on_the_left[word_number]
-        ? info.key == this.keys.left
-        : info.key == this.keys.right;
+        ? this.jsPsych.pluginAPI.compareKeys(info.key, this.keys.left)
+        : this.jsPsych.pluginAPI.compareKeys(info.key, this.keys.right);
       const [word, foil] = trial.sentence[word_number];
       // FIXME: maybe we want to pre-allocate trial_data.events for more reactivity?
       results.events.push({
