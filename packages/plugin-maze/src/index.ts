@@ -52,11 +52,6 @@ const info = <const>{
       pretty_name: "Waiting time",
       default: 0,
     },
-    translate_origin: {
-      type: ParameterType.BOOL,
-      pretty_name: "Translate origin",
-      default: true,
-    },
   },
   data: {
     sentence: {
