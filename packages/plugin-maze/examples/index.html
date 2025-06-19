@@ -46,13 +46,14 @@
             <span style="margin: 5em 8em 0 8em; display: inline-block;">${
               jsPsych.evaluateTimelineVariable("question").right
             }</span>`,
-          on_finish: (data) =>
-            (data.correct = jsPsych.pluginAPI.compareKeys(
+          on_finish: (data) => {
+            success: jsPsych.pluginAPI.compareKeys(
               data.response,
               "left" === jsPsych.evaluateTimelineVariable("question").correct
                 ? "f"
                 : "j"
-            )),
+            )
+          }
         },
       ],
       timeline_variables: data,
