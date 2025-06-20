@@ -47,7 +47,8 @@
     type: jsPsychSpr,
     sentence: "い\nろ\nは\nに\nほ\nへ\nと ち\nり\nぬ\nる\nを わ\nか\nよ\nた\nれ\nそ つ\nね\nな\nら\nむ う\nゐ\nの\nお\nく\nや\nま け\nふ\nこ\nえ\nて あ\nさ\nき\nゆ\nめ\nみ\nし ゑ\nひ\nも\nせ\nす",
     mode: 3,
-    show_first_blank: false
+    show_first_blank: false,
+    inter_word_interval: 500, // wait 500ms before a user can advance
   }
 
   jsPsych.run([regular_trial, choice_primer, choice_trial, iroha_trial]);

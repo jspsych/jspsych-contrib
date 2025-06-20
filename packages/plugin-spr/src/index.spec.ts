@@ -254,7 +254,7 @@ describe("spr plugin", () => {
   });
 
   test("intra gap characters are removed", async () => {
-    const { expectFinished, getData, displayElement } = await startTimeline([
+    const { displayElement } = await startTimeline([
       {
         type: jsPsychSpr,
         sentence: "What^does that^mean? Fish",
@@ -266,5 +266,40 @@ describe("spr plugin", () => {
 
     // only X should appear at delimiter marks
     expect(displayElement.innerHTML).toMatch(/.+X.+X./);
+  });
+
+  test("non-zero inter_word_intervals are respected", async () => {
+    const { displayElement } = await startTimeline([
+      {
+        type: jsPsychSpr,
+        sentence: "Five big booms",
+        mode: 1,
+        inter_word_interval: 200,
+      },
+    ]);
+
+    jest.advanceTimersByTime(100);
+    pressKey(" ");
+
+    let lastHTML = displayElement.innerHTML;
+    // try to advance before inter_word_interval
+    pressKey(" ");
+    expect(displayElement.innerHTML).toBe(lastHTML);
+    jest.advanceTimersByTime(200);
+
+    // now it should advance
+    pressKey(" ");
+    expect(displayElement.innerHTML).not.toBe(lastHTML);
+
+    // multiple presses should also not advance
+    lastHTML = displayElement.innerHTML;
+    pressKey(" ");
+    pressKey(" ");
+    pressKey(" ");
+    expect(displayElement.innerHTML).toBe(lastHTML);
+
+    jest.advanceTimersByTime(200);
+    pressKey(" ");
+    expect(displayElement.innerHTML).not.toBe(lastHTML);
   });
 });

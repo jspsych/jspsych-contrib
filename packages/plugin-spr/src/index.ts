@@ -100,6 +100,11 @@ const info = <const>{
       type: ParameterType.KEYS,
       default: [" "],
     },
+    /** Delay in milliseconds between a valid key press and the next segment showing. */
+    inter_word_interval: {
+      type: ParameterType.INT,
+      default: 0,
+    },
   },
   data: {
     /** The individual segments that are displayed per key press. */
@@ -168,8 +173,6 @@ class SprPlugin implements JsPsychPlugin<Info> {
     // setup styles and trial parameters
     var css = this.initializeVariables(trial);
 
-    console.log(this.readingString);
-
     // setup html logic
     var html = `<p id="jspsych-spr-content">${this.generateDisplayString()}</p>`;
     display_element.innerHTML = css + html;
@@ -235,7 +238,16 @@ class SprPlugin implements JsPsychPlugin<Info> {
     this.index = trial.show_first_blank ? -1 : 0;
 
     this.jsPsych.pluginAPI.getKeyboardResponse({
-      callback_function: (info) => this.onValidKeyPress(info),
+      callback_function: (info) => {
+        const keyTime = performance.now();
+        const iwi = this.index === -1 ? 0 : trial.inter_word_interval;
+        if (keyTime - this.startTime > iwi) {
+          if (this.index === -1)
+            this.addDataPoint(this.generateBlank(this.readingString[0]), info.key);
+          else this.addDataPoint(this.readingString[this.index], info.key);
+          this.onValidKeyPress();
+        }
+      },
       valid_responses: trial.choices,
       rt_method: "performance",
       persist: true,
@@ -356,10 +368,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
   }
 
   /** updates sentence, mask array, and index before regenerating display string */
-  private onValidKeyPress(info?: any) {
-    if (this.index === -1) this.addDataPoint(this.generateBlank(this.readingString[0]), info.key);
-    else this.addDataPoint(this.readingString[this.index], info.key);
-
+  private onValidKeyPress() {
     this.index++;
     if (this.index >= this.readingString.length) {
       this.endTrial();

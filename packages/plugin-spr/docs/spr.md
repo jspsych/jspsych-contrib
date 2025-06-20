@@ -19,6 +19,7 @@ In addition to the [parameters available in all plugins](https://jspsych.org/lat
 | mask_character | string | `""` | If this character is not an empty string, it will fill the masked segments of the stimulus. This can be multiple characters, and will be repeated to fill the entire segment. It is important to note, this will force all text to be monospaced in order to ensure alignment. |
 | mask_underline | bool | `true` | If `true`, the masked segments will be underlined. It's recommended to only make this `false` if the `mask_character` is not an empty string, as it will be difficult for participants to distinguish between the masked and unmasked segments. |
 | choices | array of keys | `[" "]` | This array contains the key(s) that the participant is allowed to press in order to advance to the next chunk. Keys should be specified as characters (e.g., `'a'`, `'q'`, `' '`, `'Enter'`, `'ArrowDown'`) - see [this page](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values) and [this page (event.key column)](https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/) for more examples. Any key presses that are not listed in the array will be ignored. The value of `"ALL_KEYS"` means that all keys will be accepted as valid responses. |
+| inter_word_interval | numeric | 0 | Delay in milliseconds between a valid key press and the next segment showing. |
 
 ## Data Generated
 
