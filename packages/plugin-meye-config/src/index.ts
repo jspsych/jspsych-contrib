@@ -54,6 +54,12 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     console.log("TensorFlow.js version: " + tf.version.tfjs);
 
+    // Stop the jsPsych stylesheet from interfering with the plugin (this is added back later)
+    const link = document.querySelector('link[href*="jspsych.css"]');
+    if (link) {
+      link.remove();
+    }
+
     const passedPerformanceCheck = new Event("passedPerformanceCheck", { bubbles: true });
     const passedSetup2 = new Event("passedSetup2", { bubbles: true });
     const exit = new Event("exit", { bubbles: true });
@@ -126,6 +132,15 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       });
 
       mainDisplayElement.addEventListener("passedSetup2", () => {
+        // Return the stylesheet we removed for the plugin
+        if (link) {
+          const returnedCSS = document.createElement("link");
+          returnedCSS.rel = "stylesheet";
+          returnedCSS.type = "text/css";
+          returnedCSS.href = "https://app.unpkg.com/jspsych@8.2.1/files/css/jspsych.css";
+          document.head.appendChild(link);
+        }
+
         for (const [key, value] of Object.entries(this.jsPsych.extensions)) {
           if (key == "meye-extension") {
             (value as any)
@@ -781,7 +796,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
             pupilAreaBefore != undefined &&
             Math.abs(0.5 - pupilAreaBefore / (pupilAreaBefore + pupilArea)) >= paTriggerDiff
           ) {
-            warning.innerHTML = `The red overlay is varying so much in size that you should check if it got calibrated proprely.`;
+            warning.innerHTML = `The red overlay is varying so much in size that you should check if it got calibrated properly.`;
           }
 
           pupilAreaBefore = pupilArea;
@@ -945,18 +960,17 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
     function postPerformanceCheck() {
       if (trial.auto_calibrate) {
-        infoBox.innerHTML = `<h4>Step 1: Get as close as possible to the screen, but make sure that you can still see its corners without moving your head and that your webcam can still see an eye. It may help to rest your chin on your hand.</h4>
-									<h4>Step 2: Resize and reposition the red-edged square so that it covers your eyeball without extending past your plica semilunaris. The input preview and image to the side can help. It doesn't have to be perfect, and it's normal for the preview to be a still image when not calibrating.</h4> 
-									<h4>Step 3: Change your positioning if you see a white reflection in your <i>pupil</i>. This can be avoided if light comes from the side, rather than the front.</h4>
+        infoBox.innerHTML = `<br /><b>Step 1:</b> Get as close as possible to the screen, but ensure that you can still see its corners without moving your head and that your webcam can see an eye.<br /><br />
+									<b>Step 2:</b> Resize and reposition the red-edged square so that it covers the eyeball without extending past the plica semilunaris. It doesn't have to be perfect.<br /><br />
+									<b>Step 3:</b> Change your positioning if you see a white reflection in your <i>pupil</i>. This can be avoided if light comes from the side, rather than the front.<br />
 									<p>Red-edged box settings:</p>
 									<form>
 										<input type='button' id='invert-gui-btn' value='Hide / show box dragger and resizer'> 
 										<input type='button' id='freeze-btn' value='Freeze / unfreeze box position' disabled>
 									</form>
-									<p>Calibration can be reattempted. After you click calibrate below, do not blink nor try to look around while the completion percent rises, and ensure that you are comfortably positioned. Although unlikely, your camera's software may allow you to zoom in or adjust brightness.</p>
-									<p>From the moment that calibration starts to the end of participation, the experiment requires that you keep your head and camera as still as possible, and your lighting as constant as possible.</p>
+									<p>After you click calibrate below, try not to blink nor look around while the completion percent rises. Ensure that you are comfortably positioned. Your camera's software may allow you to zoom in or adjust brightness. From the moment that calibration starts to the end of participation, please keep your head and camera as still as possible, and your lighting as constant as possible.</p>
 									<form>
-										<input type='checkbox' id='rule-confirm'>Okay!<br>
+										<input type='checkbox' id='rule-confirm'>Okay!&nbsp;
 										<input type='button' id='calibrate-btn' value='Calibrate' disabled> 
 										<input type='button' id='continue-btn' value='Continue' disabled>
 									</form>
@@ -966,20 +980,20 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
         calibrateBtn = document.getElementById("calibrate-btn");
         calibrateBtn.addEventListener("click", startCalibration);
       } else {
-        infoBox.innerHTML = `<h4>Step 1: Get as close as possible to the screen, but make sure that you can still see its corners without moving your head and that your webcam can still see an eye. It may help to rest your chin on your hand.</h4>
-									<h4>Step 2: Resize and reposition the red-edged square so that it covers your eyeball without extending past your plica semilunaris. The input preview and image to the side can help. It doesn't have to be perfect, and it's normal for the preview to be a still image when not calibrating.</h4> 
-									<h4>Step 3: Change your positioning if you see a white reflection in your <i>pupil</i>. This can be avoided if light comes from the side, rather than the front.</h4>
+        infoBox.innerHTML = `<br /><b>Step 1:</b> Get as close as possible to the screen, but ensure that you can still see its corners without moving your head and that your webcam can see an eye.<br /><br />
+									<b>Step 2:</b> Resize and reposition the red-edged square so that it covers the eyeball without extending past the plica semilunaris. It doesn't have to be perfect.<br /><br />
+									<b>Step 3:</b> Change your positioning if you see a white reflection in your <i>pupil</i>. This can be avoided if light comes from the side, rather than the front.<br />
 									<p>Red-edged box settings:</p>
 									<form>
 										<input type='button' id='invert-gui-btn' value='Hide / show box dragger and resizer'> 
-										<input type='button' id='freeze-btn' value='Freeze / unfreeze box position'>
+										<input type='button' id='freeze-btn' value='Freeze / unfreeze box position' disabled>
 									</form>
-									<p>Ensure that you're comfortably positioned. Although unlikely, your camera's software may allow you to zoom in or adjust brightness.</p>
-									Input a number or use the slider to change the sensitivity of pupil detection:<br><input type="number" min="0" max="1" step="0.01" value="0.01" id="control-thr-preview">
-									<input type="range" min="0" max="1" step="0.01" id="control-thr"><br>
-									<p>After you've configured the settings as best as you can, the experiment requires that you keep your head and camera as still as possible, and your lighting as constant as possible.</p>
+									<p>Ensure that you're comfortably positioned. Your camera's software may allow you to zoom in or adjust brightness.	Input a number or use the slider to change the sensitivity of pupil detection:</p>
+									<input type="number" min="0.01" max="0.99" step="0.01" value="0.01" id="control-thr-preview">
+									<input type="range" min="0.01" max="0.99" step="0.01" id="control-thr"><br>
+									<p>After configuring the settings until the end of participation, please keep your head and camera as still as possible, and your lighting as constant as possible.</p>
 									<form>
-										<input type='checkbox' id='rule-confirm'>Okay!<br>
+										<input type='checkbox' id='rule-confirm'>Okay!&nbsp;
 										<input type='button' id='continue-btn' value='Continue' disabled>
 									</form>
 									<p id='freeze-warning' style="color: red"></p>`;
@@ -990,20 +1004,20 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
         // I used 1 - threshold in the following code and event handlers so that the GUI presents participants with increasing numbers = increasing sensitivity since I thought this would be more intuitive
         controlThrPreview.value = controlThr.value = 1 - threshold;
 
+        // Setting threshold to 0 (i.e., the GUI to 1) or vice-versa crashes the software even with the original meye (when morphology is enabled, which it is for js-mEye), so the following conditional safeguards against this.
         controlThrPreview.addEventListener("input", (e) => {
-          // Setting threshold to 0 (i.e., the GUI to 1) crashes the software even with the original meye (when morphology is enabled, which it is for js-mEye), so the following conditional safeguards against this.
           if (e.target.value > 0.99) {
             e.target.value = 0.99;
+          } else if (e.target.value < 0.01) {
+            e.target.value = 0.01;
           }
+
           controlThr.value = e.target.value;
           threshHolder = 1 - e.target.value;
           setThreshold();
         });
 
         controlThr.addEventListener("input", (e) => {
-          if (e.target.value > 0.99) {
-            e.target.value = 0.99;
-          }
           controlThrPreview.value = e.target.value;
           threshHolder = 1 - e.target.value;
           setThreshold();
@@ -1105,9 +1119,9 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
         phaseOneInfoDiv.innerHTML = "<b>Calibration complete</b>";
         completeMessage.innerHTML = `<b>You may blink again.</b> Without moving your head, please check if: 
-											<ul><li>There is a red dot covering your pupil in the video feed (you may have to click the button that temporarily hides the dragger and resizer),</li>
-											<li>The dot isn't jumping around,</li><li>The dot doesn't leak over your iris.</li></ul>
-											If the above are not met, you will need to recalibrate. Otherwise, continue without resizing or repositioning the red box.`;
+											<ul><li>There is a red dot covering your pupil in the video feed (you may have to temporarily hides the dragger and resizer),</li>
+											<li>The dot isn't jumping around,</li><li>The dot doesn't leak into your iris.</li></ul>
+											If the above are not met, you should recalibrate. Otherwise, please continue.`;
         calibrationSuccess = calibrated = true;
       }
 
