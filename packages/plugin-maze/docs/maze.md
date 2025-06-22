@@ -20,7 +20,7 @@ specified. Other parameters can be left unspecified if the default value is acce
 | `keys`                | `{left: string, right: string}` | `{left: "f", right: "j"}` | The choice/navigation keys.                                                                                                      |
 | `position_left`       | `{x: number?, y: number?}`      | `{x: null, y: null}`      | The position of the left word. A null `x` is set to 1/3 of the canvas' width and null `y` is set to half of the canvas' height.  |
 | `position_right`      | `{x: number?, y: number?}`      | `{x: null, y: null}`      | The position of the right word. A null `x` is set to 2/3 of the canvas' width and null `y` is set to half of the canvas' height. |
-| `pre_answer_interval` | `number`                        | `0`                       | The minimum time (in ms) before the subject is allowed to chose a word.                                                          |                                            |
+| `pre_answer_interval` | `number`                        | `0`                       | The minimum time (in ms) before the subject is allowed to chose a word.                                                          |
 
 ## Data Generated
 
@@ -28,10 +28,10 @@ In addition to the [default data collected by all
 plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this
 plugin collects the following data for each trial.
 
-| Name       | Type                                                                                        | Value                                                                     |
-|------------|---------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
-| `sentence` | `string`                                                                                    | The sentence used in the trial (joined with spaces)                       |
-| `events`   | `Array<{correct: boolean, foil: string, rt: number, side: "left" | "right", word: string}>` | The parameters, choice and interaction time for each word of the sentence |
+| Name       | Type                                                                                         | Value                                                                     |
+|------------|----------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| `sentence` | `string`                                                                                     | The sentence used in the trial (joined with spaces)                       |
+| `events`   | `Array<{correct: boolean, foil: string, rt: number, side: "left" \| "right", word: string}>` | The parameters, choice and interaction time for each word of the sentence |
 
 ## Install
 

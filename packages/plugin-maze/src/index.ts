@@ -49,7 +49,7 @@ const info = <const>{
     /** The minimum time (in ms) before the subject is allowed to chose a word. */
     pre_answer_interval: {
       type: ParameterType.INT,
-      pretty_name: "Waiting time",
+      pretty_name: "Pre-answer Interval",
       default: 0,
     },
   },
