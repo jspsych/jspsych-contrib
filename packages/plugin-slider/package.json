@@ -49,6 +49,7 @@
   "devDependencies": {
     "@jspsych/config": "^3.2.2",
     "@jspsych/test-utils": "^1.0.0",
+    "husky": "^7.0.4",
     "tsup": "^8.5.0"
   }
 }
