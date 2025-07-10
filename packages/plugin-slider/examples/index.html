@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych@8.2.1"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css" rel="stylesheet" type="text/css">
+  <style>
+    body {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych();
+
+  // Basic trial with all parameters explicitly set
+  const basicTrial = {
+    type: jsPsychPluginSlider,
+    color: 'purple',
+    direction: 'left-to-right',
+    object_sliding: 'round',
+    length: 300,
+    orientation: 'horizontal',
+    width: 60,
+    animation: 'smooth',
+    prompt: '<h2>Welcome to the Experiment</h2>',
+    slider_text: 'Slide to continue',
+    duration: null
+  };
+
+  // Run the experiment
+  jsPsych.run([
+    basicTrial
+  ]);
+</script>
+
+</html>
