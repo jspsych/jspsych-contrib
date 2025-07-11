@@ -379,12 +379,6 @@ describe("SliderResponsePlugin", () => {
 
   describe("Integration with Other Elements", () => {
     it("should work with other elements on the page", async () => {
-      // Add some elements to the page
-      const extraDiv = document.createElement('div');
-      extraDiv.id = 'extra-content';
-      extraDiv.innerHTML = '<p>Extra content</p>';
-      document.body.appendChild(extraDiv);
-
       const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
         {
           type: jsPsychPluginSlider,
@@ -392,8 +386,15 @@ describe("SliderResponsePlugin", () => {
         },
       ]);
 
+      // Add some elements to the page after startTimeline
+      const extraDiv = document.createElement('div');
+      extraDiv.id = 'extra-content';
+      extraDiv.innerHTML = '<p>Extra content</p>';
+      document.body.appendChild(extraDiv);
+
       // Check that both slider and extra content exist
       expect(document.getElementById('extra-content')).toBeTruthy();
+      // Check that the slider rendered properly within jsPsych's display area
       expect(getHTML()).toContain('jspsych-slider-response-wrapper');
       expect(getHTML()).toContain('Slider with other elements');
 
