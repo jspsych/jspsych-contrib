@@ -1,41 +1,32 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+title: jspsych-plugin-slider
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
 authors:
-- family-names: "Vishnu Lakshman"  # Replace with last name
-  given-names: "Vishnu Lakshman"   # Replace with first name
-  name-particle: "Vishnu Lakshman" # Replace with name particle(s)
-  orcid: "https://orcid.org/0000-0000-0000-0000"  # Replace with ORCID
-# More  authors can be listed here in the same format as above
-contact:  # Contact person for this extension
-- family-names: "Vishnu Lakshman"
-  given-names: "Vishnu Lakshman"
-  email: "{email}"          # Replace with contact person's email
-  orcid: "https://orcid.org/0000-0000-0000-0000"  # Replace with contact person's ORCID
-title: "jsPsychPluginSlider"
-version: 0.0.0
-doi: 10.5281/zenodo.1234    # Replace with DOI
-date-released: 2000-01-01
-url: "{softwareUrl}"        # Replace with URL to this extension
-
-# If you wish to cite a paper on this extension instead, you can use the following template:
-preferred-citation:
-  authors:
-  - family-names: "Vishnu Lakshman"
-    given-names: "Vishnu Lakshman"
-    name-particle: "Vishnu Lakshman"
-    orcid: "https://orcid.org/0000-0000-0000-0000"
-  # More authors can be listed here in the same format as above
-  date-published: 2023-05-11
-  doi: 10.21105/joss.12345 
-  issn: 1234-5678
-  issue: 01
-  journal: Journal for Open Source Software
-  publisher:
-    name: Open Journals
-  start: 0001
-  title: "{title}"
-  type: article               # Other options include: book, pamphlet, conference-paper...
-  url: "{linkToPublicationInJournal}"
-  volume: 1
-
-# More information on the preffered-citation CFF format can be found at https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-citation-files#citing-something-other-than-software
+  - given-names: Vishnu
+    family-names: Lakshman
+    email: vlakshman@vassar.edu
+    affiliation: De Leeuw Lab - Vassar College
+repository-code: >-
+  https://github.com/lakshmanvishnu/jspsych-contrib/tree/slider_plugin/packages/plugin-slider
+abstract: >-
+  The plugin-slider is a jspsych plugin that creates an
+  interactive slider interface similar to the "slide to
+  unlock" functionality found on mobile devices. Users must
+  drag a slider handle to complete the trial, making it
+  useful for consent screens, engagement checks, or
+  transition screens in psychological experiments.
+keywords:
+  - jspsych
+  - plugin
+  - slider
+  - jspsych-contrib
+license: MIT
+commit: First release
+version: 1.0.0
+date-released: '2025-07-14'
