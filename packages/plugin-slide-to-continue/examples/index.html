@@ -16,7 +16,7 @@
 <script>
   const jsPsych = initJsPsych();
 
-  // Basic trial with all parameters explicitly set
+  // Basic trial with single line text
   const basicTrial = {
     type: jsPsychPluginSlider,
     color: 'purple',
@@ -27,12 +27,14 @@
     width: 60,
     prompt: '<h2>Welcome to the Experiment</h2>',
     slider_text: 'Slide to continue',
+    text_size: 16,
     duration: null
   };
 
+
   // Run the experiment
   jsPsych.run([
-    basicTrial
+    basicTrial,
   ]);
 </script>
 

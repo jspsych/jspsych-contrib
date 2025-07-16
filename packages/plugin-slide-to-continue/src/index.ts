@@ -75,6 +75,14 @@ const info = <const>{
       default: "Slide to continue",
     },
     /**
+     * The font size of the slider text in pixels.
+     */
+    text_size: {
+      type: ParameterType.INT,
+      pretty_name: "Text size",
+      default: 16,
+    },
+    /**
      * How long to show trial before it ends.
      */
     duration: {
@@ -153,7 +161,8 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
 
     html += `<div id="jspsych-slider-response-track" style="${trackStyle}">`;
 
-    // Add slider text
+    // Add slider text with multi-line support
+    const textLines = trial.slider_text.split(',').map(line => line.trim());
     const textStyle = `
       position: absolute;
       ${isHorizontal ? 'left' : 'top'}: 50%;
@@ -164,9 +173,14 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
       user-select: none;
       pointer-events: none;
       z-index: 1;
+      text-align: center;
+      line-height: 1.2;
+      max-width: 90%;
+      overflow: hidden;
     `;
 
-    html += `<div id="jspsych-slider-response-text" style="${textStyle}">${trial.slider_text}</div>`;
+    const textContent = textLines.map(line => `<div>${line}</div>`).join('');
+    html += `<div id="jspsych-slider-response-text" style="${textStyle}; font-size: ${trial.text_size}px;">${textContent}</div>`;
 
     // Create progress fill
     const fillStyle = `
@@ -208,6 +222,7 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     this.sliderTrack = display_element.querySelector('#jspsych-slider-response-track');
     const sliderFill = display_element.querySelector<HTMLElement>('#jspsych-slider-response-fill');
     const sliderText = display_element.querySelector<HTMLElement>('#jspsych-slider-response-text');
+
 
     // Set up event handlers
     const handleStart = (e: MouseEvent | TouchEvent) => {
