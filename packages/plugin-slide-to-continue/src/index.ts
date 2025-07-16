@@ -185,11 +185,13 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     // Create progress fill
     const fillStyle = `
       position: absolute;
-      ${isHorizontal ? 'left' : 'top'}: 0;
       ${isHorizontal ? 'top' : 'left'}: 0;
-      ${isHorizontal ? 'width' : 'height'}: 0%;
       ${isHorizontal ? 'height' : 'width'}: 100%;
       background-color: ${this.hexToRgba(trial.color, 0.6)};
+      ${trial.direction === "left-to-right"
+        ? `${isHorizontal ? 'left' : 'top'}: 0; ${isHorizontal ? 'width' : 'height'}: 0;`
+        : `${isHorizontal ? 'right' : 'bottom'}: 0; ${isHorizontal ? 'width' : 'height'}: 0;`
+      }
     `;
 
     html += `<div id="jspsych-slider-response-fill" style="${fillStyle}"></div>`;
@@ -263,12 +265,21 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
         this.sliderHandle.style.top = `${pos}px`;
       }
 
-      // Update fill
-      const fillPercent = trial.direction === "left-to-right" ? this.currentPosition : 100 - this.currentPosition;
-      if (isHorizontal) {
-        sliderFill.style.width = `${fillPercent}%`;
+      // Update fill to follow the handle
+      if (trial.direction === "left-to-right") {
+        if (isHorizontal) {
+          sliderFill.style.width = `${pos + handleSize / 2}px`;
+        } else {
+          sliderFill.style.height = `${pos + handleSize / 2}px`;
+        }
       } else {
-        sliderFill.style.height = `${fillPercent}%`;
+        if (isHorizontal) {
+          sliderFill.style.left = `${pos + handleSize / 2}px`;
+          sliderFill.style.width = `${trial.length - pos - handleSize / 2}px`;
+        } else {
+          sliderFill.style.top = `${pos + handleSize / 2}px`;
+          sliderFill.style.height = `${trial.length - pos - handleSize / 2}px`;
+        }
       }
 
       // Fade text based on progress
@@ -291,10 +302,18 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
           const initialPos = trial.direction === "left-to-right" ? 4 : maxPos;
           if (isHorizontal) {
             this.sliderHandle.style.left = `${initialPos}px`;
-            sliderFill.style.width = '0%';
+            sliderFill.style.width = '0px';
+            if (trial.direction === "right-to-left") {
+              sliderFill.style.left = '';
+              sliderFill.style.right = '0';
+            }
           } else {
             this.sliderHandle.style.top = `${initialPos}px`;
-            sliderFill.style.height = '0%';
+            sliderFill.style.height = '0px';
+            if (trial.direction === "right-to-left") {
+              sliderFill.style.top = '';
+              sliderFill.style.bottom = '0';
+            }
           }
           sliderText.style.opacity = '1';
           this.currentPosition = 0;
@@ -363,12 +382,23 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     const completionPos = trial.direction === "left-to-right" ? maxPos : 4;
     
     // Set completion animation
+    // Set completion animation
     if (isHorizontal) {
       this.sliderHandle.style.left = `${completionPos}px`;
-      sliderFill.style.width = '100%';
+      if (trial.direction === "left-to-right") {
+        sliderFill.style.width = `${trial.length}px`;
+      } else {
+        sliderFill.style.left = '0';
+        sliderFill.style.width = `${trial.length}px`;
+      }
     } else {
       this.sliderHandle.style.top = `${completionPos}px`;
-      sliderFill.style.height = '100%';
+      if (trial.direction === "left-to-right") {
+        sliderFill.style.height = `${trial.length}px`;
+      } else {
+        sliderFill.style.top = '0';
+        sliderFill.style.height = `${trial.length}px`;
+      }
     }
     
     // Fade out text completely
