@@ -12,12 +12,18 @@
 
   <body></body>
   <script>
-    const jsPsych = initJsPsych();
+    const jsPsych = initJsPsych(
+      {
+        on_finish: function() {
+          jsPsych.data.displayData();
+        }
+      }
+    );
 
     // N-back task parameters
     const n_back_level = 1;
     const total_trials = 10;
-    const target_percentage = 50;
+    const target_percentage = 0;
     const rows = 3;
     const cols = 3;
 
@@ -82,13 +88,11 @@
         stimulus_row: sequence.positions[i].row,
         stimulus_col: sequence.positions[i].col,
         is_target: sequence.is_target[i],
-        stimulus_duration: 750,
+        stimulus_duration: 1000,
         isi_duration: 1000,
         feedback_duration: 1000,
         show_feedback_text: true,
         show_feedback_border: true,
-        show_feedback_no_click: true,
-        feedback_wait_no_click: true,
         cell_size: 125,
         instructions: `Click MATCH when the position matches the one from ${n_back_level} trial(s) ago (Trial ${i + 1} of ${total_trials})`,
         button_text: "MATCH",

@@ -21,15 +21,15 @@ const info = <const>{
         type: ParameterType.INT,
         default: 125,
       },
-      /** Row position of the stimulus (0-indexed) */
+      /** Row position of the stimulus (0-indexed). If null, no stimulus is shown. */
       stimulus_row: {
         type: ParameterType.INT,
-        default: 0,
+        default: null,
       },
-      /** Column position of the stimulus (0-indexed) */
+      /** Column position of the stimulus (0-indexed). If null, no stimulus is shown. */
       stimulus_col: {
         type: ParameterType.INT,
-        default: 0,
+        default: null,
       },
       /** Whether this trial is a target trial */
       is_target: {
@@ -50,7 +50,7 @@ const info = <const>{
       /** Duration of feedback display (ms) */
       feedback_duration: {
         type: ParameterType.INT,
-        default: 500,
+        default: 0,
       },
       /** Whether to show feedback "Incorrect! (231ms)" after response */
       show_feedback_text: {
@@ -59,17 +59,6 @@ const info = <const>{
       },
       /** Whether to show feedback border around the grid */
       show_feedback_border: {
-        type: ParameterType.BOOL,
-        default: true,
-      },
-      /** Whether to show feedback when there is no response, will whichever feedback options are enabled (border or text) */
-      show_feedback_no_click: {
-        type: ParameterType.BOOL,
-        default: true,
-      },
-      /** Whether to wait for feedback duration before ending trial when no response */
-      /** if using feedback_duration as interstimulus response, keep this true */
-      feedback_wait_no_click: {
         type: ParameterType.BOOL,
         default: true,
       },
@@ -158,9 +147,12 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       throw new Error("Grid dimensions must be positive integers. Rows and cols must be greater than 0.");
     }
     
-    if (trial.stimulus_row >= trial.rows || trial.stimulus_col >= trial.cols) {
-      console.log('About to throw position error'); // Add this line
-      throw new Error(`Stimulus position (${trial.stimulus_row}, ${trial.stimulus_col}) is outside grid bounds (${trial.rows}x${trial.cols}).`);
+    // Only validate stimulus position if both row and col are not null
+    if (trial.stimulus_row !== null && trial.stimulus_col !== null) {
+      if (trial.stimulus_row >= trial.rows || trial.stimulus_col >= trial.cols) {
+        console.log('About to throw position error'); // Add this line
+        throw new Error(`Stimulus position (${trial.stimulus_row}, ${trial.stimulus_col}) is outside grid bounds (${trial.rows}x${trial.cols}).`);
+      }
     }
 
     let trial_start_time: number;
@@ -170,9 +162,12 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
     let isi_timeout: number;
     let stimulus_hidden = false; // Track if stimulus has been hidden
 
-    // Generate random position if not specified
-    const stimulus_row = trial.stimulus_row ?? Math.floor(Math.random() * trial.rows);
-    const stimulus_col = trial.stimulus_col ?? Math.floor(Math.random() * trial.cols);
+    // Determine if stimulus should be shown
+    const show_stimulus = trial.stimulus_row !== null && trial.stimulus_col !== null;
+    
+    // Use specified positions or null if not showing stimulus
+    const stimulus_row = show_stimulus ? trial.stimulus_row : null;
+    const stimulus_col = show_stimulus ? trial.stimulus_col : null;
 
     const createDisplay = (): void => {
       
@@ -306,137 +301,178 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
     };
 
     const startTrial = (): void => {
-      // Show stimulus
-      const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-      cell.style.backgroundColor = trial.stimulus_color;
+      // PHASE 1: STIMULUS DISPLAY
+      // Show stimulus only if positions are defined (null positions = empty grid)
+      if (show_stimulus) {
+        const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
+        cell.style.backgroundColor = trial.stimulus_color;
+      }
 
-      // Enable response
+      // TRIAL INITIALIZATION:
+      // Enable response collection and record trial start time
       response_allowed = true;
       trial_start_time = performance.now();
       stimulus_hidden = false;
       
+      // Enable response button for user interaction
       const responseButton = document.getElementById('nback-response-btn') as HTMLButtonElement;
       responseButton.disabled = false;
 
-      // Set timeout to hide stimulus
+      // PHASE 1 TIMEOUT: Hide stimulus after stimulus_duration
+      // This starts the ISI (Inter-Stimulus Interval) phase
       stimulus_timeout = window.setTimeout(() => {
-        cell.style.backgroundColor = 'white';
+        if (show_stimulus) {
+          const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
+          cell.style.backgroundColor = 'white';
+        }
+        // Signify end of stimulus phase
         stimulus_hidden = true;
         
-        // Set timeout for ISI
+        // PHASE 2: ISI (Inter-Stimulus Interval) 
+        // After ISI duration, handle cases where no response was given
         isi_timeout = window.setTimeout(() => {
-          if (response_allowed && !response_given) {
-            handleNoResponse();
-          }
+          handleNoResponse(); // Let handleNoResponse() do its own validation
         }, trial.isi_duration);
       }, trial.stimulus_duration);
     };
 
     const handleResponse = (): void => {
+      // RESPONSE VALIDATION:
+      // Only process if response is allowed and hasn't been given yet
       if (!response_allowed || response_given) return;
 
+      // RESPONSE PROCESSING:
+      // Disable further responses and record response time
       response_allowed = false;
       response_given = true;
       const response_time = performance.now() - trial_start_time;
-      const is_correct = trial.is_target;
+      
+      // CORRECTNESS LOGIC:
+      // If stimulus positions are null (empty grid), responding is always incorrect
+      // If stimulus is shown, correctness depends on is_target parameter
+      const is_correct = show_stimulus ? trial.is_target : false;
 
-      // Clear timeouts
+      // TIMING CLEANUP:
+      // Clear any pending timeouts since user responded
+      // Now, remaining timeouts will be handled in showFeedback()
       clearTimeout(stimulus_timeout);
       clearTimeout(isi_timeout);
 
-      // Show feedback with appropriate timing
+      // PHASE 3: FEEDBACK
+      // Show feedback with appropriate timing (made_response = true)
       showFeedback(is_correct, response_time, true);
     };
 
     const handleNoResponse = (): void => {
+      // NO RESPONSE VALIDATION:
+      // Only process if response was allowed and hasn't been given yet
       if (!response_allowed || response_given) return;
 
+      // NO RESPONSE PROCESSING:
+      // Mark that trial is complete without response
       response_allowed = false;
       response_given = true;
-      const is_correct = !trial.is_target;
+      
+      // CORRECTNESS LOGIC:
+      // If stimulus positions are null (empty grid), not responding is always correct
+      // If stimulus is shown, correctness is opposite of is_target (correct to not respond to non-targets)
+      const is_correct = show_stimulus ? !trial.is_target : true;
 
+      // PHASE 3: FEEDBACK
+      // Show feedback with appropriate timing (made_response = false)
       showFeedback(is_correct, null, false);
     };
 
     const showFeedback = (is_correct: boolean, response_time: number | null, made_response: boolean): void => {
-      // If no feedback is shown, handle timing appropriately
-      if (!trial.show_feedback_text && !trial.show_feedback_border) {
-        if (made_response && !stimulus_hidden) {
-          // Response during stimulus - wait for stimulus + feedback duration, then ISI
-          const elapsed_time = performance.now() - trial_start_time;
-          const remaining_stimulus_time = Math.max(0, trial.stimulus_duration - elapsed_time);
-          const feedback_wait_time = remaining_stimulus_time + trial.feedback_duration;
-          
-          setTimeout(() => {
-            // Hide stimulus after the combined time
-            const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-            cell.style.backgroundColor = 'white';
-            
-            // Wait for ISI duration before ending trial
-            setTimeout(() => {
-              endTrial(is_correct, response_time, made_response);
-            }, trial.isi_duration);
-          }, feedback_wait_time);
-        } else {
-          // Response during ISI or no response - end immediately
-          endTrial(is_correct, response_time, made_response);
-        }
-        return;
-      }
-
-      // Disable the button during feedback
-      const button = document.getElementById('nback-response-btn') as HTMLButtonElement;
-      button.disabled = true;
-      button.style.opacity = '0.6';
-
-      // Calculate total feedback duration based on when response occurred
-      let total_feedback_duration: number;
+      // TIMING CALCULATION:
+      // Calculate how much time has elapsed since trial start to determine remaining time
+      const elapsed_time = performance.now() - trial_start_time;
       
-      if (made_response && !stimulus_hidden) {
-        // Response during stimulus - show feedback for stimulus + feedback duration
-        const elapsed_time = performance.now() - trial_start_time;
-        const remaining_stimulus_time = Math.max(0, trial.stimulus_duration - elapsed_time);
-        total_feedback_duration = remaining_stimulus_time + trial.feedback_duration;
-      } else if (made_response && stimulus_hidden) {
-        // Response during ISI - show feedback for remaining ISI + feedback duration
-        const elapsed_time = performance.now() - trial_start_time;
-        const isi_start_time = trial.stimulus_duration;
-        const elapsed_isi_time = elapsed_time - isi_start_time;
-        const remaining_isi_time = Math.max(0, trial.isi_duration - elapsed_isi_time);
-        total_feedback_duration = remaining_isi_time + trial.feedback_duration;
-      } else {
-        // No response - use standard feedback duration if configured
-        if (trial.feedback_wait_no_click) {
-          total_feedback_duration = trial.feedback_duration;
-        } else {
-          endTrial(is_correct, response_time, made_response);
-          return;
+      // TOTAL TRIAL DURATION:
+      // Each trial has 3 phases: stimulus display + ISI + feedback
+      // Total time = stimulus_duration + isi_duration + feedback_duration
+      const total_trial_time = trial.stimulus_duration + trial.isi_duration + trial.feedback_duration;
+      
+      // REMAINING TIME:
+      // Calculate how much time is left until trial should end
+      // This ensures consistent trial timing regardless of when response occurs
+      const remaining_time = Math.max(0, total_trial_time - elapsed_time);
+
+      // BUTTON DISABLING:
+      // Always disable button after any response to prevent further clicks
+      // OR during feedback duration to show user can't respond during feedback
+      if (made_response || trial.feedback_duration > 0) {
+        const button = document.getElementById('nback-response-btn') as HTMLButtonElement;
+        if (button) {
+          button.disabled = true;
+          button.style.opacity = '0.6';
         }
       }
 
-      // If there is no response and feedback must not be shown for no response
-      if (response_time === null && !trial.show_feedback_no_click) {
-        if (trial.feedback_wait_no_click) {
-          setTimeout(() => {
-            endTrial(is_correct, response_time, made_response);
-          }, total_feedback_duration);
-        } else {
-          endTrial(is_correct, response_time, made_response);
+      // NO FEEDBACK CASE:
+      // If neither feedback text nor border is enabled, skip feedback display
+      if (!trial.show_feedback_text && !trial.show_feedback_border) {
+        
+        // STIMULUS HIDING:
+        // Handle remaining stimulus duration if still showing (user responded within stimulus_duration)
+        if (show_stimulus && !stimulus_hidden) {
+          const stimulus_end_time = trial.stimulus_duration - elapsed_time;
+          if (stimulus_end_time > 0) {
+            setTimeout(() => {
+              const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
+              cell.style.backgroundColor = 'white';
+            }, stimulus_end_time);
+          }
         }
+        
+        // TRIAL ENDING:
+        // Always wait for the full trial duration (rest of ISI + feedback duration)
+        setTimeout(() => {
+          endTrial(is_correct, response_time, made_response);
+        }, remaining_time);
         return;
       }
+
+      // FEEDBACK FLASH PREVENTION:
+      // If feedback_duration is 0 and no response was made, don't show feedback
+      // This prevents a brief flash of feedback when feedback_duration is 0
+      if (trial.feedback_duration === 0 && !made_response) {
+        // STIMULUS HIDING:
+        // Hide stimulus at the right time if still showing
+        if (show_stimulus && !stimulus_hidden) {
+          const stimulus_end_time = trial.stimulus_duration - elapsed_time;
+          if (stimulus_end_time > 0) {
+            setTimeout(() => {
+              const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
+              cell.style.backgroundColor = 'white';
+            }, stimulus_end_time);
+          }
+        }
+        
+        // TRIAL ENDING:
+        // End trial after remaining time without showing feedback
+        setTimeout(() => {
+          endTrial(is_correct, response_time, made_response);
+        }, remaining_time);
+        return;
+      }
+
+      // FEEDBACK DISPLAY:
+      // Show feedback when feedback_duration > 0 OR when response was made
       
       // Initialize feedback elements
       const grid = document.getElementById('nback-grid') as HTMLElement;
       const feedback_div = document.getElementById('nback-feedback') as HTMLElement;
-      const stimulus_cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
+      const stimulus_cell = show_stimulus ? document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement : null;
 
-      // Show border feedback immediately on the grid
+      // BORDER FEEDBACK:
+      // Show colored border around grid immediately
       if (trial.show_feedback_border) {
         grid.style.border = `6px solid ${is_correct ? trial.correct_color : trial.incorrect_color}`;
       }
 
-      // Show text feedback
+      // TEXT FEEDBACK:
+      // Show feedback text with response time if available
       if (trial.show_feedback_text) {
         let feedback_text = is_correct ? 'Correct!' : 'Incorrect!';
         if (response_time !== null) {
@@ -446,40 +482,24 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         feedback_div.style.color = is_correct ? trial.correct_color : trial.incorrect_color;
       }
 
-      // Handle timing based on when response occurred
-      if (made_response && !stimulus_hidden) {
-        // Response during stimulus - keep border and stimulus until stimulus duration ends
-        const elapsed_time = performance.now() - trial_start_time;
-        const remaining_stimulus_time = Math.max(0, trial.stimulus_duration - elapsed_time);
-        
-        // Wait for remaining stimulus time, then hide stimulus but keep border
-        setTimeout(() => {
-          // Hide stimulus but keep the feedback border
-          stimulus_cell.style.backgroundColor = 'white';
-          
-          // Wait for feedback duration + ISI duration before ending trial
+      // STIMULUS HIDING:
+      // Hide stimulus at the right time if still showing
+      if (show_stimulus && !stimulus_hidden) {
+        const stimulus_end_time = trial.stimulus_duration - elapsed_time;
+        if (stimulus_end_time > 0) {
           setTimeout(() => {
-            endTrial(is_correct, response_time, made_response);
-          }, trial.feedback_duration + trial.isi_duration);
-        }, remaining_stimulus_time);
-        
-      } else if (made_response && stimulus_hidden) {
-        // Response during ISI - stimulus already hidden, just wait for remaining time
-        const elapsed_time = performance.now() - trial_start_time;
-        const isi_start_time = trial.stimulus_duration;
-        const elapsed_isi_time = elapsed_time - isi_start_time;
-        const remaining_isi_time = Math.max(0, trial.isi_duration - elapsed_isi_time);
-        
-        setTimeout(() => {
-          endTrial(is_correct, response_time, made_response);
-        }, remaining_isi_time + trial.feedback_duration);
-        
-      } else {
-        // No response - just wait for feedback duration
-        setTimeout(() => {
-          endTrial(is_correct, response_time, made_response);
-        }, total_feedback_duration);
+            if (stimulus_cell) {
+              stimulus_cell.style.backgroundColor = 'white';
+            }
+          }, stimulus_end_time);
+        }
       }
+
+      // TRIAL ENDING:
+      // End trial after remaining time, ensuring consistent total trial duration
+      setTimeout(() => {
+        endTrial(is_correct, response_time, made_response);
+      }, remaining_time);
     };
 
     const endTrial = (is_correct: boolean, response_time: number | null, made_response: boolean): void => {

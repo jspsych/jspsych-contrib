@@ -11,16 +11,14 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | rows                     | int     | 3                                       | Number of rows in the spatial grid                            |
 | cols                     | int     | 3                                       | Number of columns in the spatial grid                         |
 | cell_size                | int     | 125                                     | Size of each cell in pixels, affects size of whole grid       |
-| stimulus_row             | int     | 0                                       | Row position of the stimulus (0-indexed)                      |
-| stimulus_col             | int     | 0                                       | Column position of the stimulus (0-indexed)                   |
+| stimulus_row             | int     | null                                    | Row position of the stimulus (0-indexed). If null, no stimulus is shown. |
+| stimulus_col             | int     | null                                    | Column position of the stimulus (0-indexed). If null, no stimulus is shown. |
 | is_target                | bool    | false                                   | Whether this trial is a target trial                          |
 | stimulus_duration        | int     | 750                                     | Duration the stimulus is displayed (ms)                       |
 | isi_duration             | int     | 1000                                    | Inter-stimulus interval (ms)                                   |
-| feedback_duration        | int     | 500                                     | Duration of feedback display (ms)                             |
+| feedback_duration        | int     | 0                                       | Duration of feedback display (ms)                             |
 | show_feedback_text       | bool    | true                                    | Whether to show feedback with response time after response    |
 | show_feedback_border     | bool    | true                                    | Whether to show feedback border around the grid               |
-| show_feedback_no_click   | bool    | true                                    | Whether to show feedback when there is no response            |
-| feedback_wait_no_click   | bool    | true                                    | Whether to wait for feedback duration before ending trial when no response |
 | button_text              | string  | "MATCH"                                 | Text for the response button                                   |
 | stimulus_color           | string  | "#0066cc"                               | Color of the stimulus square                                   |
 | correct_color            | string  | "#00cc00"                               | Color of correct feedback border                               |
@@ -33,8 +31,8 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 | Name           | Type    | Value                                           |
 | -------------- | ------- | ----------------------------------------------- |
-| stimulus_row   | int     | Row position of the stimulus (0-indexed)       |
-| stimulus_col   | int     | Column position of the stimulus (0-indexed)    |
+| stimulus_row   | int     | Row position of the stimulus (0-indexed), null if no stimulus |
+| stimulus_col   | int     | Column position of the stimulus (0-indexed), null if no stimulus |
 | is_target      | bool    | Whether this trial was a target                |
 | response       | bool    | Whether participant responded                   |
 | response_time  | int     | Response time in milliseconds (null if no response) |
@@ -106,5 +104,18 @@ var trial = {
   show_feedback_text: false,
   show_feedback_border: false,
   button_text: "TARGET"
+}
+```
+
+### Empty Grid Trial
+
+```javascript
+var trial = {
+  type: jsPsychSpatialNback,
+  // stimulus_row and stimulus_col are null by default
+  // This creates an empty grid with no stimulus
+  // For empty grids: responding is always incorrect, not responding is always correct
+  is_target: false,
+  button_text: "MATCH"
 }
 ```

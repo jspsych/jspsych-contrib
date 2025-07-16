@@ -20,6 +20,8 @@ describe("plugin-spatial-nback", () => {
     const { expectFinished, getHTML, getData } = await startTimeline([
       {
         type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,  // Explicitly set to test with stimulus
+        stimulus_col: 0,
       },
     ]);
 
@@ -53,6 +55,8 @@ describe("plugin-spatial-nback", () => {
         type: jsPsychPluginSpatialNback,
         rows: 15,
         cols: 5,
+        stimulus_row: 0,  // Add stimulus for testing
+        stimulus_col: 0,
       },
     ]);
 
@@ -101,6 +105,8 @@ describe("plugin-spatial-nback", () => {
     const { expectFinished, getData } = await startTimeline([
       {
         type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
         is_target: true,
       },
     ]);
@@ -148,6 +154,8 @@ describe("plugin-spatial-nback", () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
         type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
         show_feedback_text: true,
         show_feedback_border: true,
         is_target: true,
@@ -264,6 +272,8 @@ describe("plugin-spatial-nback", () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
         type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
         feedback_duration: 300,
         show_feedback_text: true,
         is_target: true,
@@ -288,6 +298,8 @@ describe("plugin-spatial-nback", () => {
     const { expectFinished } = await startTimeline([
       {
         type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
         stimulus_color: "#123456", // Custom stimulus color
         correct_color: "#abcdef",   // Custom feedback color
         show_feedback_border: true,
@@ -307,56 +319,10 @@ describe("plugin-spatial-nback", () => {
     jest.advanceTimersByTime(2250);
   });
 
-  /**
-   * Test 13: No-Response Feedback Control
-   * Tests the show_feedback_no_click parameter functionality
-   */
-  it("should handle show_feedback_no_click parameter", async () => {
-    const { expectFinished, getHTML } = await startTimeline([
-      {
-        type: jsPsychPluginSpatialNback,
-        show_feedback_no_click: false, // Disable feedback for no response
-        stimulus_duration: 200,
-        isi_duration: 200,
-        is_target: true, // Target trial with no response should show "Incorrect" if feedback enabled
-      },
-    ]);
 
-    // Let trial complete without any response
-    jest.advanceTimersByTime(500);
-
-    // Verify no feedback appears for no-response trial
-    expect(getHTML()).not.toContain("Incorrect!");
-
-    jest.advanceTimersByTime(2250);
-  });
 
   /**
-   * Test 14: No-Response Wait Control  
-   * Tests the feedback_wait_no_click parameter functionality
-   */
-  it("should handle feedback_wait_no_click parameter", async () => {
-    const { expectFinished, getData } = await startTimeline([
-      {
-        type: jsPsychPluginSpatialNback,
-        feedback_wait_no_click: false, // Don't wait for feedback duration on no response
-        stimulus_duration: 200,
-        isi_duration: 200,
-        feedback_duration: 500,
-      },
-    ]);
-
-    // Let trial complete without response
-    jest.advanceTimersByTime(500);
-    await expectFinished();
-
-    // Verify trial ended without waiting for feedback duration
-    const data = getData().values()[0];
-    expect(data.response).toBe(false);
-  });
-
-  /**
-   * Test 15: Incorrect Response Handling
+   * Test 13: Incorrect Response Handling
    * Tests feedback and data collection for incorrect responses
    */
   it("should handle incorrect responses", async () => {
@@ -615,6 +581,8 @@ describe("plugin-spatial-nback", () => {
     const { expectFinished, getData } = await startTimeline([
       {
         type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
         is_target: true,
       },
     ]);
@@ -639,6 +607,8 @@ describe("plugin-spatial-nback", () => {
     const { expectFinished, getData } = await startTimeline([
       {
         type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
         is_target: true,
       },
     ]);
@@ -689,6 +659,8 @@ describe("plugin-spatial-nback", () => {
     const { expectFinished, getData } = await startTimeline([
       {
         type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
         stimulus_duration: 200,
         isi_duration: 300,
         is_target: true,
@@ -917,6 +889,289 @@ describe("plugin-spatial-nback", () => {
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(30);
     await expectFinished();
+  });
+
+  /**
+   * Test 39: Empty Grid - No Stimulus with Null Positions
+   * Tests that when both stimulus_row and stimulus_col are null, an empty grid is shown
+   */
+  it("should show empty grid when stimulus positions are null", async () => {
+    const { expectFinished, getHTML, getData } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        rows: 3,
+        cols: 3,
+        // stimulus_row and stimulus_col are null by default now
+      },
+    ]);
+
+    // Grid should exist but no stimulus should be colored
+    expect(getHTML()).toContain('id="nback-grid"');
+    
+    // Check that all cells are white (no stimulus)
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        const cell = document.getElementById(`cell-${row}-${col}`) as HTMLElement;
+        expect(cell.style.backgroundColor).toBe("white");
+      }
+    }
+
+    // Complete the trial
+    document.getElementById("nback-response-btn")?.click();
+    jest.advanceTimersByTime(1750); // 750ms stimulus + 1000ms ISI
+    await expectFinished();
+
+    // Verify data collected shows null positions
+    const data = getData().values()[0];
+    expect(data.stimulus_row).toBe(null);
+    expect(data.stimulus_col).toBe(null);
+    expect(data.response).toBe(true);
+    expect(data.correct).toBe(false); // Responding to empty grid is always incorrect
+  });
+
+  /**
+   * Test 40: Empty Grid - Target Trial with No Stimulus
+   * Tests that empty grid trials can be marked as target trials
+   */
+  it("should handle target trials with empty grid", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        is_target: true,
+        // stimulus positions null by default
+      },
+    ]);
+
+    // Respond to the empty grid target
+    document.getElementById("nback-response-btn")?.click();
+    jest.advanceTimersByTime(1750); // 750ms stimulus + 1000ms ISI
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.is_target).toBe(true);
+    expect(data.response).toBe(true);
+    expect(data.correct).toBe(false); // Responding to empty grid is always incorrect, even for targets
+    expect(data.stimulus_row).toBe(null);
+    expect(data.stimulus_col).toBe(null);
+  });
+
+  /**
+   * Test 41: Empty Grid - No Response Behavior
+   * Tests that no response to empty grid is handled correctly
+   */
+  it("should handle no response to empty grid", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        is_target: false,
+        stimulus_duration: 200,
+        isi_duration: 200,
+        // stimulus positions null by default
+      },
+    ]);
+
+    // Let trial complete without response
+    jest.advanceTimersByTime(500);
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.response).toBe(false);
+    expect(data.correct).toBe(true); // Not responding to empty grid is always correct
+    expect(data.stimulus_row).toBe(null);
+    expect(data.stimulus_col).toBe(null);
+  });
+
+  /**
+   * Test 42: Empty Grid - Feedback Display
+   * Tests that feedback works correctly with empty grid
+   */
+  it("should show feedback for empty grid trials", async () => {
+    const { expectFinished, getHTML } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        show_feedback_text: true,
+        show_feedback_border: true,
+        is_target: true,
+        // stimulus positions null by default
+      },
+    ]);
+
+    // Respond to trigger feedback
+    document.getElementById("nback-response-btn")?.click();
+    
+    // Check that feedback appears (should be "Incorrect!" since responding to empty grid is always wrong)
+    jest.advanceTimersByTime(50);
+    expect(getHTML()).toContain("Incorrect!");
+    expect(document.getElementById("nback-grid")?.style.border).toContain("#cc0000");
+
+    jest.advanceTimersByTime(1750); // 750ms stimulus + 1000ms ISI
+    await expectFinished();
+  });
+
+  /**
+   * Test 43: ISI Timing - Response During ISI
+   * Tests that full ISI duration is waited even when response occurs during ISI
+   */
+  it("should wait full ISI duration when response occurs during ISI", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
+        stimulus_duration: 100,
+        isi_duration: 500,
+        feedback_duration: 0,
+        is_target: true,
+      },
+    ]);
+
+    // Wait for stimulus to end and start of ISI
+    jest.advanceTimersByTime(150); // 100ms stimulus + 50ms into ISI
+    
+    // Respond during ISI
+    const responseTime = performance.now();
+    document.getElementById("nback-response-btn")?.click();
+    
+    // Should still wait full ISI duration (500ms), not just remaining time
+    jest.advanceTimersByTime(500); // Full ISI duration
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.response).toBe(true);
+    expect(data.correct).toBe(true);
+  });
+
+  /**
+   * Test 44: ISI Timing - Response During ISI with Feedback
+   * Tests that full ISI duration is waited even when response occurs during ISI and feedback is shown
+   */
+  it("should wait full ISI duration when response occurs during ISI with feedback", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
+        stimulus_duration: 100,
+        isi_duration: 500,
+        feedback_duration: 200,
+        show_feedback_text: true,
+        is_target: true,
+      },
+    ]);
+
+    // Wait for stimulus to end and start of ISI
+    jest.advanceTimersByTime(150); // 100ms stimulus + 50ms into ISI
+    
+    // Respond during ISI
+    document.getElementById("nback-response-btn")?.click();
+    
+    // Should wait full ISI duration (500ms) + feedback duration (200ms)
+    jest.advanceTimersByTime(700); // Full ISI + feedback duration
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.response).toBe(true);
+    expect(data.correct).toBe(true);
+  });
+
+  /**
+   * Test 45: Button Disabled After Response
+   * Tests that button is visually disabled after user responds
+   */
+  it("should disable button after response", async () => {
+    const { expectFinished } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
+        feedback_duration: 300,
+        show_feedback_text: false,
+        show_feedback_border: false,
+        is_target: true,
+      },
+    ]);
+
+    // Respond to trigger feedback period
+    document.getElementById("nback-response-btn")?.click();
+    
+    // Check that button is disabled after response
+    jest.advanceTimersByTime(50);
+    const button = document.getElementById("nback-response-btn") as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    expect(button.style.opacity).toBe("0.6");
+
+    jest.advanceTimersByTime(1700); // Complete the trial
+    await expectFinished();
+  });
+
+  /**
+   * Test 46: Button Disabled Even When No Feedback Duration
+   * Tests that button is disabled after response even when feedback_duration is 0
+   */
+  it("should disable button after response even when feedback_duration is 0", async () => {
+    const { expectFinished } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
+        feedback_duration: 0,
+        show_feedback_text: false,
+        show_feedback_border: false,
+        is_target: true,
+      },
+    ]);
+
+    // Respond to trigger feedback period
+    document.getElementById("nback-response-btn")?.click();
+    
+    // Check that button is disabled after response even when feedback_duration is 0
+    jest.advanceTimersByTime(50);
+    const button = document.getElementById("nback-response-btn") as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    expect(button.style.opacity).toBe("0.6");
+
+    jest.advanceTimersByTime(1700); // Complete the trial
+    await expectFinished();
+  });
+
+  /**
+   * Test 47: No Feedback Flash When Duration is 0 and No Response
+   * Tests that feedback doesn't flash when feedback_duration is 0 but feedback is enabled and no response is made
+   */
+  it("should not show feedback flash when feedback_duration is 0 and no response is made", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychPluginSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
+        feedback_duration: 0,
+        show_feedback_text: true,
+        show_feedback_border: true,
+        is_target: false,
+      },
+    ]);
+
+    // Wait for stimulus to display
+    jest.advanceTimersByTime(750);
+    
+    // Wait for ISI without making a response
+    jest.advanceTimersByTime(1000);
+    
+    // Check that no feedback is shown (no text in feedback div and no border)
+    const feedbackDiv = document.getElementById("nback-feedback");
+    const grid = document.getElementById("nback-grid") as HTMLElement;
+    
+    expect(feedbackDiv?.textContent).toBe("");
+    expect(grid?.style.border).not.toContain("6px solid");
+    
+    // Complete the trial - total duration should be 750 + 1000 + 0 = 1750ms
+    jest.advanceTimersByTime(100); // Small amount to trigger trial end
+    await expectFinished();
+    
+    // Verify the trial ended correctly with no response
+    const data = getData().values()[0];
+    expect(data.response).toBe(false);
+    expect(data.correct).toBe(true); // Correct because is_target is false and no response was made
   });
 
 });
