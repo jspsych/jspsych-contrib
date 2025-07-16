@@ -58,14 +58,6 @@ const info = <const>{
       default: 60,
     },
     /**
-     * The animation style for the slider.
-     */
-    // animation: {
-    //   type: ParameterType.SELECT,
-    //   pretty_name: "Animation",
-    //   options: ["smooth", "ticks"],
-    //   default: "smooth",
-    // },
     /**
      * Any content here will be displayed above the slider.
      */
@@ -315,34 +307,38 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     }
   }
 
-  private hexToRgba(hex: string, alpha: number): string {
-    // Handle named colors
-    const namedColors: { [key: string]: string } = {
-      purple: '#800080',
-      red: '#FF0000',
-      blue: '#0000FF',
-      green: '#008000',
-      yellow: '#FFFF00',
-      orange: '#FFA500',
-      pink: '#FFC0CB',
-      black: '#000000',
-      white: '#FFFFFF',
-      gray: '#808080',
-      grey: '#808080'
-    };
-
-    if (namedColors[hex.toLowerCase()]) {
-      hex = namedColors[hex.toLowerCase()];
+  private hexToRgba(color: string, alpha: number): string {
+    // Check if it's already a hex color
+    if (color.startsWith('#')) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+      if (result) {
+        const r = parseInt(result[1], 16);
+        const g = parseInt(result[2], 16);
+        const b = parseInt(result[3], 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      }
     }
-
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    if (result) {
-      const r = parseInt(result[1], 16);
-      const g = parseInt(result[2], 16);
-      const b = parseInt(result[3], 16);
+    
+    // For named colors, use CSS color values directly and convert to rgba
+    // Create a temporary element to get computed color
+    const tempElement = document.createElement('div');
+    tempElement.style.color = color;
+    document.body.appendChild(tempElement);
+    
+    const computedColor = window.getComputedStyle(tempElement).color;
+    document.body.removeChild(tempElement);
+    
+    // Extract RGB values from computed color
+    const rgbMatch = computedColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+    if (rgbMatch) {
+      const r = parseInt(rgbMatch[1]);
+      const g = parseInt(rgbMatch[2]);
+      const b = parseInt(rgbMatch[3]);
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
-    return `rgba(128, 0, 128, ${alpha})`; // Default to purple
+    
+    // Default fallback to purple
+    return `rgba(128, 0, 128, ${alpha})`;
   }
 
   private animateToCompletion(trial: TrialType<Info>, isHorizontal: boolean, sliderFill: HTMLElement, sliderText: HTMLElement) {
