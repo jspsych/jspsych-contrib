@@ -817,15 +817,17 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       warning.innerHTML = ``;
       pupilAreaBefore = NaN;
 
+      if (freezeROI) {
+        toggleRoiFreeze();
+      }
+
       calibrateBtn.disabled =
         ruleCheck.disabled =
         continueBtn.disabled =
         freezeBtn.disabled =
         invertGuiBtn.disabled =
+        continueBtn.disabled =
           true;
-      if (freezeROI) {
-        toggleRoiFreeze();
-      }
     }
 
     function clearData() {
@@ -925,11 +927,18 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
     function ruleChecked() {
       if (ruleCheck.checked) {
-        if (trial.auto_calibrate) calibrateBtn.disabled = false;
-        if ((calibrated && calibrationSuccess) || (!trial.auto_calibrate && continueBtn.disabled))
+        if (trial.auto_calibrate) {
+          calibrateBtn.disabled = false;
+        }
+        if (
+          !freezeROI &&
+          ((calibrated && calibrationSuccess) || (!trial.auto_calibrate && continueBtn.disabled))
+        )
           continueBtn.disabled = false;
       } else {
-        if (trial.auto_calibrate) calibrateBtn.disabled;
+        if (trial.auto_calibrate) {
+          calibrateBtn.disabled = true;
+        }
         continueBtn.disabled = true;
       }
     }
@@ -986,7 +995,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 									<p>Red-edged box settings:</p>
 									<form>
 										<input type='button' id='invert-gui-btn' value='Hide / show box dragger and resizer'> 
-										<input type='button' id='freeze-btn' value='Freeze / unfreeze box position' disabled>
+										<input type='button' id='freeze-btn' value='Freeze / unfreeze box position'>
 									</form>
 									<p>Ensure that you're comfortably positioned. Your camera's software may allow you to zoom in or adjust brightness.	Input a number or use the slider to change the sensitivity of pupil detection:</p>
 									<input type="number" min="0.01" max="0.99" step="0.01" value="0.01" id="control-thr-preview">
@@ -1037,7 +1046,6 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       freezeBtn.addEventListener("click", toggleRoiFreeze);
 
       mainDisplayElement.dispatchEvent(passedPerformanceCheck);
-
       showRoiGUI();
     }
 
@@ -1062,7 +1070,9 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       if (freezeROI) {
         freezeROI = false;
         warning.innerHTML = ``;
-        continueBtn.disabled = false;
+        if (ruleCheck.checked) {
+          continueBtn.disabled = false;
+        }
       } else {
         freezeROI = true;
         warning.innerHTML = `You must unfreeze the box to continue.`;
