@@ -1,7 +1,7 @@
 {
-  "name": "plugin-slider",
+  "name": "@jspsych-contrib/plugin-slide-to-continue",
   "version": "0.0.1",
-  "description": "Will provide a slider functionality in order to begin experiments      ",
+  "description": "The plugin-slider is a jsPsych plugin that creates an interactive slider interface similar to the 'slide to unlock' functionality found on mobile devices. Users must drag a slider handle to complete the trial, making it useful for consent screens, engagement checks, or transition screens in psychological experiments.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -40,10 +40,6 @@
   },
   "homepage": "/plugin-slider/README.md",
   "dependencies": {
-    "@citation-js/core": "^0.7.14",
-    "@citation-js/plugin-bibtex": "^0.7.14",
-    "@citation-js/plugin-cff": "^0.6.1",
-    "@citation-js/plugin-software-formats": "^0.6.1",
     "jspsych": "^8.0.0"
   },
   "devDependencies": {

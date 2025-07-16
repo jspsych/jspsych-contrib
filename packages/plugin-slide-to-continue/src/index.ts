@@ -3,7 +3,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import { version } from "../package.json";
 
 const info = <const>{
-  name: "slider-response",
+  name: "slide-to-continue",
   version: version,
   parameters: {
     /**
