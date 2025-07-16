@@ -183,6 +183,7 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     html += `<div id="jspsych-slider-response-text" style="${textStyle}; font-size: ${trial.text_size}px;">${textContent}</div>`;
 
     // Create progress fill
+    // Create progress fill
     const fillStyle = `
       position: absolute;
       ${isHorizontal ? 'top' : 'left'}: 0;
@@ -192,6 +193,7 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
         ? `${isHorizontal ? 'left' : 'top'}: 0; ${isHorizontal ? 'width' : 'height'}: 0;`
         : `${isHorizontal ? 'right' : 'bottom'}: 0; ${isHorizontal ? 'width' : 'height'}: 0;`
       }
+      transition: none;
     `;
 
     html += `<div id="jspsych-slider-response-fill" style="${fillStyle}"></div>`;
@@ -210,6 +212,7 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
       cursor: grab;
       z-index: 2;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      tranistion: none;
     `;
 
     html += `<div id="jspsych-slider-response-handle" style="${handleStyle}"></div>`;
@@ -237,6 +240,8 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
 
     const handleMove = (e: MouseEvent | TouchEvent) => {
       if (!this.isDragging || this.completed) return;
+      this.sliderHandle.style.transition = 'none';
+      sliderFill.style.transition = 'none';
 
       const rect = this.sliderTrack.getBoundingClientRect();
       let pos: number;
@@ -298,6 +303,9 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
           this.completed = true;
           this.animateToCompletion(trial, isHorizontal, sliderFill, sliderText);
         } else {
+          // Enable transition for smooth snap-back
+          this.sliderHandle.style.transition = 'all 0.2s ease-out';
+          sliderFill.style.transition = 'all 0.2s ease-out';
           // Snap back if not completed
           const initialPos = trial.direction === "left-to-right" ? 4 : maxPos;
           if (isHorizontal) {
@@ -376,42 +384,46 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
   }
 
   private animateToCompletion(trial: TrialType<Info>, isHorizontal: boolean, sliderFill: HTMLElement, sliderText: HTMLElement) {
+    // Add smooth transition for completion
+    this.sliderHandle.style.transition = 'all 0.3s ease-out';
+    sliderFill.style.transition = 'all 0.3s ease-out';
+
     // Animate slider to 100% completion
     const handleSize = trial.width - 8;
     const maxPos = (isHorizontal ? trial.length : trial.length) - handleSize - 8;
     const completionPos = trial.direction === "left-to-right" ? maxPos : 4;
-    
-    // Set completion animation
+
     // Set completion animation
     if (isHorizontal) {
       this.sliderHandle.style.left = `${completionPos}px`;
       if (trial.direction === "left-to-right") {
-        sliderFill.style.width = `${trial.length}px`;
+        sliderFill.style.width = `${trial.length - 4}px`;
       } else {
-        sliderFill.style.left = '0';
-        sliderFill.style.width = `${trial.length}px`;
+        sliderFill.style.left = '4px';
+        sliderFill.style.right = 'auto';
+        sliderFill.style.width = `${trial.length - 8}px`;
       }
     } else {
       this.sliderHandle.style.top = `${completionPos}px`;
       if (trial.direction === "left-to-right") {
-        sliderFill.style.height = `${trial.length}px`;
+        sliderFill.style.height = `${trial.length - 4}px`;
       } else {
-        sliderFill.style.top = '0';
-        sliderFill.style.height = `${trial.length}px`;
+        sliderFill.style.top = '4px';
+        sliderFill.style.bottom = 'auto';
+        sliderFill.style.height = `${trial.length - 8}px`;
       }
     }
-    
+
     // Fade out text completely
     sliderText.style.opacity = '0';
-    
+
     // Update position to 100%
     this.currentPosition = 100;
-    
+
     // Wait for animation to complete, then end trial
-    const animationDuration = trial.animation === 'smooth' ? 300 : 100;
     setTimeout(() => {
       this.endTrial();
-    }, animationDuration);
+    }, 150);
   }
 
   private endTrial() {
