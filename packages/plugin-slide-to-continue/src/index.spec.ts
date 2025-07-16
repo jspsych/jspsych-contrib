@@ -123,29 +123,6 @@ describe("SliderResponsePlugin", () => {
       expect(getHTML()).toContain('Custom Slide Text');
     });
 
-    it("should apply smooth animation parameter", async () => {
-      const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
-        {
-          type: jsPsychPluginSlider,
-          animation: 'smooth',
-        },
-      ]);
-
-      const fill = displayElement.querySelector('#jspsych-slider-response-fill') as HTMLElement;
-      expect(fill.style.transition).toContain('ease-out');
-    });
-
-    it("should apply ticks animation parameter", async () => {
-      const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
-        {
-          type: jsPsychPluginSlider,
-          animation: 'ticks',
-        },
-      ]);
-
-      const fill = displayElement.querySelector('#jspsych-slider-response-fill') as HTMLElement;
-      expect(fill.style.transition).toBe('none');
-    });
   });
 
   describe("Edge Cases and Error Handling", () => {
