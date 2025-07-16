@@ -60,12 +60,12 @@ const info = <const>{
     /**
      * The animation style for the slider.
      */
-    animation: {
-      type: ParameterType.SELECT,
-      pretty_name: "Animation",
-      options: ["smooth", "ticks"],
-      default: "smooth",
-    },
+    // animation: {
+    //   type: ParameterType.SELECT,
+    //   pretty_name: "Animation",
+    //   options: ["smooth", "ticks"],
+    //   default: "smooth",
+    // },
     /**
      * Any content here will be displayed above the slider.
      */
@@ -75,7 +75,7 @@ const info = <const>{
       default: null,
     },
     /**
-     * Text displayed on or near the slider.
+     * Text displayed on the slider.
      */
     slider_text: {
       type: ParameterType.STRING,
@@ -184,7 +184,6 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
       ${isHorizontal ? 'width' : 'height'}: 0%;
       ${isHorizontal ? 'height' : 'width'}: 100%;
       background-color: ${this.hexToRgba(trial.color, 0.6)};
-      transition: ${trial.animation === 'smooth' ? 'all 0.1s ease-out' : 'none'};
     `;
 
     html += `<div id="jspsych-slider-response-fill" style="${fillStyle}"></div>`;
@@ -202,7 +201,6 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
       border-radius: ${trial.object_sliding === 'round' ? '50%' : '4px'};
       cursor: grab;
       z-index: 2;
-      transition: ${trial.animation === 'smooth' ? 'transform 0.1s ease-out' : 'none'};
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     `;
 
