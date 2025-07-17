@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-spatial-nback",
-  "version": "0.0.1",
-  "description": "A jsPsych plugin for spatial n-back tasks featuring customizable grids, stimulus presentation, response collection, and feedback display.",
+  "version": "1.0.0",
+  "description": "A jsPsych plugin for presenting a spatial grid stimulus, designed for spatial n-back tasks. The plugin displays a customizable grid, highlights a cell as the stimulus, and collects participant responses with optional feedback and instructions.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -24,8 +24,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ahfarhat/JsPsychTemplates/",
-    "directory": ""
+    "url": "https://github.com/jspsych/jspsych-contrib/",
+    "directory": "packages/plugin-spatial-nback"
   },
   "keywords": [
     "jsPsych"
@@ -36,14 +36,10 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/farhat60/JsPsychTemplates//issues"
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
-  "homepage": "/plugin-spatial-nback-ts/README.md",
+  "homepage": "/plugin-spatial-nback/README.md",
   "dependencies": {
-    "@citation-js/core": "^0.7.14",
-    "@citation-js/plugin-bibtex": "^0.7.14",
-    "@citation-js/plugin-cff": "^0.6.1",
-    "@citation-js/plugin-software-formats": "^0.6.1",
     "jspsych": "^8.2.1"
   },
   "devDependencies": {
