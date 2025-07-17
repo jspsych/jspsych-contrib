@@ -84,7 +84,7 @@ const info = <const>{
       /** Instructions to display above the grid */
       instructions: {
         type: ParameterType.STRING,
-        default: "Click MATCH",
+        default: "",
       },
     },
     data: {
