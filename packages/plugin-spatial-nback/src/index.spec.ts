@@ -171,7 +171,7 @@ describe("plugin-spatial-nback", () => {
     expect(feedbackDiv?.textContent).toContain("Correct!");
     
     const grid = document.getElementById("nback-grid") as HTMLElement;
-    expect(grid.style.border).toContain("6px solid");
+    expect(grid.style.border).toContain("3px solid");
 
     jest.advanceTimersByTime(2151); // 750ms stimulus + 500ms ISI + 500ms feedback + 400ms remaining feedback + 1ms to complete trial
     await expectFinished();
@@ -204,9 +204,9 @@ describe("plugin-spatial-nback", () => {
     expect(feedbackDiv?.style.visibility).toBe("hidden"); // But hidden from view
     
     const grid = document.getElementById("nback-grid") as HTMLElement;
-    expect(grid.style.border).not.toContain("6px solid");
+    expect(grid.style.border).not.toContain("3px solid #00cc00");
 
-    jest.advanceTimersByTime(1651); // 750ms stimulus + 500ms ISI + 0ms feedback + 400ms remaining time + 1ms to complete trial
+    jest.advanceTimersByTime(1651); // 750ms stimulus + 500ms ISI + 400ms remaining time + 1ms to complete trial
     await expectFinished();
   });
 
@@ -506,7 +506,7 @@ describe("plugin-spatial-nback", () => {
     expect(feedbackDiv?.textContent).toContain("Incorrect!");
     
     const grid = document.getElementById("nback-grid") as HTMLElement;
-    expect(grid.style.border).toContain("6px solid");
+    expect(grid.style.border).toContain("3px solid #cc0000");
     
     jest.advanceTimersByTime(2151); // 750ms stimulus + 500ms ISI + 500ms feedback + 400ms remaining feedback + 1ms to complete trial
     await expectFinished();
