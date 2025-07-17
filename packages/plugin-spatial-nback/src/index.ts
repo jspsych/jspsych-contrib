@@ -166,37 +166,25 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
     const createDisplay = (): void => {
       
       
-      let html = `
-        <div id="nback-container" style="
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          align-items: center;
-          font-family: Arial, sans-serif;
-          box-sizing: border-box;
-          padding: 2vh;
-        ">`;
+      let html = `<div id="nback-container" style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+        max-width: 90vw;
+        margin: 0 auto;
+      ">`;
       
       // Instructions at top
-      html += `<div id="nback-instructions" style="
-        flex: 0 0 auto;
-        text-align: center;
-        font-size: clamp(14px, 2vmin, 18px);
-        margin-bottom: 2vh;
-      ">${trial.instructions}</div>`;
+      html += `<div id="nback-instructions">${trial.instructions}</div>`;
 
-      // Grid in center (will take available space)
-      html += `<div style="
-        flex: 1 1 auto;
+      // Grid container - centered within content
+      html += `<div id="nback-grid-container" style="
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 0;
+        margin: 20px 0;
       ">`;
       
       // Calculate grid dimensions based on cell_size parameter
@@ -204,16 +192,16 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       const grid_width = trial.cols * cell_size_px;
       const grid_height = trial.rows * cell_size_px;
       
-      // Check if grid fits in viewport (with some padding)
-      const max_width = window.innerWidth * 0.8
-      const max_height = window.innerHeight * 0.6
+      // Check if grid fits in available space (more conservative sizing)
+      const max_width = Math.min(window.innerWidth * 0.8, 600); // Cap at 600px for better UX
+      const max_height = Math.min(window.innerHeight * 0.5, 400); // Cap at 400px for better UX
       
       let final_cell_size: number;
       if (grid_width <= max_width && grid_height <= max_height) {
         // Grid fits, use specified cell size
         final_cell_size = cell_size_px;
       } else {
-        // Scale down to fit viewport
+        // Scale down to fit available space
         const scale_for_width = max_width / grid_width;
         const scale_for_height = max_height / grid_height;
         const scale = Math.min(scale_for_width, scale_for_height);
@@ -221,7 +209,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       }
 
       html += `<div id="nback-grid" style="
-        border: 2px solid #000;
+        border: 3px solid #000;
         box-sizing: border-box;
         display: inline-block;
       ">`;
@@ -233,64 +221,34 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
             width: ${final_cell_size}px;
             height: ${final_cell_size}px;
             border: 1px solid #ccc;
-            background-color: white;
             box-sizing: border-box;
           "></div>`;
         }
         html += '</div>';
       }
-      html += '</div></div>'; // Close grid and center container
+      html += '</div></div>'; // Close grid and grid-container
 
-      // Button and feedback at bottom
-      html += `<div style="
-        flex: 0 0 auto;
+      // Button and feedback section
+      html += `<div id="nback-feedback-section" style="
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.75vh;
-        margin-bottom: clamp(12px, 4vmin, 24px);
+        gap: 15px;
+        margin-top: 20px;
       ">`;
       
-      // Feedback text first (directly under grid)
-      html += `<div id="nback-feedback" style="
-        height: 40px;
-        padding: clamp(6px, 1vmin, 24px);
-        font-size: clamp(14px, 2vmin, 20px);
-        font-weight: bold;
-        text-align: center;
-        width: 100%;
-      "></div>`;
+      // Feedback text first (directly under grid) - uses dummy text with visibility hidden to prevent layout displacement
+      html += `<div id="nback-feedback" style="visibility: hidden;">Correct! (999ms)</div>`;
       
-      // Button second (under feedback text)
-      html += `<button id="nback-response-btn" style="
-        font-size: clamp(18px, 3vmin, 26px);
-        padding: clamp(18px, 4vmin, 40px) clamp(35px, 5vmin, 60px);
-        background-color: #2196F3;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        transition: all 0.2s;
-      " disabled>${trial.button_text}</button>`;
+      // Button second (under feedback text) - uses standard jsPsych button styling
+      html += `<button id="nback-response-btn" class="jspsych-btn nback-response-btn" disabled>${trial.button_text}</button>`;
       
-      html += '</div></div>'; // Close bottom container and main container
+      html += '</div></div>'; // Close feedback section and main container
       
       display_element.innerHTML = html;
 
-      // Add button hover effects and event listener
+      // Add button event listener
       const button = document.getElementById('nback-response-btn') as HTMLButtonElement;
-      button.addEventListener('mouseenter', () => {
-        if (!button.disabled) {
-          button.style.backgroundColor = '#1976D2';
-          button.style.transform = 'translateY(-2px)';
-        }
-      });
-      button.addEventListener('mouseleave', () => {
-        button.style.backgroundColor = '#2196F3';
-        button.style.transform = 'translateY(0)';
-      });
       button.addEventListener('click', handleResponse);
     };
 
@@ -317,7 +275,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       this.jsPsych.pluginAPI.setTimeout(() => {
         if (show_stimulus) {
           const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-          cell.style.backgroundColor = 'white';
+          cell.style.backgroundColor = '';
         }
         // Signify end of stimulus phase
         stimulus_hidden = true;
@@ -398,7 +356,6 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         const button = document.getElementById('nback-response-btn') as HTMLButtonElement;
         if (button) {
           button.disabled = true;
-          button.style.opacity = '0.6';
         }
       }
 
@@ -413,7 +370,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
           if (stimulus_end_time > 0) {
             this.jsPsych.pluginAPI.setTimeout(() => {
               const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-              cell.style.backgroundColor = 'white';
+              cell.style.backgroundColor = '';
             }, stimulus_end_time);
           }
         }
@@ -437,7 +394,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
           if (stimulus_end_time > 0) {
             this.jsPsych.pluginAPI.setTimeout(() => {
               const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-              cell.style.backgroundColor = 'white';
+              cell.style.backgroundColor = '';
             }, stimulus_end_time);
           }
         }
@@ -461,7 +418,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       // BORDER FEEDBACK:
       // Show colored border around grid immediately
       if (trial.show_feedback_border) {
-        grid.style.border = `6px solid ${is_correct ? trial.correct_color : trial.incorrect_color}`;
+        grid.style.border = `3px solid ${is_correct ? trial.correct_color : trial.incorrect_color}`;
       }
 
       // TEXT FEEDBACK:
@@ -473,6 +430,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         }
         feedback_div.textContent = feedback_text;
         feedback_div.style.color = is_correct ? trial.correct_color : trial.incorrect_color;
+        feedback_div.style.visibility = 'visible';
       }
 
       // STIMULUS HIDING:
@@ -508,9 +466,6 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         response_time: response_time,
         correct: is_correct
       };
-
-      // Clear display
-      display_element.innerHTML = '';
 
       // End trial
       this.jsPsych.finishTrial(trial_data);

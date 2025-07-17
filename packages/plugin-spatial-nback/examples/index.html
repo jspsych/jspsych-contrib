@@ -8,6 +8,7 @@
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
     <link href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+    <link href="../src/styles.css" rel="stylesheet" type="text/css" />
   </head>
 
   <body></body>
@@ -88,9 +89,9 @@
         stimulus_row: sequence.positions[i].row,
         stimulus_col: sequence.positions[i].col,
         is_target: sequence.is_target[i],
-        stimulus_duration: 1000,
-        isi_duration: 1000,
-        feedback_duration: 1000,
+        stimulus_duration: 1000000,
+        isi_duration: 500,
+        feedback_duration: 0,
         show_feedback_text: true,
         show_feedback_border: true,
         cell_size: 125,
