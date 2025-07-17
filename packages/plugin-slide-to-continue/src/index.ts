@@ -125,14 +125,15 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
   private currentPosition: number = 0;
   private completed: boolean = false;
 
-  constructor(private jsPsych: JsPsych) { }
+  constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     // Record start time
     this.startTime = performance.now();
 
     // Create HTML structure
-    let html = '<div id="jspsych-slider-response-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">';
+    let html =
+      '<div id="jspsych-slider-response-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">';
 
     // Add prompt if provided
     if (trial.prompt !== null) {
@@ -143,8 +144,8 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     const isHorizontal = trial.orientation === "horizontal";
     const containerStyle = `
       position: relative;
-      ${isHorizontal ? 'width' : 'height'}: ${trial.length}px;
-      ${isHorizontal ? 'height' : 'width'}: ${trial.width}px;
+      ${isHorizontal ? "width" : "height"}: ${trial.length}px;
+      ${isHorizontal ? "height" : "width"}: ${trial.width}px;
     `;
 
     html += `<div id="jspsych-slider-response-container" style="${containerStyle}">`;
@@ -152,8 +153,8 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     // Create slider track
     const trackStyle = `
       position: absolute;
-      ${isHorizontal ? 'width' : 'height'}: 100%;
-      ${isHorizontal ? 'height' : 'width'}: 100%;
+      ${isHorizontal ? "width" : "height"}: 100%;
+      ${isHorizontal ? "height" : "width"}: 100%;
       background-color: ${this.hexToRgba(trial.color, 0.3)};
       border-radius: ${trial.width / 2}px;
       overflow: hidden;
@@ -162,11 +163,11 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     html += `<div id="jspsych-slider-response-track" style="${trackStyle}">`;
 
     // Add slider text with multi-line support
-    const textLines = trial.slider_text.split(',').map(line => line.trim());
+    const textLines = trial.slider_text.split(",").map((line) => line.trim());
     const textStyle = `
       position: absolute;
-      ${isHorizontal ? 'left' : 'top'}: 50%;
-      ${isHorizontal ? 'top' : 'left'}: 50%;
+      ${isHorizontal ? "left" : "top"}: 50%;
+      ${isHorizontal ? "top" : "left"}: 50%;
       transform: translate(-50%, -50%);
       color: white;
       font-weight: bold;
@@ -179,19 +180,20 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
       overflow: hidden;
     `;
 
-    const textContent = textLines.map(line => `<div>${line}</div>`).join('');
+    const textContent = textLines.map((line) => `<div>${line}</div>`).join("");
     html += `<div id="jspsych-slider-response-text" style="${textStyle}; font-size: ${trial.text_size}px;">${textContent}</div>`;
 
     // Create progress fill
     // Create progress fill
     const fillStyle = `
       position: absolute;
-      ${isHorizontal ? 'top' : 'left'}: 0;
-      ${isHorizontal ? 'height' : 'width'}: 100%;
+      ${isHorizontal ? "top" : "left"}: 0;
+      ${isHorizontal ? "height" : "width"}: 100%;
       background-color: ${this.hexToRgba(trial.color, 0.6)};
-      ${trial.direction === "left-to-right"
-        ? `${isHorizontal ? 'left' : 'top'}: 0; ${isHorizontal ? 'width' : 'height'}: 0;`
-        : `${isHorizontal ? 'right' : 'bottom'}: 0; ${isHorizontal ? 'width' : 'height'}: 0;`
+      ${
+        trial.direction === "left-to-right"
+          ? `${isHorizontal ? "left" : "top"}: 0; ${isHorizontal ? "width" : "height"}: 0;`
+          : `${isHorizontal ? "right" : "bottom"}: 0; ${isHorizontal ? "width" : "height"}: 0;`
       }
       transition: none;
     `;
@@ -203,12 +205,12 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     const initialPos = trial.direction === "left-to-right" ? 4 : trial.length - handleSize - 4;
     const handleStyle = `
       position: absolute;
-      ${isHorizontal ? 'left' : 'top'}: ${initialPos}px;
-      ${isHorizontal ? 'top' : 'left'}: 4px;
+      ${isHorizontal ? "left" : "top"}: ${initialPos}px;
+      ${isHorizontal ? "top" : "left"}: 4px;
       width: ${handleSize}px;
       height: ${handleSize}px;
       background-color: ${trial.color};
-      border-radius: ${trial.object_sliding === 'round' ? '50%' : '4px'};
+      border-radius: ${trial.object_sliding === "round" ? "50%" : "4px"};
       cursor: grab;
       z-index: 2;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
@@ -217,31 +219,30 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
 
     html += `<div id="jspsych-slider-response-handle" style="${handleStyle}"></div>`;
 
-    html += '</div></div></div>'; // Close track, container, and wrapper
+    html += "</div></div></div>"; // Close track, container, and wrapper
 
     // Display HTML
     display_element.innerHTML = html;
 
     // Get elements
-    this.sliderHandle = display_element.querySelector('#jspsych-slider-response-handle');
-    this.sliderTrack = display_element.querySelector('#jspsych-slider-response-track');
-    const sliderFill = display_element.querySelector<HTMLElement>('#jspsych-slider-response-fill');
-    const sliderText = display_element.querySelector<HTMLElement>('#jspsych-slider-response-text');
-
+    this.sliderHandle = display_element.querySelector("#jspsych-slider-response-handle");
+    this.sliderTrack = display_element.querySelector("#jspsych-slider-response-track");
+    const sliderFill = display_element.querySelector<HTMLElement>("#jspsych-slider-response-fill");
+    const sliderText = display_element.querySelector<HTMLElement>("#jspsych-slider-response-text");
 
     // Set up event handlers
     const handleStart = (e: MouseEvent | TouchEvent) => {
       e.preventDefault();
       if (!this.completed) {
         this.isDragging = true;
-        this.sliderHandle.style.cursor = 'grabbing';
+        this.sliderHandle.style.cursor = "grabbing";
       }
     };
 
     const handleMove = (e: MouseEvent | TouchEvent) => {
       if (!this.isDragging || this.completed) return;
-      this.sliderHandle.style.transition = 'none';
-      sliderFill.style.transition = 'none';
+      this.sliderHandle.style.transition = "none";
+      sliderFill.style.transition = "none";
 
       const rect = this.sliderTrack.getBoundingClientRect();
       let pos: number;
@@ -257,10 +258,10 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
 
       if (trial.direction === "left-to-right") {
         pos = Math.max(4, Math.min(pos - handleSize / 2, maxPos));
-        this.currentPosition = (pos - 4) / (maxPos - 4) * 100;
+        this.currentPosition = ((pos - 4) / (maxPos - 4)) * 100;
       } else {
         pos = Math.max(4, Math.min(pos - handleSize / 2, maxPos));
-        this.currentPosition = 100 - ((pos - 4) / (maxPos - 4) * 100);
+        this.currentPosition = 100 - ((pos - 4) / (maxPos - 4)) * 100;
       }
 
       // Update handle position
@@ -296,7 +297,7 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     const handleEnd = () => {
       if (!this.completed && this.isDragging) {
         this.isDragging = false;
-        this.sliderHandle.style.cursor = 'grab';
+        this.sliderHandle.style.cursor = "grab";
 
         // Check if completed on release
         if (this.currentPosition >= 95) {
@@ -304,26 +305,26 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
           this.animateToCompletion(trial, isHorizontal, sliderFill, sliderText);
         } else {
           // Enable transition for smooth snap-back
-          this.sliderHandle.style.transition = 'all 0.2s ease-out';
-          sliderFill.style.transition = 'all 0.2s ease-out';
+          this.sliderHandle.style.transition = "all 0.2s ease-out";
+          sliderFill.style.transition = "all 0.2s ease-out";
           // Snap back if not completed
           const initialPos = trial.direction === "left-to-right" ? 4 : maxPos;
           if (isHorizontal) {
             this.sliderHandle.style.left = `${initialPos}px`;
-            sliderFill.style.width = '0px';
+            sliderFill.style.width = "0px";
             if (trial.direction === "right-to-left") {
-              sliderFill.style.left = '';
-              sliderFill.style.right = '0';
+              sliderFill.style.left = "";
+              sliderFill.style.right = "0";
             }
           } else {
             this.sliderHandle.style.top = `${initialPos}px`;
-            sliderFill.style.height = '0px';
+            sliderFill.style.height = "0px";
             if (trial.direction === "right-to-left") {
-              sliderFill.style.top = '';
-              sliderFill.style.bottom = '0';
+              sliderFill.style.top = "";
+              sliderFill.style.bottom = "0";
             }
           }
-          sliderText.style.opacity = '1';
+          sliderText.style.opacity = "1";
           this.currentPosition = 0;
         }
       }
@@ -334,15 +335,15 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     const maxPos = (isHorizontal ? rect.width : rect.height) - handleSize - 8;
 
     // Add event listeners
-    this.sliderHandle.addEventListener('mousedown', handleStart);
-    this.sliderHandle.addEventListener('touchstart', handleStart);
-    document.addEventListener('mousemove', handleMove);
-    document.addEventListener('touchmove', handleMove);
-    document.addEventListener('mouseup', handleEnd);
-    document.addEventListener('touchend', handleEnd);
+    this.sliderHandle.addEventListener("mousedown", handleStart);
+    this.sliderHandle.addEventListener("touchstart", handleStart);
+    document.addEventListener("mousemove", handleMove);
+    document.addEventListener("touchmove", handleMove);
+    document.addEventListener("mouseup", handleEnd);
+    document.addEventListener("touchend", handleEnd);
 
     // End trial if duration is set
-    if (trial.duration !== null && typeof trial.duration === 'number') {
+    if (trial.duration !== null && typeof trial.duration === "number") {
       this.jsPsych.pluginAPI.setTimeout(() => {
         this.endTrial();
       }, trial.duration);
@@ -351,7 +352,7 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
 
   private hexToRgba(color: string, alpha: number): string {
     // Check if it's already a hex color
-    if (color.startsWith('#')) {
+    if (color.startsWith("#")) {
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
       if (result) {
         const r = parseInt(result[1], 16);
@@ -360,16 +361,16 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
       }
     }
-    
+
     // For named colors, use CSS color values directly and convert to rgba
     // Create a temporary element to get computed color
-    const tempElement = document.createElement('div');
+    const tempElement = document.createElement("div");
     tempElement.style.color = color;
     document.body.appendChild(tempElement);
-    
+
     const computedColor = window.getComputedStyle(tempElement).color;
     document.body.removeChild(tempElement);
-    
+
     // Extract RGB values from computed color
     const rgbMatch = computedColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
     if (rgbMatch) {
@@ -378,15 +379,20 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
       const b = parseInt(rgbMatch[3]);
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
-    
+
     // Default fallback to purple
     return `rgba(128, 0, 128, ${alpha})`;
   }
 
-  private animateToCompletion(trial: TrialType<Info>, isHorizontal: boolean, sliderFill: HTMLElement, sliderText: HTMLElement) {
+  private animateToCompletion(
+    trial: TrialType<Info>,
+    isHorizontal: boolean,
+    sliderFill: HTMLElement,
+    sliderText: HTMLElement
+  ) {
     // Add smooth transition for completion
-    this.sliderHandle.style.transition = 'all 0.3s ease-out';
-    sliderFill.style.transition = 'all 0.3s ease-out';
+    this.sliderHandle.style.transition = "all 0.3s ease-out";
+    sliderFill.style.transition = "all 0.3s ease-out";
 
     // Animate slider to 100% completion
     const handleSize = trial.width - 8;
@@ -399,8 +405,8 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
       if (trial.direction === "left-to-right") {
         sliderFill.style.width = `${trial.length - 4}px`;
       } else {
-        sliderFill.style.left = '4px';
-        sliderFill.style.right = 'auto';
+        sliderFill.style.left = "4px";
+        sliderFill.style.right = "auto";
         sliderFill.style.width = `${trial.length - 8}px`;
       }
     } else {
@@ -408,14 +414,14 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
       if (trial.direction === "left-to-right") {
         sliderFill.style.height = `${trial.length - 4}px`;
       } else {
-        sliderFill.style.top = '4px';
-        sliderFill.style.bottom = 'auto';
+        sliderFill.style.top = "4px";
+        sliderFill.style.bottom = "auto";
         sliderFill.style.height = `${trial.length - 8}px`;
       }
     }
 
     // Fade out text completely
-    sliderText.style.opacity = '0';
+    sliderText.style.opacity = "0";
 
     // Update position to 100%
     this.currentPosition = 100;
@@ -423,7 +429,7 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     // Wait for animation to complete, then end trial
     setTimeout(() => {
       this.endTrial();
-    }, 150);
+    }, 200);
   }
 
   private endTrial() {
@@ -434,12 +440,12 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
     const trial_data = {
       rt: rt,
       response: this.completed,
-      final_position: Math.round(this.currentPosition)
+      final_position: Math.round(this.currentPosition),
     };
 
     // Clear display
     const display_element = this.jsPsych.getDisplayElement();
-    display_element.innerHTML = '';
+    display_element.innerHTML = "";
 
     // Finish trial
     this.jsPsych.finishTrial(trial_data);
@@ -504,12 +510,12 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
 
           let pos;
           if (trial.direction === "left-to-right") {
-            pos = rect.left + (rect.width * progress / 100);
+            pos = rect.left + (rect.width * progress) / 100;
           } else {
-            pos = rect.right - (rect.width * progress / 100);
+            pos = rect.right - (rect.width * progress) / 100;
           }
 
-          const event = new MouseEvent('mousemove', {
+          const event = new MouseEvent("mousemove", {
             clientX: isHorizontal ? pos : rect.left + rect.width / 2,
             clientY: isHorizontal ? rect.top + rect.height / 2 : pos,
           });
@@ -524,7 +530,7 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
 
       // Start dragging
       setTimeout(() => {
-        const event = new MouseEvent('mousedown', {});
+        const event = new MouseEvent("mousedown", {});
         this.sliderHandle.dispatchEvent(event);
         simulateSlide();
       }, 100);

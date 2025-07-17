@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `plugin-slider` is a jsPsych plugin that creates an interactive slider interface similar to the "slide to unlock" functionality found on mobile devices. Users must drag a slider handle to complete the trial, making it useful for consent screens, engagement checks, or transition screens in psychological experiments.
+The `plugin-slide-to-continue` is a jsPsych plugin that creates an interactive slider interface similar to the "slide to unlock" functionality found on mobile devices. Users must drag a slider handle to complete the trial, making it useful for consent screens, engagement checks, or transition screens in psychological experiments.
 
 ## Features
 
@@ -17,18 +17,18 @@ The `plugin-slider` is a jsPsych plugin that creates an interactive slider inter
 ### Using npm
 
 ```bash
-npm install plugin-slider
+npm install plugin-slide-to-continue
 ```
 
 ### Using a CDN
 
 ```html
-<script src="https://unpkg.com/plugin-slider@latest/dist/index.browser.min.js"></script>
+<script src="https://unpkg.com/plugin-slide-to-continue@latest/dist/index.browser.min.js"></script>
 ```
 
 ## Compatibility
 
-`plugin-slider` requires jsPsych v8.0.0 or later.
+`plugin-slide-to-continue` requires jsPsych v8.0.0 or later.
 
 ## Parameters
 

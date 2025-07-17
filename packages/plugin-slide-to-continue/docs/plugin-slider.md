@@ -1,10 +1,10 @@
-# jsPsych Slider Plugin Documentation
+# jsPsych Slide-to-continue Plugin Documentation
 
-The jsPsych Slider Plugin provides a customizable slider interface that requires users to drag to continue, similar to mobile "slide to unlock" functionality. This plugin is ideal for creating interactive engagement checkpoints in psychological experiments.
+The jsPsych Slide-to-continue Plugin provides a customizable slider interface that requires users to drag to continue, similar to mobile "slide to unlock" functionality. This plugin is ideal for creating interactive engagement checkpoints in psychological experiments.
 
 ## Overview
 
-- **Plugin Name**: `slider-response`
+- **Plugin Name**: `slide-to-continue`
 - **Version**: 0.0.1
 - **Purpose**: Interactive slider requiring drag completion to proceed
 - **Completion Threshold**: 95% slide completion required
@@ -66,17 +66,17 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 ### NPM Installation
 ```bash
-npm install @jspsych-contrib/plugin-slider
+npm install @jspsych-contrib/plugin-slide-to-continue
 ```
 
 ### CDN Installation
 ```html
-<script src="https://unpkg.com/@jspsych-contrib/plugin-slider@latest/dist/index.browser.min.js"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-slide-to-continue@latest/dist/index.browser.min.js"></script>
 ```
 
 ### ES6 Module Import
 ```javascript
-import SliderPlugin from '@jspsych-contrib/plugin-slider';
+import SliderPlugin from '@jspsych-contrib/plugin-slide-to-continue';
 ```
 
 ## Usage Examples
