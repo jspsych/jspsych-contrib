@@ -10,4 +10,4 @@ coverage/
 .vscode/
 dist.zip
 .idea
-.claude
+.claude/
