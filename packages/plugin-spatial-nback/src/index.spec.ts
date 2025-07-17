@@ -1,7 +1,7 @@
 import { startTimeline } from "@jspsych/test-utils";
 
-import jsPsychPluginSpatialNback from ".";
-import { JsPsych } from "jspsych"; // adjust import if needed
+import jsPsychSpatialNback from ".";
+import { jsPsych } from "jspsych"; // adjust import if needed
 
 // Use fake timers to control time-based operations in tests
 jest.useFakeTimers();
@@ -19,7 +19,7 @@ describe("plugin-spatial-nback", () => {
   it("should load with default parameters", async () => {
     const { expectFinished, getHTML, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,  // Explicitly set to test with stimulus
         stimulus_col: 0,
       },
@@ -52,7 +52,7 @@ describe("plugin-spatial-nback", () => {
   it("should create grid with custom rows and columns", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         rows: 15,
         cols: 5,
         stimulus_row: 0,  // Add stimulus for testing
@@ -79,7 +79,7 @@ describe("plugin-spatial-nback", () => {
   it("should display stimulus at specified position", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 1,
         stimulus_col: 2,
         stimulus_color: "#ff0000", // Red color
@@ -104,7 +104,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle target trials correctly", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
         is_target: true,
@@ -128,7 +128,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle no response correctly", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_duration: 500,
         isi_duration: 500,
         is_target: false,
@@ -153,7 +153,7 @@ describe("plugin-spatial-nback", () => {
   it("should show feedback when enabled", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
         show_feedback_text: true,
@@ -180,7 +180,7 @@ describe("plugin-spatial-nback", () => {
   it("should hide feedback when disabled", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         show_feedback_text: false,
         show_feedback_border: false,
       },
@@ -204,7 +204,7 @@ describe("plugin-spatial-nback", () => {
   it("should use custom button text", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         button_text: "TARGET",
       },
     ]);
@@ -224,7 +224,7 @@ describe("plugin-spatial-nback", () => {
   it("should use custom instructions", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         instructions: "Press button when you see a match",
       },
     ]);
@@ -244,7 +244,7 @@ describe("plugin-spatial-nback", () => {
   it("should respect stimulus duration", async () => {
     const { expectFinished } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_duration: 200, // Short duration for testing
         stimulus_row: 1,
         stimulus_col: 1,
@@ -271,7 +271,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle feedback duration correctly", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
         feedback_duration: 300,
@@ -297,7 +297,7 @@ describe("plugin-spatial-nback", () => {
   it("should use custom colors", async () => {
     const { expectFinished } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
         stimulus_color: "#123456", // Custom stimulus color
@@ -328,7 +328,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle incorrect responses", async () => {
     const { expectFinished, getData, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         is_target: false, // Non-target trial
         show_feedback_text: true,
         incorrect_color: "#ff0000",
@@ -356,7 +356,7 @@ describe("plugin-spatial-nback", () => {
   it("should collect all expected data", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 2,
         stimulus_col: 1,
         is_target: true,
@@ -388,7 +388,7 @@ describe("plugin-spatial-nback", () => {
    * Tests error thrown when both rows and cols are 1 or less
    */
   it("should throw error when both rows and cols are 1 or less", () => {
-    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const plugin = new jsPsychSpatialNback({} as jsPsych);
     const mockElement = document.createElement("div");
     expect(() => {
       plugin.trial(mockElement, {
@@ -403,7 +403,7 @@ describe("plugin-spatial-nback", () => {
    * Tests error thrown when rows is zero
    */
   it("should throw error when rows is zero", () => {
-    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const plugin = new jsPsychSpatialNback({} as jsPsych);
     const mockElement = document.createElement("div");
     expect(() => {
       plugin.trial(mockElement, {
@@ -418,7 +418,7 @@ describe("plugin-spatial-nback", () => {
    * Tests error thrown when cols is negative
    */
   it("should throw error when cols is negative", () => {
-    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const plugin = new jsPsychSpatialNback({} as jsPsych);
     const mockElement = document.createElement("div");
     expect(() => {
       plugin.trial(mockElement, {
@@ -433,7 +433,7 @@ describe("plugin-spatial-nback", () => {
    * Tests error thrown when stimulus_row exceeds grid bounds
    */
   it("should throw error when stimulus position is out of bounds (row)", () => {
-    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const plugin = new jsPsychSpatialNback({} as jsPsych);
     const mockElement = document.createElement("div");
     expect(() => {
       plugin.trial(mockElement, {
@@ -450,7 +450,7 @@ describe("plugin-spatial-nback", () => {
    * Tests error thrown when stimulus_col exceeds grid bounds
    */
   it("should throw error when stimulus position is out of bounds (col)", () => {
-    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const plugin = new jsPsychSpatialNback({} as jsPsych);
     const mockElement = document.createElement("div");
     expect(() => {
       plugin.trial(mockElement, {
@@ -469,7 +469,7 @@ describe("plugin-spatial-nback", () => {
   it("should work with single row grid", async () => {
     const { expectFinished, getHTML, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         rows: 1,
         cols: 5,
         stimulus_row: 0,
@@ -498,7 +498,7 @@ describe("plugin-spatial-nback", () => {
   it("should work with single column grid", async () => {
     const { expectFinished, getHTML, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         rows: 4,
         cols: 1,
         stimulus_row: 2,
@@ -527,7 +527,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle very large grids", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         rows: 20,
         cols: 20,
         cell_size: 100,
@@ -553,7 +553,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle zero durations", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_duration: 0,
         feedback_duration: 0,
         isi_duration: 100,
@@ -580,7 +580,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle very fast responses", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
         is_target: true,
@@ -606,7 +606,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle multiple rapid button clicks", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
         is_target: true,
@@ -635,7 +635,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle minimum cell size", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         cell_size: 1, // Very small
         rows: 2,
         cols: 2,
@@ -658,7 +658,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle response at timing boundaries", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
         stimulus_duration: 200,
@@ -686,7 +686,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle empty button text", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         button_text: "",
       },
     ]);
@@ -708,7 +708,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle invalid color values", async () => {
     const { expectFinished } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_color: "invalid-color",
         correct_color: "also-invalid",
         incorrect_color: "#gggggg", // Invalid hex
@@ -735,7 +735,7 @@ describe("plugin-spatial-nback", () => {
     for (const pos of positions) {
       const { expectFinished, getData } = await startTimeline([
         {
-          type: jsPsychPluginSpatialNback,
+          type: jsPsychSpatialNback,
           rows: 3,
           cols: 3,
           stimulus_row: pos.row,
@@ -756,7 +756,7 @@ describe("plugin-spatial-nback", () => {
    * Test 33: Handles negative stimulus_row and stimulus_col (should throw)
    */
   it("should throw error for negative stimulus_row", () => {
-    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const plugin = new jsPsychSpatialNback({} as jsPsych);
     const mockElement = document.createElement("div");
     expect(() => {
       plugin.trial(mockElement, {
@@ -769,7 +769,7 @@ describe("plugin-spatial-nback", () => {
   });
 
   it("should throw error for negative stimulus_col", () => {
-    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const plugin = new jsPsychSpatialNback({} as jsPsych);
     const mockElement = document.createElement("div");
     expect(() => {
       plugin.trial(mockElement, {
@@ -785,7 +785,7 @@ describe("plugin-spatial-nback", () => {
    * Test 34: Handles non-integer grid dimensions (should throw)
    */
   it("should throw error for non-integer rows or cols", () => {
-    const plugin = new jsPsychPluginSpatialNback({} as JsPsych);
+    const plugin = new jsPsychSpatialNback({} as jsPsych);
     const mockElement = document.createElement("div");
     expect(() => {
       plugin.trial(mockElement, {
@@ -818,7 +818,7 @@ describe("plugin-spatial-nback", () => {
   it("should round non-integer cell_size to the nearest integer", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         cell_size: 50.7, // Non-integer value
         rows: 2,
         cols: 2,
@@ -840,7 +840,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle extremely large cell_size", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         cell_size: 1000,
         rows: 2,
         cols: 2,
@@ -857,7 +857,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle extremely small feedback_duration", async () => {
     const { expectFinished } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         feedback_duration: 1,
       },
     ]);
@@ -872,13 +872,13 @@ describe("plugin-spatial-nback", () => {
   it("should not leak timeouts on rapid restart", async () => {
     const { expectFinished } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_duration: 10,
         isi_duration: 10,
         feedback_duration: 10,
       },
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_duration: 10,
         isi_duration: 10,
         feedback_duration: 10,
@@ -898,7 +898,7 @@ describe("plugin-spatial-nback", () => {
   it("should show empty grid when stimulus positions are null", async () => {
     const { expectFinished, getHTML, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         rows: 3,
         cols: 3,
         // stimulus_row and stimulus_col are null by default now
@@ -936,7 +936,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle target trials with empty grid", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         is_target: true,
         // stimulus positions null by default
       },
@@ -962,7 +962,7 @@ describe("plugin-spatial-nback", () => {
   it("should handle no response to empty grid", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         is_target: false,
         stimulus_duration: 200,
         isi_duration: 200,
@@ -988,7 +988,7 @@ describe("plugin-spatial-nback", () => {
   it("should show feedback for empty grid trials", async () => {
     const { expectFinished, getHTML } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         show_feedback_text: true,
         show_feedback_border: true,
         is_target: true,
@@ -1015,7 +1015,7 @@ describe("plugin-spatial-nback", () => {
   it("should wait full ISI duration when response occurs during ISI", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
         stimulus_duration: 100,
@@ -1048,7 +1048,7 @@ describe("plugin-spatial-nback", () => {
   it("should wait full ISI duration when response occurs during ISI with feedback", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
         stimulus_duration: 100,
@@ -1081,7 +1081,7 @@ describe("plugin-spatial-nback", () => {
   it("should disable button after response", async () => {
     const { expectFinished } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
         feedback_duration: 300,
@@ -1111,7 +1111,7 @@ describe("plugin-spatial-nback", () => {
   it("should disable button after response even when feedback_duration is 0", async () => {
     const { expectFinished } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
         feedback_duration: 0,
@@ -1141,7 +1141,7 @@ describe("plugin-spatial-nback", () => {
   it("should not show feedback flash when feedback_duration is 0 and no response is made", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
-        type: jsPsychPluginSpatialNback,
+        type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
         feedback_duration: 0,

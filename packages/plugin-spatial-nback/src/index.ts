@@ -42,10 +42,9 @@ const info = <const>{
         default: 750,
       },
       /** Inter-stimulus interval (ms) */
-      // I recommend using feedback_duration as ISI if you have any type of feedback showing
       isi_duration: {
         type: ParameterType.INT,
-        default: 1000,
+        default: 500,
       },
       /** Duration of feedback display (ms) */
       feedback_duration: {

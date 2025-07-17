@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Spatial N-Back Example</title>
+    <script src="https://unpkg.com/jspsych@8.2.1"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+</head>
+<body>
+    <script>
+        // Initialize jsPsych
+        const jsPsych = initJsPsych({
+            on_finish: function() {
+                jsPsych.data.displayData();
+            }
+        });
+
+        const timeline = [];
+
+        timeline.push({
+            type: jsPsychSpatialNback,
+            stimulus_row: 0,
+            stimulus_col: 0,
+            stimulus_duration: 3000,
+            instructions: "Trial 1: Stimulus in position (0, 0) - top left corner, this cannot be a target.",
+        });
+
+        timeline.push({
+            type: jsPsychSpatialNback,
+            stimulus_duration: 2000,
+            instructions: "Trial 2: Empty grid by default - no stimulus, this is not a target"
+        });
+
+        timeline.push({
+            type: jsPsychSpatialNback,
+            stimulus_row: 0,
+            stimulus_col: 0,
+            stimulus_duration: 2000,
+            isi_duration: 1000, //includes the ISI (empty grid), can record response in this time also.
+            is_target: true,
+            instructions: "Trial 3: Stimulus in position (0, 0) - top left corner again, 1-back target."
+        });
+
+        timeline.push({
+            type: jsPsychSpatialNback,
+            rows: 4,
+            cols: 4,
+            stimulus_row: 3,
+            stimulus_col: 3,
+            is_target: false,
+            instructions: "Trial 4: All in one trial, 4x4 grid, stimulus in bottom right corner.",
+            stimulus_duration: 2000,
+            isi_duration: 500,
+            feedback_duration: 1000, //cant record response when showing feedback, button disabled
+            show_feedback_text: true,
+            show_feedback_border: true
+        });
+
+        jsPsych.run(timeline);
+    </script>
+</body>
+</html>
