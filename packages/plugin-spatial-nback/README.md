@@ -21,7 +21,7 @@ import jsPsychSpatialNback from '@jspsych-contrib/plugin-spatial-nback';
 
 ## Compatibility
 
-jsPsych v8.0.
+jsPsych v8.0
 
 ## Documentation
 
