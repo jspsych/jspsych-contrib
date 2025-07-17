@@ -3,7 +3,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import { version } from "../package.json";
 
 const info = <const>{
-  name: "@jspsych-contrib/plugin-spatial-nback",
+  name: "spatial-nback",
   version: version,
   parameters: {
       /** Number of rows in the spatial grid */
@@ -136,20 +136,17 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
 
     // Validate grid dimensions
     if (trial.rows <= 1 && trial.cols <= 1) {
-      console.log('About to throw grid error'); // Add this line
       throw new Error("Grid must have more than one cell. Both rows and cols cannot be 1 or less.");
     }
     
     // Additional validations
     if (trial.rows <= 0 || trial.cols <= 0) {
-      console.log('About to throw dimension error'); // Add this line
       throw new Error("Grid dimensions must be positive integers. Rows and cols must be greater than 0.");
     }
     
     // Only validate stimulus position if both row and col are not null
     if (trial.stimulus_row !== null && trial.stimulus_col !== null) {
       if (trial.stimulus_row >= trial.rows || trial.stimulus_col >= trial.cols) {
-        console.log('About to throw position error'); // Add this line
         throw new Error(`Stimulus position (${trial.stimulus_row}, ${trial.stimulus_col}) is outside grid bounds (${trial.rows}x${trial.cols}).`);
       }
     }
@@ -157,8 +154,6 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
     let trial_start_time: number;
     let response_allowed = false;
     let response_given = false;
-    let stimulus_timeout: number;
-    let isi_timeout: number;
     let stimulus_hidden = false; // Track if stimulus has been hidden
 
     // Determine if stimulus should be shown
@@ -319,7 +314,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
 
       // PHASE 1 TIMEOUT: Hide stimulus after stimulus_duration
       // This starts the ISI (Inter-Stimulus Interval) phase
-      stimulus_timeout = window.setTimeout(() => {
+      this.jsPsych.pluginAPI.setTimeout(() => {
         if (show_stimulus) {
           const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
           cell.style.backgroundColor = 'white';
@@ -329,7 +324,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         
         // PHASE 2: ISI (Inter-Stimulus Interval) 
         // After ISI duration, handle cases where no response was given
-        isi_timeout = window.setTimeout(() => {
+        this.jsPsych.pluginAPI.setTimeout(() => {
           handleNoResponse(); // Let handleNoResponse() do its own validation
         }, trial.isi_duration);
       }, trial.stimulus_duration);
@@ -354,8 +349,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       // TIMING CLEANUP:
       // Clear any pending timeouts since user responded
       // Now, remaining timeouts will be handled in showFeedback()
-      clearTimeout(stimulus_timeout);
-      clearTimeout(isi_timeout);
+      this.jsPsych.pluginAPI.clearAllTimeouts();
 
       // PHASE 3: FEEDBACK
       // Show feedback with appropriate timing (made_response = true)
@@ -417,7 +411,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         if (show_stimulus && !stimulus_hidden) {
           const stimulus_end_time = trial.stimulus_duration - elapsed_time;
           if (stimulus_end_time > 0) {
-            setTimeout(() => {
+            this.jsPsych.pluginAPI.setTimeout(() => {
               const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
               cell.style.backgroundColor = 'white';
             }, stimulus_end_time);
@@ -426,7 +420,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         
         // TRIAL ENDING:
         // Always wait for the full trial duration (rest of ISI + feedback duration)
-        setTimeout(() => {
+        this.jsPsych.pluginAPI.setTimeout(() => {
           endTrial(is_correct, response_time, made_response);
         }, remaining_time);
         return;
@@ -441,7 +435,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         if (show_stimulus && !stimulus_hidden) {
           const stimulus_end_time = trial.stimulus_duration - elapsed_time;
           if (stimulus_end_time > 0) {
-            setTimeout(() => {
+            this.jsPsych.pluginAPI.setTimeout(() => {
               const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
               cell.style.backgroundColor = 'white';
             }, stimulus_end_time);
@@ -450,7 +444,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         
         // TRIAL ENDING:
         // End trial after remaining time without showing feedback
-        setTimeout(() => {
+        this.jsPsych.pluginAPI.setTimeout(() => {
           endTrial(is_correct, response_time, made_response);
         }, remaining_time);
         return;
@@ -486,7 +480,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       if (show_stimulus && !stimulus_hidden) {
         const stimulus_end_time = trial.stimulus_duration - elapsed_time;
         if (stimulus_end_time > 0) {
-          setTimeout(() => {
+          this.jsPsych.pluginAPI.setTimeout(() => {
             if (stimulus_cell) {
               stimulus_cell.style.backgroundColor = 'white';
             }
@@ -496,12 +490,15 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
 
       // TRIAL ENDING:
       // End trial after remaining time, ensuring consistent total trial duration
-      setTimeout(() => {
+      this.jsPsych.pluginAPI.setTimeout(() => {
         endTrial(is_correct, response_time, made_response);
       }, remaining_time);
     };
 
     const endTrial = (is_correct: boolean, response_time: number | null, made_response: boolean): void => {
+      // CLEANUP: Clear any remaining timeouts
+      this.jsPsych.pluginAPI.clearAllTimeouts();
+
       // Prepare trial data
       const trial_data = {
         stimulus_row: stimulus_row,

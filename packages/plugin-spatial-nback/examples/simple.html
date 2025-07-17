@@ -22,13 +22,15 @@
             type: jsPsychSpatialNback,
             stimulus_row: 0,
             stimulus_col: 0,
-            stimulus_duration: 3000,
+            stimulus_duration: 2000,
+            isi_duration: 0, // just the stimulus, no interstimulus.
             instructions: "Trial 1: Stimulus in position (0, 0) - top left corner, this cannot be a target.",
         });
 
         timeline.push({
             type: jsPsychSpatialNback,
-            stimulus_duration: 2000,
+            stimulus_duration: 1500,
+            isi_duration: 0,
             instructions: "Trial 2: Empty grid by default - no stimulus, this is not a target"
         });
 
@@ -37,7 +39,7 @@
             stimulus_row: 0,
             stimulus_col: 0,
             stimulus_duration: 2000,
-            isi_duration: 1000, //includes the ISI (empty grid), can record response in this time also.
+            isi_duration: 1500, //includes the ISI (empty grid), can record response in this time also.
             is_target: true,
             instructions: "Trial 3: Stimulus in position (0, 0) - top left corner again, 1-back target."
         });
@@ -51,7 +53,7 @@
             is_target: false,
             instructions: "Trial 4: All in one trial, 4x4 grid, stimulus in bottom right corner.",
             stimulus_duration: 2000,
-            isi_duration: 500,
+            isi_duration: 1500,
             feedback_duration: 1000, //cant record response when showing feedback, button disabled
             show_feedback_text: true,
             show_feedback_border: true
