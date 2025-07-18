@@ -13,7 +13,7 @@ authors:
     email: vlakshman@vassar.edu
     affiliation: De Leeuw Lab - Vassar College
 repository-code: >-
-  https://github.com/lakshmanvishnu/jspsych-contrib/tree/slider_plugin/packages/plugin-slider
+  https://github.com/jspsych/jspsych-contrib/tree/main/packages
 abstract: >-
   The plugin-slider is a jspsych plugin that creates an
   interactive slider interface similar to the "slide to
