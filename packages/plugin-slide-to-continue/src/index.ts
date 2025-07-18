@@ -420,7 +420,7 @@ class SliderResponsePlugin implements JsPsychPlugin<Info> {
       }
     }
 
-    // Fade out text completely
+    // This leads to text fading out completely
     sliderText.style.opacity = "0";
 
     // Update position to 100%
