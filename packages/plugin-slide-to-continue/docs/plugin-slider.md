@@ -47,11 +47,6 @@ Determines handle appearance:
 - `"round"`: Circular handle with 50% border-radius
 - `"square"`: Rectangular handle with 4px border-radius
 
-#### Animation Parameter
-Controls movement behavior:
-- `"smooth"`: Enables CSS transitions for fluid movement
-- `"ticks"`: Disables transitions for discrete, step-like movement
-
 ## Data Generated
 
 In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins#data-collected-by-all-plugins), this plugin collects the following data for each trial:
@@ -196,25 +191,6 @@ The plugin generates HTML with specific classes that can be styled:
 }
 ```
 
-### Custom Event Handling
-Access slider events through jsPsych's event system:
-
-```javascript
-var trial = {
-  type: jsPsychSlider,
-  on_start: function(trial) {
-    console.log('Trial started');
-  },
-  on_finish: function(data) {
-    if (data.response) {
-      console.log('Slider completed successfully');
-    } else {
-      console.log('Trial ended without completion');
-    }
-  }
-};
-```
-
 ## Integration with Other Plugins
 
 ### Conditional Trials
@@ -307,26 +283,6 @@ var timeline = [
 2. **Inconsistent colors**: Verify color format and browser compatibility
 3. **Layout issues**: Ensure container has sufficient space for the specified dimensions
 4. **Performance problems**: Reduce animation complexity or disable transitions
-
-#### Debug Mode
-Enable debug logging by setting:
-```javascript
-jsPsych.init({
-  debug: true
-});
-```
-
-## Browser Compatibility
-
-- **Desktop**: Chrome 60+, Firefox 55+, Safari 12+, Edge 79+
-- **Mobile**: iOS Safari 12+, Android Chrome 60+
-- **Features**: Touch events, CSS transforms, CSS transitions
-- **Requirements**: ES6 support, modern event handling
-
-## Version History
-
-- **0.0.1**: Initial release with basic slider functionality
-- Features: Multi-directional sliding, color customization, touch support, animation control
 
 ---
 
