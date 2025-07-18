@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychPluginSpatialNback Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <script src="https://unpkg.com/jspsych@8.2.1"></script>
+    <script src="../dist/index.browser.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
+    <link href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+    <link href="./styles.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych(
+      {
+        on_finish: function() {
+          jsPsych.data.displayData();
+        }
+      }
+    );
+
+    // N-back task parameters
+    const n_back_level = 1;
+    const total_trials = 10;
+    const target_percentage = 0;
+    const rows = 3;
+    const cols = 3;
+
+    // Generate stimulus sequence
+    function generateNBackSequence(total_trials, n_back_level, target_percentage, rows, cols) {
+      const positions = [];
+      const is_target = [];
+      
+      // Generate first n trials (cannot be targets)
+      for (let i = 0; i < n_back_level; i++) {
+        positions.push({
+          row: Math.floor(Math.random() * rows),
+          col: Math.floor(Math.random() * cols)
+        });
+        is_target.push(false);
+      }
+      
+      // Generate remaining trials with targets
+      const n_targets = Math.round((target_percentage / 100) * total_trials);
+      let targets_placed = 0;
+      
+      for (let i = n_back_level; i < total_trials; i++) {
+        if (targets_placed < n_targets && Math.random() < 0.5) {
+          // Make this a target trial
+          positions.push({
+            row: positions[i - n_back_level].row,
+            col: positions[i - n_back_level].col
+          });
+          is_target.push(true);
+          targets_placed++;
+        } else {
+          // Generate non-target position
+          let new_position;
+          do {
+            new_position = {
+              row: Math.floor(Math.random() * rows),
+              col: Math.floor(Math.random() * cols)
+            };
+          } while (
+            new_position.row === positions[i - n_back_level].row &&
+            new_position.col === positions[i - n_back_level].col
+          );
+          positions.push(new_position);
+          is_target.push(false);
+        }
+      }
+      
+      return { positions, is_target };
+    }
+
+    const sequence = generateNBackSequence(total_trials, n_back_level, target_percentage, rows, cols);
+
+    // Create timeline
+    const nback_timeline = [];
+
+    // Add trials to the timeline
+    for (let i = 0; i < total_trials; i++) {
+      nback_timeline.push({
+        type: jsPsychSpatialNback,
+        rows: rows,
+        cols: cols,
+        stimulus_row: sequence.positions[i].row,
+        stimulus_col: sequence.positions[i].col,
+        is_target: sequence.is_target[i],
+        stimulus_duration: 1000,
+        isi_duration: 500,
+        feedback_duration: 500,
+        show_feedback_text: true,
+        show_feedback_border: true,
+        cell_size: 125,
+        instructions: `Click MATCH when the position matches the one from ${n_back_level} trial(s) ago (Trial ${i + 1} of ${total_trials})`,
+        button_text: "MATCH",
+        stimulus_color: "#2196F3",
+        correct_color: "#4CAF50",
+        incorrect_color: "#F44336",
+      });
+    }
+
+    // Create instructions for the task
+    const instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    response_ends_trial: true,
+    on_load: function() {
+        document.body.addEventListener('pointerdown', function endTrialOnClick() {
+            jsPsych.finishTrial();
+            document.body.removeEventListener('pointerdown', endTrialOnClick);
+        });
+    },
+    stimulus: `
+        <div style="text-align: center; font-size: clamp(16px, 4vw, 20px); line-height: 1.5; padding: 10px; max-width: 90vw; margin: 0 auto;">
+            <h2 style="font-size: clamp(20px, 5vw, 28px); margin-bottom: 20px;">Spatial N-Back Task</h2>
+            <p style="margin-bottom: 15px;">In this task, you will see a grid with blue squares appearing in different positions.</p>
+            <p style="margin-bottom: 15px;">Your job is to click the MATCH button whenever the current position is the same as the position from <strong>1 trial ago</strong>.</p>
+            <p style="margin-bottom: 15px;">Try to respond as quickly and accurately as possible.</p>
+            <p style="font-weight: bold; color: #2196F3;">Press any key or tap anywhere to begin the task.</p>
+        </div>
+    `,
+    choices: "ALL_KEYS"
+    };
+
+
+    jsPsych.run([instructions, ...nback_timeline]);
+  </script>
+</html>
