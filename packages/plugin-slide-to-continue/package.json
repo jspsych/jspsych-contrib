@@ -40,7 +40,7 @@
   },
   "homepage": "/plugin-slider/README.md",
   "dependencies": {
-    "jspsych": "^8.0.0"
+    "jspsych": "^8.2.2"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.5",
