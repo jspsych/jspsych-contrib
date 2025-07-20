@@ -60,7 +60,6 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       link.remove();
     }
 
-    const passedPerformanceCheck = new Event("passedPerformanceCheck", { bubbles: true });
     const passedSetup2 = new Event("passedSetup2", { bubbles: true });
     const exit = new Event("exit", { bubbles: true });
 
@@ -125,11 +124,6 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       mainDisplayElement.addEventListener("exit", () => {
         this.jsPsych.endExperiment();
       });
-      mainDisplayElement.addEventListener("passedPerformanceCheck", () => {
-        continueBtn.addEventListener("click", () => {
-          mainDisplayElement.dispatchEvent(passedSetup2);
-        });
-      });
 
       mainDisplayElement.addEventListener("passedSetup2", () => {
         // Return the stylesheet we removed for the plugin
@@ -137,7 +131,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
           const returnedCSS = document.createElement("link");
           returnedCSS.rel = "stylesheet";
           returnedCSS.type = "text/css";
-          returnedCSS.href = "https://app.unpkg.com/jspsych@8.2.1/files/css/jspsych.css";
+          returnedCSS.href = "https://app.unpkg.com/jspsych@8.2.2/files/css/jspsych.css";
           document.head.appendChild(link);
         }
 
@@ -1044,8 +1038,10 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
       ruleCheck.addEventListener("click", ruleChecked);
       invertGuiBtn.addEventListener("click", invertRoiGUI);
       freezeBtn.addEventListener("click", toggleRoiFreeze);
+      continueBtn.addEventListener("click", () => {
+        mainDisplayElement.dispatchEvent(passedSetup2);
+      });
 
-      mainDisplayElement.dispatchEvent(passedPerformanceCheck);
       showRoiGUI();
     }
 
