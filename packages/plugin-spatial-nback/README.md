@@ -8,7 +8,7 @@ A jsPsych plugin for presenting a spatial grid stimulus, designed for spatial n-
 
 **CDN:**
 ```html
-<script src="https://unpkg.com/@jspsych-contrib/plugin-spatial-nback@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-spatial-nback@1.1.0"></script>
 ```
 
 **NPM:**
