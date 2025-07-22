@@ -101,7 +101,7 @@ const info = <const>{
       is_target: {
         type: ParameterType.BOOL,
       },
-      /** Index of button pressed (0 for match, 1 for no match), null if no response */
+      /** Index of button pressed (0 for match, 1 for no match, n for other), null if no response. */
       response: {
         type: ParameterType.INT,
       },
@@ -109,7 +109,7 @@ const info = <const>{
       response_time: {
         type: ParameterType.INT,
       },
-      /** Whether the response was correct */
+      /** Whether the response was correct, always based on first two indices of the buttons array. */
       correct: {
         type: ParameterType.BOOL,
       },
