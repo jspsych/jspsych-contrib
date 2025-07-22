@@ -14,12 +14,13 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | stimulus_row             | int     | null                                    | Row position of the stimulus (0-indexed). If null, no stimulus is shown. |
 | stimulus_col             | int     | null                                    | Column position of the stimulus (0-indexed). If null, no stimulus is shown. |
 | is_target                | bool    | false                                   | Whether this trial is a target trial                          |
-| stimulus_duration        | int     | 750                                     | Duration the stimulus is displayed (ms), button enabled                       |
-| isi_duration             | int     | 1000                                    | Inter-stimulus interval (ms), button still enabled                                   |
+| stimulus_duration        | int     | null                                     | Duration the stimulus is displayed (ms), unlimited if null, button enabled. When null, will skip to next durations only on click.                       |
+| isi_duration             | int     | 1000                                    | Inter-stimulus interval (ms), button still enabled. Feedback will show on isi+feedback durations if stimulus_duration is not null. Otherwise, ISI is just empty grid.                                   |
 | feedback_duration        | int     | 500                                     | Duration of feedback display (ms), button disabled period. If no show_feedback options are enabled, feedback_duration still takes effect, giving an empty buffer grid with disabled button                             |
 | show_feedback_text       | bool    | true                                    | Whether to show feedback with response time after response    |
 | show_feedback_border     | bool    | true                                    | Whether to show feedback border around the grid               |
-| button_text              | string  | "MATCH"                                 | Text for the response button                                   |
+| buttons              | array  | ["MATCH", "NO MATCH"]                      | Labels for the response buttons                                |
+| match_index          | int    | 0                                       | Index of the match button in the buttons array                |
 | stimulus_color           | string  | "#0066cc"                               | Color of the stimulus square                                   |
 | correct_color            | string  | "#00cc00"                               | Color of correct feedback border                               |
 | incorrect_color          | string  | "#cc0000"                               | Color of incorrect feedback border                             |
@@ -34,7 +35,7 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 | stimulus_row   | int     | Row position of the stimulus (0-indexed), null if no stimulus |
 | stimulus_col   | int     | Column position of the stimulus (0-indexed), null if no stimulus |
 | is_target      | bool    | Whether this trial was a target                |
-| response       | bool    | Whether participant responded                   |
+| response       | int     | Index of button pressed (match_index for match, other indices for no match), null if no response |
 | response_time  | int     | Response time in milliseconds (null if no response) |
 | correct        | bool    | Whether the response was correct                |
 
@@ -68,7 +69,7 @@ var trial = {
   stimulus_row: 1,
   stimulus_col: 2,
   is_target: true,
-  button_text: "MATCH"
+  buttons: ["MATCH"]
 }
 ```
 
@@ -89,7 +90,8 @@ var trial = {
   correct_color: "#00ff00",
   incorrect_color: "#ff0000",
   instructions: "Press the button when the current position matches the position from 2 trials ago.",
-  button_text: "2-BACK MATCH"
+  buttons: ["MAYBE", "NO MATCH", "2-BACK MATCH"]
+  match_index: 2
 }
 ```
 
@@ -103,7 +105,7 @@ var trial = {
   is_target: false,
   show_feedback_text: false,
   show_feedback_border: false,
-  button_text: "TARGET"
+  buttons: ["TARGET"]
 }
 ```
 
@@ -116,6 +118,5 @@ var trial = {
   // This creates an empty grid with no stimulus
   // For empty grids: responding is always incorrect, not responding is always correct
   is_target: false,
-  button_text: "MATCH"
 }
 ```
