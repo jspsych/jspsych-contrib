@@ -5,7 +5,6 @@ import jsPsychSpatialNback from ".";
 jest.useFakeTimers();
 
 describe("plugin-spatial-nback", () => {
-  
   /**
    * Test 1: Basic Plugin Loading
    * Verifies that the plugin loads with default parameters and basic functionality works
@@ -14,7 +13,7 @@ describe("plugin-spatial-nback", () => {
     const { expectFinished, getHTML, getData } = await startTimeline([
       {
         type: jsPsychSpatialNback,
-        stimulus_row: 0,  // Explicitly set to test with stimulus
+        stimulus_row: 0, // Explicitly set to test with stimulus
         stimulus_col: 0,
       },
     ]);
@@ -49,7 +48,7 @@ describe("plugin-spatial-nback", () => {
         type: jsPsychSpatialNback,
         rows: 15,
         cols: 5,
-        stimulus_row: 0,  // Add stimulus for testing
+        stimulus_row: 0, // Add stimulus for testing
         stimulus_col: 0,
       },
     ]);
@@ -82,7 +81,7 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Allow stimulus to appear
-    
+
     // Check that stimulus cell has correct background color
     const stimulusCell = document.getElementById("cell-1-2") as HTMLElement;
     expect(stimulusCell.style.backgroundColor).toBe("rgb(255, 0, 0)"); // #ff0000 converted to RGB
@@ -137,7 +136,7 @@ describe("plugin-spatial-nback", () => {
     // Let entire trial duration pass without any response
     jest.advanceTimersByTime(1001); // 500ms stimulus + 500ms ISI + 1ms to complete trial
     await expectFinished();
-    
+
     // Verify no response data is correctly recorded
     const data = getData().values()[0];
     expect(data.response).toBe(false);
@@ -169,7 +168,7 @@ describe("plugin-spatial-nback", () => {
     // Check feedback is displayed
     const feedbackDiv = document.getElementById("nback-feedback");
     expect(feedbackDiv?.textContent).toContain("Correct!");
-    
+
     const grid = document.getElementById("nback-grid") as HTMLElement;
     expect(grid.style.border).toContain("3px solid");
 
@@ -202,7 +201,7 @@ describe("plugin-spatial-nback", () => {
     const feedbackDiv = document.getElementById("nback-feedback");
     expect(feedbackDiv?.textContent).toBe("Correct! (999ms)"); // Dummy text is present
     expect(feedbackDiv?.style.visibility).toBe("hidden"); // But hidden from view
-    
+
     const grid = document.getElementById("nback-grid") as HTMLElement;
     expect(grid.style.border).not.toContain("3px solid #00cc00");
 
@@ -225,7 +224,7 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     expect(getHTML()).toContain("CUSTOM BUTTON");
-    
+
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(1751); // 750ms stimulus + 500ms ISI + 500ms feedback + 1ms to complete trial
     await expectFinished();
@@ -246,7 +245,7 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     expect(getHTML()).toContain("Custom test instructions");
-    
+
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(1751); // 750ms stimulus + 500ms ISI + 500ms feedback + 1ms to complete trial
     await expectFinished();
@@ -269,11 +268,11 @@ describe("plugin-spatial-nback", () => {
 
     const stimulusCell = document.getElementById("cell-0-0") as HTMLElement;
     expect(stimulusCell.style.backgroundColor).toBe("rgb(255, 0, 0)");
-    
+
     // After stimulus duration, should be hidden
     jest.advanceTimersByTime(201); // 200ms stimulus + 1ms extra to ensure it's hidden
     expect(stimulusCell.style.backgroundColor).toBe("");
-    
+
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(1200); // 200ms stimulus + 500ms ISI + 500ms feedback - 1ms already advanced + 1ms to complete trial
     await expectFinished();
@@ -298,11 +297,11 @@ describe("plugin-spatial-nback", () => {
     // Respond to trigger feedback
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(100);
-    
+
     // Check feedback is shown
     const feedbackDiv = document.getElementById("nback-feedback");
     expect(feedbackDiv?.textContent).toContain("Correct!");
-    
+
     // Complete trial with extended feedback duration
     jest.advanceTimersByTime(2451); // 750ms stimulus + 500ms ISI + 800ms feedback - 100ms already advanced + 1ms to complete trial
     await expectFinished();
@@ -329,15 +328,15 @@ describe("plugin-spatial-nback", () => {
     // Check stimulus color
     const stimulusCell = document.getElementById("cell-0-0") as HTMLElement;
     expect(stimulusCell.style.backgroundColor).toBe("rgb(255, 170, 0)");
-    
+
     // Respond to trigger feedback
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(100);
-    
+
     // Check feedback color
     const grid = document.getElementById("nback-grid") as HTMLElement;
     expect(grid.style.border).toContain("#00ffaa");
-    
+
     jest.advanceTimersByTime(1851); // 750ms stimulus + 500ms ISI + 200ms feedback - 100ms already advanced + 1ms to complete trial
     await expectFinished();
   });
@@ -361,14 +360,14 @@ describe("plugin-spatial-nback", () => {
     // Respond (incorrectly) to non-target
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(100);
-    
+
     // Check feedback shows incorrect
     const feedbackDiv = document.getElementById("nback-feedback");
     expect(feedbackDiv?.textContent).toContain("Incorrect!");
-    
+
     jest.advanceTimersByTime(1851); // 750ms stimulus + 500ms ISI + 200ms feedback - 100ms already advanced + 1ms to complete trial
     await expectFinished();
-    
+
     const data = getData().values()[0];
     expect(data.correct).toBe(false);
   });
@@ -500,14 +499,14 @@ describe("plugin-spatial-nback", () => {
     // Respond to empty grid (should be incorrect)
     document.getElementById("nback-response-btn")?.click();
     jest.advanceTimersByTime(100);
-    
+
     // Check feedback shows incorrect
     const feedbackDiv = document.getElementById("nback-feedback");
     expect(feedbackDiv?.textContent).toContain("Incorrect!");
-    
+
     const grid = document.getElementById("nback-grid") as HTMLElement;
     expect(grid.style.border).toContain("3px solid #cc0000");
-    
+
     jest.advanceTimersByTime(2151); // 750ms stimulus + 500ms ISI + 500ms feedback + 400ms remaining feedback + 1ms to complete trial
     await expectFinished();
   });
@@ -532,7 +531,7 @@ describe("plugin-spatial-nback", () => {
     // Wait for stimulus to end and respond during ISI
     jest.advanceTimersByTime(700); // 500ms stimulus + 200ms into ISI
     document.getElementById("nback-response-btn")?.click();
-    
+
     // Should still wait remaining ISI + feedback duration
     jest.advanceTimersByTime(801); // Remaining 800ms of ISI + 0ms feedback + 1ms to complete trial
     await expectFinished();
@@ -559,7 +558,7 @@ describe("plugin-spatial-nback", () => {
     // Wait for stimulus to end and respond during ISI
     jest.advanceTimersByTime(700); // 500ms stimulus + 200ms into ISI
     document.getElementById("nback-response-btn")?.click();
-    
+
     // Should still wait remaining ISI + feedback duration
     jest.advanceTimersByTime(1101); // Remaining 800ms of ISI + 300ms feedback + 1ms to complete trial
     await expectFinished();
@@ -584,7 +583,7 @@ describe("plugin-spatial-nback", () => {
 
     // Respond to trigger feedback period
     document.getElementById("nback-response-btn")?.click();
-    
+
     // Check that button is disabled after response even when feedback_duration is 0
     jest.advanceTimersByTime(50);
     const button = document.getElementById("nback-response-btn") as HTMLButtonElement;
@@ -613,26 +612,25 @@ describe("plugin-spatial-nback", () => {
 
     // Wait for stimulus to display
     jest.advanceTimersByTime(750);
-    
+
     // Wait for ISI without making a response
     jest.advanceTimersByTime(1000);
-    
+
     // Check that no feedback is shown (no text in feedback div and no border)
     const feedbackDiv = document.getElementById("nback-feedback");
     const grid = document.getElementById("nback-grid") as HTMLElement;
-    
+
     expect(feedbackDiv?.textContent || "").toBe("Correct! (999ms)"); // Dummy text is present
     expect(feedbackDiv?.style.visibility || "").toBe("hidden"); // But hidden from view
     expect(grid?.style.border || "").not.toContain("6px solid");
-    
+
     // Complete the trial - total duration should be 750 + 500 + 0 = 1250ms
     jest.advanceTimersByTime(1); // 1ms to trigger trial end
     await expectFinished();
-    
+
     // Verify the trial ended correctly with no response
     const data = getData().values()[0];
     expect(data.response).toBe(false);
     expect(data.correct).toBe(true); // Correct because is_target is false and no response was made
   });
-
 });
