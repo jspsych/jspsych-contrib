@@ -19,7 +19,8 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | feedback_duration        | int     | 500                                     | Duration of feedback display (ms), button disabled period. If no show_feedback options are enabled, feedback_duration still takes effect, giving an empty buffer grid with disabled button                             |
 | show_feedback_text       | bool    | true                                    | Whether to show feedback with response time after response    |
 | show_feedback_border     | bool    | true                                    | Whether to show feedback border around the grid               |
-| buttons              | array  | ["O", "X"]                                 | Text for the response buttons. Minumum of one button: Correct Match. Second button will be no Match.                                  |
+| buttons              | array  | ["MATCH", "NO MATCH"]                      | Labels for the response buttons                                |
+| match_index          | int    | 0                                       | Index of the match button in the buttons array                |
 | stimulus_color           | string  | "#0066cc"                               | Color of the stimulus square                                   |
 | correct_color            | string  | "#00cc00"                               | Color of correct feedback border                               |
 | incorrect_color          | string  | "#cc0000"                               | Color of incorrect feedback border                             |
@@ -34,7 +35,7 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 | stimulus_row   | int     | Row position of the stimulus (0-indexed), null if no stimulus |
 | stimulus_col   | int     | Column position of the stimulus (0-indexed), null if no stimulus |
 | is_target      | bool    | Whether this trial was a target                |
-| response       | bool    | Whether participant responded                   |
+| response       | int     | Index of button pressed (match_index for match, other indices for no match), null if no response |
 | response_time  | int     | Response time in milliseconds (null if no response) |
 | correct        | bool    | Whether the response was correct                |
 
@@ -89,7 +90,8 @@ var trial = {
   correct_color: "#00ff00",
   incorrect_color: "#ff0000",
   instructions: "Press the button when the current position matches the position from 2 trials ago.",
-  buttons: ["2-BACK MATCH", "NO MATCH"]
+  buttons: ["MAYBE", "NO MATCH", "2-BACK MATCH"]
+  match_index: 2
 }
 ```
 

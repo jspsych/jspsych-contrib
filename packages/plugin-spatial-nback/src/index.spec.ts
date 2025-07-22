@@ -746,4 +746,82 @@ describe("plugin-spatial-nback", () => {
     expect(data.correct).toBe(true); // Correct response to non-target
   });
 
+  /**
+   * Test 27: Custom match_index parameter
+   * Tests that match_index parameter correctly identifies which button is the match button
+   */
+  test("should use custom match_index for match button", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
+        buttons: ["NO MATCH", "MATCH", "MAYBE"], // MATCH is now at index 1
+        match_index: 1, // Set match button to index 1
+        is_target: true,
+        stimulus_duration: 750,
+      },
+    ]);
+
+    // Click button at index 1 (which is now the match button)
+    document.getElementById("nback-response-btn-1")?.click();
+    jest.advanceTimersByTime(1250); // 750ms stimulus + 500ms ISI
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.response).toBe(1); // Button index 1 was pressed
+    expect(data.correct).toBe(true); // Correct because button 1 is match button and is_target is true
+  });
+
+  /**
+   * Test 28: Custom match_index with non-target
+   * Tests that match_index parameter works correctly for non-target trials
+   */
+  test("should use custom match_index for non-target trials", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
+        buttons: ["NO MATCH", "MATCH"],
+        match_index: 1, // Set match button to index 1
+        is_target: false, // This is a non-target trial
+        stimulus_duration: 750,
+      },
+    ]);
+
+    // Click button at index 0 (which is now a no-match button)
+    document.getElementById("nback-response-btn-0")?.click();
+    jest.advanceTimersByTime(1250); // 750ms stimulus + 500ms ISI
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.response).toBe(0); // Button index 0 was pressed
+    expect(data.correct).toBe(true); // Correct because button 0 is not match button and is_target is false
+  });
+
+  /**
+   * Test 29: Custom match_index with empty grid
+   * Tests that match_index parameter works correctly with empty grid trials
+   */
+  test("should use custom match_index with empty grid", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychSpatialNback,
+        // stimulus_row and stimulus_col are null by default (empty grid)
+        buttons: ["OTHER", "MATCH", "NO MATCH"],
+        match_index: 1, // Set match button to index 1
+        stimulus_duration: 750,
+      },
+    ]);
+
+    // Click button at index 2 (which is a no-match button for empty grid)
+    document.getElementById("nback-response-btn-2")?.click();
+    jest.advanceTimersByTime(1250); // 750ms stimulus + 500ms ISI
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.response).toBe(2); // Button index 2 was pressed
+    expect(data.correct).toBe(true); // Correct because button 2 is not match button and grid is empty
+  });
 });

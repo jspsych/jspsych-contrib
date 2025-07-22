@@ -67,6 +67,11 @@ const info = <const>{
         default: ["MATCH", "NO MATCH"],
         array: true,
       },
+      /** Index of the match button in the buttons array */
+      match_index: {
+        type: ParameterType.INT,
+        default: 0,
+      },
       /** Color of the stimulus square */
       stimulus_color: {
         type: ParameterType.STRING,
@@ -101,7 +106,7 @@ const info = <const>{
       is_target: {
         type: ParameterType.BOOL,
       },
-      /** Index of button pressed (0 for match, 1 for no match, n for other), null if no response. */
+      /** Index of button pressed (match_index for match, other indices for no match), null if no response. */
       response: {
         type: ParameterType.INT,
       },
@@ -109,7 +114,7 @@ const info = <const>{
       response_time: {
         type: ParameterType.INT,
       },
-      /** Whether the response was correct, always based on first two indices of the buttons array. */
+      /** Whether the response was correct, based on match_index parameter and is_target. */
       correct: {
         type: ParameterType.BOOL,
       },
@@ -145,6 +150,11 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       throw new Error("Grid dimensions must be positive integers. Rows and cols must be greater than 0.");
     }
     
+    // Validate match_index
+    if (trial.match_index >= trial.buttons.length || trial.match_index < 0) {
+      throw new Error(`match_index (${trial.match_index}) must be a valid index within the buttons array (length ${trial.buttons.length}).`);
+    }
+    
     // Only validate stimulus position if both row and col are not null
     if (trial.stimulus_row !== null && trial.stimulus_col !== null) {
       if (trial.stimulus_row >= trial.rows || trial.stimulus_col >= trial.cols) {
@@ -175,7 +185,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       ">`;
       
       // Instructions at top
-      html += `<div id="nback-instructions" style="font-size: clamp(15px, 4.5vmin, 30px);">${trial.instructions}</div>`;
+      html += `<div id="nback-instructions" style="font-size: clamp(15px, 3vmin, 30px);">${trial.instructions}</div>`;
 
       // Grid container - centered within content
       html += `<div id="nback-grid-container" style="
@@ -297,16 +307,16 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       const response_time = performance.now() - trial_start_time;
       
       // CORRECTNESS LOGIC:
-      // Button 0 = Match, Button 1 = No Match
-      // If stimulus positions are null (empty grid), only "No Match" (button 1) is correct
+      // Match button determined by match_index parameter, other buttons are for no match
+      // If stimulus positions are null (empty grid), only "No Match" buttons are correct
       // If stimulus is shown, correctness depends on is_target parameter and button pressed
       let is_correct: boolean;
       if (!show_stimulus) {
-        // Empty grid: only "No Match" (button 1) is correct
-        is_correct = (buttonIndex === 1);
+        // Empty grid: only "No Match" buttons (not match_index) are correct
+        is_correct = (buttonIndex !== trial.match_index);
       } else {
-        // Stimulus shown: Match button (0) correct if is_target, No Match button (1) correct if !is_target
-        is_correct = (buttonIndex === 0 && trial.is_target) || (buttonIndex === 1 && !trial.is_target);
+        // Stimulus shown: Match button correct if is_target, No Match buttons correct if !is_target
+        is_correct = (buttonIndex === trial.match_index && trial.is_target) || (buttonIndex !== trial.match_index && !trial.is_target);
       }
 
       // TIMING CLEANUP:
