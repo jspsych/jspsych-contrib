@@ -16,7 +16,7 @@ const info = <const>{
         type: ParameterType.INT,
         default: 3,
       },
-      /** Size of each cell in pixels, this will affect size of whole grid also. If null, defaults to 12vh */
+      /** Size of each cell in pixels, this will affect size of whole grid also. If null, defaults to 12vh (12% of viewport height) */
       cell_size: {
         type: ParameterType.INT,
         default: null,
@@ -171,22 +171,17 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       let html = `<div id="nback-container" style="
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        padding: 20px;
-        max-width: 90vw;
-        margin: 0 auto;
+        gap: 5vh;
       ">`;
       
       // Instructions at top
-      html += `<div id="nback-instructions">${trial.instructions}</div>`;
+      html += `<div id="nback-instructions" style="font-size: clamp(15px, 4.5vmin, 30px);">${trial.instructions}</div>`;
 
       // Grid container - centered within content
       html += `<div id="nback-grid-container" style="
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: 20px 0;
       ">`;
       
       // Determine cell size - use 12vh if not specified, otherwise use specified pixels
@@ -216,19 +211,22 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       html += `<div id="nback-feedback-section" style="
         display: flex;
         flex-direction: column;
-        align-items: center;
         gap: 1.5vmin;
       ">`;
       
       // Feedback text first (directly under grid) - uses dummy text with visibility hidden to prevent layout displacement
       html += `<div id="nback-feedback" style="visibility: hidden;">Correct! (999ms)</div>`;
       
-      // Buttons second (under feedback text) - using jsPsych html-button-response styling
-      html += `<div id="jspsych-html-button-response-btngroup" class="jspsych-btn-group-grid" style="grid-template-columns: repeat(${trial.buttons.length}, 1fr); grid-template-rows: repeat(1, 1fr);">`;
+      // Buttons second (under feedback text) - using flex layout
+      html += `<div id="nback-buttons-container" style="
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      ">`;
       
       // Generate buttons from array
       trial.buttons.forEach((buttonText: string, index: number) => {
-        html += `<button id="nback-response-btn-${index}" class="jspsych-btn" data-choice="${index}" disabled>${buttonText}</button>`;
+        html += `<button id="nback-response-btn-${index}" class="jspsych-btn" style="margin: 0px 8px" disabled>${buttonText}</button>`;
       });
       
       html += `</div>`; // Close buttons container

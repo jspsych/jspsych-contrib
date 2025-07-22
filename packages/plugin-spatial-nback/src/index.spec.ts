@@ -23,8 +23,8 @@ describe("plugin-spatial-nback", () => {
     expect(getHTML()).toContain('id="nback-grid"');
     expect(getHTML()).toContain('id="nback-response-btn-0"');
     expect(getHTML()).toContain('id="nback-response-btn-1"');
-    // Check that the stimulus cell was created
-    expect(getHTML()).toContain("<div id=\"cell-0-0\" style=\"width: 125px; height: 125px; border: 1px solid #ccc; box-sizing: border-box; background-color: rgb(0, 102, 204);\"></div>");
+    // Check that the stimulus cell was created with 12vh default sizing
+    expect(getHTML()).toContain("<div id=\"cell-0-0\" style=\"width: 12vh; height: 12vh; border: 1px solid #ccc; box-sizing: border-box; background-color: rgb(0, 102, 204);\"></div>");
 
     // Simulate user clicking match button (index 0)
     document.getElementById("nback-response-btn-0")?.click();
