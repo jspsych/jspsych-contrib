@@ -44,7 +44,7 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 Using the CDN-hosted JavaScript file:
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-spatial-nback@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-spatial-nback@1.1.0"></script>
 ```
 
 Using NPM:
