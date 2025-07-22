@@ -14,7 +14,7 @@ describe("rok plugin", () => {
       },
     ]);
 
-    pressKey("l");
+    await pressKey("l");
     const data = getData().values()[0];
     expect(data.choices).toStrictEqual(["a", "l"]);
     expect(Array.isArray(data.frame_rate_array)).toBe(true);
