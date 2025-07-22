@@ -139,15 +139,16 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-
     // Validate grid dimensions
     if (trial.rows <= 1 && trial.cols <= 1) {
       throw new Error("Grid must have more than one cell. Both rows and cols cannot be 1 or less.");
     }
-    
+
     // Additional validations
     if (trial.rows <= 0 || trial.cols <= 0) {
-      throw new Error("Grid dimensions must be positive integers. Rows and cols must be greater than 0.");
+      throw new Error(
+        "Grid dimensions must be positive integers. Rows and cols must be greater than 0."
+      );
     }
     
     // Validate match_index
@@ -158,7 +159,9 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
     // Only validate stimulus position if both row and col are not null
     if (trial.stimulus_row !== null && trial.stimulus_col !== null) {
       if (trial.stimulus_row >= trial.rows || trial.stimulus_col >= trial.cols) {
-        throw new Error(`Stimulus position (${trial.stimulus_row}, ${trial.stimulus_col}) is outside grid bounds (${trial.rows}x${trial.cols}).`);
+        throw new Error(
+          `Stimulus position (${trial.stimulus_row}, ${trial.stimulus_col}) is outside grid bounds (${trial.rows}x${trial.cols}).`
+        );
       }
     }
 
@@ -170,20 +173,18 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
 
     // Determine if stimulus should be shown
     const show_stimulus = trial.stimulus_row !== null && trial.stimulus_col !== null;
-    
+
     // Use specified positions or null if not showing stimulus
     const stimulus_row = show_stimulus ? trial.stimulus_row : null;
     const stimulus_col = show_stimulus ? trial.stimulus_col : null;
 
     const createDisplay = (): void => {
-      
-      
       let html = `<div id="nback-container" style="
         display: flex;
         flex-direction: column;
         gap: 5vh;
       ">`;
-      
+
       // Instructions at top
       html += `<div id="nback-instructions" style="font-size: clamp(15px, 3vmin, 30px);">${trial.instructions}</div>`;
 
@@ -202,7 +203,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         box-sizing: border-box;
         display: inline-block;
       ">`;
-      
+
       for (let row = 0; row < trial.rows; row++) {
         html += '<div style="display: flex;">';
         for (let col = 0; col < trial.cols; col++) {
@@ -213,9 +214,9 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
             box-sizing: border-box;
           "></div>`;
         }
-        html += '</div>';
+        html += "</div>";
       }
-      html += '</div></div>'; // Close grid and grid-container
+      html += "</div></div>"; // Close grid and grid-container
 
       // Button and feedback section
       html += `<div id="nback-feedback-section" style="
@@ -223,7 +224,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         flex-direction: column;
         gap: 1.5vmin;
       ">`;
-      
+
       // Feedback text first (directly under grid) - uses dummy text with visibility hidden to prevent layout displacement
       html += `<div id="nback-feedback" style="visibility: hidden;">Correct! (999ms)</div>`;
       
@@ -305,7 +306,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       response_given = true;
       button_pressed = buttonIndex;
       const response_time = performance.now() - trial_start_time;
-      
+
       // CORRECTNESS LOGIC:
       // Match button determined by match_index parameter, other buttons are for no match
       // If stimulus positions are null (empty grid), only "No Match" buttons are correct
@@ -338,7 +339,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       // Mark that trial is complete without response
       response_allowed = false;
       response_given = true;
-      
+
       // CORRECTNESS LOGIC:
       // No response means no button was pressed
       // If stimulus positions are null (empty grid), not responding is correct (same as pressing "No Match")
@@ -350,11 +351,15 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       showFeedback(is_correct, null, false);
     };
 
-    const showFeedback = (is_correct: boolean, response_time: number | null, made_response: boolean): void => {
+    const showFeedback = (
+      is_correct: boolean,
+      response_time: number | null,
+      made_response: boolean
+    ): void => {
       // TIMING CALCULATION:
       // Calculate how much time has elapsed since trial start to determine remaining time
       const elapsed_time = performance.now() - trial_start_time;
-      
+
       // TOTAL TRIAL DURATION:
       let remaining_time: number;
       if (trial.stimulus_duration === null) {
@@ -382,7 +387,6 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       // NO FEEDBACK CASE:
       // If neither feedback text nor border is enabled, skip feedback display
       if (!trial.show_feedback_text && !trial.show_feedback_border) {
-        
         // STIMULUS HIDING:
         // Handle remaining stimulus duration if still showing (user responded within stimulus_duration)
         if (show_stimulus && !stimulus_hidden) {
@@ -400,7 +404,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
             }
           }
         }
-        
+
         // TRIAL ENDING:
         // Always wait for the full trial duration (rest of ISI + feedback duration)
         this.jsPsych.pluginAPI.setTimeout(() => {
@@ -430,7 +434,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
             }
           }
         }
-        
+
         // TRIAL ENDING:
         // End trial after remaining time without showing feedback
         this.jsPsych.pluginAPI.setTimeout(() => {
@@ -441,11 +445,13 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
 
       // FEEDBACK DISPLAY:
       // Show feedback when feedback_duration > 0 OR when response was made
-      
+
       // Initialize feedback elements
-      const grid = document.getElementById('nback-grid') as HTMLElement;
-      const feedback_div = document.getElementById('nback-feedback') as HTMLElement;
-      const stimulus_cell = show_stimulus ? document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement : null;
+      const grid = document.getElementById("nback-grid") as HTMLElement;
+      const feedback_div = document.getElementById("nback-feedback") as HTMLElement;
+      const stimulus_cell = show_stimulus
+        ? (document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement)
+        : null;
 
       // Handle different timing scenarios
       if (trial.stimulus_duration === null && made_response) {
@@ -523,7 +529,11 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       }, remaining_time);
     };
 
-    const endTrial = (is_correct: boolean, response_time: number | null, made_response: boolean): void => {
+    const endTrial = (
+      is_correct: boolean,
+      response_time: number | null,
+      made_response: boolean
+    ): void => {
       // CLEANUP: Clear any remaining timeouts
       this.jsPsych.pluginAPI.clearAllTimeouts();
 
@@ -534,7 +544,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         is_target: trial.is_target,
         response: button_pressed,
         response_time: response_time,
-        correct: is_correct
+        correct: is_correct,
       };
 
       // End trial

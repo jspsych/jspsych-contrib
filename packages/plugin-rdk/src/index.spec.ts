@@ -15,7 +15,7 @@ describe("rdk plugin", () => {
       },
     ]);
 
-    pressKey("l");
+    await pressKey("l");
     const data = getData().values()[0];
     expect(data.choices).toStrictEqual(["a", "l"]);
     expect(Array.isArray(data.frame_rate_array)).toBe(true);
@@ -33,8 +33,8 @@ describe("rdk plugin", () => {
 
     const { getData } = await startTimeline([trial, trial]);
 
-    pressKey("l");
-    pressKey("a");
+    await pressKey("l");
+    await pressKey("a");
 
     expect(getData().values()).toEqual([
       expect.objectContaining({ response: "l", correct: true }),
