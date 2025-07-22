@@ -226,7 +226,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       
       // Generate buttons from array
       trial.buttons.forEach((buttonText: string, index: number) => {
-        html += `<button id="nback-response-btn-${index}" class="jspsych-btn" style="margin: 0px 8px" disabled>${buttonText}</button>`;
+        html += `<button id="nback-response-btn-${index}" class="jspsych-btn nback-response-btn" style="margin: 0px 8px" disabled>${buttonText}</button>`;
       });
       
       html += `</div>`; // Close buttons container
