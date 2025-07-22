@@ -216,7 +216,7 @@ describe("plugin-spatial-nback", () => {
         type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
-        button_text: "CUSTOM BUTTON",
+        buttons: "CUSTOM BUTTON",
       },
     ]);
 

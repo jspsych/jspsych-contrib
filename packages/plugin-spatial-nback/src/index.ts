@@ -62,7 +62,7 @@ const info = <const>{
         default: true,
       },
       /** Text for the response button */
-      button_text: {
+      buttons: {
         type: ParameterType.STRING,
         default: "MATCH",
       },
@@ -241,7 +241,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       html += `<div id="nback-feedback" style="visibility: hidden;">Correct! (999ms)</div>`;
       
       // Button second (under feedback text) - uses standard jsPsych button styling
-      html += `<button id="nback-response-btn" class="jspsych-btn nback-response-btn" disabled>${trial.button_text}</button>`;
+      html += `<button id="nback-response-btn" class="jspsych-btn nback-response-btn" disabled>${trial.buttons}</button>`;
       
       html += '</div></div>'; // Close feedback section and main container
       
