@@ -24,7 +24,7 @@
     // N-back task parameters
     const n_back_level = 1;
     const total_trials = 10;
-    const target_percentage = 0;
+    const target_percentage = 50;
     const rows = 3;
     const cols = 3;
 
@@ -89,7 +89,7 @@
         stimulus_row: sequence.positions[i].row,
         stimulus_col: sequence.positions[i].col,
         is_target: sequence.is_target[i],
-        stimulus_duration: 1000,
+        stimulus_duration: null, // Only finish trial on response
         isi_duration: 500,
         feedback_duration: 500,
         show_feedback_text: true,

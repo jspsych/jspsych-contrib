@@ -14,8 +14,8 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | stimulus_row             | int     | null                                    | Row position of the stimulus (0-indexed). If null, no stimulus is shown. |
 | stimulus_col             | int     | null                                    | Column position of the stimulus (0-indexed). If null, no stimulus is shown. |
 | is_target                | bool    | false                                   | Whether this trial is a target trial                          |
-| stimulus_duration        | int     | 750                                     | Duration the stimulus is displayed (ms), button enabled                       |
-| isi_duration             | int     | 1000                                    | Inter-stimulus interval (ms), button still enabled                                   |
+| stimulus_duration        | int     | null                                     | Duration the stimulus is displayed (ms), unlimited if null, button enabled. When null, will skip to next durations only on click.                       |
+| isi_duration             | int     | 1000                                    | Inter-stimulus interval (ms), button still enabled. Feedback will show on isi+feedback durations if stimulus_duration is not null. Otherwise, ISI is just empty grid.                                   |
 | feedback_duration        | int     | 500                                     | Duration of feedback display (ms), button disabled period. If no show_feedback options are enabled, feedback_duration still takes effect, giving an empty buffer grid with disabled button                             |
 | show_feedback_text       | bool    | true                                    | Whether to show feedback with response time after response    |
 | show_feedback_border     | bool    | true                                    | Whether to show feedback border around the grid               |

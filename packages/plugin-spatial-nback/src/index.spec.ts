@@ -16,6 +16,7 @@ describe("plugin-spatial-nback", () => {
         type: jsPsychSpatialNback,
         stimulus_row: 0,  // Explicitly set to test with stimulus, otherwise empty grid
         stimulus_col: 0,
+        stimulus_duration: 750, // Set explicit duration for predictable timing
       },
     ]);
 
@@ -53,6 +54,7 @@ describe("plugin-spatial-nback", () => {
         cols: 5,
         stimulus_row: 0,  // Add stimulus for testing
         stimulus_col: 0,
+        stimulus_duration: 750,
       },
     ]);
 
@@ -80,6 +82,7 @@ describe("plugin-spatial-nback", () => {
         stimulus_row: 1,
         stimulus_col: 2,
         stimulus_color: "#ff0000", // Red color
+        stimulus_duration: 750,
       },
     ]);
 
@@ -106,6 +109,7 @@ describe("plugin-spatial-nback", () => {
         stimulus_row: 2,
         stimulus_col: 1,
         is_target: true,
+        stimulus_duration: 750,
       },
     ]);
 
@@ -160,6 +164,7 @@ describe("plugin-spatial-nback", () => {
         show_feedback_border: true,
         feedback_duration: 500,
         is_target: true,
+        stimulus_duration: 750,
       },
     ]);    // Respond to trigger feedback
     document.getElementById("nback-response-btn-0")?.click();
@@ -189,6 +194,7 @@ describe("plugin-spatial-nback", () => {
         show_feedback_border: false,
         feedback_duration: 0,
         is_target: true,
+        stimulus_duration: 750,
       },
     ]);
 
@@ -218,6 +224,7 @@ describe("plugin-spatial-nback", () => {
         stimulus_row: 0,
         stimulus_col: 0,
         buttons: ["CUSTOM MATCH", "CUSTOM NO MATCH"],
+        stimulus_duration: 750,
       },
     ]);
 
@@ -240,6 +247,7 @@ describe("plugin-spatial-nback", () => {
         stimulus_row: 0,
         stimulus_col: 0,
         instructions: "Custom test instructions",
+        stimulus_duration: 750,
       },
     ]);
 
@@ -286,6 +294,7 @@ describe("plugin-spatial-nback", () => {
         feedback_duration: 800,
         show_feedback_text: true,
         is_target: true,
+        stimulus_duration: 750,
       },
     ]);
 
@@ -310,6 +319,7 @@ describe("plugin-spatial-nback", () => {
         show_feedback_border: true,
         feedback_duration: 200,
         is_target: true,
+        stimulus_duration: 750,
       },
     ]);
 
@@ -336,6 +346,7 @@ describe("plugin-spatial-nback", () => {
         is_target: false, // Not a target, so response should be incorrect
         show_feedback_text: true,
         feedback_duration: 200,
+        stimulus_duration: 750,
       },
     ]);
 
@@ -363,6 +374,7 @@ describe("plugin-spatial-nback", () => {
         stimulus_row: 2,
         stimulus_col: 1,
         is_target: true,
+        stimulus_duration: 750,
       },
     ]);
 
@@ -389,6 +401,7 @@ describe("plugin-spatial-nback", () => {
         type: jsPsychSpatialNback,
         // stimulus_row and stimulus_col are null by default
         is_target: false,
+        stimulus_duration: 750,
       },
     ]);
 
@@ -421,6 +434,7 @@ describe("plugin-spatial-nback", () => {
         type: jsPsychSpatialNback,
         // stimulus_row and stimulus_col are null by default
         is_target: true, // This doesn't matter for empty grids
+        stimulus_duration: 750,
       },
     ]);
 
@@ -446,6 +460,7 @@ describe("plugin-spatial-nback", () => {
         type: jsPsychSpatialNback,
         // stimulus_row and stimulus_col are null by default
         is_target: false,
+        stimulus_duration: 750,
       },
     ]);
 
@@ -473,6 +488,7 @@ describe("plugin-spatial-nback", () => {
         show_feedback_border: true,
         feedback_duration: 500,
         is_target: false,
+        stimulus_duration: 750,
       },
     ]);
 
@@ -553,6 +569,7 @@ describe("plugin-spatial-nback", () => {
         show_feedback_text: false,
         show_feedback_border: false,
         is_target: true,
+        stimulus_duration: 750,
       },
     ]);
 
@@ -581,6 +598,7 @@ describe("plugin-spatial-nback", () => {
         show_feedback_text: true,
         show_feedback_border: true,
         is_target: false,
+        stimulus_duration: 750,
       },
     ]);
 
@@ -600,6 +618,132 @@ describe("plugin-spatial-nback", () => {
     const data = getData().values()[0];
     expect(data.response).toBe(null); // No button was pressed
     expect(data.correct).toBe(true); // Correct because is_target is false and no response was made
+  });
+
+  /**
+   * Test 23: Null stimulus duration with ISI and feedback
+   * Tests that when stimulus_duration is null, response triggers ISI then feedback
+   */
+  test("should handle null stimulus_duration with ISI and feedback timing", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
+        stimulus_duration: null, // Wait for response
+        isi_duration: 500,
+        feedback_duration: 300,
+        show_feedback_text: true,
+        is_target: true,
+      },
+    ]);
+
+    // Response should be possible immediately since stimulus waits
+    document.getElementById("nback-response-btn-0")?.click();
+    
+    // Wait for ISI (500ms) + feedback (300ms) = 800ms total
+    jest.advanceTimersByTime(800);
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.response).toBe(0); // MATCH button pressed
+    expect(data.correct).toBe(true); // Correct response to target
+  });
+
+  /**
+   * Test 24: Null stimulus duration with zero ISI
+   * Tests that when both stimulus_duration is null and isi_duration is 0/null
+   */
+  test("should handle null stimulus_duration with zero ISI", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
+        stimulus_duration: null, // Wait for response
+        isi_duration: 0, // No ISI
+        feedback_duration: 200,
+        show_feedback_text: true,
+        is_target: false,
+      },
+    ]);
+
+    // Click NO MATCH button (correct for non-target)
+    document.getElementById("nback-response-btn-1")?.click();
+    
+    // Wait only for feedback duration (200ms) since ISI is 0
+    jest.advanceTimersByTime(200);
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.response).toBe(1); // NO MATCH button pressed
+    expect(data.correct).toBe(true); // Correct response to non-target
+  });
+
+  /**
+   * Test 25: Null stimulus duration with default ISI
+   * Tests that when stimulus_duration is null but isi_duration uses default
+   */
+  test("should handle null stimulus_duration with default ISI", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychSpatialNback,
+        stimulus_row: 1,
+        stimulus_col: 1,
+        stimulus_duration: null, // Wait for response
+        // isi_duration not specified, so uses default 500ms
+        feedback_duration: 100,
+        show_feedback_text: true,
+        is_target: true,
+      },
+    ]);
+
+    // Click MATCH button (correct for target)
+    document.getElementById("nback-response-btn-0")?.click();
+    
+    // Wait for default ISI (500ms) + feedback duration (100ms)
+    jest.advanceTimersByTime(600);
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.response).toBe(0); // MATCH button pressed
+    expect(data.correct).toBe(true); // Correct response to target
+  });
+
+  /**
+   * Test 26: Null stimulus duration waits indefinitely
+   * Tests that when stimulus_duration is null, trial waits for response
+   */
+  test("should wait indefinitely when stimulus_duration is null", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychSpatialNback,
+        stimulus_row: 0,
+        stimulus_col: 0,
+        stimulus_duration: null, // Wait for response
+        isi_duration: 100,
+        feedback_duration: 100,
+        is_target: false,
+      },
+    ]);
+
+    // Wait a reasonable time - trial should not finish without response
+    jest.advanceTimersByTime(2000);
+    
+    // Check if trial is still running by trying to click button
+    const button = document.getElementById("nback-response-btn-1");
+    expect(button).toBeTruthy(); // Button should still exist and be clickable
+    
+    // Now click NO MATCH button
+    document.getElementById("nback-response-btn-1")?.click();
+    
+    // Wait for ISI + feedback (100ms + 100ms)
+    jest.advanceTimersByTime(200);
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.response).toBe(1); // NO MATCH button pressed
+    expect(data.correct).toBe(true); // Correct response to non-target
   });
 
 });

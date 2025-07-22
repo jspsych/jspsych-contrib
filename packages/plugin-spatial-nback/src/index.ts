@@ -36,10 +36,10 @@ const info = <const>{
         type: ParameterType.BOOL,
         default: false,
       },
-      /** Duration the stimulus is displayed (ms) */
+      /** Duration the stimulus is displayed (ms). If null, waits indefinitely for response */
       stimulus_duration: {
         type: ParameterType.INT,
-        default: 750,
+        default: null,
       },
       /** Inter-stimulus interval (ms) */
       isi_duration: {
@@ -262,22 +262,26 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         responseButton.disabled = false;
       });
 
-      // PHASE 1 TIMEOUT: Hide stimulus after stimulus_duration
-      // This starts the ISI (Inter-Stimulus Interval) phase
-      this.jsPsych.pluginAPI.setTimeout(() => {
-        if (show_stimulus) {
-          const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-          cell.style.backgroundColor = '';
-        }
-        // Signify end of stimulus phase
-        stimulus_hidden = true;
-        
-        // PHASE 2: ISI (Inter-Stimulus Interval) 
-        // After ISI duration, handle cases where no response was given
+      // PHASE 1 TIMEOUT: Handle stimulus duration
+      if (trial.stimulus_duration !== null) {
+        // Standard behavior: Hide stimulus after stimulus_duration, then wait for ISI
         this.jsPsych.pluginAPI.setTimeout(() => {
-          handleNoResponse(); // Let handleNoResponse() do its own validation
-        }, trial.isi_duration);
-      }, trial.stimulus_duration);
+          if (show_stimulus) {
+            const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
+            cell.style.backgroundColor = '';
+          }
+          // Signify end of stimulus phase
+          stimulus_hidden = true;
+          
+          // PHASE 2: ISI (Inter-Stimulus Interval) 
+          // After ISI duration, handle cases where no response was given
+          this.jsPsych.pluginAPI.setTimeout(() => {
+            handleNoResponse(); // Let handleNoResponse() do its own validation
+          }, trial.isi_duration);
+        }, trial.stimulus_duration);
+      }
+      // If stimulus_duration is null, stimulus stays visible until response
+      // No timeout is set - trial waits indefinitely for user response
     };
 
     const handleResponse = (buttonIndex: number): void => {
@@ -342,14 +346,16 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       const elapsed_time = performance.now() - trial_start_time;
       
       // TOTAL TRIAL DURATION:
-      // Each trial has 3 phases: stimulus display + ISI + feedback
-      // Total time = stimulus_duration + isi_duration + feedback_duration
-      const total_trial_time = trial.stimulus_duration + trial.isi_duration + trial.feedback_duration;
-      
-      // REMAINING TIME:
-      // Calculate how much time is left until trial should end
-      // This ensures consistent trial timing regardless of when response occurs
-      const remaining_time = Math.max(0, total_trial_time - elapsed_time);
+      let remaining_time: number;
+      if (trial.stimulus_duration === null) {
+        // When stimulus_duration is null, after response we do: ISI + feedback
+        const isi_time = (trial.isi_duration === null || trial.isi_duration === 0) ? 0 : trial.isi_duration;
+        remaining_time = isi_time + trial.feedback_duration;
+      } else {
+        // Standard timing: stimulus_duration + isi_duration + feedback_duration
+        const total_trial_time = trial.stimulus_duration + trial.isi_duration + trial.feedback_duration;
+        remaining_time = Math.max(0, total_trial_time - elapsed_time);
+      }
 
       // BUTTON DISABLING:
       // Always disable buttons after any response to prevent further clicks
@@ -370,12 +376,18 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         // STIMULUS HIDING:
         // Handle remaining stimulus duration if still showing (user responded within stimulus_duration)
         if (show_stimulus && !stimulus_hidden) {
-          const stimulus_end_time = trial.stimulus_duration - elapsed_time;
-          if (stimulus_end_time > 0) {
-            this.jsPsych.pluginAPI.setTimeout(() => {
-              const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-              cell.style.backgroundColor = '';
-            }, stimulus_end_time);
+          if (trial.stimulus_duration === null) {
+            // Hide stimulus immediately when response is made
+            const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
+            cell.style.backgroundColor = '';
+          } else {
+            const stimulus_end_time = trial.stimulus_duration - elapsed_time;
+            if (stimulus_end_time > 0) {
+              this.jsPsych.pluginAPI.setTimeout(() => {
+                const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
+                cell.style.backgroundColor = '';
+              }, stimulus_end_time);
+            }
           }
         }
         
@@ -394,12 +406,18 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         // STIMULUS HIDING:
         // Hide stimulus at the right time if still showing
         if (show_stimulus && !stimulus_hidden) {
-          const stimulus_end_time = trial.stimulus_duration - elapsed_time;
-          if (stimulus_end_time > 0) {
-            this.jsPsych.pluginAPI.setTimeout(() => {
-              const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-              cell.style.backgroundColor = '';
-            }, stimulus_end_time);
+          if (trial.stimulus_duration === null) {
+            // Hide stimulus immediately when response is made
+            const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
+            cell.style.backgroundColor = '';
+          } else {
+            const stimulus_end_time = trial.stimulus_duration - elapsed_time;
+            if (stimulus_end_time > 0) {
+              this.jsPsych.pluginAPI.setTimeout(() => {
+                const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
+                cell.style.backgroundColor = '';
+              }, stimulus_end_time);
+            }
           }
         }
         
@@ -419,34 +437,72 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       const feedback_div = document.getElementById('nback-feedback') as HTMLElement;
       const stimulus_cell = show_stimulus ? document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement : null;
 
-      // BORDER FEEDBACK:
-      // Show colored border around grid immediately
-      if (trial.show_feedback_border) {
-        grid.style.border = `3px solid ${is_correct ? trial.correct_color : trial.incorrect_color}`;
-      }
-
-      // TEXT FEEDBACK:
-      // Show feedback text with response time if available
-      if (trial.show_feedback_text) {
-        let feedback_text = is_correct ? 'Correct!' : 'Incorrect!';
-        if (response_time !== null) {
-          feedback_text += ` (${Math.round(response_time)}ms)`;
+      // Handle different timing scenarios
+      if (trial.stimulus_duration === null && made_response) {
+        // When stimulus_duration is null and response was made: ISI first, then feedback
+        const isi_time = (trial.isi_duration === null || trial.isi_duration === 0) ? 0 : trial.isi_duration;
+        
+        // Hide stimulus immediately
+        if (stimulus_cell) {
+          stimulus_cell.style.backgroundColor = '';
         }
-        feedback_div.textContent = feedback_text;
-        feedback_div.style.color = is_correct ? trial.correct_color : trial.incorrect_color;
-        feedback_div.style.visibility = 'visible';
+        
+        // Wait for ISI, then show feedback
+        // This works slightly differently than standard behavior: does not show feedback immediately for all remaining time
+        this.jsPsych.pluginAPI.setTimeout(() => {
+          // BORDER FEEDBACK:
+          if (trial.show_feedback_border) {
+            grid.style.border = `3px solid ${is_correct ? trial.correct_color : trial.incorrect_color}`;
+          }
+
+          // TEXT FEEDBACK:
+          if (trial.show_feedback_text) {
+            let feedback_text = is_correct ? 'Correct!' : 'Incorrect!';
+            if (response_time !== null) {
+              feedback_text += ` (${Math.round(response_time)}ms)`;
+            }
+            feedback_div.textContent = feedback_text;
+            feedback_div.style.color = is_correct ? trial.correct_color : trial.incorrect_color;
+            feedback_div.style.visibility = 'visible';
+          }
+        }, isi_time);
+      } else {
+        // Standard behavior: show feedback immediately
+        // BORDER FEEDBACK:
+        if (trial.show_feedback_border) {
+          grid.style.border = `3px solid ${is_correct ? trial.correct_color : trial.incorrect_color}`;
+        }
+
+        // TEXT FEEDBACK:
+        if (trial.show_feedback_text) {
+          let feedback_text = is_correct ? 'Correct!' : 'Incorrect!';
+          if (response_time !== null) {
+            feedback_text += ` (${Math.round(response_time)}ms)`;
+          }
+          feedback_div.textContent = feedback_text;
+          feedback_div.style.color = is_correct ? trial.correct_color : trial.incorrect_color;
+          feedback_div.style.visibility = 'visible';
+        }
       }
 
       // STIMULUS HIDING:
       // Hide stimulus at the right time if still showing
       if (show_stimulus && !stimulus_hidden) {
-        const stimulus_end_time = trial.stimulus_duration - elapsed_time;
-        if (stimulus_end_time > 0) {
-          this.jsPsych.pluginAPI.setTimeout(() => {
-            if (stimulus_cell) {
-              stimulus_cell.style.backgroundColor = 'white';
-            }
-          }, stimulus_end_time);
+        if (trial.stimulus_duration === null) {
+          // If stimulus_duration is null, hide stimulus immediately when response is made
+          if (made_response && stimulus_cell) {
+            stimulus_cell.style.backgroundColor = '';
+          }
+        } else {
+          // Standard behavior: hide stimulus at predetermined time
+          const stimulus_end_time = trial.stimulus_duration - elapsed_time;
+          if (stimulus_end_time > 0) {
+            this.jsPsych.pluginAPI.setTimeout(() => {
+              if (stimulus_cell) {
+                stimulus_cell.style.backgroundColor = '';
+              }
+            }, stimulus_end_time);
+          }
         }
       }
 
