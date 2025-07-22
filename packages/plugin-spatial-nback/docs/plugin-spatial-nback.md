@@ -68,7 +68,7 @@ var trial = {
   stimulus_row: 1,
   stimulus_col: 2,
   is_target: true,
-  buttons: "MATCH"
+  buttons: ["MATCH"]
 }
 ```
 
@@ -89,7 +89,7 @@ var trial = {
   correct_color: "#00ff00",
   incorrect_color: "#ff0000",
   instructions: "Press the button when the current position matches the position from 2 trials ago.",
-  buttons: "2-BACK MATCH"
+  buttons: ["2-BACK MATCH", "NO MATCH"]
 }
 ```
 
@@ -103,7 +103,7 @@ var trial = {
   is_target: false,
   show_feedback_text: false,
   show_feedback_border: false,
-  buttons: "TARGET"
+  buttons: ["TARGET"]
 }
 ```
 
@@ -116,6 +116,5 @@ var trial = {
   // This creates an empty grid with no stimulus
   // For empty grids: responding is always incorrect, not responding is always correct
   is_target: false,
-  buttons: "MATCH"
 }
 ```
