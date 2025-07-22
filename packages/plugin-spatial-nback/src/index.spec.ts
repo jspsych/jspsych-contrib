@@ -805,6 +805,7 @@ describe("plugin-spatial-nback", () => {
    * Tests that match_index parameter works correctly with empty grid trials
    */
   test("should use custom match_index with empty grid", async () => {
+    const plugin = new jsPsychSpatialNback({} as any);
     const { expectFinished, getData } = await startTimeline([
       {
         type: jsPsychSpatialNback,
@@ -824,4 +825,30 @@ describe("plugin-spatial-nback", () => {
     expect(data.response).toBe(2); // Button index 2 was pressed
     expect(data.correct).toBe(true); // Correct because button 2 is not match button and grid is empty
   });
+
+  /**
+   * Test 30: Invalid match_index validation
+   * Tests that an error is thrown when match_index is out of bounds
+   */
+  test("should throw error when match_index is out of bounds", () => {
+    const plugin = new jsPsychSpatialNback({} as any);
+    const mockElement = document.createElement("div");
+    
+    // Test match_index greater than buttons array length
+    expect(() => {
+      plugin.trial(mockElement, {
+        buttons: ["MATCH", "NO MATCH"], // Array length is 2
+        match_index: 2, // Invalid: >= array length
+      } as any);
+    }).toThrow("match_index (2) must be a valid index within the buttons array (length 2).");
+
+    // Test negative match_index
+    expect(() => {
+      plugin.trial(mockElement, {
+        buttons: ["MATCH", "NO MATCH"],
+        match_index: -1, // Invalid: negative index
+      } as any);
+    }).toThrow("match_index (-1) must be a valid index within the buttons array (length 2).");
+  });
+
 });
