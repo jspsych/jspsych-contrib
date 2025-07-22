@@ -16,10 +16,10 @@ const info = <const>{
         type: ParameterType.INT,
         default: 3,
       },
-      /** Size of each cell in pixels, this will affect size of whole grid also */
+      /** Size of each cell in pixels, this will affect size of whole grid also. If null, defaults to 12vh */
       cell_size: {
         type: ParameterType.INT,
-        default: 125,
+        default: null,
       },
       /** Row position of the stimulus (0-indexed). If null, no stimulus is shown. */
       stimulus_row: {
@@ -189,26 +189,8 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         margin: 20px 0;
       ">`;
       
-      // Calculate grid dimensions based on cell_size parameter
-      const cell_size_px = trial.cell_size;
-      const grid_width = trial.cols * cell_size_px;
-      const grid_height = trial.rows * cell_size_px;
-      
-      // Check if grid fits in available space (more conservative sizing)
-      const max_width = Math.min(window.innerWidth * 0.8, 600); // Cap at 600px for better UX
-      const max_height = Math.min(window.innerHeight * 0.5, 400); // Cap at 400px for better UX
-      
-      let final_cell_size: number;
-      if (grid_width <= max_width && grid_height <= max_height) {
-        // Grid fits, use specified cell size
-        final_cell_size = cell_size_px;
-      } else {
-        // Scale down to fit available space
-        const scale_for_width = max_width / grid_width;
-        const scale_for_height = max_height / grid_height;
-        const scale = Math.min(scale_for_width, scale_for_height);
-        final_cell_size = Math.floor(cell_size_px * scale);
-      }
+      // Determine cell size - use 12vh if not specified, otherwise use specified pixels
+      const cell_size_style = trial.cell_size !== null ? `${trial.cell_size}px` : '12vh';
 
       html += `<div id="nback-grid" style="
         border: 3px solid #000;
@@ -220,8 +202,8 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         html += '<div style="display: flex;">';
         for (let col = 0; col < trial.cols; col++) {
           html += `<div id="cell-${row}-${col}" style="
-            width: ${final_cell_size}px;
-            height: ${final_cell_size}px;
+            width: ${cell_size_style};
+            height: ${cell_size_style};
             border: 1px solid #ccc;
             box-sizing: border-box;
           "></div>`;
