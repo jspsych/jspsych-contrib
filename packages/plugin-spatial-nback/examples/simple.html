@@ -30,7 +30,8 @@
             type: jsPsychSpatialNback,
             stimulus_duration: 1500,
             isi_duration: 0,
-            instructions: "Trial 2: Empty grid by default - no stimulus, this is not a target"
+            instructions: "Trial 2: Empty grid by default - no stimulus, this is not a target",
+            buttons: ["MATCH"],
         });
 
         timeline.push({
@@ -40,7 +41,8 @@
             stimulus_duration: 2000,
             isi_duration: 1500, //includes the ISI (empty grid), can record response in this time also.
             is_target: true,
-            instructions: "Trial 3: Stimulus in position (0, 0) - top left corner again, 1-back target."
+            instructions: "Trial 3: Stimulus in position (0, 0) - top left corner again, 1-back target.",
+            buttons: ["MATCH"],
         });
 
         timeline.push({
@@ -55,7 +57,8 @@
             isi_duration: 1500,
             feedback_duration: 1000, //cant record response when showing feedback, button disabled
             show_feedback_text: true,
-            show_feedback_border: true
+            show_feedback_border: true,
+            buttons: ["MATCH", "NO MATCH"],
         });
 
         jsPsych.run(timeline);

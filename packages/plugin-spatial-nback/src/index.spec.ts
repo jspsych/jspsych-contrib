@@ -21,12 +21,13 @@ describe("plugin-spatial-nback", () => {
 
     // Check that essential DOM elements are created
     expect(getHTML()).toContain('id="nback-grid"');
-    expect(getHTML()).toContain('id="nback-response-btn"');
+    expect(getHTML()).toContain('id="nback-response-btn-0"');
+    expect(getHTML()).toContain('id="nback-response-btn-1"');
     // Check that the stimulus cell was created
     expect(getHTML()).toContain("<div id=\"cell-0-0\" style=\"width: 125px; height: 125px; border: 1px solid #ccc; box-sizing: border-box; background-color: rgb(0, 102, 204);\"></div>");
 
-    // Simulate user clicking response button
-    document.getElementById("nback-response-btn")?.click();
+    // Simulate user clicking match button (index 0)
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(1251); // 750ms stimulus + 500ms ISI + 1ms to complete trial
     await expectFinished();
 
@@ -35,9 +36,9 @@ describe("plugin-spatial-nback", () => {
     expect(data.stimulus_row).toBe(0);
     expect(data.stimulus_col).toBe(0);
     expect(data.is_target).toBe(false);
-    expect(data.response).toBe(true);
+    expect(data.response).toBe(0); // Button index 0 (MATCH) was pressed
     expect(typeof data.response_time).toBe("number");
-    expect(data.correct).toBe(false); // Incorrect because responded to non-target trial
+    expect(data.correct).toBe(false); // Incorrect because pressed MATCH on non-target trial
   });
 
   /**
@@ -63,7 +64,7 @@ describe("plugin-spatial-nback", () => {
     }
 
     // Complete the trial
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(1251); // 750ms stimulus + 500ms ISI + 1ms to complete trial
     await expectFinished();
   });
@@ -89,7 +90,7 @@ describe("plugin-spatial-nback", () => {
     expect(stimulusCell.style.backgroundColor).toBe("rgb(255, 0, 0)"); // #ff0000 converted to RGB
 
     // Complete the trial
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(1251); // 750ms stimulus + 500ms ISI + 1ms to complete trial
     await expectFinished();
   });
@@ -109,14 +110,14 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Respond to target trial
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(1250); // 750ms stimulus + 500ms ISI
     await expectFinished();
 
     const data = getData().values()[0];
     expect(data.is_target).toBe(true);
-    expect(data.response).toBe(true);
-    expect(data.correct).toBe(true); // Correct because responded to target trial
+    expect(data.response).toBe(0); // Button index 0 (MATCH) was pressed
+    expect(data.correct).toBe(true); // Correct because pressed MATCH on target trial
   });
 
   /**
@@ -140,7 +141,7 @@ describe("plugin-spatial-nback", () => {
     await expectFinished();
     // Verify no response data is correctly recorded
     const data = getData().values()[0];
-    expect(data.response).toBe(false);
+    expect(data.response).toBe(null); // No button was pressed
     expect(data.response_time).toBe(null);
     expect(data.correct).toBe(true); // Correct because didn't respond to non-target
   });
@@ -161,7 +162,7 @@ describe("plugin-spatial-nback", () => {
         is_target: true,
       },
     ]);    // Respond to trigger feedback
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     
     // Check feedback is displayed
     const feedbackDiv = document.getElementById("nback-feedback");
@@ -192,7 +193,7 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Respond to trigger potential feedback
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     
     // Check no feedback is displayed
     const feedbackDiv = document.getElementById("nback-feedback");
@@ -216,13 +217,14 @@ describe("plugin-spatial-nback", () => {
         type: jsPsychSpatialNback,
         stimulus_row: 0,
         stimulus_col: 0,
-        buttons: "CUSTOM BUTTON",
+        buttons: ["CUSTOM MATCH", "CUSTOM NO MATCH"],
       },
     ]);
 
-    expect(getHTML()).toContain("CUSTOM BUTTON");
+    expect(getHTML()).toContain("CUSTOM MATCH");
+    expect(getHTML()).toContain("CUSTOM NO MATCH");
     
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(1250); // 750ms stimulus + 500ms ISI
     await expectFinished();
   });
@@ -243,7 +245,7 @@ describe("plugin-spatial-nback", () => {
 
     expect(getHTML()).toContain("Custom test instructions");
     
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(1250); // 750ms stimulus + 500ms ISI
     await expectFinished();
   });
@@ -266,7 +268,7 @@ describe("plugin-spatial-nback", () => {
     const stimulusCell = document.getElementById("cell-0-0") as HTMLElement;
     expect(stimulusCell.style.backgroundColor).toBe("rgb(255, 0, 0)");    
     
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(700); // 200ms stimulus + 500ms ISI
     await expectFinished();
   });
@@ -288,7 +290,7 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Respond to trigger feedback
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(2050); // 750ms stimulus + 1000ms ISI + 800ms feedback
     await expectFinished();
   });
@@ -316,7 +318,7 @@ describe("plugin-spatial-nback", () => {
     expect(stimulusCell.style.backgroundColor).toBe("rgb(255, 170, 0)");
     
     // Respond to trigger feedback
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(1950); // 750ms stimulus + 1000ms ISI + 200ms feedback
     await expectFinished();
   });
@@ -338,7 +340,7 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Respond (incorrectly) to non-target
-    document.getElementById("nback-response-btn")?.click();    
+    document.getElementById("nback-response-btn-0")?.click();    
     // Check feedback shows incorrect
     const feedbackDiv = document.getElementById("nback-feedback");
     expect(feedbackDiv?.textContent).toContain("Incorrect!");
@@ -364,7 +366,7 @@ describe("plugin-spatial-nback", () => {
       },
     ]);
 
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(1250); // 750ms stimulus + 500ms ISI
     await expectFinished();
 
@@ -372,7 +374,7 @@ describe("plugin-spatial-nback", () => {
     expect(data.stimulus_row).toBe(2);
     expect(data.stimulus_col).toBe(1);
     expect(data.is_target).toBe(true);
-    expect(data.response).toBe(true);
+    expect(data.response).toBe(0); // Button index 0 (MATCH) was pressed
     expect(typeof data.response_time).toBe("number");
     expect(data.correct).toBe(true);
   });
@@ -405,7 +407,7 @@ describe("plugin-spatial-nback", () => {
     const data = getData().values()[0];
     expect(data.stimulus_row).toBe(null);
     expect(data.stimulus_col).toBe(null);
-    expect(data.response).toBe(false);
+    expect(data.response).toBe(null); // No button was pressed
     expect(data.correct).toBe(true); // Correct because didn't respond to non-target empty grid
   });
 
@@ -423,14 +425,14 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Respond to empty grid
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(1250); // 750ms stimulus + 500ms ISI
     await expectFinished();
 
     const data = getData().values()[0];
     expect(data.stimulus_row).toBe(null);
     expect(data.stimulus_col).toBe(null);
-    expect(data.response).toBe(true);
+    expect(data.response).toBe(0); // Button index 0 (MATCH) was pressed
     expect(data.correct).toBe(false); // Always incorrect to respond to empty grid
   });
 
@@ -454,7 +456,7 @@ describe("plugin-spatial-nback", () => {
     const data = getData().values()[0];
     expect(data.stimulus_row).toBe(null);
     expect(data.stimulus_col).toBe(null);
-    expect(data.response).toBe(false);
+    expect(data.response).toBe(null); // No button was pressed
     expect(data.correct).toBe(true); // Always correct to not respond to empty grid
   });
 
@@ -475,7 +477,7 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Respond to empty grid (should be incorrect)
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     
     // Check feedback shows incorrect
     const feedbackDiv = document.getElementById("nback-feedback");
@@ -507,7 +509,7 @@ describe("plugin-spatial-nback", () => {
 
     // Wait for stimulus to end and respond during ISI
     jest.advanceTimersByTime(700); // 500ms stimulus + 200ms into ISI
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(800); // Remaining 800ms of ISI
     await expectFinished();
   });
@@ -532,7 +534,7 @@ describe("plugin-spatial-nback", () => {
 
     // Wait for stimulus to end and respond during ISI
     jest.advanceTimersByTime(700); // 500ms stimulus + 200ms into ISI
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     jest.advanceTimersByTime(1100); // Remaining 800ms of ISI + 300ms feedback
     await expectFinished();
   });
@@ -555,10 +557,10 @@ describe("plugin-spatial-nback", () => {
     ]);
 
     // Respond to trigger feedback period
-    document.getElementById("nback-response-btn")?.click();
+    document.getElementById("nback-response-btn-0")?.click();
     
     // Check that button is disabled after response even when feedback_duration is 0
-    const button = document.getElementById("nback-response-btn") as HTMLButtonElement;
+    const button = document.getElementById("nback-response-btn-0") as HTMLButtonElement;
     expect(button.disabled).toBe(true);
 
     jest.advanceTimersByTime(1250); // 750ms stimulus + 500ms ISI
@@ -596,7 +598,7 @@ describe("plugin-spatial-nback", () => {
     
     // Verify the trial ended correctly with no response
     const data = getData().values()[0];
-    expect(data.response).toBe(false);
+    expect(data.response).toBe(null); // No button was pressed
     expect(data.correct).toBe(true); // Correct because is_target is false and no response was made
   });
 

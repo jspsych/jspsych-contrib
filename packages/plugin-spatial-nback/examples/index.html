@@ -95,8 +95,8 @@
         show_feedback_text: true,
         show_feedback_border: true,
         cell_size: 125,
-        instructions: `Click MATCH when the position matches the one from ${n_back_level} trial(s) ago (Trial ${i + 1} of ${total_trials})`,
-        buttons: "MATCH",
+        instructions: `Click MATCH when the position matches the one from ${n_back_level} trial(s) ago, or NO MATCH if it doesn't (Trial ${i + 1} of ${total_trials})`,
+        buttons: ["MATCH", "NO MATCH"],
         stimulus_color: "#2196F3",
         correct_color: "#4CAF50",
         incorrect_color: "#F44336",
@@ -117,7 +117,7 @@
         <div style="text-align: center; font-size: clamp(16px, 4vw, 20px); line-height: 1.5; padding: 10px; max-width: 90vw; margin: 0 auto;">
             <h2 style="font-size: clamp(20px, 5vw, 28px); margin-bottom: 20px;">Spatial N-Back Task</h2>
             <p style="margin-bottom: 15px;">In this task, you will see a grid with blue squares appearing in different positions.</p>
-            <p style="margin-bottom: 15px;">Your job is to click the MATCH button whenever the current position is the same as the position from <strong>1 trial ago</strong>.</p>
+            <p style="margin-bottom: 15px;">Your job is to click the MATCH button whenever the current position is the same as the position from <strong>1 trial ago</strong>, or NO MATCH if it's different.</p>
             <p style="margin-bottom: 15px;">Try to respond as quickly and accurately as possible.</p>
             <p style="font-weight: bold; color: #2196F3;">Press any key or tap anywhere to begin the task.</p>
         </div>

@@ -61,10 +61,11 @@ const info = <const>{
         type: ParameterType.BOOL,
         default: true,
       },
-      /** Text for the response button */
+      /** Labels for the response buttons. First button is for match, second is for no match */
       buttons: {
         type: ParameterType.STRING,
-        default: "MATCH",
+        default: ["MATCH", "NO MATCH"],
+        array: true,
       },
       /** Color of the stimulus square */
       stimulus_color: {
@@ -100,9 +101,9 @@ const info = <const>{
       is_target: {
         type: ParameterType.BOOL,
       },
-      /** Whether participant responded */
+      /** Index of button pressed (0 for match, 1 for no match), null if no response */
       response: {
-        type: ParameterType.BOOL,
+        type: ParameterType.INT,
       },
       /** Response time in milliseconds */
       response_time: {
@@ -154,6 +155,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
     let trial_start_time: number;
     let response_allowed = false;
     let response_given = false;
+    let button_pressed: number | null = null;
     let stimulus_hidden = false; // Track if stimulus has been hidden
 
     // Determine if stimulus should be shown
@@ -233,23 +235,31 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 15px;
-        margin-top: 20px;
+        gap: 1.5vmin;
       ">`;
       
       // Feedback text first (directly under grid) - uses dummy text with visibility hidden to prevent layout displacement
       html += `<div id="nback-feedback" style="visibility: hidden;">Correct! (999ms)</div>`;
       
-      // Button second (under feedback text) - uses standard jsPsych button styling
-      html += `<button id="nback-response-btn" class="jspsych-btn nback-response-btn" disabled>${trial.buttons}</button>`;
+      // Buttons second (under feedback text) - using jsPsych html-button-response styling
+      html += `<div id="jspsych-html-button-response-btngroup" class="jspsych-btn-group-grid" style="grid-template-columns: repeat(${trial.buttons.length}, 1fr); grid-template-rows: repeat(1, 1fr);">`;
+      
+      // Generate buttons from array
+      trial.buttons.forEach((buttonText: string, index: number) => {
+        html += `<button id="nback-response-btn-${index}" class="jspsych-btn" data-choice="${index}" disabled>${buttonText}</button>`;
+      });
+      
+      html += `</div>`; // Close buttons container
       
       html += '</div></div>'; // Close feedback section and main container
       
       display_element.innerHTML = html;
 
-      // Add button event listener
-      const button = document.getElementById('nback-response-btn') as HTMLButtonElement;
-      button.addEventListener('click', handleResponse);
+      // Add button event listeners
+      trial.buttons.forEach((buttonText: string, index: number) => {
+        const button = document.getElementById(`nback-response-btn-${index}`) as HTMLButtonElement;
+        button.addEventListener('click', () => handleResponse(index));
+      });
     };
 
     const startTrial = (): void => {
@@ -266,9 +276,11 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       trial_start_time = performance.now();
       stimulus_hidden = false;
       
-      // Enable response button for user interaction
-      const responseButton = document.getElementById('nback-response-btn') as HTMLButtonElement;
-      responseButton.disabled = false;
+      // Enable response buttons for user interaction
+      trial.buttons.forEach((buttonText: string, index: number) => {
+        const responseButton = document.getElementById(`nback-response-btn-${index}`) as HTMLButtonElement;
+        responseButton.disabled = false;
+      });
 
       // PHASE 1 TIMEOUT: Hide stimulus after stimulus_duration
       // This starts the ISI (Inter-Stimulus Interval) phase
@@ -288,21 +300,30 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       }, trial.stimulus_duration);
     };
 
-    const handleResponse = (): void => {
+    const handleResponse = (buttonIndex: number): void => {
       // RESPONSE VALIDATION:
       // Only process if response is allowed and hasn't been given yet
       if (!response_allowed || response_given) return;
 
       // RESPONSE PROCESSING:
-      // Disable further responses and record response time
+      // Disable further responses and record response time and button pressed
       response_allowed = false;
       response_given = true;
+      button_pressed = buttonIndex;
       const response_time = performance.now() - trial_start_time;
       
       // CORRECTNESS LOGIC:
-      // If stimulus positions are null (empty grid), responding is always incorrect
-      // If stimulus is shown, correctness depends on is_target parameter
-      const is_correct = show_stimulus ? trial.is_target : false;
+      // Button 0 = Match, Button 1 = No Match
+      // If stimulus positions are null (empty grid), only "No Match" (button 1) is correct
+      // If stimulus is shown, correctness depends on is_target parameter and button pressed
+      let is_correct: boolean;
+      if (!show_stimulus) {
+        // Empty grid: only "No Match" (button 1) is correct
+        is_correct = (buttonIndex === 1);
+      } else {
+        // Stimulus shown: Match button (0) correct if is_target, No Match button (1) correct if !is_target
+        is_correct = (buttonIndex === 0 && trial.is_target) || (buttonIndex === 1 && !trial.is_target);
+      }
 
       // TIMING CLEANUP:
       // Clear any pending timeouts since user responded
@@ -325,7 +346,8 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       response_given = true;
       
       // CORRECTNESS LOGIC:
-      // If stimulus positions are null (empty grid), not responding is always correct
+      // No response means no button was pressed
+      // If stimulus positions are null (empty grid), not responding is correct (same as pressing "No Match")
       // If stimulus is shown, correctness is opposite of is_target (correct to not respond to non-targets)
       const is_correct = show_stimulus ? !trial.is_target : true;
 
@@ -350,13 +372,15 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       const remaining_time = Math.max(0, total_trial_time - elapsed_time);
 
       // BUTTON DISABLING:
-      // Always disable button after any response to prevent further clicks
+      // Always disable buttons after any response to prevent further clicks
       // OR during feedback duration to show user can't respond during feedback
       if (made_response || trial.feedback_duration > 0) {
-        const button = document.getElementById('nback-response-btn') as HTMLButtonElement;
-        if (button) {
-          button.disabled = true;
-        }
+        trial.buttons.forEach((buttonText: string, index: number) => {
+          const button = document.getElementById(`nback-response-btn-${index}`) as HTMLButtonElement;
+          if (button) {
+            button.disabled = true;
+          }
+        });
       }
 
       // NO FEEDBACK CASE:
@@ -462,7 +486,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         stimulus_row: stimulus_row,
         stimulus_col: stimulus_col,
         is_target: trial.is_target,
-        response: made_response,
+        response: button_pressed,
         response_time: response_time,
         correct: is_correct
       };
