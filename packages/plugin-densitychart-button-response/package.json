@@ -1,0 +1,55 @@
+{
+  "name": "plugin-densitychart-button-response",
+  "version": "0.0.1",
+  "description": "Displays a densitychart of results to show the participant on a trial",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "typings": "dist/index.d.ts",
+  "unpkg": "dist/index.browser.min.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "source": "src/index.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
+    "tsc": "tsc",
+    "build": "rollup --config",
+    "build:watch": "npm run build -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/themusiclab/pose.git",
+    "directory": "plugin-densitychart-button-response"
+  },
+  "keywords": [
+    "jsPsych"
+  ],
+  "author": {
+    "name": "Courtney B. Hilton",
+    "url": "https://github.com/courtney-bryce-hilton"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/themusiclab/pose/issues"
+  },
+  "homepage": "https://github.com/themusiclab/pose/tree/main/plugin-densitychart-button-response/README.md",
+  "dependencies": {
+    "@citation-js/core": "^0.7.14",
+    "@citation-js/plugin-bibtex": "^0.7.14",
+    "@citation-js/plugin-cff": "^0.6.1",
+    "@citation-js/plugin-software-formats": "^0.6.1",
+    "chart.js": "^4.4.7",
+    "chartjs-plugin-annotation": "^3.1.0",
+    "jspsych": "^8.0.0"
+  },
+  "devDependencies": {
+    "@jspsych/config": "^3.2.2",
+    "@jspsych/test-utils": "^1.0.0"
+  }
+}
