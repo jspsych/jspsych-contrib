@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychPluginDensityButtonResponse Example</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <!-- Load the published plugin package here, e.g.
+    <script src="https://unpkg.com/plugin-densitychart-button-response"></script>-->
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+
+    // function to sample normally distributed data
+    function sampleNormal(mean, stdDev) {
+      let u = 0,
+        v = 0;
+      // making sure u and v are not zero to avoid taking log(0)
+      while (u === 0) u = Math.random();
+      while (v === 0) v = Math.random();
+      return (
+        // using Box–Muller transform
+        Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v) * stdDev +
+        mean
+      );
+    }
+
+    const example_data = Array.from({ length: 500 }, () => {
+      const sample = sampleNormal(70, 10);
+      // clamp between 0 and 100
+      return Math.min(100, Math.max(0, sample));
+    });
+
+    const trial = {
+      type: jsPsychPluginDensityChartButtonResponse,
+      description_text:
+        "This is how your score compares to the other participants.",
+      chart_data: example_data,
+      x_axis_label: "Score",
+      highlight_score: 76,
+      highlight_label: "You!",
+      choices: ["Next"],
+    };
+
+    jsPsych.run([trial]);
+  </script>
+</html>
