@@ -55,10 +55,8 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
     console.log("TensorFlow.js version: " + tf.version.tfjs);
 
     // Stop the jsPsych stylesheet from interfering with the plugin (this is added back later)
-    const link = document.querySelector('link[href*="jspsych.css"]');
-    if (link) {
-      link.remove();
-    }
+    const links = document.querySelectorAll('link[href*=".css"]');
+    links.forEach((link) => link.remove());
 
     const passedSetup2 = new Event("passedSetup2", { bubbles: true });
     const exit = new Event("exit", { bubbles: true });
@@ -127,13 +125,7 @@ class MeyeConfigPlugin implements JsPsychPlugin<Info> {
 
       mainDisplayElement.addEventListener("passedSetup2", () => {
         // Return the stylesheet we removed for the plugin
-        if (link) {
-          const returnedCSS = document.createElement("link");
-          returnedCSS.rel = "stylesheet";
-          returnedCSS.type = "text/css";
-          returnedCSS.href = "https://app.unpkg.com/jspsych@8.2.2/files/css/jspsych.css";
-          document.head.appendChild(link);
-        }
+        links.forEach((link) => document.head.appendChild(link));
 
         for (const [key, value] of Object.entries(this.jsPsych.extensions)) {
           if (key == "meye-extension") {
