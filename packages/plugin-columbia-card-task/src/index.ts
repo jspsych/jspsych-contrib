@@ -166,12 +166,20 @@ class ColumbiaCardTaskPlugin implements JsPsychPlugin<Info> {
           padding: 20px;
           user-select: none;
         }
+        .cct-top-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          max-width: 800px;
+          margin-bottom: 20px;
+          gap: 20px;
+        }
         .cct-info-panel {
           display: flex;
           justify-content: center;
           align-items: center;
           gap: 30px;
-          margin-bottom: 20px;
           padding: 15px;
           background-color: #f8f9fa;
           border-radius: 10px;
@@ -203,12 +211,34 @@ class ColumbiaCardTaskPlugin implements JsPsychPlugin<Info> {
         .cct-mini-card.loss {
           background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
         }
+        .cct-score {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 18px;
+          font-weight: bold;
+          padding: 15px;
+          border-radius: 10px;
+          background-color: #f0f0f0;
+          border: 2px solid #dee2e6;
+          height: 76px;
+          box-sizing: border-box;
+        }
+        .cct-score span {
+          margin-left: 10px;
+        }
+        .cct-instructions {
+          text-align: center;
+          margin-bottom: 20px;
+          font-size: 16px;
+        }
         .cct-grid {
           display: grid;
           grid-template-columns: repeat(${trial.grid_columns}, 1fr);
           gap: 8px;
-          max-width: 100vw;
-          margin: 20px 0;
+          width: 100%;
+          max-width: 800px;
+          margin-bottom: 20px;
         }
         .cct-card {
           width: ${trial.card_width}px;
@@ -259,22 +289,13 @@ class ColumbiaCardTaskPlugin implements JsPsychPlugin<Info> {
         .cct-card-back.loss {
           background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
         }
-        .cct-instructions {
-          text-align: center;
-          margin-bottom: 20px;
-          font-size: 16px;
-        }
-        .cct-score {
-          text-align: center;
-          margin: 10px 0;
-          font-size: 18px;
-          font-weight: bold;
-          padding: 10px;
-          border-radius: 5px;
-          background-color: #f0f0f0;
-        }
         
         @media (max-width: 768px) {
+          .cct-top-row {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 15px;
+          }
           .cct-info-panel {
             gap: 15px;
             padding: 10px;
@@ -286,6 +307,11 @@ class ColumbiaCardTaskPlugin implements JsPsychPlugin<Info> {
             width: 25px;
             height: 32px;
             font-size: 8px;
+          }
+          .cct-score {
+            text-align: center;
+            padding: 10px;
+            font-size: 16px;
           }
           .cct-card {
             width: ${Math.max(40, trial.card_width * 0.8)}px;
@@ -306,7 +332,8 @@ class ColumbiaCardTaskPlugin implements JsPsychPlugin<Info> {
     let html = css;
     html += '<div class="cct-container">';
 
-    // Add info panel
+    // Add top row with info panel and score
+    html += '<div class="cct-top-row">';
     html += `
       <div class="cct-info-panel">
         <div class="cct-info-item">
@@ -319,11 +346,14 @@ class ColumbiaCardTaskPlugin implements JsPsychPlugin<Info> {
         </div>
       </div>
     `;
+    html += `<div class="cct-score">${trial.score_label + " "} <span id="score-display">${
+      trial.starting_score
+    }</span></div>`;
+    html += "</div>";
 
     // Add instructions
     html += `<div class="cct-instructions">${trial.instructions}</div>`;
-    // Add score display
-    html += `<div class="cct-score">${trial.score_label} <span id="score-display">${trial.starting_score}</span></div>`;
+
     // Add card grid
     html += '<div class="cct-grid">';
 
