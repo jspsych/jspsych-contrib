@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychPluginColumbiaCardTask Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/jspsych"></script>
+    <!-- Once this plugin package is published, it can be loaded via
+    <script src="https://unpkg.com/@jspsych-contrib/plugin-columbia-card-task"></script>
+    -->
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+    
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+
+    const trial = {
+      type: jsPsychPluginColumbiaCardTask,
+    };
+
+    jsPsych.run([trial])
+  </script>
+</html>
