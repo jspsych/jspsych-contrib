@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-columbia-card-task",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "The Columbia Card Task measures risk preferences through choices in a card game.",
   "type": "module",
   "main": "dist/index.cjs",
