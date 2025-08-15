@@ -11,6 +11,11 @@ const info = <const>{
       type: ParameterType.INT,
       default: 32,
     },
+    /** Number of loss cards in the deck */
+    num_loss_cards: {
+      type: ParameterType.INT,
+      default: 3,
+    },
     /** Number of columns in the card grid */
     grid_columns: {
       type: ParameterType.INT,
@@ -30,11 +35,6 @@ const info = <const>{
     flip_duration: {
       type: ParameterType.INT,
       default: 300,
-    },
-    /** Number of loss cards in the deck */
-    num_loss_cards: {
-      type: ParameterType.INT,
-      default: 3,
     },
     /** Points lost when selecting a loss card */
     loss_value: {
@@ -142,19 +142,17 @@ class ColumbiaCardTaskPlugin implements JsPsychPlugin<Info> {
     let total_points = trial.starting_score;
 
     // Create card values array
-    const card_values: number[] = new Array(trial.num_cards);
+    let card_values: number[] = new Array(trial.num_cards);
 
-    // Randomly assign loss cards
-    const loss_card_indices = new Set<number>();
-    while (loss_card_indices.size < trial.num_loss_cards) {
-      const random_index = Math.floor(Math.random() * trial.num_cards);
-      loss_card_indices.add(random_index);
-    }
-
-    // Assign values to cards
     for (let i = 0; i < trial.num_cards; i++) {
-      card_values[i] = loss_card_indices.has(i) ? trial.loss_value : trial.gain_value;
+      if (i < trial.num_loss_cards) {
+        card_values[i] = trial.loss_value;
+      } else {
+        card_values[i] = trial.gain_value;
+      }
     }
+
+    card_values = this.jsPsych.randomization.shuffle(card_values);
 
     // Create CSS styles
     const css = `
@@ -276,7 +274,7 @@ class ColumbiaCardTaskPlugin implements JsPsychPlugin<Info> {
           font-size: 14px;
         }
         .cct-card-front {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #686868ff 0%, #1e1e1eff 100%);
           color: white;
         }
         .cct-card-back {
@@ -314,8 +312,8 @@ class ColumbiaCardTaskPlugin implements JsPsychPlugin<Info> {
             font-size: 16px;
           }
           .cct-card {
-            width: ${Math.max(40, trial.card_width * 0.8)}px;
-            height: ${Math.max(50, trial.card_height * 0.8)}px;
+            width: ${trial.card_width}px;
+            height: ${trial.card_height}px;
           }
           .cct-grid {
             gap: 4px;
@@ -358,7 +356,7 @@ class ColumbiaCardTaskPlugin implements JsPsychPlugin<Info> {
     html += '<div class="cct-grid">';
 
     for (let i = 0; i < trial.num_cards; i++) {
-      const is_loss_card = loss_card_indices.has(i);
+      const is_loss_card = card_values[i] === trial.loss_value;
       const card_class = is_loss_card ? "loss" : "gain";
       const display_value = is_loss_card ? trial.loss_value : `+${trial.gain_value}`;
 
