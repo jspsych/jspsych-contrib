@@ -22,7 +22,7 @@ const info = <const>{
      */
     show_error: {
       type: ParameterType.BOOL,
-      default: false,
+      default: true,
     },
 
     /**
