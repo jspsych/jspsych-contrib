@@ -42,7 +42,7 @@ const info = <const>{
      */
     highlight_value: {
       type: ParameterType.STRING,
-      default: undefined,
+      default: null,
     },
     /**
      * The fill color used for the highlighted bar. Accepts any valid CSS color value.
@@ -56,7 +56,7 @@ const info = <const>{
      */
     highlight_label: {
       type: ParameterType.STRING,
-      default: undefined,
+      default: null,
     },
     /**
      * The label for the y-axis of the chart.
@@ -324,7 +324,7 @@ class BarchartButtonResponsePlugin implements JsPsychPlugin<Info> {
           },
           annotation: {
             annotations: {
-              highlightLabel: {
+              highlightLabel: trial.highlight_value != null && {
                 type: "label",
                 xValue: trial.highlight_value.toString(),
                 yValue:
@@ -332,7 +332,10 @@ class BarchartButtonResponsePlugin implements JsPsychPlugin<Info> {
                     ?.value ?? 0,
                 backgroundColor: "rgba(0,0,0,0)",
                 borderColor: "rgba(0,0,0,0)",
-                content: [trial.highlight_label, "↓"],
+                content: trial.highlight_label != null && [
+                  trial.highlight_label,
+                  "↓",
+                ],
                 font: {
                   size: 18,
                   weight: "bold",
@@ -368,8 +371,7 @@ class BarchartButtonResponsePlugin implements JsPsychPlugin<Info> {
     choice: number,
     start_time: number,
     response: { rt: number; button: number },
-    buttonGroupElement: HTMLElement,
-    trial: TrialType<Info>
+    buttonGroupElement: HTMLElement
   ): void {
     const end_time = performance.now();
     const rt = Math.round(end_time - start_time);
@@ -380,14 +382,12 @@ class BarchartButtonResponsePlugin implements JsPsychPlugin<Info> {
       button.setAttribute("disabled", "disabled");
     }
 
-    if (trial.response_ends_trial) {
-      this.endTrial(response);
-    }
+    this.endTrial(response);
   }
 
   //////////////////////////
   // JSPSYCH TRIAL METHOD //
-  /////////////////////////
+  //////////////////////////
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     // clear the display element
@@ -406,15 +406,9 @@ class BarchartButtonResponsePlugin implements JsPsychPlugin<Info> {
     // initialize the Chart.js chart
     this.renderChart(canvas, chartData, trial, dataPoints);
 
-    // function to handle responses by the subject and to then end trial
+    // handle responses by the subject and end trial
     const after_response = (choice: number) => {
-      this.handleResponse(
-        choice,
-        start_time,
-        response,
-        buttonGroupElement,
-        trial
-      );
+      this.handleResponse(choice, start_time, response, buttonGroupElement);
     };
 
     // start time
