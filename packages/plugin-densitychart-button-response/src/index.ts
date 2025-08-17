@@ -265,12 +265,22 @@ class DensityChartButtonResponsePlugin implements JsPsychPlugin<Info> {
     density: number[],
     trial: TrialType<Info>
   ): void {
-    const highlightIndex = Math.round(
-      (trial.highlight_score - grid[0]) / (grid[1] - grid[0])
-    );
-    const clampedIndex = Math.min(Math.max(highlightIndex, 0), grid.length - 1);
-    const highlightX = grid[clampedIndex];
-    const highlightY = density[clampedIndex];
+    if (trial.highlight_label !== null && trial.highlight_score === null) {
+      console.error(
+        "[Error] `highlight_label` is defined but `highlight_score` is missing.\n" +
+          "A highlight label cannot be shown without a `highlight_score` value."
+      );
+    }
+
+    let highlightIndex, clampedIndex, highlightX, highlightY;
+    if (trial.highlight_score != null) {
+      highlightIndex = Math.round(
+        (trial.highlight_score - grid[0]) / (grid[1] - grid[0])
+      );
+      clampedIndex = Math.min(Math.max(highlightIndex, 0), grid.length - 1);
+      highlightX = grid[clampedIndex];
+      highlightY = density[clampedIndex];
+    }
 
     const chartData: ChartData<"line", number[]> = {
       labels: grid.map((x) => x.toFixed(1)),
@@ -328,29 +338,32 @@ class DensityChartButtonResponsePlugin implements JsPsychPlugin<Info> {
           },
           annotation: {
             annotations: {
-              highlightLine: {
+              highlightLine: trial.highlight_score != null && {
                 type: "line",
                 scaleID: "x",
                 value: highlightX,
                 borderColor: trial.highlight_color,
                 borderWidth: 2,
               },
-              highlightLabel: {
-                type: "label",
-                xScaleID: "x",
-                yScaleID: "y",
-                xValue: highlightX,
-                yValue: highlightY,
-                content: "←" + trial.highlight_label,
-                display: true,
-                backgroundColor: "rgba(0,0,0,0)",
-                font: {
-                  size: 18,
-                  weight: "bold",
+              highlightLabel: trial.highlight_label != null &&
+                trial.highlight_score != null && {
+                  type: "label",
+                  xScaleID: "x",
+                  yScaleID: "y",
+                  xValue: highlightX,
+                  yValue: highlightY,
+                  content:
+                    trial.highlight_label != null &&
+                    "←" + trial.highlight_label,
+                  display: true,
+                  backgroundColor: "rgba(0,0,0,0)",
+                  font: {
+                    size: 18,
+                    weight: "bold",
+                  },
+                  xAdjust: 30,
+                  yAdjust: -15,
                 },
-                xAdjust: 30,
-                yAdjust: -15,
-              },
             },
           },
         },
@@ -377,9 +390,7 @@ class DensityChartButtonResponsePlugin implements JsPsychPlugin<Info> {
       button.setAttribute("disabled", "disabled");
     }
 
-    if (trial.response_ends_trial) {
-      this.endTrial(response);
-    }
+    this.endTrial(response);
   }
 
   private endTrial(response: TrialResponse): void {
