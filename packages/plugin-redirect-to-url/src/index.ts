@@ -21,7 +21,7 @@ const info = <const>{
      */
     choices: {
       type: ParameterType.STRING,
-      default: null,
+      default: [],
       array: true,
     },
 
@@ -61,6 +61,24 @@ const info = <const>{
      * rather than replacing the current tab. This can help preserve the original experiment tab.
      */
     open_in_new_tab: {
+      type: ParameterType.BOOL,
+      default: false,
+    },
+
+    /**
+     * If abort_on_submit is true AND open_in_new_tab is true, this parameter specifies a message
+     * to display on the screen after the experiment is over. Can include HTML formatting.
+     */
+    end_message: {
+      type: ParameterType.HTML_STRING,
+      default: null,
+    },
+
+    /**
+     * If abort_on_submit is true AND open_in_new_tab is true, this parameter specifies a message
+     * to display on the screen after the experiment is over. Can include HTML formatting.
+     */
+    automatically_redirect: {
       type: ParameterType.BOOL,
       default: false,
     },
@@ -176,7 +194,7 @@ class RedirectToUrlPlugin implements JsPsychPlugin<Info> {
     };
 
     if (trial.abort_on_submit) {
-      this.jsPsych.abortExperiment(null, trialData);
+      this.jsPsych.abortExperiment(trial.end_message, trialData);
     } else {
       this.jsPsych.finishTrial(trialData);
     }
@@ -189,11 +207,16 @@ class RedirectToUrlPlugin implements JsPsychPlugin<Info> {
   //////////////////////////
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    const startTime = performance.now();
     const response = {
       rt: null as number | null,
       button: null as number | null,
     };
+
+    if (trial.automatically_redirect) {
+      this.endTrial(trial, response);
+    }
+
+    const startTime = performance.now();
 
     if (trial.stimulus) {
       this.renderStimulus(display_element, trial.stimulus);
