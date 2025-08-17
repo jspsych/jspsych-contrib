@@ -229,7 +229,7 @@ class HistogramButtonResponsePlugin implements JsPsychPlugin<Info> {
     data: number[],
     nBins: number,
     yPercent: boolean,
-    highlightScore: number,
+    highlightScore: number | null,
     baseColor: string,
     highlightColor: string
   ): {
@@ -260,8 +260,19 @@ class HistogramButtonResponsePlugin implements JsPsychPlugin<Info> {
       ? binCounts.map((count) => count / data.length)
       : binCounts;
 
-    let highlightBinIndex = Math.floor((highlightScore - minValue) / binWidth);
-    if (highlightBinIndex >= nBins) highlightBinIndex = nBins - 1;
+    // let highlightBinIndex = Math.floor((highlightScore - minValue) / binWidth);
+    // if (highlightBinIndex >= nBins) highlightBinIndex = nBins - 1;
+
+    const highlightBinIndex =
+      highlightScore == null
+        ? null
+        : Math.max(
+            0,
+            Math.min(
+              nBins - 1,
+              Math.floor((highlightScore - minValue) / binWidth)
+            )
+          );
 
     const backgroundColors = histogramData.map((_, i) =>
       i === highlightBinIndex ? highlightColor : baseColor
@@ -276,7 +287,7 @@ class HistogramButtonResponsePlugin implements JsPsychPlugin<Info> {
     data: number[],
     backgroundColors: string[],
     highlightLabel: string,
-    highlightIndex: number,
+    highlightIndex: number | null,
     trial: TrialType<Info>
   ): void {
     const ctx = canvas.getContext("2d");
@@ -347,23 +358,25 @@ class HistogramButtonResponsePlugin implements JsPsychPlugin<Info> {
           },
           annotation: {
             annotations: {
-              highlightLabel: {
-                type: "label",
-                xValue: labels[highlightIndex],
-                yValue: data[highlightIndex],
-                backgroundColor: "rgba(0,0,0,0)",
-                borderColor: "rgba(0,0,0,0)",
-                content: [highlightLabel, "↓"],
-                font: {
-                  size: 18,
-                  weight: "bold",
+              highlightLabel: highlightIndex != null &&
+                labels[highlightIndex] != null &&
+                data[highlightIndex] != null && {
+                  type: "label",
+                  xValue: labels[highlightIndex],
+                  yValue: data[highlightIndex],
+                  backgroundColor: "rgba(0,0,0,0)",
+                  borderColor: "rgba(0,0,0,0)",
+                  content: [highlightLabel, "↓"],
+                  font: {
+                    size: 18,
+                    weight: "bold",
+                  },
+                  position: {
+                    x: "center",
+                    y: "center",
+                  },
+                  yAdjust: -35,
                 },
-                position: {
-                  x: "center",
-                  y: "center",
-                },
-                yAdjust: -35,
-              },
             },
           },
         },
@@ -390,9 +403,7 @@ class HistogramButtonResponsePlugin implements JsPsychPlugin<Info> {
       button.setAttribute("disabled", "disabled");
     }
 
-    if (trial.response_ends_trial) {
-      this.endTrial(response);
-    }
+    this.endTrial(response);
   }
 
   private endTrial(response: TrialResponse): void {
