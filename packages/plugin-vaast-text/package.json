@@ -1,0 +1,47 @@
+{
+  "name": "@jspsych-contrib/plugin-vaast-text",
+  "version": "0.0.1",
+  "description": "The VAAST-text plugin displays a single trial with words appearing (one at a time) on a background image. The participant has to either approach or avoid the text stimulus shown on the screen, depending on the instructions. They respond by pressing one key or another. This plugin is used in VAAST (Visual Approach and Avoidance by the Self Task) experiments.",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "typings": "dist/index.d.ts",
+  "unpkg": "dist/index.browser.min.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "source": "src/index.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
+    "tsc": "tsc",
+    "build": "rollup --config",
+    "build:watch": "npm run build -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/plugin-vaast-text"
+  },
+  "author": {
+    "name": "Cédric Batailler",
+    "url": "https://github.com/cedricbatailler"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-vaast-text",
+  "peerDependencies": {
+    "jspsych": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@jspsych/config": "^3.2.2",
+    "@jspsych/test-utils": "^1.0.0",
+    "jspsych": "^8.0.0"
+  }
+}

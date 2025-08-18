@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+      const jsPsych = initJsPsych({
+        on_finish: function() {
+          jsPsych.data.displayData();
+        }
+      });
+
+      let timeline = [];
+
+      // VAAST background images
+      // In the examples folder, 'eco_env' refers to an ecological environment but non-ecological visual flow, 'eco_vf' to an ecological visual flow but non-ecological environment and 'eco_vf_env' to an ecological visual flow and environment.
+
+      const background = [
+        "background/eco_env/2.jpg",
+        "background/eco_env/4.jpg",
+        "background/eco_env/6.jpg"
+      ];
+
+      // VAAST stimuli
+      const vaast_stim_words = [
+        {stimulus: 'accomplishment', movement: 'approach'},
+        {stimulus: 'disaster',       movement: 'avoidance'}
+      ]
+
+      // VAAST stimuli sizes
+      const word_sizes = [
+        38,
+        46,
+        60
+      ];
+
+      // Helper function : next_position()
+      // Compute next position as function of current position and correct movement. Because
+      // participant has to press the correct response key, it always shows the correct
+      // position.
+      const next_position = function(){
+        const current_position = jsPsych.data.getLastTrialData().values()[0].position;
+        const current_movement = jsPsych.data.getLastTrialData().values()[0].movement;
+        let position = current_position;
+
+        if(current_movement == "approach") {
+          position = position + 1;
+        }
+
+        if(current_movement == "avoidance") {
+          position = position - 1;
+        }
+
+        return(position)
+      }
+
+      // Dirty hack to have the participant press 'g' to start the trial
+      const vaast_start = {
+      type: jsPsychVaastText,
+      stimulus: "o",
+      position: 1,
+      background_images: background,
+      font_sizes:  word_sizes,
+      approach_key: "g",
+      stim_movement: "approach",
+      html_when_wrong: '<span style="color: red; font-size: 80px">&times;</span>',
+      force_correct_key_press: true,
+      display_feedback: false,
+      response_ends_trial: true
+    }
+
+      // Training block (with feedback displayed and correct key press necessary)
+      const vaast_first_step_training = {
+        type: jsPsychVaastText,
+        stimulus: jsPsych.timelineVariable('stimulus'),
+        position: 1,
+        background_images: background,
+        font_sizes: word_sizes,
+        stim_movement: jsPsych.timelineVariable('movement'),
+        approach_key:  't',
+        avoidance_key: 'b',
+        html_when_wrong: '<span style="color: red; font-size: 80px">&times;</span>',
+        force_correct_key_press: true,
+        display_feedback: true,
+        feedback_duration: 500,
+        response_ends_trial: true
+      }
+
+      // Press the approach key 't' to view the next trial (i.e., the step forward)
+      // Press the avoidance key 'b' to view the error screen, then press the correct (approach) key 't' to view the next trial (i.e., the step forward)
+
+      const vaast_second_step_training = {
+        type: jsPsychVaastText,
+        stimulus: jsPsych.timelineVariable('stimulus'),
+        position: next_position,
+        background_images: background,
+        font_sizes: word_sizes,
+        stim_movement: jsPsych.timelineVariable('movement'),
+        response_ends_trial: false,
+        trial_duration: 500
+      }
+
+      // Test block (without feedback displayed and correct key press not necessary)
+      const vaast_first_step = {
+        type: jsPsychVaastText,
+        stimulus: jsPsych.timelineVariable('stimulus'),
+        position: 1,
+        background_images: background,
+        font_sizes: word_sizes,
+        stim_movement: jsPsych.timelineVariable('movement'),
+        approach_key: "t",
+        avoidance_key: "b",
+        html_when_wrong: '<span style="color: red; font-size: 80px">&times;</span>',
+        force_correct_key_press: false,
+        display_feedback: false,
+        response_ends_trial: true
+      }
+
+      // Press the approach key 't' or the avoidance key 'b' to view the next trial (i.e., the corresponding step, forward or backward)
+
+      const vaast_second_step = {
+        type: jsPsychVaastText,
+        stimulus: jsPsych.timelineVariable('stimulus'),
+        position: next_position,
+        background_images: background,
+        font_sizes: word_sizes,
+        stim_movement: jsPsych.timelineVariable('movement'),
+        response_ends_trial: false,
+        trial_duration: 500
+      }
+
+      // Dirty hack to create a priming trial, before an image trial for example
+      const vaast_prime = {
+        type: jsPsychVaastText,
+        stimulus: 'prime',
+        position: 1,
+        background_images: background,
+        font_sizes: word_sizes,
+        stim_movement: jsPsych.timelineVariable('movement'),
+        response_ends_trial: false,
+        trial_duration: 200
+      }
+
+      // Dirty hack to create a blank trial (between a priming trial and an image trial)
+      const vaast_blank = {
+        type: jsPsychVaastText,
+        stimulus: " ",
+        position: 1,
+        background_images: background,
+        font_sizes: word_sizes,
+        stim_movement: jsPsych.timelineVariable('movement'),
+        response_ends_trial: false,
+        trial_duration: 100
+      }
+
+      const vaast_training_block = {
+        timeline: [
+        	vaast_first_step_training,
+        	vaast_second_step_training
+        ],
+        timeline_variables: vaast_stim_words,
+        repetitions: 1,
+        randomize_order: true
+      };
+
+      const vaast_test_block = {
+        timeline: [
+          vaast_first_step,
+        	vaast_second_step
+        ],
+        timeline_variables: vaast_stim_words,
+        repetitions: 1,
+        randomize_order: true
+      };
+
+      const vaast_extra_block = {
+        timeline: [
+          vaast_prime,
+        	vaast_blank,
+          vaast_first_step,   // more relevant with an image instead of a word (using vaast_image)
+        	vaast_second_step
+        ],
+        timeline_variables: vaast_stim_words,
+        repetitions: 1,
+        randomize_order: true
+      };
+
+      timeline.push(vaast_start,
+                    vaast_training_block,
+                    vaast_test_block,
+                    vaast_extra_block
+      );
+
+      jsPsych.run(timeline);
+  </script>
+</html>
