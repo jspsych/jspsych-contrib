@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    // VAAST background images
+    const background = [
+      "background/eco_env/2.jpg",
+      "background/eco_env/4.jpg",
+      "background/eco_env/6.jpg"
+    ];
+
+    const trial = {
+      type: jsPsychVaastFixation,
+      fixation: "+",
+      font_size: 46,
+      position: 1,
+      background_images: background
+    };
+
+    jsPsych.run([trial])
+  </script>
+</html>
