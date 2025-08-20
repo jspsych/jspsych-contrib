@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    let timeline = [];
+
+    // VAAST background images
+    // In the examples folder, 'eco_env' refers to an ecological environment but non-ecological visual flow, 'eco_vf' to an ecological visual flow but non-ecological environment and 'eco_vf_env' to an ecological visual flow and environment.
+    const background = [
+      "background/eco_env/2.jpg",
+      "background/eco_env/4.jpg",
+      "background/eco_env/6.jpg"
+    ];
+
+    // VAAST stimuli sizes
+    const stim_sizes = [
+      266,
+      322,
+      420
+    ];
+
+    // Helper function : next_position()
+    // Compute next position as function of current position and correct movement. Because
+    // participant has to press the correct response key, it always shows the correct
+    // position.
+    const next_position = function(){
+      const current_position = jsPsych.data.getLastTrialData().values()[0].position;
+      const current_movement = jsPsych.data.getLastTrialData().values()[0].movement;
+      let position = current_position;
+
+      if(current_movement == "approach") {
+        position = position + 1;
+      }
+
+      if(current_movement == "avoidance") {
+        position = position - 1;
+      }
+
+      return(position)
+    }
+
+    const vaast_first_step = {
+      type: jsPsychVaastImage,
+      stimulus: 'stimuli/diamond.png',
+      position: 1,
+      background_images: background,
+      font_sizes:  stim_sizes,
+      approach_key: "t",
+      avoidance_key: "b",
+      stim_movement: 'approach',
+      html_when_wrong: '<span style="color: red; font-size: 80px">&times;</span>',
+      force_correct_key_press: true,
+      display_feedback: true,
+      response_ends_trial: true
+    }
+
+    // Press the approach key 't' to view the next trial (i.e., the step forward)
+    // Press the avoidance key 'b' to view the error screen, then press the correct (approach) key 't' to view the next trial (i.e., the step forward)
+
+    const vaast_second_step = {
+      type: jsPsychVaastImage,
+      stimulus: 'stimuli/diamond.png',
+      position: next_position,
+      background_images: background,
+      font_sizes:  stim_sizes,
+      stim_movement: 'approach',
+      response_ends_trial: false,
+      trial_duration: 650
+    }
+
+    timeline.push(vaast_first_step,
+                  vaast_second_step);
+
+    jsPsych.run(timeline)
+  </script>
+</html>
