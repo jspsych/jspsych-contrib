@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-video-hotspots",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A plugin for displaying a video that freezes on the final frame with clickable hotspots",
   "type": "module",
   "main": "dist/index.cjs",
