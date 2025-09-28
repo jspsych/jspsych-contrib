@@ -91,9 +91,6 @@ class ImageHotspotsPlugin implements JsPsychPlugin<Info> {
 
     // Function to create hotspot elements
     const createHotspots = () => {
-      const imgRect = img.getBoundingClientRect();
-      const containerRect = img.parentElement!.getBoundingClientRect();
-
       trial.hotspots.forEach((hotspot: any) => {
         const hotspotElement = document.createElement("div");
         hotspotElement.className = "jspsych-image-hotspots-hotspot";
@@ -136,7 +133,6 @@ class ImageHotspotsPlugin implements JsPsychPlugin<Info> {
         });
 
         hotspotElement.addEventListener("click", (e) => {
-          console.log("Hotspot clicked:", hotspot.id);
           const rect = img.getBoundingClientRect();
           const clickX = e.clientX - rect.left;
           const clickY = e.clientY - rect.top;

@@ -24,8 +24,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "",
-    "directory": "./"
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/plugin-image-hotspots"
   },
   "keywords": [
     "jsPsych"

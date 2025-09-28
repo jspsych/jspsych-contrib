@@ -219,9 +219,6 @@ describe("jsPsychImageHotspots plugin", () => {
     await expectFinished();
 
     const data = getData().values()[0];
-    // The coordinates might be calculated differently than expected
-    // Let's check what we actually get
-    console.log("Actual coordinates:", data.click_x, data.click_y);
     expect(Number.isInteger(data.click_x)).toBe(true); // Should be rounded
     expect(Number.isInteger(data.click_y)).toBe(true); // Should be rounded
   });
