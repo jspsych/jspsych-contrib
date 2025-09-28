@@ -81,9 +81,7 @@ class VideoHotspotsPlugin implements JsPsychPlugin<Info> {
       <div id="jspsych-video-hotspots-container" style="position: relative; display: inline-block;">
         <video id="jspsych-video-hotspots-stimulus"
                src="${trial.stimulus}"
-               autoplay
-               muted
-               controls="false"
+               autoplay           
                ${trial.video_preload ? 'preload="auto"' : 'preload="none"'}
                style="display: block;"
                oncontextmenu="return false;"
@@ -96,28 +94,35 @@ class VideoHotspotsPlugin implements JsPsychPlugin<Info> {
     display_element.innerHTML = html;
 
     // Add CSS to ensure video controls are completely hidden
-    const style = document.createElement("style");
-    style.textContent = `
-      #jspsych-video-hotspots-stimulus::-webkit-media-controls {
-        display: none !important;
-      }
-      #jspsych-video-hotspots-stimulus::-webkit-media-controls-panel {
-        display: none !important;
-      }
-      #jspsych-video-hotspots-stimulus::-webkit-media-controls-play-button {
-        display: none !important;
-      }
-      #jspsych-video-hotspots-stimulus::-webkit-media-controls-start-playback-button {
-        display: none !important;
-      }
-      #jspsych-video-hotspots-stimulus {
-        pointer-events: none;
-      }
-      #jspsych-video-hotspots-overlay {
-        pointer-events: auto;
-      }
-    `;
-    document.head.appendChild(style);
+    let styleElement = document.getElementById(
+      "jspsych-video-hotspots-style"
+    ) as HTMLStyleElement | null;
+
+    if (!styleElement) {
+      styleElement = document.createElement("style");
+      styleElement.id = "jspsych-video-hotspots-style";
+      styleElement.textContent = `
+        #jspsych-video-hotspots-stimulus::-webkit-media-controls {
+          display: none !important;
+        }
+        #jspsych-video-hotspots-stimulus::-webkit-media-controls-panel {
+          display: none !important;
+        }
+        #jspsych-video-hotspots-stimulus::-webkit-media-controls-play-button {
+          display: none !important;
+        }
+        #jspsych-video-hotspots-stimulus::-webkit-media-controls-start-playback-button {
+          display: none !important;
+        }
+        #jspsych-video-hotspots-stimulus {
+          pointer-events: none;
+        }
+        #jspsych-video-hotspots-overlay {
+          pointer-events: auto;
+        }
+      `;
+      document.head.appendChild(styleElement);
+    }
 
     const video = display_element.querySelector(
       "#jspsych-video-hotspots-stimulus"
@@ -263,7 +268,6 @@ class VideoHotspotsPlugin implements JsPsychPlugin<Info> {
 
     // Handle case where video fails to load
     video.addEventListener("error", () => {
-      console.error("Video failed to load:", trial.stimulus);
       end_trial();
     });
   }

@@ -62,7 +62,7 @@ describe("jsPsychVideoHotspots plugin", () => {
   });
 
   it("should prevent clicks before video ends", async () => {
-    const { displayElement } = await startTimeline([
+    const { displayElement, getHTML } = await startTimeline([
       {
         type: jsPsychVideoHotspots,
         stimulus: "test.mp4",
