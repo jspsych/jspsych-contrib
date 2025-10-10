@@ -12,7 +12,7 @@ This plugin primarily works within the context of the DOM- allowing for a much m
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-spr@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-spr@0.1.0"></script>
 ```
 
 ### Via NPM
