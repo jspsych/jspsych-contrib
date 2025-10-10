@@ -3,13 +3,14 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
 
   const info = {
     name: "libet-intentional-binding",
+    version: "2.0.0",
     parameters: {
       cond: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Condition",
         default: "baseline-key",
         description:
-          'Specifies whether condition ("baseline-key", "baseline-tone", "operant-key", or "operant-tone".',
+          'Specifies the condition ("baseline-key", "baseline-tone", "operant-key", or "operant-tone").',
       },
       est_wo_keypress: {
         type: jspsych.ParameterType.BOOL,
@@ -45,13 +46,13 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
       },
       instructions: {
         type: jspsych.ParameterType.HTML_STRING,
-        pretty_name: "",
+        pretty_name: "Instructions",
         default: "",
         description: "The instructions shown to the participant during estimation.",
       },
       instructions_wo_keypress: {
         type: jspsych.ParameterType.HTML_STRING,
-        pretty_name: "",
+        pretty_name: "Instructions without a keypress",
         default: "",
         description:
           'The instructions shown to the participant during estimation if they did not make a keypress. E.g., "When did you feel the urge to make a keypress?". Only applicable if hand_est and est_wo_keypress are set to true. If left undefined, the parameter takes on the same value as instructions.',
@@ -182,19 +183,19 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
       },
       num_start: {
         type: jspsych.ParameterType.INT,
-        pretty_name: "",
+        pretty_name: "Starting number",
         default: Math.PI / 2,
         description: "Where to draw the first number, in radians.",
       },
       num_font: {
         type: jspsych.ParameterType.STRING,
-        pretty_name: "",
+        pretty_name: "Font size",
         default: "5mm Arial",
         description: "The font for the numbers.",
       },
       num_dist: {
         type: jspsych.ParameterType.INT,
-        pretty_name: "",
+        pretty_name: "Number distances",
         default: 30,
         description: "Distance of the numbers from the outer circle of the clock, in pixels.",
       },
@@ -204,6 +205,59 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
         default: 80,
         description: "Length of the clock hand in pixels",
       },
+    },
+    data: {
+      /** The condition of the trial ("baseline-key", "baseline-tone", "operant-key", or "operant-tone"). */
+      cond: {
+        type: jspsych.ParameterType.STRING,
+      },
+      /** Specifies whether the participant pressed a key too early. */
+      early: {
+        type: jspsych.ParameterType.BOOL,
+      },
+      /** Specifies whether the trial timed out due to the participant's lack of response. */
+      timeout: {
+        type: jspsych.ParameterType.BOOL,
+      },
+      /** Object that describes the various important quantities (all in radians, clockwise is positive) */
+      theta: {
+        type: jspsych.ParameterType.COMPLEX,
+        parameters: {
+          /** Where the clock hand begins spinning. */
+          spin_start: {
+            type: jspsych.ParameterType.FLOAT,
+          },
+          /** Where the clock hand was when the participant pressed a key. */
+          keypress: {
+            type: jspsych.ParameterType.FLOAT,
+          },
+          /** Where the clock hand was when the tone was played. */
+          tone: {
+            type: jspsych.ParameterType.FLOAT,
+          },
+          /** Where the clock hand was at the beginning of the animation. */
+          estimation_start: {
+            type: jspsych.ParameterType.FLOAT,
+          },
+          /** Given the current condition, this is the degree that the participant must estimate. */
+          target: {
+            type: jspsych.ParameterType.FLOAT,
+          },
+          /** The estimation provided by the participant. */
+          estimate: {
+            type: jspsych.ParameterType.FLOAT,
+          },
+          /** The amount in which the participant overshot the target angle. */
+          overshoot: {
+            type: jspsych.ParameterType.FLOAT,
+          },
+        },
+      },
+    },
+    citations: {
+      apa: "Michael Galang, C., Malik, R., Kinley, I., & Obhi, S. S. (2021). Studying sense of agency online: Can intentional binding be observed in uncontrolled online settings? Consciousness and Cognition, 95, 103217. https://doi.org/10.1016/j.concog.2021.103217 ",
+      bibtex:
+        "@article{Michael2021Studying, 	author = {Michael Galang, Carl and Malik, Rubina and Kinley, Isaac and Obhi, Sukhvinder S.}, 	journal = {Consciousness and Cognition}, 	doi = {10.1016/j.concog.2021.103217}, 	issn = {1053-8100}, 	year = {2021}, 	month = {oct 1}, 	pages = {103217}, 	publisher = {Elsevier}, 	title = {Studying sense of agency online: Can intentional binding be observed in uncontrolled online settings?}, 	url = {https://www.sciencedirect.com/science/article/abs/pii/S1053810021001434}, 	volume = {95}, }  ",
     },
   };
 
@@ -278,17 +332,17 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
       prompt_div.style.visibility = "hidden";
       display_element.appendChild(prompt_div);
 
-      //Create a canvas element and append it to the DOM
+      // Create a canvas element and append it to the DOM
       var canvas = document.createElement("canvas");
       display_element.appendChild(canvas);
 
-      //The document body IS 'display_element' (i.e. <body class="jspsych-display-element"> .... </body> )
+      // The document body IS 'display_element' (i.e. <body class="jspsych-display-element"> .... </body> )
       var body = document.getElementsByClassName("jspsych-display-element")[0];
 
       //Get the context of the canvas so that it can be painted on.
       var ctx = canvas.getContext("2d");
 
-      //Declare variables for width and height, and also set the canvas width and height to the window width and height
+      // Declare variables for width and height, and also set the canvas width and height to the window width and height
       canvas.width = trial.clock_diam * 2;
       canvas.height = trial.clock_diam * 2;
       var middle_x = canvas.width / 2;
@@ -458,20 +512,12 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
       // load audio
       // If you did not specify the tone file, the tone loading will be skipped.
       if (trial.tone_file != null) {
-        var context = jsPsych.pluginAPI.audioContext();
         var audio;
-        // load audio file
+
         this.jsPsych.pluginAPI
-          .getAudioBuffer(trial.tone_file)
-          .then((buffer) => {
-            if (context !== null) {
-              audio = context.createBufferSource();
-              audio.buffer = buffer;
-              audio.connect(context.destination);
-            } else {
-              audio = buffer;
-              audio.currentTime = 0;
-            }
+          .getAudioPlayer(trial.tone_file)
+          .then((player) => {
+            audio = player;
             ctrl_fcn("start trial");
           })
           .catch((err) => {
@@ -528,8 +574,7 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
                 callback_function: function (info) {
                   // trial_data.rt = info.rt;
                   // trial_data.keypress_ms = performance.now();
-                  // cancel end of trial timeout
-                  jsPsych.pluginAPI.clearAllTimeouts();
+
                   // compute clock theta at the time of response
                   trial_data.theta.keypress = clock.theta;
                   if (info.rt < trial.early_ms) {
@@ -556,13 +601,8 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
           // schedule tone
           setTimeout(function () {
             // play the tone
-            if (context !== null) {
-              var startTime = context.currentTime;
-              audio.start(startTime);
-            } else {
-              audio.play();
-            }
-            // record cock hand angle of audio
+            audio.play();
+            // record clock hand angle of audio
             trial_data.theta.tone = clock.theta;
             trial_data.tone_ms = performance.now();
             // trigger estimation?
@@ -654,14 +694,8 @@ var jsPsychLibetIntentionalBinding = (function (jspsych) {
 
       // function to end trial when it is time
       function end_trial() {
-        // kill any remaining setTimeout handlers
-        jsPsych.pluginAPI.clearAllTimeouts();
-
         // kill keyboard listeners
         jsPsych.pluginAPI.cancelAllKeyboardResponses();
-
-        // clear the display
-        display_element.innerHTML = "";
 
         // compute error
         var est = trial_data.theta.estimate;

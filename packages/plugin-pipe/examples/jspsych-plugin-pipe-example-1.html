@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://unpkg.com/jspsych@7"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response"></script>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
     <script src="../dist/index.browser.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/jspsych@7/css/jspsych.css" />
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
   </head>
   <body></body>
   <script>
@@ -14,8 +14,8 @@
 
     var jsPsych = initJsPsych({});
 
-    const subject_id = jsPsych.randomization.randomID(10);
-    jsPsych.data.addProperties({subject_id: subject_id});
+    const participant_id = jsPsych.randomization.randomID(10);
+    jsPsych.data.addProperties({participant_id: participant_id});
 
     const flanker_timeline = {
       timeline: [{
@@ -42,7 +42,7 @@
       type: jsPsychPipe,
       action: "save",
       experiment_id: expID,
-      filename: `${subject_id}.csv`,
+      filename: `${participant_id}.csv`,
       data_string: ()=>jsPsych.data.get().csv()
     };
 

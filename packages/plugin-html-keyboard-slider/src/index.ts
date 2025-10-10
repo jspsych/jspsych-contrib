@@ -2,19 +2,19 @@
 // Need to trim params down in future
 
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
-//Cannot find module '../package.json'. Consider using '--resolveJsonModule' to import module with '.json' extension.ts(2732)//
-//import { version } from '../package.json';
+
+import { version } from "../package.json";
 
 const info = <const>{
   name: "html-keyboard-slider",
-  version: "1.0.0",
+  version: version,
   parameters: {
     // HTML Attributes
     /**
      * Slider minimum - Note Ints here can also be floats without issue
      */
     min: {
-      type: ParameterType.INT, // BOOL, STRING, INT, FLOAT, FUNCTION, KEY, KEYS, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
+      type: ParameterType.INT,
       default: 0,
     },
     /**
@@ -32,7 +32,9 @@ const info = <const>{
       default: 1,
     },
     /**
-     * For a more coninuous slider, set HTML Range input's step attribute to 'any', see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range#examples. Step values above still apply to 'increase_keys' and 'decrease_keys'.
+     * For a more continuous slider, set HTML Range input's step attribute to 'any',
+     * see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range#examples.
+     * Step values above still apply to `increase_keys` and `decrease_keys`.
      */
     step_any: {
       type: ParameterType.BOOL,
@@ -150,7 +152,7 @@ const info = <const>{
       default: null,
     },
     /**
-     * Whether to display dividing lines between labels
+     * Whether or not to display dividing lines between labels
      */
     label_dividers: {
       type: ParameterType.BOOL,
@@ -236,7 +238,7 @@ const info = <const>{
       type: ParameterType.FLOAT,
     },
     /**
-     * Stimulus presented
+     * Stimulus presented.
      */
     stimulus: {
       type: ParameterType.HTML_STRING,
@@ -259,8 +261,7 @@ type Info = typeof info;
  *
  * @author Max Lovell
  * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-html-keyboard-slider/README.md}}
-
-     */
+ */
 class HtmlKeyboardSliderPlugin implements JsPsychPlugin<Info> {
   static info = info;
   private keyboardListener: any; // Allows this.keyboardListener id to be saved
@@ -559,7 +560,6 @@ class HtmlKeyboardSliderPlugin implements JsPsychPlugin<Info> {
       //clear and cancel things
       clearKeybuffer();
       this.jsPsych.pluginAPI.cancelKeyboardResponse(this.keyboardListener);
-      display_element.innerHTML = "";
 
       // if no response and trial_duration not set
       if (data.response === null && trial.trial_duration === null)

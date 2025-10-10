@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-vsl-animate-occlusion",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "he VSL (visual statistical learning) animate occlusion plugin displays an animated sequence of shapes that disappear behind an occluding rectangle while they change from one shape to another.",
   "type": "module",
   "main": "dist/index.cjs",
@@ -37,15 +37,15 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-vsl-animate-occlusion",
   "peerDependencies": {
-    "jspsych": ">=7.0.0"
+    "jspsych": ">=8.0.0"
   },
   "dependencies": {
     "snapsvg": "^0.5.1"
   },
   "devDependencies": {
-    "@jspsych/config": "^2.0.0",
+    "@jspsych/config": "^3.2.2",
     "@jspsych/test-utils": "^1.0.0",
     "@types/snapsvg": "^0.5.1",
-    "jspsych": "^7.0.0"
+    "jspsych": "^8.0.0"
   }
 }

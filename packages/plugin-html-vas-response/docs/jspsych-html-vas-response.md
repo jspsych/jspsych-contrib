@@ -8,7 +8,7 @@ Kinley, I. (2022, March 7). "A jsPsych plugin for visual analogue scales." Retri
 
 ## Parameters
 
-In addition to the [parameters available in all plugins](https://www.jspsych.org/overview/plugins#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of *undefined* must be specified. Parameters can be left unspecified if the default value is acceptable.
+In addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of *undefined* must be specified. Parameters can be left unspecified if the default value is acceptable.
 
 | Parameter                | Type             | Default Value        | Descripton                               |
 | ------------------------ | ---------------- | -------------------- | ---------------------------------------- |
@@ -16,12 +16,15 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | labels                     | array of strings           | `[]`     | Specifies the labels to be displayed, equally spaced along the scale, as in jspsych-html-slider-response. |
 | resp_fcn                     | function           | `null`     | A function called when the participant clicks on the scale. The current location of the participant's response (between 0 and 1) is provided as an input. |
 | ticks                     | Boolean           | `true`     | Specifies whether smaller vertical tick marks should accompany the labels. |
-| n_scale_points                     | integer           | `null`     | If the scale should have some set of discrete clickable points (such that the tick mark will be rounded to the nearest such point), this parameter can be used specify the number of such points. |
-| scale_width | integer | `null` |  The width of the VAS in pixels. If left null, then the width will be equal to the widest element in the display. |
+| n_scale_points                     | integer           | `null`     | If the scale should have some set of discrete clickable points (such that the tick mark will be rounded to the nearest such point), this parameter can be used specify the number of such points. If not, set this to `null`. |
+| marker_type | String | `'vline'` | Marker type. Options are "vline" (vertical line, default), "cross" (X shape), "circle", and "square". |
+| marker_draggable | Boolean | true | Allows the user to drag the response marker |
+| scale_width | integer | `null` |  The width of the VAS in pixels. If left `null`, then the width will be equal to the widest element in the display. |
 | scale_height | integer | 40 | The height of the clickable region around the VAS in pixels. |
+| hline_pct | integer | 100 | The width of the horizontal line as a percentage of the width of the clickable region (capped at 100). Setting this to less than 100 makes it easier for the user to select the extreme ends of the scale. |
 | scale_colour | string | `'black'` | The colour of the scale (the horizontal line). Anything that would make a valid CSS `background` property can be used here; e.g., `'linear-gradient(to right, blue, red)'` |
 | scale_cursor | string | `'pointer'` | The style of the cursor when the clickable part of the scale is hovered over. |
-| marker_colour | string | `'rgba(0, 0, 0, 0.5)'` | The colour of the participant's response marker. Anything that would make a valid CSS `background` property can be used here; e.g., `'linear-gradient(to top, blue, red)'` |
+| marker_svg_attrs | string | `'stroke="black" stroke-width="2" stroke-opacity="0.5"'` | Additional attributes of the response marker SVG. Changing this can further customize the marker's appearance. |
 | tick_colour | string | `'black'` | The colour of the tick marks on the scale. Anything that would make a valid CSS `background` property can be used here; e.g., `'rgba(255, 0, 0, 0.8)'` |
 | prompt | HTML string | `null` | The content to be displayed below the stimulus. |
 | button_label | string | `'Continue'` | The text of the button that will submit the response. |
@@ -32,7 +35,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 
 ## Data Generated
 
-In addition to the [default data collected by all plugins](https://www.jspsych.org/overview/plugins#data-collected-by-all-plugins), this plugin collects all parameter data described above and the following data for each trial.
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects all parameter data described above and the following data for each trial.
 
 | Name             | Type        | Value                                    |
 | ---------------- | ----------- | ---------------------------------------- |

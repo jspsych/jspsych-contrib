@@ -1,0 +1,24 @@
+cff-version: "1.2.0"
+title: "A jsPsych plugin for visual analogue scales"
+authors:
+- family-names: Kinley
+  given-names: Isaac
+  orcid: "https://orcid.org/0000-0003-2057-9606"
+contact:
+- family-names: Kinley
+  given-names: Isaac
+  orcid: "https://orcid.org/0000-0003-2057-9606"
+doi: 10.31234/osf.io/avj92
+message: If you use this plugin, please cite our article in PsyArXiv.
+preferred-citation:
+  authors:
+  - family-names: Kinley
+    given-names: Isaac
+    orcid: "https://orcid.org/0000-0003-2057-9606"
+  date-published: 2022-03-07
+  doi: 10.31234/osf.io/avj92
+  issn: 2331-8422
+  journal: PsyArXiv
+  title: "A jsPsych plugin for visual analogue scales"
+  type: article
+  url: "https://osf.io/preprints/psyarxiv/avj92"
