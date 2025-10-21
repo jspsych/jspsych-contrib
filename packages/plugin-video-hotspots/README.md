@@ -6,7 +6,21 @@ A plugin for displaying a video that freezes on the final frame with clickable h
 
 ## Loading
 
-*Enter instructions for loading the plugin package here.*
+### In browser
+
+```js
+<script src="https://unpkg.com/@jspsych-contrib/plugin-video-hotspots@1.0.0"></script>
+```
+
+### Via NPM
+
+```
+npm i @jspsych-contrib/plugin-video-hotspots
+```
+
+```js
+import jsPsychVideoHotspots from '@jspsych/plugin-video-hotspots';
+```
 
 ## Compatibility
 

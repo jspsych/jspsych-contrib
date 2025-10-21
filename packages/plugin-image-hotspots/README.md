@@ -6,7 +6,21 @@ A plugin for displaying an image with clickable regions
 
 ## Loading
 
-*Enter instructions for loading the plugin package here.*
+### In browser
+
+```js
+<script src="https://unpkg.com/@jspsych-contrib/plugin-image-hotspots@1.0.0"></script>
+```
+
+### Via NPM
+
+```
+npm i @jspsych-contrib/plugin-image-hotspots
+```
+
+```js
+import jsPsychImageHotspots from '@jspsych/plugin-image-hotspots';
+```
 
 ## Compatibility
 
