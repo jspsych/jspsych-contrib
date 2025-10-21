@@ -1,6 +1,6 @@
 # video-hotspots
 
-A plugin for displaying a video that automatically plays and then freezes on the final frame with clickable hotspot regions. This plugin is ideal for experiments where participants need to respond to specific elements or regions visible in the last frame of a video after watching the complete video content.
+A plugin for displaying a video that automatically plays and then freezes on the final frame with clickable hotspot regions. This plugin allows researchers to present a video to participants and define rectangular regions on the final frame that can be clicked like buttons. When a region is clicked or touched, visual feedback is provided and the trial records which region was selected along with response time and click coordinates. This plugin is ideal for experiments where participants need to respond to specific elements or regions visible in the last frame of a video after watching the complete video content.
 
 ## Key Features
 
