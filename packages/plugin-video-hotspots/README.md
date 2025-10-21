@@ -14,7 +14,7 @@ A plugin for displaying a video that freezes on the final frame with clickable h
 
 ## Documentation
 
-See [documentation](/plugin-video-hotspots/README.md)
+See [documentation](/packages/plugin-video-hotspots/docs/plugin-video-hotspots.md)
 
 ## Author / Citation
 

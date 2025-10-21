@@ -14,7 +14,7 @@ A plugin for displaying an image with clickable regions
 
 ## Documentation
 
-See [documentation](/plugin-image-hotspots/README.md)
+See [documentation](packages/plugin-image-hotspots/docs/plugin-image-hotspots.md)
 
 ## Author / Citation
 
