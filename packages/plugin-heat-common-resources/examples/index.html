@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Heat Common Resources Plugin Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+    <link rel="stylesheet" href="../src/css/styles.css" />
+    <style>
+      /* Additional device compatibility styles */
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #f5f5f5;
+      }
+      
+      .jspsych-display-element {
+        max-width: 100%;
+        margin: 0 auto;
+      }
+      
+      /* Dark gray theme adjustments */
+      #heat-game-container {
+        background-color: #2d3748;
+        border-radius: 12px;
+        padding: 2rem;
+        color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      
+      .heat-player {
+        background-color: #4a5568;
+        border-color: #718096;
+        color: white;
+      }
+      
+      #heat-pot-tokens {
+        background-color: #2d3748;
+        border-color: #f6ad55;
+        color: #f6ad55;
+      }
+      
+      #heat-done-btn {
+        background-color: #4299e1;
+        border-color: #4299e1;
+        color: white;
+        font-weight: bold;
+      }
+      
+      #heat-done-btn:hover {
+        background-color: #3182ce;
+        border-color: #3182ce;
+      }
+      
+      /* Feedback phase dark theme */
+      #heat-feedback-container {
+        background-color: #2d3748;
+        border-radius: 12px;
+        padding: 2rem;
+        color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      
+      .heat-player-feedback.survived {
+        background-color: #276749;
+        border-color: #48bb78;
+      }
+      
+      .heat-player-feedback.burned {
+        background-color: #742a2a;
+        border-color: #f56565;
+      }
+      
+      #heat-pot-feedback.cooling-deployed {
+        background-color: #2a4365;
+        border-color: #63b3ed;
+      }
+      
+      #heat-pot-feedback.no-cooling {
+        background-color: #742a2a;
+        border-color: #f56565;
+      }
+      
+      /* Ultra-wide screen support */
+      @media (min-width: 1200px) {
+        #heat-game-container,
+        #heat-feedback-container {
+          max-width: 1000px;
+          margin: 0 auto;
+        }
+      }
+      
+      /* Tablet adjustments */
+      @media (min-width: 768px) and (max-width: 1199px) {
+        #heat-players-container,
+        #heat-players-feedback {
+          max-width: 600px;
+          margin: 0 auto;
+        }
+      }
+      
+      /* Small screen optimizations */
+      @media (max-width: 480px) {
+        body {
+          padding: 10px;
+        }
+        
+        #heat-game-container,
+        #heat-feedback-container {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function(data) {
+        jsPsych.data.displayData();
+      }
+    });
+
+    const gameTrial = {
+      type: jsPsychPluginHeatCommonResources,
+      num_players: 5,
+      initial_tokens: 10,
+      group_threshold: 25,
+      survival_tokens_no_cooling: 6,
+      survival_tokens_with_cooling: 2,
+      player_names: ["You", "Alice", "Bob", "Charlie", "Dana"],
+      simulated_contributions: [4, 6, 3, 5],
+      show_other_tokens: false
+    };
+
+    jsPsych.run([gameTrial]);
+  </script>
+</html>
