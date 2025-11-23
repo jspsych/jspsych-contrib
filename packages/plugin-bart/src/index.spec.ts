@@ -287,6 +287,7 @@ describe("jsPsych BART plugin", () => {
         pop_threshold: 10,
         balloon_starting_size: 0.3,
         balloon_size_increment: 0.1,
+        max_pumps: 20, // default
       },
     ]);
 
@@ -294,8 +295,17 @@ describe("jsPsych BART plugin", () => {
       "#jspsych-bart-balloon-group"
     ) as SVGGElement;
 
-    // Check initial scale
-    expect(balloon_group.getAttribute("transform")).toContain("scale(0.3)");
+    // Check that starting scale remains constant
+    // With starting_size=0.3, increment=0.1, max_pumps=20
+    // New approach: keep starting_size=0.3 constant
+    // Adjusted increment: (1.17 - 0.3) / 20 = 0.0435
+    const transform = balloon_group.getAttribute("transform");
+    expect(transform).toContain("scale(");
+    // Verify starting size is kept at 0.3
+    const scaleMatch = transform.match(/scale\(([0-9.]+)\)/);
+    expect(scaleMatch).not.toBeNull();
+    const actualScale = parseFloat(scaleMatch[1]);
+    expect(actualScale).toBeCloseTo(0.3, 2);
   });
 
   it("should update balloon value display on pump", async () => {
