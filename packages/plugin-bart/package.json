@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-bart",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "The balloon analogue risk task",
   "type": "module",
   "main": "dist/index.cjs",
