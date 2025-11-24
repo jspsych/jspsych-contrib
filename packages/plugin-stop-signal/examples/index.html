@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="../dist/index.browser.js"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+  var timeline = []
+
+  /* shows welcome message */ 
+  var welcome = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: "Welcome to the experiment. Press any key to begin."
+  };
+
+  var preload = {
+        type: jsPsychPreload,
+        images: ['img/left.svg', 'img/left_stop.svg']
+  }
+
+  /* Single trial */
+  var trial = {
+    type: jsPsychStopSignal,
+    stimuli: ['img/left.svg', 'img/left_stop.svg'],
+    trial_duration: 4000,
+    frame_delay: 1000,
+    choices: ['left', 'right'],
+    multiple_responses: false,
+  };
+
+  timeline.push(preload, welcome, trial)
+  jsPsych.run(timeline)
+</script>
+
+</html>
