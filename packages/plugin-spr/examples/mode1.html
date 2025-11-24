@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <!-- The plugin is loaded here -->
+  <script src="https://unpkg.com/@jspsych/plugin-spr"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: async function() {      
+      jsPsych.data.displayData();  
+    },
+    default_iti: 250
+  });
+
+  // basic trial, each key press advances the sentence by one word (segment)
+  // mode 1: all segments after the current segment are masked
+  const regular_trial = {
+    type: jsPsychSpr,
+    sentence: "The quick brown fox jumps over the lazy dog.",
+    mode: 1,
+  }
+
+  // the delimiter "^" is used to separate words into segments
+  const delimiter_trial = {
+    type: jsPsychSpr,
+    sentence: "Portez^ce vieux whisky^au juge blond^qui fume.",
+    mode: 1,
+  }
+
+  // each key press will advance the trial by two segments.
+  const segment_size_trial = {
+    type: jsPsychSpr,
+    sentence: "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich.",
+    mode: 1,
+    segments_per_key_press: 2,
+    gap_character: "|", // special gap character between each segment
+    intra_segment_character: false, // inside the segments, no character is shown
+  }
+
+  jsPsych.run([regular_trial, delimiter_trial, segment_size_trial]);
+</script>
+
+</html>

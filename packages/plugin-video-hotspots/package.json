@@ -1,0 +1,53 @@
+{
+  "name": "@jspsych-contrib/plugin-video-hotspots",
+  "version": "1.0.0",
+  "description": "A plugin for displaying a video that freezes on the final frame with clickable hotspots",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "typings": "dist/index.d.ts",
+  "unpkg": "dist/index.browser.min.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "source": "src/index.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
+    "tsc": "tsc",
+    "build": "rollup --config",
+    "build:watch": "npm run build -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/plugin-video-hotspots"
+  },
+  "keywords": [
+    "jsPsych"
+  ],
+  "author": {
+    "name": "Josh de Leeuw",
+    "url": "https://github.com/jodeleeuw"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
+  },
+  "homepage": "/plugin-video-hotspots/README.md",
+  "dependencies": {
+    "jspsych": "^8.0.0",
+    "@citation-js/core": "^0.7.14",
+    "@citation-js/plugin-software-formats": "^0.6.1",
+    "@citation-js/plugin-bibtex": "^0.7.14",
+    "@citation-js/plugin-cff": "^0.6.1"
+  },
+  "devDependencies": {
+    "@jspsych/config": "^3.2.2",
+    "@jspsych/test-utils": "^1.0.0"
+  }
+}
