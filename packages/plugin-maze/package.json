@@ -20,8 +20,7 @@
     "test:watch": "npm test -- --watch",
     "tsc": "tsc",
     "build": "rollup --config",
-    "build:watch": "npm run build -- --watch",
-    "dev-serve": "concurrently \"npm run build -- --watch\" \"serve\""
+    "build:watch": "npm run build -- --watch"
   },
   "repository": {
     "type": "git",
@@ -43,8 +42,6 @@
   "devDependencies": {
     "@jspsych/config": "^3.2.2",
     "@jspsych/test-utils": "^1.0.0",
-    "concurrently": "^9.1.2",
-    "jspsych": "^8.0.0",
-    "serve": "^14.2.4"
+    "jspsych": "^8.0.0"
   }
 }
