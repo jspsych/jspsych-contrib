@@ -63,7 +63,7 @@ type Info = typeof info;
 /**
  * **plugin-video-hotspots**
  *
- * A plugin for displaying a video that freezes on the final frame with clickable hotspots
+ * A plugin for displaying a video that freezes on the final frame with clickable regions (hotspots). This plugin allows researchers to present a video to participants and define rectangular regions on the final frame that can be clicked like buttons. When a region is clicked or touched, visual feedback is provided and the trial records which region was selected along with response time and click coordinates.
  *
  * @author Claude
  * @see {@link /plugin-video-hotspots/README.md}}
