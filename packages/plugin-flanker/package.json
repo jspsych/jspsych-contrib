@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-flanker",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A jsPsych plugin for the Eriksen Flanker Task. Displays a configurable flanker array with precise SOA timing and supports arrows, letters, numbers, or custom stimuli. Includes keyboard and mobile-friendly button response modes.",
   "type": "module",
   "main": "dist/index.cjs",
