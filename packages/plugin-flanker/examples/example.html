@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Flanker Plugin Examples</title>
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="../dist/index.browser.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    body {
+      margin: 20px;
+    }
+    .flanker-item {
+      transition: opacity 0.05s;
+    }
+  </style>
+</head>
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData();
+    }
+  });
+
+  const intro = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 700px; margin: auto;">
+        <h2>Flanker Plugin Examples</h2>
+        <p>This demo shows various configurations of the flanker plugin.</p>
+        <p>You'll see:</p>
+        <ul style="text-align: left;">
+          <li>Default arrow flankers</li>
+          <li>SOA manipulation (flankers before target)</li>
+          <li>Letter flankers (original Eriksen task)</li>
+          <li>Number flankers</li>
+          <li>Button response mode (mobile-friendly)</li>
+          <li>Vertical arrangement</li>
+        </ul>
+        <p><strong>Instructions:</strong> Respond to the direction of the <strong>center</strong> item.</p>
+        <p>Press any key to begin.</p>
+      </div>
+    `
+  };
+
+  // Example 1: Default arrows, keyboard mode
+  const arrow_instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h3>Example 1: Arrow Flankers (Default)</h3>
+        <p>Respond to the direction of the middle arrow.</p>
+        <p>Use the <strong>left and right arrow keys</strong>.</p>
+        <p>Press any key to start.</p>
+      </div>
+    `
+  };
+
+  const arrow_trials = {
+    timeline: [
+      {
+        type: jsPsychFlanker,
+        target_direction: jsPsych.timelineVariable('direction'),
+        congruency: jsPsych.timelineVariable('congruency')
+      }
+    ],
+    timeline_variables: [
+      { direction: 'left', congruency: 'congruent' },
+      { direction: 'left', congruency: 'incongruent' },
+      { direction: 'right', congruency: 'congruent' },
+      { direction: 'right', congruency: 'incongruent' }
+    ],
+    randomize_order: true
+  };
+
+  // Example 2: SOA manipulation
+  const soa_instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h3>Example 2: SOA Manipulation</h3>
+        <p>Now flankers will appear <strong>200ms before</strong> the center arrow.</p>
+        <p>This tests how early flanker processing affects responses.</p>
+        <p>Use arrow keys. Press any key to start.</p>
+      </div>
+    `
+  };
+
+  const soa_trials = {
+    timeline: [
+      {
+        type: jsPsychFlanker,
+        target_direction: jsPsych.timelineVariable('direction'),
+        congruency: 'incongruent',
+        soa: -200,  // Flankers appear 200ms before target
+        stimulus_duration: 150
+      }
+    ],
+    timeline_variables: [
+      { direction: 'left' },
+      { direction: 'right' }
+    ],
+    repetitions: 2
+  };
+
+  // Example 3: Letter flankers
+  const letter_instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h3>Example 3: Letter Flankers</h3>
+        <p>Original Eriksen task with letters!</p>
+        <p><strong>H</strong> = Left (press left arrow)</p>
+        <p><strong>S</strong> = Right (press right arrow)</p>
+        <p>Respond to the center letter. Press any key to start.</p>
+      </div>
+    `
+  };
+
+  const letter_trials = {
+    timeline: [
+      {
+        type: jsPsychFlanker,
+        target_direction: jsPsych.timelineVariable('direction'),
+        congruency: jsPsych.timelineVariable('congruency'),
+        left_stimulus: '<span style="font-size:48px;font-weight:bold;font-family:monospace">H</span>',
+        right_stimulus: '<span style="font-size:48px;font-weight:bold;font-family:monospace">S</span>',
+        neutral_stimulus: '<span style="font-size:48px;font-weight:bold;font-family:monospace">-</span>'
+      }
+    ],
+    timeline_variables: [
+      { direction: 'left', congruency: 'congruent' },
+      { direction: 'left', congruency: 'incongruent' },
+      { direction: 'right', congruency: 'congruent' },
+      { direction: 'right', congruency: 'incongruent' }
+    ],
+    randomize_order: true
+  };
+
+  // Example 4: Number flankers
+  const number_instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h3>Example 4: Number Flankers</h3>
+        <p><strong>1</strong> = Left (press left arrow)</p>
+        <p><strong>2</strong> = Right (press right arrow)</p>
+        <p>Respond to the center number. Press any key to start.</p>
+      </div>
+    `
+  };
+
+  const number_trials = {
+    timeline: [
+      {
+        type: jsPsychFlanker,
+        target_direction: jsPsych.timelineVariable('direction'),
+        congruency: 'incongruent',
+        left_stimulus: '<div style="font-size:48px;font-weight:bold">1</div>',
+        right_stimulus: '<div style="font-size:48px;font-weight:bold">2</div>'
+      }
+    ],
+    timeline_variables: [
+      { direction: 'left' },
+      { direction: 'right' }
+    ],
+    repetitions: 2
+  };
+
+  // Example 5: Button mode (mobile-friendly)
+  const button_instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h3>Example 5: Button Response Mode</h3>
+        <p>Mobile-friendly! Click buttons instead of pressing keys.</p>
+        <p>Respond to the center arrow using the buttons below the stimulus.</p>
+        <p>Press any key to start.</p>
+      </div>
+    `
+  };
+
+  const button_trials = {
+    timeline: [
+      {
+        type: jsPsychFlanker,
+        target_direction: jsPsych.timelineVariable('direction'),
+        congruency: jsPsych.timelineVariable('congruency'),
+        response_mode: 'buttons',
+        button_label_left: '← Left',
+        button_label_right: 'Right →'
+      }
+    ],
+    timeline_variables: [
+      { direction: 'left', congruency: 'congruent' },
+      { direction: 'left', congruency: 'incongruent' },
+      { direction: 'right', congruency: 'congruent' },
+      { direction: 'right', congruency: 'incongruent' }
+    ],
+    randomize_order: true
+  };
+
+  // Example 6: Vertical arrangement
+  const vertical_instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h3>Example 6: Vertical Arrangement</h3>
+        <p>Arrows arranged vertically with 7 items (6 flankers).</p>
+        <p>Still respond to direction: up arrow = left, down arrow = right.</p>
+        <p>Use arrow keys. Press any key to start.</p>
+      </div>
+    `
+  };
+
+  const vertical_trials = {
+    timeline: [
+      {
+        type: jsPsychFlanker,
+        target_direction: jsPsych.timelineVariable('direction'),
+        congruency: 'incongruent',
+        flanker_arrangement: 'vertical',
+        num_flankers: 6,
+        container_height: '300px'
+      }
+    ],
+    timeline_variables: [
+      { direction: 'left' },
+      { direction: 'right' }
+    ],
+    repetitions: 2
+  };
+
+  const end = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Examples Complete!</h2>
+        <p>You've seen the main features of the flanker plugin:</p>
+        <ul style="text-align: left;">
+          <li>✓ Default arrows</li>
+          <li>✓ SOA manipulation</li>
+          <li>✓ Letter stimuli</li>
+          <li>✓ Number stimuli</li>
+          <li>✓ Button response mode</li>
+          <li>✓ Vertical arrangement</li>
+        </ul>
+        <p>The plugin supports any custom HTML/SVG stimuli, making it highly versatile for different research paradigms.</p>
+        <p>Press any key to see your data.</p>
+      </div>
+    `
+  };
+
+  jsPsych.run([
+    intro,
+    arrow_instructions,
+    arrow_trials,
+    soa_instructions,
+    soa_trials,
+    letter_instructions,
+    letter_trials,
+    number_instructions,
+    number_trials,
+    button_instructions,
+    button_trials,
+    vertical_instructions,
+    vertical_trials,
+    end
+  ]);
+</script>
+</html>

@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "de Leeuw"
+    given-names: "Joshua"
+    orcid: "https://orcid.org/0000-0002-3288-5363"
+title: "jsPsych Flanker Plugin"
+version: 1.0.0
+date-released: 2025-01-26
+url: "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-flanker"
