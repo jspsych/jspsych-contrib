@@ -59,13 +59,12 @@ This plugin provides:
 
 | Name | Type | Description |
 |------|------|-------------|
-| `target_direction` | string | Target direction: "left" or "right" |
-| `congruency` | string | Trial congruency type |
-| `soa` | integer | SOA value used (ms) |
-| `response_mode` | string | Response mode used |
-| `rt` | integer | Response time (ms) from when response collection began |
+| `congruency` | string | Trial congruency type: "congruent", "incongruent", or "neutral" |
+| `rt` | integer | Response time (ms) from when response collection began, or `null` if no response |
 | `response` | string | Response given: "left" or "right", or `null` if no response |
 | `correct` | boolean | Whether response was correct |
+
+**Note:** Trial parameters like `target_direction`, `soa`, and `response_mode` can be recorded using the `data` parameter when defining trials, allowing for flexible data collection based on your experimental design.
 
 ## Examples
 

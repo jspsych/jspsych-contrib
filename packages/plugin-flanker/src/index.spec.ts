@@ -309,7 +309,7 @@ describe("plugin-flanker", () => {
       expect(getData().values()[0].response).toBe("left");
     });
 
-    it("should record SOA value in data", async () => {
+    it("should work with negative SOA", async () => {
       const { getData, expectFinished } = await startTimeline([
         {
           type: jsPsychFlanker,
@@ -324,7 +324,8 @@ describe("plugin-flanker", () => {
       await expectFinished();
 
       const data = getData().values()[0];
-      expect(data.soa).toBe(-200);
+      expect(data.response).toBe("left");
+      expect(data.correct).toBe(true);
     });
   });
 
@@ -453,13 +454,42 @@ describe("plugin-flanker", () => {
 
       const data = getData().values()[0];
 
-      expect(data).toHaveProperty("target_direction", "left");
       expect(data).toHaveProperty("congruency", "incongruent");
-      expect(data).toHaveProperty("soa", -200);
-      expect(data).toHaveProperty("response_mode", "keyboard");
       expect(data).toHaveProperty("rt");
       expect(data).toHaveProperty("response", "left");
       expect(data).toHaveProperty("correct", true);
+    });
+
+    it("should allow custom data via data parameter", async () => {
+      const { getData, expectFinished } = await startTimeline([
+        {
+          type: jsPsychFlanker,
+          target_direction: "left",
+          congruency: "congruent",
+          data: {
+            target_direction: "left",
+            soa: -200,
+            response_mode: "keyboard",
+            custom_field: "test_value",
+          },
+        },
+      ]);
+
+      pressKey("arrowleft");
+      await expectFinished();
+
+      const data = getData().values()[0];
+
+      // Plugin-recorded data
+      expect(data).toHaveProperty("congruency", "congruent");
+      expect(data).toHaveProperty("response", "left");
+      expect(data).toHaveProperty("correct", true);
+
+      // Custom data fields
+      expect(data).toHaveProperty("target_direction", "left");
+      expect(data).toHaveProperty("soa", -200);
+      expect(data).toHaveProperty("response_mode", "keyboard");
+      expect(data).toHaveProperty("custom_field", "test_value");
     });
   });
 
@@ -477,7 +507,8 @@ describe("plugin-flanker", () => {
       pressKey("arrowleft");
       await expectFinished();
 
-      expect(getData().values()[0].soa).toBe(0);
+      expect(getData().values()[0].response).toBe("left");
+      expect(getData().values()[0].correct).toBe(true);
     });
 
     it("should work with positive SOA", async () => {
@@ -494,7 +525,8 @@ describe("plugin-flanker", () => {
       pressKey("arrowright");
       await expectFinished();
 
-      expect(getData().values()[0].soa).toBe(200);
+      expect(getData().values()[0].response).toBe("right");
+      expect(getData().values()[0].correct).toBe(true);
     });
   });
 });

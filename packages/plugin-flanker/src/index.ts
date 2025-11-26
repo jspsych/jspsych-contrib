@@ -321,10 +321,7 @@ class FlankerPlugin implements JsPsychPlugin<Info> {
 
       // End trial
       this.jsPsych.finishTrial({
-        target_direction: trial.target_direction,
         congruency: trial.congruency,
-        soa: trial.soa,
-        response_mode: trial.response_mode,
         rt: response ? response.rt : null,
         response: response ? response.key : null,
         correct: correct,
