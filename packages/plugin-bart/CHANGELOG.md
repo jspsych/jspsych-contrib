@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-bart
 
+## 1.1.0
+
+### Minor Changes
+
+- [#207](https://github.com/jspsych/jspsych-contrib/pull/207) [`dc5007362f4f9347549ed1e5b9546de89a5dcaaf`](https://github.com/jspsych/jspsych-contrib/commit/dc5007362f4f9347549ed1e5b9546de89a5dcaaf) Thanks [@jadeddelta](https://github.com/jadeddelta)! - you are now able to customize all parts of displayed information, including labels for the current and total points, along with functions to scale and format the actual point values
+
 ## 1.0.0
 
 ### Major Changes
