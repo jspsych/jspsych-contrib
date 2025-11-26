@@ -1,10 +1,10 @@
 # Changelog
 
-## 1.0.0 (2025-01-XX)
+## Unreleased
 
 ### Added
 
-- Initial release of plugin-flanker
+- Initial development of plugin-flanker
 - Generic flanker stimulus support (arrows, letters, numbers, custom HTML/SVG)
 - Precise SOA (Stimulus Onset Asynchrony) timing using requestAnimationFrame
 - Dual response modes: keyboard and mobile-friendly buttons

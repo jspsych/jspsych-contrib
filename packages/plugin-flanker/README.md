@@ -8,7 +8,7 @@ A jsPsych plugin for the Eriksen Flanker Task. Presents a configurable flanker a
 
 **CDN:**
 ```html
-<script src="https://unpkg.com/@jspsych-contrib/plugin-flanker@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-flanker"></script>
 ```
 
 **NPM:**
