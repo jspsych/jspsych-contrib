@@ -323,7 +323,7 @@ describe("jsPsych BART plugin", () => {
     ) as HTMLButtonElement;
 
     // Initial value should be 0
-    expect(getHTML()).toContain('id="jspsych-bart-balloon-value-number">0</span>');
+    expect(getHTML()).toContain('id="jspsych-bart-balloon-value-number">0 points</div>');
 
     // Pump once
     clickTarget(pump_button);
@@ -332,13 +332,13 @@ describe("jsPsych BART plugin", () => {
     const value_element = displayElement.querySelector(
       "#jspsych-bart-balloon-value-number"
     ) as HTMLElement;
-    expect(value_element.textContent).toBe("7");
+    expect(value_element.textContent).toBe("7 points");
 
     // Pump again
     clickTarget(pump_button);
     jest.advanceTimersByTime(200);
 
-    expect(value_element.textContent).toBe("14");
+    expect(value_element.textContent).toBe("14 points");
 
     // Clean up
     const collect_button = displayElement.querySelector(
@@ -394,6 +394,6 @@ describe("jsPsych BART plugin", () => {
     const value_element = displayElement.querySelector(
       "#jspsych-bart-balloon-value-number"
     ) as HTMLElement;
-    expect(value_element.textContent).toBe("1");
+    expect(value_element.textContent).toBe("1 points");
   });
 });
