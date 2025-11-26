@@ -15,6 +15,10 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | points_per_pump            | int     | 1             | The number of points earned per pump.                                                                                                    |
 | pump_button_label          | string  | "Pump"        | Text label for the pump button.                                                                                                          |
 | collect_button_label       | string  | "Collect"     | Text label for the collect button.                                                                                                       |
+| current_value_label | string | "Balloon value" | Text label for the current balloon value. |
+| total_points_label | string | "Total Points" | Text label for the total points display. |
+| point_display_format | function | ``(points: number) => `${points} points\` `` | Formatting function for the current point display. |
+| total_display_format | function | ``(points: number) => `${points} points` `` | Formatting function for the total points display.
 | balloon_starting_size      | float   | 0.5           | Starting size of the balloon (SVG scale factor).                                                                                         |
 | balloon_size_increment     | float   | 0.05          | Size increment per pump (SVG scale factor). This is automatically adjusted based on max_pumps to prevent balloon overflow.               |
 | pump_animation_duration    | int     | 200           | Duration of pump animation in milliseconds.                                                                                              |

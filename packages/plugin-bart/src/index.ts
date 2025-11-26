@@ -41,6 +41,26 @@ const info = <const>{
       type: ParameterType.STRING,
       default: "Collect",
     },
+    /** Text label for the current balloon value. */
+    current_value_label: {
+      type: ParameterType.STRING,
+      default: "Balloon Value",
+    },
+    /** Text label for the total points display. */
+    total_points_label: {
+      type: ParameterType.STRING,
+      default: "Total Points",
+    },
+    /** Formatting function for the current point display. */
+    point_display_format: {
+      type: ParameterType.FUNCTION,
+      default: (points: number) => `${points} points`,
+    },
+    /** Formatting function for the total points display. */
+    total_points_format: {
+      type: ParameterType.FUNCTION,
+      default: (points: number) => `${points}`,
+    },
     /** Starting size of the balloon (SVG scale factor). */
     balloon_starting_size: {
       type: ParameterType.FLOAT,
@@ -231,16 +251,24 @@ class BartPlugin implements JsPsychPlugin<Info> {
           ${
             trial.show_balloon_value
               ? `<div id="jspsych-bart-balloon-value">
-              <div style="font-size: 14px; color: #666; margin-bottom: 4px;">Balloon Value</div>
-              <div style="font-size: 24px; font-weight: bold; color: #333;"><span id="jspsych-bart-balloon-value-number">0</span> points</div>
+              <div style="font-size: 14px; color: #666; margin-bottom: 4px;">${
+                trial.current_value_label
+              }</div>
+              <div style="font-size: 24px; font-weight: bold; color: #333;" id="jspsych-bart-balloon-value-number">${trial.point_display_format(
+                0
+              )}</div>
             </div>`
               : ""
           }
           ${
             trial.show_total_points
               ? `<div id="jspsych-bart-total-points">
-              <div style="font-size: 14px; color: #666; margin-bottom: 4px;">Total Points</div>
-              <div style="font-size: 24px; font-weight: bold; color: #333;"><span id="jspsych-bart-total-points-value">${trial.starting_total_points}</span></div>
+              <div style="font-size: 14px; color: #666; margin-bottom: 4px;">${
+                trial.total_points_label
+              }</div>
+              <div style="font-size: 24px; font-weight: bold; color: #333;" id="jspsych-bart-total-points-value">${trial.total_points_format(
+                trial.starting_total_points
+              )}</div>
             </div>`
               : ""
           }
@@ -290,7 +318,7 @@ class BartPlugin implements JsPsychPlugin<Info> {
         const value_element = display_element.querySelector(
           "#jspsych-bart-balloon-value-number"
         ) as HTMLElement;
-        value_element.textContent = balloon_value.toString();
+        value_element.innerHTML = trial.point_display_format(balloon_value);
       }
     };
 
@@ -300,7 +328,7 @@ class BartPlugin implements JsPsychPlugin<Info> {
         const total_element = display_element.querySelector(
           "#jspsych-bart-total-points-value"
         ) as HTMLElement;
-        total_element.textContent = total.toString();
+        total_element.innerHTML = trial.total_points_format(total);
       }
     };
 
