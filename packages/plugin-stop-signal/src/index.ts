@@ -109,14 +109,6 @@ const info = <const>{
       type: ParameterType.BOOL,
       default: true,
     },
-
-    /**
-     * If true, then participants can select multiple buttons for one trial.
-     */
-    multiple_responses: {
-      type: ParameterType.BOOL,
-      default: false,
-    },
   },
 
   data: {
@@ -137,29 +129,23 @@ const info = <const>{
         },
       },
     },
-    /** An array, where each element is an object representing a response given by the participant. Each object has a
-     * `stimulus` property, indicating which image was displayed when the button was pressed, an `rt` property, indicating
-     * the time of the key press relative to the start of the animation, and a `button_press` property, indicating which
-     * button was pressed. The array will be encoded in JSON format when data is saved using either the `.json()` or `.csv()`
-     * functions.
-     */
+
+    /** The path of the image that was displayed when the button was pressed */
+    stimulus: {
+      type: ParameterType.STRING,
+    },
+
+    /** Indicates the time of the key press relative to the start of the animation */
+    rt: {
+      type: ParameterType.INT,
+    },
+
+    /** Indicates which button the participant pressed. The first button in the `choices` array is 0, the second is 1, and so on.  */
     response: {
-      type: ParameterType.COMPLEX,
-      array: true,
-      nested: {
-        stimulus: {
-          type: ParameterType.STRING,
-        },
-        rt: {
-          type: ParameterType.INT,
-        },
-        /** Indicates which button the participant pressed. The first button in the `choices` array is 0, the second is 1, and so on.  */
-        button_press: {
-          type: ParameterType.INT,
-        },
-      },
+      type: ParameterType.INT,
     },
   },
+
   // prettier-ignore
   citations: '__CITATIONS__',
 };
@@ -225,7 +211,9 @@ class StopSignalPlugin implements JsPsychPlugin<Info> {
 
       var trial_data = {
         animation_sequence: animation_sequence,
-        response: responses,
+        rt: response.rt,
+        stimulus: response.stimulus,
+        response: response.button,
       };
 
       this.jsPsych.finishTrial(trial_data);
@@ -319,28 +307,31 @@ class StopSignalPlugin implements JsPsychPlugin<Info> {
     // start timing
     var start_time = performance.now();
 
+    // store response
+    var response = {
+      rt: null,
+      button: null,
+      stimulus: null,
+    };
+
     /* This functions records responses by the subject */
     function after_response(choice) {
       // Measures rt
       var end_time = performance.now();
       var rt = Math.round(end_time - start_time);
 
-      // Adds another element to reponses array
-      responses.push({
-        button_press: parseInt(choice), // gets the button id
-        rt: rt,
-        stimulus: current_stim,
-      });
+      // Records response data
+      response.button = parseInt(choice); // gets the button id
+      response.rt = rt;
+      response.stimulus = current_stim;
 
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded
       display_element.querySelector("#jspsych-stop-signal-image").className += " responded";
 
       // disable all the buttons after a response
-      if (!trial.multiple_responses) {
-        for (const button of buttonGroupElement.children) {
-          button.setAttribute("disabled", "disabled");
-        }
+      for (const button of buttonGroupElement.children) {
+        button.setAttribute("disabled", "disabled");
       }
 
       if (trial.response_ends_trial) {

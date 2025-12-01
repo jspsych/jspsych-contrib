@@ -15,8 +15,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | trial_duration | INT | 1000 | The total time (in ms) the trial will take. | 
 | frame_delay | INT | 500 | The time (in ms) the first image will be shown. | choices | STRING | undefined | Labels for the buttons. Each different string in the array will generate a different button. | 
 | button_html | FUCTION | ``function(choice: string, choice_index: number)=>`<button class="jspsych-btn">${choice}</button>`` | A function that generates the HTML for each button in the `choices` array. The function gets the string and index of the item in the `choices` array and should return valid HTML. If you want to use different markup for each button, you can do that by using a conditional on either parameter. The default parameter returns a button element with the text label of the choice. | 
-| render_on_canvas | BOOL | true | If true, the images will be drawn onto a canvas element. This prevents a blank screen (white flash) between consecutive images in some browsers, like Firefox and Edge. If false, the image will be shown via an img element, as in previous versions of jsPsych.
-| multiple_responses | BOOL | false | If true, then participants can select multiple buttons for one trial. | 
+| render_on_canvas | BOOL | true | If true, the images will be drawn onto a canvas element. This prevents a blank screen (white flash) between consecutive images in some browsers, like Firefox and Edge. If false, the image will be shown via an img element, as in previous versions of jsPsych. |
 
 
 ## Data Generated
@@ -26,7 +25,9 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 | Name      | Type    | Value                                    |
 | --------- | ------- | ---------------------------------------- |
 | animation_sequence | array | An array, where each element is an object that represents an image in the sequence. Each object has a `stimulus` property, which is the image that was displayed, and a `time` property, which is the time in ms, measured from when the sequence began, that the stimulus was displayed. |
-| response | array | An array, where each element is an object representing a response given by the participant. Each object has a `stimulus` property, indicating which image was displayed when the button was pressed, an `rt` property, indicating the time of the button press relative to the start of the trial, and a `button_press` property, indicating which button was pressed. | 
+| stimulus | string | The path of the image that was displayed when the button was pressed. |
+| rt | numeric | 	The response time in milliseconds for the participant to make a response. The time is measured from when the stimulus first appears on the screen until the participant's response. |
+| response | numeric | Indicates which button the participant pressed. The first button in the `choices` array is 0, the second is 1, and so on.|
 
 ## Install
 
