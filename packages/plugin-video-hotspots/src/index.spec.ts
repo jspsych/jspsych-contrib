@@ -235,4 +235,62 @@ describe("jsPsychVideoHotspots plugin", () => {
     expect(Number.isInteger(data.click_x)).toBe(true);
     expect(Number.isInteger(data.click_y)).toBe(true);
   });
+
+  it("should show prompt after video ends", async () => {
+    const { expectFinished, getHTML, getData, displayElement } = await startTimeline([
+      {
+        type: jsPsychVideoHotspots,
+        stimulus: "test.mp4",
+        prompt: "<p>This is a prompt</p>",
+        hotspots: [
+          {
+            id: "test_hotspot",
+            x: 50,
+            y: 50,
+            width: 100,
+            height: 100,
+          },
+        ],
+      },
+    ]);
+
+    expect(getHTML()).toContain(
+      `<span id="jspsych-video-hotspots-prompt" style="visibility: hidden;"><p>This is a prompt</p>`
+    );
+
+    // Trigger video ended event
+    const video = displayElement.querySelector(
+      "#jspsych-video-hotspots-stimulus"
+    ) as HTMLVideoElement;
+    Object.defineProperty(video, "duration", { writable: true, value: 3.0 });
+    video.dispatchEvent(new Event("ended"));
+
+    expect(getHTML()).toContain(
+      '<span id="jspsych-video-hotspots-prompt" style="visibility: visible;"><p>This is a prompt</p>'
+    );
+  });
+
+  it("should show prompt immediately if show_prompt_on_video_end is false", async () => {
+    const { expectFinished, getHTML, getData, displayElement } = await startTimeline([
+      {
+        type: jsPsychVideoHotspots,
+        stimulus: "test.mp4",
+        prompt: "<p>This is a prompt</p>",
+        show_prompt_on_video_end: false,
+        hotspots: [
+          {
+            id: "test_hotspot",
+            x: 50,
+            y: 50,
+            width: 100,
+            height: 100,
+          },
+        ],
+      },
+    ]);
+
+    expect(getHTML()).toContain(`
+      </div>
+    <p>This is a prompt</p>`);
+  });
 });

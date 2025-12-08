@@ -243,4 +243,27 @@ describe("jsPsychImageHotspots plugin", () => {
     const data = getData().values()[0];
     expect(data.hotspot_clicked).toBeNull();
   });
+
+  it("should show prompt if there is one", async () => {
+    const { expectFinished, getHTML, getData, displayElement } = await startTimeline([
+      {
+        type: jsPsychImageHotspots,
+        stimulus: "test.jpg",
+        prompt: "<p>This is a prompt</p>",
+        hotspots: [
+          {
+            id: "test_hotspot",
+            x: 50,
+            y: 50,
+            width: 100,
+            height: 100,
+          },
+        ],
+      },
+    ]);
+
+    expect(getHTML()).toContain(`
+      </div>
+    <p>This is a prompt</p>`);
+  });
 });
