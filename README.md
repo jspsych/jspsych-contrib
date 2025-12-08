@@ -24,7 +24,7 @@ Plugin | Contributor | Description
 ----------- | ----------- | -----------
 [audio-multi-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-audio-multi-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using both button clicks and key presses. 
 [audio-swipe-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-audio-swipe-response/README.md) | [Adam Richie-Halford](https://github.com/richford) | This plugin collects responses to an audio file using swipe gestures and keyboard responses. 
-[bart](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-bart/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | The balloon analogue risk task 
+[bart](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-bart/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | The balloon analogue risk task (BART) measures risk-taking behavior through a simple balloon-pumping simulation with risk of explosion. 
 [columbia-card-task](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-columbia-card-task/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | The Columbia Card Task measures risk preferences through choices in a card game. 
 [copying-task](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-copying-task/README.md) | [Andre Sahakian](https://github.com/Andre3582) | A plugin for running a copying task: a model grid on the left has to be recreated in the middle grid, using items from the right grid. 
 [corsi-blocks](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-corsi-blocks/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | This plugin displays a configurable Corsi blocks task and records a series of click responses. 
@@ -56,7 +56,7 @@ Plugin | Contributor | Description
 [survey-vas](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-survey-vas/README.md) | [Isaac Kinley](https://github.com/kinleyid) | This plugin displays a series of questions with point-and-click visual analogue scales. 
 [video-hotspots](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-video-hotspots/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | A plugin for displaying a video that freezes on the final frame with clickable hotspots 
 [video-several-keyboard-responses](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-video-several-keyboard-responses/README.md) | [Maria Emine Nylund](https://github.com/marianylund) | jsPsych plugin for playing a video file and getting several keyboard responses 
-[vsl-animate-occlusion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-animate-occlusion/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | he VSL (visual statistical learning) animate occlusion plugin displays an animated sequence of shapes that disappear behind an occluding rectangle while they change from one shape to another. 
+[vsl-animate-occlusion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-animate-occlusion/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) animate occlusion plugin displays an animated sequence of shapes that disappear behind an occluding rectangle while they change from one shape to another. 
 [vsl-grid-scene](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-grid-scene/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) grid scene plugin displays images arranged in a grid. 
 
 
@@ -70,63 +70,43 @@ Extension | Contributor | Description
 [touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This extension displays touch buttons that allow the participant to respond to stimuli via a touchscreen on mobile devices. 
 
 ## Guidelines for contributions
+### Contribution requirements
 Contributions to this repository must:
 
 * Work as described
 * Include the complete code for the plugin or extension.
-* Include a `readme.md` file following our [template](readme-template.md).
+* Include a `README.md` file following our [template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-plugin/templates/plugin-template-ts/README.md) (identical for plugins and extensions).
 * Include a `package.json` file.
 
-Optionally, contributions can include:
+Optionally, contributions are encouraged to include:
 
 * A `/docs` directory with documentation matching the template for docs on jspsych.org 
 * An `/examples` directory with a working `.html` demo.
-* A test suite following the testing framework in our `-ts` templates.
+* A test suite following the testing framework in our `-ts` templates ([plugin test template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-plugin/templates/plugin-template-ts/src/index.spec.ts); [extension test template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-extension/templates/extension-template-ts/src/index.spec.ts)).
 
+### To contribute a new plugin or extension to this repository, follow these steps:
+1. Clone this repository on your machine and run `npm i` to install its packages.
+2. Run `npx @jspsych/new-plugin` or `npx @jspsych/new-extension` and answer the prompts to create a new plugin/extension template under `/packages`. This is a command-line tool we built to make setting up the development of a new plugin/extension easier. Documentation for using this tool can be found in their respective readme files ([new-plugin](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-plugin#readme); [new-extension](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-extension#readme)).
+3. After you are done editing the plugin/extension template, verify that it works by opening `examples/index.html` in your browser.
+4. Run `npm i` in your plugin/extension directory to install all your dependencies.
+5. Add a changeset by running `npm run changeset` in the main directory of the repository. This will prompt you for a description of the changes you made and creates a new changeset file in the `changesets` directory accordingly.
+6. Open a pull request to merge your branch into the `main` branch of this repository.
 
-To submit a contribution, [open a pull request](https://github.com/jspsych/jspsych-contrib/pulls) that contains a directory for your plugin/extension inside the `/packages` directory.
 In the pull request comments, please make it clear how we can verify that the contribution is functional. 
 This could be accomplished with a link to a demonstration experiment, the inclusion of an example file and/or testing files, or through some other means.
 We try to review pull requests quickly and add new contributions as soon as the minimal standards are met.
 
 ## Creating a new plugin or extension
 
-After cloning this repository, run `npm install` and then `npm run new`. 
-This will prompt you through the process of creating a new plugin or extension. 
-The tool will create a new directory in the `/packages` directory with the appropriate files and names. 
+We have a tool for building new plugins and extensions at [jspsych-dev](https://github.com/jspsych/jspsych-dev/tree/main), with instructions for using the tools at the repository's [`README.md`](https://github.com/jspsych/jspsych-dev/blob/main/README.md).
 
-You may want to read the jsPsych documentation on [plugin development](https://www.jspsych.org/latest/developers/plugin-development/) to understand how to work with the `index.ts`file (for TypeScript development) and `index.js` file (for JavaScript development).
+You may also want to read the jsPsych documentation on [plugin development](https://www.jspsych.org/latest/developers/plugin-development/) to understand how to work with the `index.ts` file (for TypeScript development) and `index.js` file (for JavaScript development).
 
-### TypeScript template
-
-This template uses TypeScript source files that are complied into JavaScript using Node.js and npm.
-This is the format used for plugins in the main jsPsych repo.
-To use this template, you should edit the `src/index.ts` file, keeping the overall structure but changing the details as appropriate (parameters, trial method, etc.).
-You can then use the `npm run build` command to compile your `index.ts` code into JavaScript files, which will appear in a `/dist` directory.
-This format also allows you to add a Jest test file (optional).
-
-For more details, including setup instructions and detailed explanations of files, please see the jsPsych documentation page: [Configuring the jsPsych development environment](https://www.jspsych.org/latest/developers/configuration).
-You can also read the [plugin development documentation](https://www.jspsych.org/latest/developers/plugin-development/) and look at the plugin/extension folders in the main jsPsych repository `/packages` directory for more examples.
-
-### JavaScript template
-
-This template allows you to put your plugin's JavaScript code directly into a JavaScript template file, rather than using TypeScript and Node.js/npm. 
-To use this template, you should keep the overall structure of the `index.js` file, but change the details as appropriate for your plugin (plugin name, parameters, etc.).
-The JavaScript code that runs the trial goes inside the `trial` method for the plugin class.
-More information about working with the `index.js` file can be found in the [plugin development documentation](https://www.jspsych.org/latest/developers/plugin-development/).
 
 ## jsPsych version compatibility
 
-We would like to encourage you to contribute plugins and extensions that are compatible with the latest jsPsych version. 
-At the same time, we realize that there may be jsPsych users who have created very useful plugins/extensions with jsPsych v6 that they would like to share with the community, but don't have the time/resources to convert into the jsPsych v7+ Node package format. 
-Therefore we welcome contributions that are compatible with v6 as well as v7+. 
+We would like to encourage you to contribute plugins and extensions that are compatible with jsPsych v7+, as this will make your contributions maximally accessible to other jsPsych users. jsPsych has gone through major changes in upgrading to v7 and later versions, so it will be difficult to maintain backwards compatability for plugins/extensions using versions earlier than v7.
 
-If you'd like to contribute a **jsPsych v6 plugin**, please do the following:
-* Use the `templates/plugin-template-js` directory as a reference
-* Delete everything inside of the `index.js` template file and replace it with your v6-compatible plugin code
-* In the `package.json` file, change the "jspsych" version field in "devDependencies" to "6.3.1"
+At the same time, we realize that there may be jsPsych users who have created very useful plugins/extensions with jsPsych v6 that they would like to share with the community, but don't know how to or have the time/resources to convert their contributions into the jsPsych v7+ Node package format.
 
-And remember to follow the other steps for contributing:
-* Edit the `package.json` file with the information about your plugin
-* Add a `readme.md` file for your plugin, based on the [readme template](https://github.com/jspsych/jspsych-contrib/blob/main/readme-template.md). This must state the jsPsych version that your plugin is compatible with.
-* Optional: add a `/docs` directory with a markdown documentation file, and/or `/examples` directory with an HTML example file
+As a first step to helping make this conversion easier, we offer a general migration guide for [v6.x to v7.x](https://www.jspsych.org/latest/support/migration-v7/) and for [v7.x to v8.x](https://www.jspsych.org/latest/support/migration-v8/). If you have suggestions/requests for additional documentation on migration, please open a thread on our [discussion board](https://github.com/jspsych/jsPsych/discussions/).

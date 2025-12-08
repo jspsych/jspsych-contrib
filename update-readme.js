@@ -58,14 +58,14 @@ Extension | Contributor | Description
       const pluginName = packageName.replace(/^plugin-/g, "");
       pluginList = pluginList.concat(
         `[${pluginName}](${packageReadmeLink}) | ${authorRender} | ${
-          info.description ? info.description : "foo"
+          info.description ? info.description : `_Description for ${pluginName}._`
         } \n`
       );
     } else {
       const extensionName = packageName.replace(/^extension-/g, "");
       extensionList = extensionList.concat(
         `[${extensionName}](${packageReadmeLink}) | ${authorRender} | ${
-          info.description ? info.description : "foo"
+          info.description ? info.description : `_Description for ${extensionName}._`
         } \n`
       );
     }
