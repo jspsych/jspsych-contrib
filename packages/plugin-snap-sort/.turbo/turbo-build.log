@@ -1,0 +1,17 @@
+
+> plugin-snap-sort@0.0.1 build
+> rollup --config
+
+[1G[0K[36m
+[1msrc/index.ts[22m → [1mdist/index.d.ts[22m...[39m
+[32mcreated [1mdist/index.d.ts[22m in [1m957ms[22m[39m
+[36m
+[1msrc/index.ts[22m → [1mdist/index.js, dist/index.cjs[22m...[39m
+[32mcreated [1mdist/index.js, dist/index.cjs[22m in [1m114ms[22m[39m
+[36m
+[1msrc/index.ts[22m → [1mdist/index.browser.js[22m...[39m
+[32mcreated [1mdist/index.browser.js[22m in [1m34ms[22m[39m
+[36m
+[1msrc/index.ts[22m → [1mdist/index.browser.min.js[22m...[39m
+[32mcreated [1mdist/index.browser.min.js[22m in [1m38ms[22m[39m
+[1G[0K⠙[1G[0K
