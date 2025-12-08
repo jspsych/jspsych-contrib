@@ -2,6 +2,12 @@
 
 A plugin for displaying an image with clickable regions (hotspots). This plugin allows researchers to present an image to participants and define rectangular regions that can be clicked like buttons. When a region is clicked or touched, visual feedback is provided and the trial records which region was selected along with response time and click coordinates.
 
+## Key Features
+
+- Supports both mouse and touch interactions
+- Records click coordinates and response times
+- Customizable visual feedback for hotspot interactions
+
 ## Parameters
 
 In addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of undefined must be specified. Other parameters can be left unspecified if the default value is acceptable.
