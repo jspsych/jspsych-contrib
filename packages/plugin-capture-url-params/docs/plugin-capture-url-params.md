@@ -14,6 +14,7 @@ By default, the plugin captures all available URL parameters. You can also speci
 | `show_error`    | boolean          | `false`                                    | Whether to display an error message to the participant if any of the specified parameters are missing.                                  |
 | `error_message` | string           | `"URL parameters could not be retrieved."` | The message shown to participants if required parameters are missing.                                                                   |
 | `soft_fail`     | boolean          | `true`                                     | If set to `false`, the experiment will abort when required parameters are missing. If `true`, the experiment will continue.             |
+| `abort_message` | HTML string | `"There was an error and we are unable to continue your session."` | The message to show particpants if the experiment is aborted due to missing URL parameters. This is only used if `soft_fail` is false. |
 
 ## Data
 

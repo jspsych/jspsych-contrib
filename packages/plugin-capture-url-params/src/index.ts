@@ -1,4 +1,5 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
+
 import { version } from "../package.json";
 
 const info = <const>{
@@ -43,6 +44,15 @@ const info = <const>{
       type: ParameterType.BOOL,
       default: true,
     },
+
+    /**
+     * The message to show particpants if the experiment is aborted due to missing
+     * URL parameters. This is only used if `soft_fail` is false.
+     */
+    abort_message: {
+      type: ParameterType.HTML_STRING,
+      default: "There was an error and we are unable to continue your session.",
+    },
   },
   data: {
     /**
@@ -79,16 +89,11 @@ class CaptureUrlParamsPlugin implements JsPsychPlugin<Info> {
     return Object.fromEntries(params.entries());
   }
 
-  private getSpecifiedUrlParams(
-    trial: TrialType<Info>
-  ): Record<string, string | undefined> {
-    const paramData = trial.url_params.reduce(
-      (acc: Record<string, string | undefined>, key) => {
-        acc[key] = this.jsPsych.data.getURLVariable(key);
-        return acc;
-      },
-      {}
-    );
+  private getSpecifiedUrlParams(trial: TrialType<Info>): Record<string, string | undefined> {
+    const paramData = trial.url_params.reduce((acc: Record<string, string | undefined>, key) => {
+      acc[key] = this.jsPsych.data.getURLVariable(key);
+      return acc;
+    }, {});
 
     const missing = Object.entries(paramData)
       .filter(([, value]) => value === undefined)
@@ -102,9 +107,7 @@ class CaptureUrlParamsPlugin implements JsPsychPlugin<Info> {
       }
 
       if (!trial.soft_fail) {
-        this.jsPsych.abortExperiment(
-          "There was an error and we are unable to continue your session."
-        );
+        this.jsPsych.abortExperiment(trial.abort_message);
       }
     }
 
@@ -117,9 +120,7 @@ class CaptureUrlParamsPlugin implements JsPsychPlugin<Info> {
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     const urlParamData =
-      trial.url_params.length === 0
-        ? this.getAllUrlParams()
-        : this.getSpecifiedUrlParams(trial);
+      trial.url_params.length === 0 ? this.getAllUrlParams() : this.getSpecifiedUrlParams(trial);
 
     const trial_data = {
       response: urlParamData,
