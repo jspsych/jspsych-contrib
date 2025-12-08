@@ -6,28 +6,22 @@ The `plugin-capture-url-params` plugin saves data embedded in the URL parameters
 
 By default, the plugin captures all available URL parameters. You can also specify a subset of required parameters using the `url_params` option. If any of these required parameters are missing, the plugin can optionally show an error message to participants and either allow the experiment to continue (`soft_fail = true`) or stop the experiment (`soft_fail = false`).
 
-## Loading (Note: these CDN resources don't currently exist... but maybe will eventually?)
+## Loading 
 
 Using the CDN-hosted JavaScript file:
 
 ```js
-<script src="https://unpkg.com/@jspsych/plugin-capture-url-params@VERSION_HERE"></script>
-```
-
-Using the JavaScript file downloaded from a GitHub release dist archive:
-
-```js
-<script src="jspsych/plugin-capture-url-params.js"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-capture-url-params@0.0.1"></script>
 ```
 
 Using NPM:
 
-```
-npm install @jspsych/plugin-capture-url-params
+```sh
+npm install @jspsych-contrib/plugin-capture-url-params
 ```
 
 ```js
-import jsPsychPluginCaptureUrlParams from "@jspsych/plugin-capture-url-params";
+import jsPsychPluginCaptureUrlParams from "@jspsych-contrib/plugin-capture-url-params";
 ```
 
 ## Compatibility
@@ -58,7 +52,7 @@ The plugin saves the captured parameters as an object in the `response` field of
 
 ## Documentation
 
-See [documentation](https://github.com/themusiclab/pose/tree/main/test/plugin-capture-url-params/README.md)
+See [documentation](docs/plugin-capture-url-params.md)
 
 ## Author / Citation
 
