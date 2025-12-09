@@ -1,0 +1,178 @@
+/* Heat Common Resources Plugin - Enhanced Dark Theme */
+
+/* Global theme overrides */
+body {
+  background-color: #1a202c;
+  color: #e2e8f0;
+}
+
+/* Game container dark theme */
+#heat-game-container,
+#heat-feedback-container {
+  background-color: #2d3748;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  color: #e2e8f0;
+}
+
+/* Player styling enhancements */
+.heat-player {
+  background-color: #4a5568;
+  border-color: #718096;
+  color: #e2e8f0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.heat-player:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.heat-player-tokens {
+  color: #63b3ed;
+  text-shadow: 0 0 4px rgba(99, 179, 237, 0.3);
+}
+
+/* Pot styling enhancements */
+#heat-pot-outer {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  border-color: #2c5aa0;
+  box-shadow: 0 6px 20px rgba(66, 153, 225, 0.3);
+}
+
+#heat-pot {
+  background: linear-gradient(135deg, #5a6578, #4a5568);
+  border-color: #2d3748;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+#heat-pot:hover {
+  background: linear-gradient(135deg, #6a7589, #5a6578);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 8px rgba(99, 179, 237, 0.3);
+  transform: scale(1.05);
+}
+
+#heat-pot:active {
+  transform: scale(0.95);
+}
+
+#heat-pot-symbol {
+  filter: drop-shadow(0 0 4px rgba(99, 179, 237, 0.5));
+}
+
+#heat-pot-tokens {
+  background: linear-gradient(135deg, #f6ad55, #ed8936);
+  border-color: #d69e2e;
+  color: #1a202c;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Button enhancements */
+#heat-done-btn {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  border-color: #2c5aa0;
+  color: #ffffff;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+#heat-done-btn:hover {
+  background: linear-gradient(135deg, #3182ce, #2c5aa0);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Feedback phase enhancements */
+.heat-player-feedback.survived {
+  background: linear-gradient(135deg, #276749, #2f855a);
+  border-color: #48bb78;
+  box-shadow: 0 4px 6px rgba(72, 187, 120, 0.2);
+}
+
+.heat-player-feedback.burned {
+  background: linear-gradient(135deg, #742a2a, #c53030);
+  border-color: #f56565;
+  box-shadow: 0 4px 6px rgba(245, 101, 101, 0.2);
+}
+
+.heat-player-feedback.survived .heat-player-status {
+  color: #68d391;
+  text-shadow: 0 0 4px rgba(104, 211, 145, 0.3);
+}
+
+.heat-player-feedback.burned .heat-player-status {
+  color: #fc8181;
+  text-shadow: 0 0 4px rgba(252, 129, 129, 0.3);
+}
+
+/* Pot feedback enhancements */
+#heat-pot-feedback.cooling-deployed #heat-pot-outer {
+  background: linear-gradient(135deg, #17a2b8, #138496);
+  box-shadow: 0 6px 20px rgba(23, 162, 184, 0.3);
+}
+
+#heat-pot-feedback.no-cooling #heat-pot-outer {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+}
+
+#heat-pot-feedback.cooling-deployed #heat-cooling-status {
+  color: #63b3ed;
+  text-shadow: 0 0 4px rgba(99, 179, 237, 0.3);
+}
+
+#heat-pot-feedback.no-cooling #heat-cooling-status {
+  color: #fc8181;
+  text-shadow: 0 0 4px rgba(252, 129, 129, 0.3);
+}
+
+/* Animation enhancements */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(99, 179, 237, 0.3); }
+  50% { box-shadow: 0 0 16px rgba(99, 179, 237, 0.6); }
+}
+
+#heat-pot:active {
+  animation: pulse-glow 0.3s ease;
+}
+
+/* Enhanced mobile responsiveness */
+@media (max-width: 768px) {
+  #heat-game-container,
+  #heat-feedback-container {
+    margin: 1rem;
+    border-radius: 8px;
+  }
+  
+  #heat-game-board {
+    width: 320px;
+    height: 320px;
+  }
+  
+  #heat-pot-outer {
+    width: 100px;
+    height: 100px;
+  }
+  
+  #heat-pot {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* Dark theme text readability */
+.heat-player-name,
+.heat-cooling-status,
+#heat-pot-total {
+  font-weight: 600;
+}
+
+/* Focus indicators for accessibility */
+#heat-pot:focus,
+#heat-done-btn:focus {
+  outline: 2px solid #63b3ed;
+  outline-offset: 2px;
+}
