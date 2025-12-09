@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychPluginBarchartButtonResponse Example</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <!-- Load the published plugin package here, e.g.
+    <script src="https://unpkg.com/plugin-barchart-button-response"></script>-->
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+
+    const trial = {
+      type: jsPsychPluginBarchartButtonResponse,
+      description_text: "<h3>Which animal is most popular?</h3>",
+      chart_data: [
+        { key: "Cat", value: 0.1 },
+        { key: "Dog", value: 0.15 },
+        { key: "Bird", value: 0.5 },
+        { key: "Dinosaur", value: 0.25 },
+      ],
+      highlight_value: "Dog",
+      highlight_label: "Your Choice!",
+      x_axis_label: "Animals",
+      y_axis_label: "% People Prefer",
+      y_percent: true,
+      choices: ["Next"],
+    };
+
+    jsPsych.run([trial]);
+  </script>
+</html>
