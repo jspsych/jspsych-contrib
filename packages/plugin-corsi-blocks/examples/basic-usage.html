@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Corsi Blocks Plugin - Basic Usage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+    <style>
+      body {
+        margin: 20px;
+        font-family: Arial, sans-serif;
+        touch-action: manipulation;
+      }
+    </style>
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData('json');
+      }
+    });
+
+    const timeline = [];
+
+    // Instructions
+    timeline.push({
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <h1>Corsi Blocks Task - Basic Example</h1>
+        <p>You will see a sequence of blocks light up.</p>
+        <p>Watch carefully and then repeat the sequence by clicking the blocks in the same order.</p>
+        <p><strong>Press any key to begin</strong></p>
+      `
+    });
+
+    // Display the sequence
+    timeline.push({
+      type: jsPsychCorsiBlocks,
+      sequence: [3, 1, 5, 2],
+      mode: 'display',
+      prompt: 'Watch the sequence'
+    });
+
+    // Get the response
+    timeline.push({
+      type: jsPsychCorsiBlocks,
+      sequence: [3, 1, 5, 2],
+      mode: 'input',
+      prompt: 'Click the blocks in the same order'
+    });
+
+    // Show feedback
+    timeline.push({
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function() {
+        const lastTrial = jsPsych.data.get().last(1).values()[0];
+        if (lastTrial.correct) {
+          return '<h2 style="color: green;">Correct!</h2><p>Press any key to continue</p>';
+        } else {
+          return '<h2 style="color: red;">Incorrect</h2><p>Press any key to continue</p>';
+        }
+      }
+    });
+
+    jsPsych.run(timeline);
+  </script>
+</html>
