@@ -16,7 +16,7 @@ Contributions to `jspsych-contrib` that are broadly useful, well-documented, and
 ## List of available plugins
 
 The jsPsych plugins that have been contributed by community members can be found in the `/packages` directory. 
-The `/packages` directory also contains four template sub-folders that can be used as a starting point for contributing a plugin/extension (see the [Guidelines for contributions](#guidelines-for-contributions) section).
+If you would like to get started on contributing, check out our sections on [creating a plugin/extension](#creating-a-new-plugin-or-extension) and our [guidelines for contributions](#guidelines-for-contributions)
 
 ### Plugins
 
