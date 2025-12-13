@@ -6,28 +6,22 @@ The `redirect-to-url` plugin is designed to smoothly redirect participants to an
 
 ---
 
-## Loading (Note: these CDN resources don't currently exist... but maybe will eventually?)
+## Loading 
 
 Using the CDN-hosted JavaScript file:
 
 ```html
-<script src="https://unpkg.com/@jspsych/plugin-redirect-to-url@VERSION_HERE"></script>
-```
-
-Using a local copy downloaded from a GitHub release:
-
-```html
-<script src="jspsych/plugin-redirect-to-url.js"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-redirect-to-url@0.0.1"></script>
 ```
 
 Using NPM:
 
 ```bash
-npm install @jspsych/plugin-redirect-to-url
+npm install @jspsych-contrib/plugin-redirect-to-url
 ```
 
 ```ts
-import jsPsychRedirectToUrl from "@jspsych/plugin-redirect-to-url";
+import jsPsychRedirectToUrl from "@jspsych-contrib/plugin-redirect-to-url";
 ```
 
 ---
@@ -43,7 +37,7 @@ import jsPsychRedirectToUrl from "@jspsych/plugin-redirect-to-url";
 | Name              | Type             | Default       | Description                                                                                 |
 | ----------------- | ---------------- | ------------- | ------------------------------------------------------------------------------------------- |
 | `stimulus`        | HTML string      | `null`        | Optional stimulus (e.g., message or instructions) displayed above the buttons.              |
-| `choices`         | Array of strings | `null`        | Labels for the response buttons.                                                            |
+| `choices`         | Array of strings | `undefined`        | Labels for the response buttons.                                                            |
 | `button_html`     | Function         | _(see below)_ | Function returning the HTML for each button.                                                |
 | `url`             | String           | `undefined`   | The URL to which the participant will be redirected.                                        |
 | `abort_on_submit` | Boolean          | `true`        | Whether to immediately end the experiment before redirecting (recommended at end of study). |

@@ -1,7 +1,7 @@
 {
   "name": "plugin-redirect-to-url",
   "version": "0.0.1",
-  "description": "Facilitates redirecting to a URL at the end of a study. For example, this can facilitate running Prolofic or other paid recruitment platforms.",
+  "description": "Facilitates redirecting to a URL at the end of a study. For example, this can facilitate running Prolific or other paid recruitment platforms.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {

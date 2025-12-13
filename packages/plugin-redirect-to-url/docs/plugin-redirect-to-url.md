@@ -6,32 +6,6 @@ The `redirect-to-url` plugin is designed to smoothly redirect participants to an
 
 ---
 
-## Loading (Note: these CDN resources don't currently exist... but maybe will eventually?)
-
-Using the CDN-hosted JavaScript file:
-
-```html
-<script src="https://unpkg.com/@jspsych/plugin-redirect-to-url@VERSION_HERE"></script>
-```
-
-Using a local copy downloaded from a GitHub release:
-
-```html
-<script src="jspsych/plugin-redirect-to-url.js"></script>
-```
-
-Using NPM:
-
-```bash
-npm install @jspsych/plugin-redirect-to-url
-```
-
-```ts
-import jsPsychRedirectToUrl from "@jspsych/plugin-redirect-to-url";
-```
-
----
-
 ## Compatibility
 
 - jsPsych version: **v8.0.0 or later**
@@ -39,15 +13,16 @@ import jsPsychRedirectToUrl from "@jspsych/plugin-redirect-to-url";
 ---
 
 ## Parameters
-
+In addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of *undefined* must be specified. Parameters can be left unspecified if the default value is acceptable.
 | Name              | Type             | Default       | Description                                                                                 |
 | ----------------- | ---------------- | ------------- | ------------------------------------------------------------------------------------------- |
 | `stimulus`        | HTML string      | `null`        | Optional stimulus (e.g., message or instructions) displayed above the buttons.              |
-| `choices`         | Array of strings | `null`        | Labels for the response buttons.                                                            |
+| `choices`         | Array of strings | `undefined`        | Labels for the response buttons.                                                            |
 | `button_html`     | Function         | _(see below)_ | Function returning the HTML for each button.                                                |
 | `url`             | String           | `undefined`   | The URL to which the participant will be redirected.                                        |
 | `abort_on_submit` | Boolean          | `true`        | Whether to immediately end the experiment before redirecting (recommended at end of study). |
 | `open_in_new_tab` | Boolean          | `false`       | Whether to open the URL in a new browser tab.                                               |
+| `automatically_redirect` | Boolean | `false` | If true, the trial will automatically redirect to the specified URL without waiting for participant input. |
 
 **Default `button_html` function:**
 

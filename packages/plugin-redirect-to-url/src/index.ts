@@ -66,7 +66,7 @@ const info = <const>{
     },
 
     /**
-     * If abort_on_submit is true AND open_in_new_tab is true, this parameter specifies a message
+     * If `abort_on_submit` is true AND `open_in_new_tab` is true, this parameter specifies a message
      * to display on the screen after the experiment is over. Can include HTML formatting.
      */
     end_message: {
@@ -75,8 +75,7 @@ const info = <const>{
     },
 
     /**
-     * If abort_on_submit is true AND open_in_new_tab is true, this parameter specifies a message
-     * to display on the screen after the experiment is over. Can include HTML formatting.
+     * If true, the trial will automatically redirect to the specified URL without waiting for participant input.
      */
     automatically_redirect: {
       type: ParameterType.BOOL,
@@ -143,7 +142,6 @@ class RedirectToUrlPlugin implements JsPsychPlugin<Info> {
   }
 
   private renderButtons(
-    display_element: HTMLElement,
     trial: TrialType<Info>,
     onClick: (choiceIndex: number) => void
   ): HTMLDivElement {
@@ -152,10 +150,7 @@ class RedirectToUrlPlugin implements JsPsychPlugin<Info> {
     buttonGroup.classList.add("jspsych-btn-group-flex");
 
     trial.choices.forEach((choice, index) => {
-      buttonGroup.insertAdjacentHTML(
-        "beforeend",
-        trial.button_html(choice, index)
-      );
+      buttonGroup.insertAdjacentHTML("beforeend", trial.button_html(choice, index));
       const button = buttonGroup.lastChild as HTMLElement;
       button.dataset.choice = index.toString();
       button.addEventListener("click", () => onClick(index));
@@ -178,15 +173,10 @@ class RedirectToUrlPlugin implements JsPsychPlugin<Info> {
   }
 
   private disableButtons(buttonGroup: HTMLDivElement) {
-    Array.from(buttonGroup.children).forEach((btn) =>
-      btn.setAttribute("disabled", "true")
-    );
+    Array.from(buttonGroup.children).forEach((btn) => btn.setAttribute("disabled", "true"));
   }
 
-  private endTrial(
-    trial: TrialType<Info>,
-    response: { rt: number; button: number }
-  ) {
+  private endTrial(trial: TrialType<Info>, response: { rt: number; button: number }) {
     const trialData = {
       rt: response.rt,
       stimulus: trial.stimulus,
@@ -214,27 +204,23 @@ class RedirectToUrlPlugin implements JsPsychPlugin<Info> {
 
     if (trial.automatically_redirect) {
       this.endTrial(trial, response);
-    }
+    } else {
+      const startTime = performance.now();
 
-    const startTime = performance.now();
+      if (trial.stimulus) {
+        this.renderStimulus(display_element, trial.stimulus);
+      }
 
-    if (trial.stimulus) {
-      this.renderStimulus(display_element, trial.stimulus);
-    }
-
-    const buttonGroup = this.renderButtons(
-      display_element,
-      trial,
-      (choiceIndex) => {
+      const buttonGroup = this.renderButtons(trial, (choiceIndex) => {
         const endTime = performance.now();
         response.rt = Math.round(endTime - startTime);
         response.button = choiceIndex;
         this.disableButtons(buttonGroup);
         this.endTrial(trial, response);
-      }
-    );
+      });
 
-    display_element.appendChild(buttonGroup);
+      display_element.appendChild(buttonGroup);
+    }
   }
 }
 
