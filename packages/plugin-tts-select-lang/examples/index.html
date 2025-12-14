@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychPluginTtsSelectLang Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <!-- Once this plugin package is published, it can be loaded via
+<script src="https://unpkg.com/@jspsych-contrib/plugin-tts-select-lang"></script>
+<script src="../dist/index.browser.js"></script> -->
+    <script src="../dist/index.global.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+
+    const trial = {
+      type: jsPsychPluginTtsSelectLang
+    };
+
+    jsPsych.run([trial])
+  </script>
+</html>
