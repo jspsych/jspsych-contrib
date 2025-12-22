@@ -4,18 +4,23 @@
     <title>jsPsychPluginTtsSelectLang Example</title>
     <script src="https://unpkg.com/jspsych"></script>
     <!-- Once this plugin package is published, it can be loaded via
-<script src="https://unpkg.com/@jspsych-contrib/plugin-tts-select-lang"></script>
-<script src="../dist/index.browser.js"></script> -->
-    <script src="../dist/index.global.js"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-tts-select-lang"></script> -->
+    <script src="../dist/index.browser.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
   </head>
 
   <body></body>
   <script>
-    const jsPsych = initJsPsych();
+    const jsPsych = initJsPsych({
+      on_finish: () => {
+        jsPsych.data.displayData();
+      },
+    });
 
     const trial = {
-      type: jsPsychPluginTtsSelectLang
+      type: jsPsychPluginTtsSelectLang,
+      prompt: "Please select a voice and press play to hear the sentence. You may change the sentence if you wish.",
+      default_sentence: "hello I am testing"
     };
 
     jsPsych.run([trial])
