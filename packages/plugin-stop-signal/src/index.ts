@@ -28,7 +28,6 @@ const info = <const>{
       type: ParameterType.BOOL,
       default: true,
     },
-
     /**
      * The total time the trial will take.
      */
@@ -36,7 +35,6 @@ const info = <const>{
       type: ParameterType.INT,
       default: 1000,
     },
-
     /**
      * The time the first image will be shown.
      */
@@ -44,14 +42,12 @@ const info = <const>{
       type: ParameterType.INT,
       default: 500,
     },
-
     /** Labels for the buttons. Each different string in the array will generate a different button. */
     choices: {
       type: ParameterType.STRING,
       default: undefined,
       array: true,
     },
-
     /**
      * ``(choice: string, choice_index: number)=>`<button class="jspsych-btn">${choice}</button>``; | A function that
      * generates the HTML for each button in the `choices` array. The function gets the string and index of the item in
@@ -65,7 +61,6 @@ const info = <const>{
         return `<button class="jspsych-btn">${choice}</button>`;
       },
     },
-
     /** Setting to `'grid'` will make the container element have the CSS property `display: grid` and enable the use of
      * `grid_rows` and `grid_columns`. Setting to `'flex'` will make the container element have the CSS property
      * `display: flex`. You can customize how the buttons are laid out by adding inline CSS in the `button_html` parameter.  */
@@ -100,17 +95,7 @@ const info = <const>{
       type: ParameterType.HTML_STRING,
       default: null,
     },
-    /**
-     * If true, the images will be drawn onto a canvas element. This prevents a blank screen (white flash) between consecutive
-     * images in some browsers, like Firefox and Edge. If false, the image will be shown via an img element, as in previous
-     * versions of jsPsych.
-     */
-    render_on_canvas: {
-      type: ParameterType.BOOL,
-      default: true,
-    },
   },
-
   data: {
     /** An array, where each element is an object that represents a stimulus in the animation sequence. Each object has
      * a `stimulus` property, which is the image that was displayed, and a `time` property, which is the time in ms,
@@ -129,17 +114,14 @@ const info = <const>{
         },
       },
     },
-
     /** The path of the image that was displayed when the button was pressed */
     stimulus: {
       type: ParameterType.STRING,
     },
-
     /** Indicates the time of the key press relative to the start of the animation */
     rt: {
       type: ParameterType.INT,
     },
-
     /** Indicates which button the participant pressed. The first button in the `choices` array is 0, the second is 1, and so on.  */
     response: {
       type: ParameterType.INT,
@@ -163,10 +145,8 @@ class StopSignalPlugin implements JsPsychPlugin<Info> {
   /* This function is called when the trial is run */
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     var animate_frame = 0;
-    var reps = 0;
     var startTime = performance.now();
     var animation_sequence = [];
-    var responses = [];
     var current_stim = "";
 
     const calculateImageDimensions = (image: HTMLImageElement): [number, number] => {
@@ -192,18 +172,23 @@ class StopSignalPlugin implements JsPsychPlugin<Info> {
         width = image.naturalWidth;
       }
 
+      // Return error if width and height are both null
+      if (width == null && height == null) {
+        throw new Error(
+          "Cannot get width and height of image. Check file path to ensure it leads to an image."
+        );
+      }
+
       return [width, height];
     };
 
     /* This sets up a canvas */
-    if (trial.render_on_canvas) {
-      var canvas = document.createElement("canvas");
-      canvas.id = "jspsych-stop-signal-image";
-      canvas.style.margin = "0";
-      canvas.style.padding = "0";
-      display_element.insertBefore(canvas, null);
-      var ctx = canvas.getContext("2d");
-    }
+    var canvas = document.createElement("canvas");
+    canvas.id = "jspsych-stop-signal-image";
+    canvas.style.margin = "0";
+    canvas.style.padding = "0";
+    display_element.insertBefore(canvas, null);
+    var ctx = canvas.getContext("2d");
 
     /* This is called when the trial ends */
     const endTrial = () => {
@@ -221,25 +206,16 @@ class StopSignalPlugin implements JsPsychPlugin<Info> {
 
     /* The following section of code displays the animation */
     const show_next_frame = () => {
-      if (trial.render_on_canvas) {
-        display_element.querySelector<HTMLElement>("#jspsych-stop-signal-image").style.visibility =
-          "visible";
-        var img = new Image();
-        img.src = trial.stimuli[animate_frame];
-        const [width, height] = calculateImageDimensions(img);
-        canvas.height = height;
-        canvas.width = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        if (trial.prompt !== null && animate_frame == 0 && reps == 0) {
-          display_element.insertAdjacentHTML("beforeend", trial.prompt);
-        }
-      } else {
-        // show image
-        display_element.innerHTML =
-          '<img src="' + trial.stimuli[animate_frame] + '" id="jspsych-stop-signal-image"></img>';
-        if (trial.prompt !== null) {
-          display_element.innerHTML += trial.prompt;
-        }
+      display_element.querySelector<HTMLElement>("#jspsych-stop-signal-image").style.visibility =
+        "visible";
+      var img = new Image();
+      img.src = trial.stimuli[animate_frame];
+      const [width, height] = calculateImageDimensions(img);
+      canvas.height = height;
+      canvas.width = width;
+      ctx.drawImage(img, 0, 0, width, height);
+      if (trial.prompt !== null && animate_frame == 0) {
+        display_element.insertAdjacentHTML("beforeend", trial.prompt);
       }
       current_stim = trial.stimuli[animate_frame];
 
@@ -255,9 +231,6 @@ class StopSignalPlugin implements JsPsychPlugin<Info> {
     if (trial.stimuli.length > 1) {
       this.jsPsych.pluginAPI.setTimeout(() => {
         animate_frame = 1;
-        if (!trial.render_on_canvas) {
-          display_element.innerHTML = ""; // this clears everything
-        }
         show_next_frame();
       }, trial.frame_delay);
     }
@@ -332,10 +305,6 @@ class StopSignalPlugin implements JsPsychPlugin<Info> {
       // disable all the buttons after a response
       for (const button of buttonGroupElement.children) {
         button.setAttribute("disabled", "disabled");
-      }
-
-      if (trial.response_ends_trial) {
-        endTrial();
       }
     }
 

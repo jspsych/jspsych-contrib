@@ -11,6 +11,8 @@
 
 <body></body>
 <script>
+  /* Example with default and non-default parameters */
+
   const jsPsych = initJsPsych({
       on_finish: function() {
         jsPsych.data.displayData();
@@ -27,20 +29,33 @@
 
   var preload = {
         type: jsPsychPreload,
-        images: ['img/left.svg', 'img/left_stop.svg']
+        images: ['img/left.png', 'img/left_stop.png']
   }
 
-  /* Single trial */
-  var trial = {
+  /* Trial with default params */
+  var trial1 = {
     type: jsPsychStopSignal,
-    stimuli: ['img/left.svg', 'img/left_stop.svg'],
-    trial_duration: 4000,
-    frame_delay: 1000,
-    choices: ['left', 'right'],
-    multiple_responses: false,
+    stimuli: ['img/left.png', 'img/left_stop.png'],
+    choices: ['Left', 'Right']
   };
 
-  timeline.push(preload, welcome, trial)
+  /* Trial with custom params */
+  var trial2 = {
+    type: jsPsychStopSignal,
+    stimuli: ['img/left.png', 'img/left_stop.png'],
+    stimulus_height: 200,
+    stimulus_width: 200,
+    trial_duration: 4000,
+    frame_delay: 2000,
+    choices: ['', 'Up', '', 'Left', '', 'Right','', 'Down', ''],
+    grid_rows: 2,
+    grid_columns: 3,
+    enable_button_after: 1000,
+    prompt: "Click the button that matches the arrow"
+
+  };
+
+  timeline.push(preload, welcome, trial1, trial2)
   jsPsych.run(timeline)
 </script>
 
