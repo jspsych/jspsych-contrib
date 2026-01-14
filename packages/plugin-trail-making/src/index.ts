@@ -429,9 +429,11 @@ class TrailMakingPlugin implements JsPsychPlugin<Info> {
     targets: Target[],
     radius: number
   ): number | null {
+    // Add a small cushion (5px) around each target to make clicking easier
+    const hitRadius = radius + 5;
     for (let i = 0; i < targets.length; i++) {
       const dist = Math.sqrt((x - targets[i].x) ** 2 + (y - targets[i].y) ** 2);
-      if (dist <= radius) {
+      if (dist <= hitRadius) {
         return i;
       }
     }
