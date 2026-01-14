@@ -24,6 +24,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | show_move_counter   | BOOL             | true               | Whether to show a move counter           |
 | prompt              | HTML_STRING      | null               | HTML prompt displayed above the puzzle   |
 | done_button_text    | STRING           | null               | Text for the done button. Set to null to auto-complete when goal is reached. |
+| end_delay           | INT              | 1000               | Delay in milliseconds to show the final configuration before ending trial. |
 
 ## Data Generated
 

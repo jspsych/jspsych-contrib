@@ -193,6 +193,7 @@ describe("tower-of-london plugin", () => {
       {
         type: jsPsychTowerOfLondon,
         done_button_text: "Done",
+        end_delay: 0, // Skip delay for this test
       },
     ]);
 
@@ -206,6 +207,7 @@ describe("tower-of-london plugin", () => {
       {
         type: jsPsychTowerOfLondon,
         time_limit: 1000,
+        end_delay: 0, // Skip delay for this test
       },
     ]);
 
@@ -224,6 +226,7 @@ describe("tower-of-london plugin", () => {
         start_state: startState,
         goal_state: goalState,
         done_button_text: "Done",
+        end_delay: 0,
       },
     ]);
 
@@ -243,6 +246,7 @@ describe("tower-of-london plugin", () => {
         start_state: [["red", "green", "blue"], [], []],
         goal_state: [["blue"], ["green"], ["red"]],
         done_button_text: "Done",
+        end_delay: 0,
       },
     ]);
 
@@ -260,6 +264,7 @@ describe("tower-of-london plugin", () => {
       {
         type: jsPsychTowerOfLondon,
         done_button_text: "Done",
+        end_delay: 0,
       },
     ]);
 
@@ -329,6 +334,7 @@ describe("tower-of-london plugin", () => {
       {
         type: jsPsychTowerOfLondon,
         done_button_text: "Done",
+        end_delay: 0,
       },
     ]);
 
@@ -345,6 +351,7 @@ describe("tower-of-london plugin", () => {
       {
         type: jsPsychTowerOfLondon,
         done_button_text: "Done",
+        end_delay: 0,
       },
     ]);
 
@@ -393,5 +400,28 @@ describe("tower-of-london plugin", () => {
 
     // The canvas should still exist (test didn't crash)
     expect(displayElement.querySelector("#jspsych-tower-of-london-canvas")).not.toBeNull();
+  });
+
+  it("should delay trial end by end_delay duration", async () => {
+    const { expectFinished, expectRunning, displayElement } = await startTimeline([
+      {
+        type: jsPsychTowerOfLondon,
+        done_button_text: "Done",
+        end_delay: 500,
+      },
+    ]);
+
+    (displayElement.querySelector("#jspsych-tower-of-london-done") as HTMLButtonElement).click();
+
+    // Trial should still be running (canvas shown for feedback)
+    await expectRunning();
+
+    // Canvas should still be visible during delay
+    expect(displayElement.querySelector("#jspsych-tower-of-london-canvas")).not.toBeNull();
+
+    // Advance past the delay
+    jest.advanceTimersByTime(500);
+
+    await expectFinished();
   });
 });

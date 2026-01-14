@@ -91,6 +91,11 @@ const info = <const>{
       type: ParameterType.STRING,
       default: null,
     },
+    /** Delay in milliseconds to show the final configuration before ending trial. */
+    end_delay: {
+      type: ParameterType.INT,
+      default: 1000,
+    },
   },
   data: {
     /** Whether the participant solved the puzzle */
@@ -291,9 +296,9 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
         const ballY = baseY - 30 - j * ((trial.ball_radius as number) * 2 + 5);
         const ballX = pegX;
 
+        ctx.fillStyle = (trial.ball_colors as Record<string, string>)[ball] || ball;
         ctx.beginPath();
         ctx.arc(ballX, ballY, trial.ball_radius as number, 0, Math.PI * 2);
-        ctx.fillStyle = (trial.ball_colors as Record<string, string>)[ball] || ball;
         ctx.fill();
         ctx.strokeStyle = "#333";
         ctx.lineWidth = 2;
@@ -351,9 +356,9 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
         const ballY = baseY - 15 - j * (ballRadius * 2 + 2);
         const ballX = pegX;
 
+        ctx.fillStyle = (trial.ball_colors as Record<string, string>)[ball] || ball;
         ctx.beginPath();
         ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-        ctx.fillStyle = (trial.ball_colors as Record<string, string>)[ball] || ball;
         ctx.fill();
         ctx.strokeStyle = "#333";
         ctx.lineWidth = 1;
@@ -489,12 +494,22 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
       goal_state: this.trialParams.goal_state,
     };
 
-    // Clean up
+    // Clean up event listeners immediately to prevent further interaction
     this.canvas.removeEventListener("click", this.clickHandler);
     this.canvas.removeEventListener("touchend", this.touchHandler);
 
-    this.display_element.innerHTML = "";
-    this.jsPsych.finishTrial(trial_data);
+    const finishTrial = () => {
+      this.display_element.innerHTML = "";
+      this.jsPsych.finishTrial(trial_data);
+    };
+
+    // Show final state for end_delay duration before ending trial
+    const endDelay = this.trialParams.end_delay as number;
+    if (endDelay > 0) {
+      this.jsPsych.pluginAPI.setTimeout(finishTrial, endDelay);
+    } else {
+      finishTrial();
+    }
   }
 }
 
