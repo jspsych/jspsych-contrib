@@ -502,32 +502,19 @@ describe("trail-making plugin", () => {
       toJSON: () => {},
     }));
 
-    // Create touch events
-    const touch1 = new Touch({
-      identifier: 1,
-      target: canvas,
-      clientX: 100,
-      clientY: 100,
-    });
-    const touch2 = new Touch({
-      identifier: 2,
-      target: canvas,
-      clientX: 200,
-      clientY: 200,
-    });
+    // Create mock touch events using TouchEvent with mocked changedTouches
+    const createTouchEvent = (clientX: number, clientY: number) => {
+      // Create TouchEvent with empty arrays, then override changedTouches
+      const touchEvent = new TouchEvent("touchend", { bubbles: true });
+      Object.defineProperty(touchEvent, "changedTouches", {
+        value: [{ clientX, clientY }],
+        writable: false,
+      });
+      return touchEvent;
+    };
 
-    canvas.dispatchEvent(
-      new TouchEvent("touchend", {
-        changedTouches: [touch1],
-        bubbles: true,
-      })
-    );
-    canvas.dispatchEvent(
-      new TouchEvent("touchend", {
-        changedTouches: [touch2],
-        bubbles: true,
-      })
-    );
+    canvas.dispatchEvent(createTouchEvent(100, 100));
+    canvas.dispatchEvent(createTouchEvent(200, 200));
 
     await expectFinished();
   });

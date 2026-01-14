@@ -108,7 +108,6 @@ const info = <const>{
     targets: {
       type: ParameterType.COMPLEX,
       default: null,
-      array: true,
     },
     /**
      * Text prompt displayed above the canvas.
@@ -476,10 +475,7 @@ class TrailMakingPlugin implements JsPsychPlugin<Info> {
     for (const target of targets) {
       const isVisited = visitedLabels.includes(target.label);
 
-      // Circle
-      ctx.beginPath();
-      ctx.arc(target.x, target.y, trial.target_radius, 0, Math.PI * 2);
-
+      // Set fill color before drawing
       if (showError && !isVisited) {
         ctx.fillStyle = trial.error_color;
       } else if (isVisited) {
@@ -488,6 +484,9 @@ class TrailMakingPlugin implements JsPsychPlugin<Info> {
         ctx.fillStyle = trial.target_color;
       }
 
+      // Circle
+      ctx.beginPath();
+      ctx.arc(target.x, target.y, trial.target_radius, 0, Math.PI * 2);
       ctx.fill();
       ctx.strokeStyle = trial.target_border_color;
       ctx.lineWidth = 2;
