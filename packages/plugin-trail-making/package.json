@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-trail-making",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A jsPsych plugin for the Trail Making Test (TMT), where participants connect circles in sequence. Supports Part A (numbers only) and Part B (alternating numbers and letters).",
   "type": "module",
   "main": "dist/index.cjs",

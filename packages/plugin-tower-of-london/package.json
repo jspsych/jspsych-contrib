@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-tower-of-london",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A jsPsych plugin for Tower of London/Hanoi style puzzle tasks. Participants move colored balls between pegs to match a goal configuration.",
   "type": "module",
   "main": "dist/index.cjs",
