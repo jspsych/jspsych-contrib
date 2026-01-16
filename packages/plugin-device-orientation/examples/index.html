@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Device Orientation Plugin Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://unpkg.com/jspsych"></script>
+    <script src="../dist/index.browser.js"></script>
+    <!-- Once published: <script src="https://unpkg.com/@jspsych-contrib/plugin-device-orientation"></script> -->
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => {
+        jsPsych.data.displayData();
+      }
+    });
+
+    // Require landscape orientation
+    const requireLandscape = {
+      type: jsPsychPluginDeviceOrientation,
+      orientation: "landscape",
+      allow_skip: true, // Allow skip for testing on desktop
+    };
+
+    // A simple trial to show after orientation is correct
+    const mainTrial = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: '<p>You are now in landscape mode!</p><p>Press any key to continue.</p>',
+    };
+
+    // Require portrait orientation
+    const requirePortrait = {
+      type: jsPsychPluginDeviceOrientation,
+      orientation: "portrait",
+      allow_skip: true,
+    };
+
+    // Another trial
+    const endTrial = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: '<p>You are now in portrait mode!</p><p>Press any key to finish.</p>',
+    };
+
+    jsPsych.run([requireLandscape, mainTrial, requirePortrait, endTrial]);
+  </script>
+</html>
