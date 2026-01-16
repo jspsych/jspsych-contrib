@@ -41,11 +41,6 @@ const info = <const>{
       type: ParameterType.STRING,
       default: "Words recalled:",
     },
-    /** CSS class for the container to allow custom styling */
-    css_classes: {
-      type: ParameterType.STRING,
-      default: "",
-    },
   },
   data: {
     /** Array of recalled words with timing. Each entry has {word: string, rt: number} */
@@ -88,7 +83,7 @@ class FreeRecallResponsePlugin implements JsPsychPlugin<Info> {
 
     // Build the HTML
     const html = `
-      <div class="free-recall-container ${trial.css_classes}" style="
+      <div class="free-recall-container" style="
         max-width: 500px;
         margin: 0 auto;
         padding: 20px;
