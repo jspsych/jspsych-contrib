@@ -9,7 +9,7 @@ A plugin for displaying an image with clickable regions (hotspots). This plugin 
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-image-hotspots@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-image-hotspots@1.1.0"></script>
 ```
 
 ### Via NPM
