@@ -18,6 +18,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | hotspots                | complex  | []                                                               | Array of hotspot regions. Each hotspot should have x, y, width, height, and id properties.         |
 | trial_duration          | int      | null                                                             | How long to show the trial in milliseconds. If null, the trial will wait for a response.          |
 | hotspot_highlight_css   | string   | "background-color: rgba(255, 255, 0, 0.3); border: 2px solid yellow;" | CSS string to style the hotspot highlight overlay that appears when clicking/touching a region.    |
+| prompt                | string           | null               | This string can contain HTML markup. Any content here will be displayed below the stimulus. The intention is that it can be used to provide a reminder about the action the participant is supposed to take (e.g., click on a specific area). |
 
 ### Hotspot Object Properties
 
