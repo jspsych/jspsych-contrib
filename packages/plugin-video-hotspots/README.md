@@ -9,7 +9,7 @@ A plugin for displaying a video that freezes on the final frame with clickable r
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-video-hotspots@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-video-hotspots@1.1.0"></script>
 ```
 
 ### Via NPM
