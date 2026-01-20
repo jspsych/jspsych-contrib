@@ -2,11 +2,25 @@
 
 ## Overview
 
-A plugin for displaying a video that freezes on the final frame with clickable hotspots
+A plugin for displaying a video that freezes on the final frame with clickable regions (hotspots). This plugin allows researchers to present a video to participants and define rectangular regions on the final frame that can be clicked like buttons. When a region is clicked or touched, visual feedback is provided and the trial records which region was selected along with response time and click coordinates.
 
 ## Loading
 
-*Enter instructions for loading the plugin package here.*
+### In browser
+
+```js
+<script src="https://unpkg.com/@jspsych-contrib/plugin-video-hotspots@1.0.0"></script>
+```
+
+### Via NPM
+
+```
+npm i @jspsych-contrib/plugin-video-hotspots
+```
+
+```js
+import jsPsychVideoHotspots from '@jspsych/plugin-video-hotspots';
+```
 
 ## Compatibility
 
@@ -14,7 +28,7 @@ A plugin for displaying a video that freezes on the final frame with clickable h
 
 ## Documentation
 
-See [documentation](/plugin-video-hotspots/README.md)
+See [documentation](/packages/plugin-video-hotspots/docs/plugin-video-hotspots.md)
 
 ## Author / Citation
 

@@ -2,11 +2,25 @@
 
 ## Overview
 
-A plugin for displaying an image with clickable regions
+A plugin for displaying an image with clickable regions (hotspots). This plugin allows researchers to present an image to participants and define rectangular regions that can be clicked like buttons. When a region is clicked or touched, visual feedback is provided and the trial records which region was selected along with response time and click coordinates.
 
 ## Loading
 
-*Enter instructions for loading the plugin package here.*
+### In browser
+
+```js
+<script src="https://unpkg.com/@jspsych-contrib/plugin-image-hotspots@1.0.0"></script>
+```
+
+### Via NPM
+
+```
+npm i @jspsych-contrib/plugin-image-hotspots
+```
+
+```js
+import jsPsychImageHotspots from '@jspsych/plugin-image-hotspots';
+```
 
 ## Compatibility
 
@@ -14,7 +28,7 @@ A plugin for displaying an image with clickable regions
 
 ## Documentation
 
-See [documentation](/plugin-image-hotspots/README.md)
+See [documentation](packages/plugin-image-hotspots/docs/plugin-image-hotspots.md)
 
 ## Author / Citation
 

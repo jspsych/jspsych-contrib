@@ -54,7 +54,7 @@ type Info = typeof info;
 /**
  * **plugin-image-hotspots**
  *
- * A plugin for displaying an image with clickable regions
+ * A plugin for displaying an image with clickable regions (hotspots). This plugin allows researchers to present an image to participants and define rectangular regions that can be clicked like buttons. When a region is clicked or touched, visual feedback is provided and the trial records which region was selected along with response time and click coordinates.
  *
  * @author Claude
  * @see {@link /plugin-image-hotspots/README.md}}
