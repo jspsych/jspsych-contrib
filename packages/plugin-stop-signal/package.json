@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-stop-signal",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "This plugin supports showing an animation and collecting user response with buttons",
   "type": "module",
   "main": "dist/index.cjs",
