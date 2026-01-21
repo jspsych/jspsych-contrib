@@ -9,7 +9,7 @@ This plugin supports the stop signal timeline. It shows a series of 1-2 images a
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-stop-signal@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-stop-signal@0.1.0"></script>
 ```
 
 ### Via NPM
