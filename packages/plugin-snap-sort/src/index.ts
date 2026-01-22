@@ -1,7 +1,5 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
-// import * as FreeSortPluginUtils from "@jspsych/plugin-free-sort/src/utils";
-import * as FreeSortPluginUtils from "../../plugin-free-sort/src/utils";
 import { version } from "../package.json";
 import * as Utils from "./utils";
 
