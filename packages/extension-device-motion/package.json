@@ -40,7 +40,7 @@
     "jspsych": ">=7.0.0"
   },
   "devDependencies": {
-    "@jspsych/config": "^2.0.0",
+    "@jspsych/config": "^3.2.2",
     "@jspsych/plugin-html-button-response": "^1.1.0",
     "@jspsych/test-utils": "^1.1.1",
     "jspsych": "^7.1.2"

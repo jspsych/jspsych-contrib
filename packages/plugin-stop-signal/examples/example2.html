@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-image-button-response@2.1.0"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+    /* Example of a full timeline */
+    
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    var timeline = [];
+    var buttons = ['Left', 'Right'];
+    var image_size = 200;
+    var current_delay = 500;
+
+    function button_design(choice, index) {
+            html = ``
+            if (index == 0){
+                html = `<button style = "position: fixed; bottom: 30px; left: 15vw; padding: 2vh 10vw"> ${choice} </button>`
+            }
+            else{
+                html = `<button style = "position: fixed; bottom: 30px; right: 15vw; padding: 2vh 10vw"> ${choice} </button>`
+            }
+            return html
+    }
+
+    /* loads images */
+    var preload = {
+        type: jsPsychPreload,
+        images: ['img/plus.png', 'img/left.png', 'img/right.png', 'img/left_stop.png', 'img/right_stop.png']
+    };
+
+    /* shows welcome message */ 
+    var welcome = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: "Welcome to the experiment!",
+        choices: ["Press to continue"],
+        response_ends_trial: true 
+    };
+
+    /* gives instructions */
+
+    /* feedback if the user didn't follow the instructions */ 
+    var feedback = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: "<p> Let's try that again. </p> <p> Make sure to follow the instructions </p> <p> on the screen. </p>",
+        choices: ["Press to continue"],
+        response_ends_trial: true 
+    };
+
+
+    var instructions1 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: "<p> You will be shown a series of arrows. </p> <p> Your task is to choose the button that matches</p> <p>the image shown as fast as you can. </p>",
+        choices: ["Continue"],
+        response_ends_trial: true 
+    };
+
+    
+    var instructions_right = {
+        type: jsPsychImageButtonResponse,
+        stimulus: "img/right.png",
+        prompt: "Here choose the right button",
+        choices: buttons,
+        button_html: button_design,
+        stimulus_width: image_size,
+        response_ends_trial: true,
+    };
+
+    var instructions_right_retry = {
+        timeline: [feedback, instructions_right],
+        conditional_function: function() {
+            // get the data from the previous trial,
+            // and check which button was pressed
+            const data = jsPsych.data.get().last(1).values()[0];
+            return data.response == 0;
+        }
+    };
+
+    var instructions_left = {
+        type: jsPsychImageButtonResponse,
+        stimulus: "img/left.png",
+        prompt: "Here choose the left button",
+        choices: buttons, 
+        button_html: button_design,
+        stimulus_width: image_size,
+        response_ends_trial: true
+    };
+
+    var instructions_left_retry = {
+        timeline: [feedback, instructions_left],
+        conditional_function: function() {
+            // get the data from the previous trial,
+            // and check which button was pressed
+            const data = jsPsych.data.get().last(1).values()[0];
+            return data.response == 1;
+        }
+    };
+
+    
+    var instructions2 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: "<p> But if you see a red X over the arrow,</p> <p> don't press any buttons.</p>",
+        choices: ['Continue'],
+        stimulus_width: image_size,
+        response_ends_trial: true,
+    };
+
+    var instructions_right_stop = {
+        type: jsPsychImageButtonResponse,
+        stimulus: "img/right_stop.png",
+        prompt: "Don't press any buttons",
+        choices: buttons, 
+        button_html: button_design,
+        stimulus_width: image_size,
+        response_ends_trial: false,
+        trial_duration: 2000
+    };
+
+    var instructions_right_stop_retry = {
+        timeline: [feedback, instructions_right_stop],
+        conditional_function: function() {
+            // get the data from the previous trial,
+            // and check which button was pressed
+            const data = jsPsych.data.get().last(1).values()[0];
+            return data.response != null;
+        }
+    };
+
+    var instructions_left_stop = {
+        type: jsPsychImageButtonResponse,
+        stimulus: "img/left_stop.png",
+        prompt: "Don't press any buttons",
+        choices: buttons, 
+        button_html: button_design,
+        stimulus_width: image_size,
+        response_ends_trial: false,
+        trial_duration: 2000
+    };
+
+    var instructions_left_stop_retry = {
+        timeline: [feedback, instructions_left_stop],
+        conditional_function: function() {
+            // get the data from the previous trial,
+            // and check which button was pressed
+            const data = jsPsych.data.get().last(1).values()[0];
+            return data.response != null;
+        }
+    };
+
+     var instructions3 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: "Press start when you are ready!",
+        choices: ['Start'],
+        response_ends_trial: true,
+    };
+
+    /* displays a + between trials */
+    var fixation = {
+        type: jsPsychImageButtonResponse,
+        stimulus: "img/plus.png",
+        stimulus_width: image_size,
+        choices: [],
+        trial_duration: 1000,
+        data: {
+            task: 'fixation'
+        }
+    };
+
+   /* Defines possible parameters for the tests.
+    Each stimulus is an image of an arrow followed by the same image
+    or a matching stop signal image. 
+    1/4 of the total trials have the stop signal. */
+    var test_stimuli = [
+        { stimulus: ["img/right.png"], correct_response: 1},
+        { stimulus: ["img/left.png"], correct_response: 0},
+        
+        { stimulus: ["img/right.png"], correct_response: 1},
+        { stimulus: ["img/left.png"], correct_response: 0},
+        
+        { stimulus: ["img/right.png"], correct_response: 1},
+        { stimulus: ["img/left.png"], correct_response: 0},
+        
+        { stimulus: ["img/right.png", "img/right_stop.png"], correct_response: "none"},
+        { stimulus: ["img/left.png", "img/left_stop.png"], correct_response: "none"}
+    ];
+
+    /* defines a test */
+    var test = {
+        type: jsPsychStopSignal,
+        stimuli: jsPsych.timelineVariable('stimulus'),
+        trial_duration: 1000,
+        /* increases the delay if the last stop trial was successful
+           and decreases the delay if it was not  */
+        frame_delay: function() {
+            var data = jsPsych.data.get().filter({task: "response"}).last(1).values()[0];
+            console.log(data)
+            if (data && data.correct_response == "none") {
+                if (data.response == null) {
+                    if (current_delay < 900) {
+                        current_delay = current_delay + 50
+                    }   
+                }
+                else {
+                    if (current_delay > 100) {
+                        current_delay = current_delay - 50
+                    }
+                }
+            }
+            return current_delay;
+
+        },
+        stimulus_width: image_size,
+        multiple_responses: false,
+        button_html: button_design,
+        choices: buttons,
+        data: {
+            task: 'response',
+            correct_response: jsPsych.timelineVariable('correct_response'),
+        },
+        /* Sets data.correct to whether the response was correct */
+        on_finish: function(data){
+            if (data.response == null) {
+                data.correct = (data.correct_response == "none")
+
+            }
+            else {
+                data.correct = (data.response == data.correct_response)
+            }
+        }
+    }
+
+    /* Each task consists of a wait (fixation) followed by the test */
+    var test_procedure = {
+        timeline: [fixation, test],
+        timeline_variables: test_stimuli,
+        randomize_order: true,
+        repetitions: 2
+    }
+
+     /* Dsplays statistics for the experiment results */
+    var debrief_block = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function() {
+
+            var trials = jsPsych.data.get().filter({task: 'response'});
+            var correct_trials = trials.filter({correct: true});
+            var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+
+        return `<p>You responded correctly</p> <p>on ${accuracy}% of the trials.</p>
+        `;
+        },
+        choices: ['Finish'],
+        response_ends_trial: true
+    };
+
+    timeline.push(preload, welcome, instructions1, instructions_right, instructions_right_retry, 
+    instructions_left, instructions_left_retry, instructions2, 
+    instructions_right_stop, instructions_right_stop_retry, instructions_left_stop, instructions_left_stop_retry, 
+    instructions3, test_procedure, debrief_block);
+
+    jsPsych.run(timeline);
+
+    </script>
+</html>
+

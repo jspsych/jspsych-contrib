@@ -1,0 +1,32 @@
+{
+  "name": "@jspsych-contrib/plugin-survey-vas",
+  "version": "1.0.0",
+  "description": "This plugin displays a series of questions with point-and-click visual analogue scales.",
+  "unpkg": "dist/index.browser.min.js",
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "scripts": {
+    "build": "esbuild index.js --bundle --minify --sourcemap --outfile=dist/index.browser.min.js",
+    "build:watch": "npm run build -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/plugin-survey-vas"
+  },
+  "author": {
+    "name": "Isaac Kinley",
+    "url": "https://github.com/kinleyid"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-survey-vas",
+  "devDependencies": {
+    "@jspsych/config": "^3.2.2",
+    "jspsych": "^8.0.0"
+  }
+}

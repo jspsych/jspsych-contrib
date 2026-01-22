@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+title: jsPsychPluginSpatialNback
+message: 'If you use this software, please cite it as below.'
+type: software
+authors:
+  - family-names: Farhat
+    given-names: A. Hunter
+    email: abdullahfarhat.60@gmail.com
+    orcid: 'https://orcid.org/0009-0008-7042-469X'
+repository-code: >-
+  https://github.com/jspsych/jspsych-contrib/plugin-spatial-nback
+abstract: >-
+  The N-back task is a sequential working memory challenge
+  where participants monitor a continuous stream of 
+  stimuli (spatial locations in this case)
+  and must indicate when the current item matches the
+  one presented n items earlier in the sequence.
+  
+  For example, in a 1-back task the participant compares each 
+  stimulus to the immediately previous stimulus; in a 2-back
+  task, they respond whenever the current item is the 
+  same as the item two trials before, and so on.
+  Participants typically press a button to signal “match”
+  targets. 
+
+  As n increases from 1 to 3, the task difficulty rises
+  sharply, requiring continuous updating of the contents of
+  working memory and greater attentional control to avoid
+  false alarms
+keywords:
+  - spatial
+  - nback
+  - grid
+date-released: '2025-06-12'
