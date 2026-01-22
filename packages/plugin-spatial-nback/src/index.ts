@@ -6,120 +6,120 @@ const info = <const>{
   name: "spatial-nback",
   version: version,
   parameters: {
-      /** Number of rows in the spatial grid */
-      rows: {
-        type: ParameterType.INT,
-        default: 3,
-      },
-      /** Number of columns in the spatial grid */
-      cols: {
-        type: ParameterType.INT,
-        default: 3,
-      },
-      /** Size of each cell in pixels, this will affect size of whole grid also. If null, defaults to 12vh (12% of viewport height) */
-      cell_size: {
-        type: ParameterType.INT,
-        default: null,
-      },
-      /** Row position of the stimulus (0-indexed). If null, no stimulus is shown. */
-      stimulus_row: {
-        type: ParameterType.INT,
-        default: null,
-      },
-      /** Column position of the stimulus (0-indexed). If null, no stimulus is shown. */
-      stimulus_col: {
-        type: ParameterType.INT,
-        default: null,
-      },
-      /** Whether this trial is a target trial */
-      is_target: {
-        type: ParameterType.BOOL,
-        default: false,
-      },
-      /** Duration the stimulus is displayed (ms). If null, waits indefinitely for response */
-      stimulus_duration: {
-        type: ParameterType.INT,
-        default: null,
-      },
-      /** Inter-stimulus interval (ms) */
-      isi_duration: {
-        type: ParameterType.INT,
-        default: 500,
-      },
-      /** Duration of feedback display (ms) */
-      feedback_duration: {
-        type: ParameterType.INT,
-        default: 0,
-      },
-      /** Whether to show feedback "Incorrect! (231ms)" after response */
-      show_feedback_text: {
-        type: ParameterType.BOOL,
-        default: true,
-      },
-      /** Whether to show feedback border around the grid */
-      show_feedback_border: {
-        type: ParameterType.BOOL,
-        default: true,
-      },
-      /** Labels for the response buttons. First button is for match, second is for no match */
-      buttons: {
-        type: ParameterType.STRING,
-        default: ["MATCH", "NO MATCH"],
-        array: true,
-      },
-      /** Index of the match button in the buttons array */
-      match_index: {
-        type: ParameterType.INT,
-        default: 0,
-      },
-      /** Color of the stimulus square */
-      stimulus_color: {
-        type: ParameterType.STRING,
-        default: "#0066cc",
-      },
-      /** Color of correct feedback border */
-      correct_color: {
-        type: ParameterType.STRING,
-        default: "#00cc00",
-      },
-      /** Color of incorrect feedback border */
-      incorrect_color: {
-        type: ParameterType.STRING,
-        default: "#cc0000",
-      },
-      /** Instructions to display above the grid */
-      instructions: {
-        type: ParameterType.STRING,
-        default: "",
-      },
+    /** Number of rows in the spatial grid */
+    rows: {
+      type: ParameterType.INT,
+      default: 3,
     },
-    data: {
-      /** Row position of the stimulus */
-      stimulus_row: {
-        type: ParameterType.INT,
-      },
-      /** Column position of the stimulus */
-      stimulus_col: {
-        type: ParameterType.INT,
-      },
-      /** Whether this trial was a target */
-      is_target: {
-        type: ParameterType.BOOL,
-      },
-      /** Index of button pressed (match_index for match, other indices for no match), null if no response. */
-      response: {
-        type: ParameterType.INT,
-      },
-      /** Response time in milliseconds */
-      response_time: {
-        type: ParameterType.INT,
-      },
-      /** Whether the response was correct, based on match_index parameter and is_target. */
-      correct: {
-        type: ParameterType.BOOL,
-      },
+    /** Number of columns in the spatial grid */
+    cols: {
+      type: ParameterType.INT,
+      default: 3,
     },
-  citations: '__CITATIONS__',
+    /** Size of each cell in pixels, this will affect size of whole grid also. If null, defaults to 12vh (12% of viewport height) */
+    cell_size: {
+      type: ParameterType.INT,
+      default: null,
+    },
+    /** Row position of the stimulus (0-indexed). If null, no stimulus is shown. */
+    stimulus_row: {
+      type: ParameterType.INT,
+      default: null,
+    },
+    /** Column position of the stimulus (0-indexed). If null, no stimulus is shown. */
+    stimulus_col: {
+      type: ParameterType.INT,
+      default: null,
+    },
+    /** Whether this trial is a target trial */
+    is_target: {
+      type: ParameterType.BOOL,
+      default: false,
+    },
+    /** Duration the stimulus is displayed (ms). If null, waits indefinitely for response */
+    stimulus_duration: {
+      type: ParameterType.INT,
+      default: null,
+    },
+    /** Inter-stimulus interval (ms) */
+    isi_duration: {
+      type: ParameterType.INT,
+      default: 500,
+    },
+    /** Duration of feedback display (ms) */
+    feedback_duration: {
+      type: ParameterType.INT,
+      default: 0,
+    },
+    /** Whether to show feedback "Incorrect! (231ms)" after response */
+    show_feedback_text: {
+      type: ParameterType.BOOL,
+      default: true,
+    },
+    /** Whether to show feedback border around the grid */
+    show_feedback_border: {
+      type: ParameterType.BOOL,
+      default: true,
+    },
+    /** Labels for the response buttons. First button is for match, second is for no match */
+    buttons: {
+      type: ParameterType.STRING,
+      default: ["MATCH", "NO MATCH"],
+      array: true,
+    },
+    /** Index of the match button in the buttons array */
+    match_index: {
+      type: ParameterType.INT,
+      default: 0,
+    },
+    /** Color of the stimulus square */
+    stimulus_color: {
+      type: ParameterType.STRING,
+      default: "#0066cc",
+    },
+    /** Color of correct feedback border */
+    correct_color: {
+      type: ParameterType.STRING,
+      default: "#00cc00",
+    },
+    /** Color of incorrect feedback border */
+    incorrect_color: {
+      type: ParameterType.STRING,
+      default: "#cc0000",
+    },
+    /** Instructions to display above the grid */
+    instructions: {
+      type: ParameterType.STRING,
+      default: "",
+    },
+  },
+  data: {
+    /** Row position of the stimulus */
+    stimulus_row: {
+      type: ParameterType.INT,
+    },
+    /** Column position of the stimulus */
+    stimulus_col: {
+      type: ParameterType.INT,
+    },
+    /** Whether this trial was a target */
+    is_target: {
+      type: ParameterType.BOOL,
+    },
+    /** Index of button pressed (match_index for match, other indices for no match), null if no response. */
+    response: {
+      type: ParameterType.INT,
+    },
+    /** Response time in milliseconds */
+    response_time: {
+      type: ParameterType.INT,
+    },
+    /** Whether the response was correct, based on match_index parameter and is_target. */
+    correct: {
+      type: ParameterType.BOOL,
+    },
+  },
+  citations: "__CITATIONS__",
 };
 
 type Info = typeof info;
@@ -150,12 +150,14 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         "Grid dimensions must be positive integers. Rows and cols must be greater than 0."
       );
     }
-    
+
     // Validate match_index
     if (trial.match_index >= trial.buttons.length || trial.match_index < 0) {
-      throw new Error(`match_index (${trial.match_index}) must be a valid index within the buttons array (length ${trial.buttons.length}).`);
+      throw new Error(
+        `match_index (${trial.match_index}) must be a valid index within the buttons array (length ${trial.buttons.length}).`
+      );
     }
-    
+
     // Only validate stimulus position if both row and col are not null
     if (trial.stimulus_row !== null && trial.stimulus_col !== null) {
       if (trial.stimulus_row >= trial.rows || trial.stimulus_col >= trial.cols) {
@@ -194,9 +196,9 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         justify-content: center;
         align-items: center;
       ">`;
-      
+
       // Determine cell size - use 12vh if not specified, otherwise use specified pixels
-      const cell_size_style = trial.cell_size !== null ? `${trial.cell_size}px` : '12vh';
+      const cell_size_style = trial.cell_size !== null ? `${trial.cell_size}px` : "12vh";
 
       html += `<div id="nback-grid" style="
         border: 3px solid #000;
@@ -227,29 +229,29 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
 
       // Feedback text first (directly under grid) - uses dummy text with visibility hidden to prevent layout displacement
       html += `<div id="nback-feedback" style="visibility: hidden;">Correct! (999ms)</div>`;
-      
+
       // Buttons second (under feedback text) - using flex layout
       html += `<div id="nback-buttons-container" style="
         display: flex;
         gap: 10px;
         justify-content: center;
       ">`;
-      
+
       // Generate buttons from array
       trial.buttons.forEach((buttonText: string, index: number) => {
         html += `<button id="nback-response-btn-${index}" class="jspsych-btn nback-response-btn" style="margin: 0px 8px" disabled>${buttonText}</button>`;
       });
-      
+
       html += `</div>`; // Close buttons container
-      
-      html += '</div></div>'; // Close feedback section and main container
-      
+
+      html += "</div></div>"; // Close feedback section and main container
+
       display_element.innerHTML = html;
 
       // Add button event listeners
       trial.buttons.forEach((buttonText: string, index: number) => {
         const button = document.getElementById(`nback-response-btn-${index}`) as HTMLButtonElement;
-        button.addEventListener('click', () => handleResponse(index));
+        button.addEventListener("click", () => handleResponse(index));
       });
     };
 
@@ -266,10 +268,12 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       response_allowed = true;
       trial_start_time = performance.now();
       stimulus_hidden = false;
-      
+
       // Enable response buttons for user interaction
       trial.buttons.forEach((buttonText: string, index: number) => {
-        const responseButton = document.getElementById(`nback-response-btn-${index}`) as HTMLButtonElement;
+        const responseButton = document.getElementById(
+          `nback-response-btn-${index}`
+        ) as HTMLButtonElement;
         responseButton.disabled = false;
       });
 
@@ -278,13 +282,15 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         // Standard behavior: Hide stimulus after stimulus_duration, then wait for ISI
         this.jsPsych.pluginAPI.setTimeout(() => {
           if (show_stimulus) {
-            const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-            cell.style.backgroundColor = '';
+            const cell = document.getElementById(
+              `cell-${stimulus_row}-${stimulus_col}`
+            ) as HTMLElement;
+            cell.style.backgroundColor = "";
           }
           // Signify end of stimulus phase
           stimulus_hidden = true;
-          
-          // PHASE 2: ISI (Inter-Stimulus Interval) 
+
+          // PHASE 2: ISI (Inter-Stimulus Interval)
           // After ISI duration, handle cases where no response was given
           this.jsPsych.pluginAPI.setTimeout(() => {
             handleNoResponse(); // Let handleNoResponse() do its own validation
@@ -314,10 +320,12 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       let is_correct: boolean;
       if (!show_stimulus) {
         // Empty grid: only "No Match" buttons (not match_index) are correct
-        is_correct = (buttonIndex !== trial.match_index);
+        is_correct = buttonIndex !== trial.match_index;
       } else {
         // Stimulus shown: Match button correct if is_target, No Match buttons correct if !is_target
-        is_correct = (buttonIndex === trial.match_index && trial.is_target) || (buttonIndex !== trial.match_index && !trial.is_target);
+        is_correct =
+          (buttonIndex === trial.match_index && trial.is_target) ||
+          (buttonIndex !== trial.match_index && !trial.is_target);
       }
 
       // TIMING CLEANUP:
@@ -364,11 +372,13 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       let remaining_time: number;
       if (trial.stimulus_duration === null) {
         // When stimulus_duration is null, after response we do: ISI + feedback
-        const isi_time = (trial.isi_duration === null || trial.isi_duration === 0) ? 0 : trial.isi_duration;
+        const isi_time =
+          trial.isi_duration === null || trial.isi_duration === 0 ? 0 : trial.isi_duration;
         remaining_time = isi_time + trial.feedback_duration;
       } else {
         // Standard timing: stimulus_duration + isi_duration + feedback_duration
-        const total_trial_time = trial.stimulus_duration + trial.isi_duration + trial.feedback_duration;
+        const total_trial_time =
+          trial.stimulus_duration + trial.isi_duration + trial.feedback_duration;
         remaining_time = Math.max(0, total_trial_time - elapsed_time);
       }
 
@@ -377,7 +387,9 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       // OR during feedback duration to show user can't respond during feedback
       if (made_response || trial.feedback_duration > 0) {
         trial.buttons.forEach((buttonText: string, index: number) => {
-          const button = document.getElementById(`nback-response-btn-${index}`) as HTMLButtonElement;
+          const button = document.getElementById(
+            `nback-response-btn-${index}`
+          ) as HTMLButtonElement;
           if (button) {
             button.disabled = true;
           }
@@ -392,14 +404,18 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         if (show_stimulus && !stimulus_hidden) {
           if (trial.stimulus_duration === null) {
             // Hide stimulus immediately when response is made
-            const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-            cell.style.backgroundColor = '';
+            const cell = document.getElementById(
+              `cell-${stimulus_row}-${stimulus_col}`
+            ) as HTMLElement;
+            cell.style.backgroundColor = "";
           } else {
             const stimulus_end_time = trial.stimulus_duration - elapsed_time;
             if (stimulus_end_time > 0) {
               this.jsPsych.pluginAPI.setTimeout(() => {
-                const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-                cell.style.backgroundColor = '';
+                const cell = document.getElementById(
+                  `cell-${stimulus_row}-${stimulus_col}`
+                ) as HTMLElement;
+                cell.style.backgroundColor = "";
               }, stimulus_end_time);
             }
           }
@@ -422,14 +438,18 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         if (show_stimulus && !stimulus_hidden) {
           if (trial.stimulus_duration === null) {
             // Hide stimulus immediately when response is made
-            const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-            cell.style.backgroundColor = '';
+            const cell = document.getElementById(
+              `cell-${stimulus_row}-${stimulus_col}`
+            ) as HTMLElement;
+            cell.style.backgroundColor = "";
           } else {
             const stimulus_end_time = trial.stimulus_duration - elapsed_time;
             if (stimulus_end_time > 0) {
               this.jsPsych.pluginAPI.setTimeout(() => {
-                const cell = document.getElementById(`cell-${stimulus_row}-${stimulus_col}`) as HTMLElement;
-                cell.style.backgroundColor = '';
+                const cell = document.getElementById(
+                  `cell-${stimulus_row}-${stimulus_col}`
+                ) as HTMLElement;
+                cell.style.backgroundColor = "";
               }, stimulus_end_time);
             }
           }
@@ -456,48 +476,53 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
       // Handle different timing scenarios
       if (trial.stimulus_duration === null && made_response) {
         // When stimulus_duration is null and response was made: ISI first, then feedback
-        const isi_time = (trial.isi_duration === null || trial.isi_duration === 0) ? 0 : trial.isi_duration;
-        
+        const isi_time =
+          trial.isi_duration === null || trial.isi_duration === 0 ? 0 : trial.isi_duration;
+
         // Hide stimulus immediately
         if (stimulus_cell) {
-          stimulus_cell.style.backgroundColor = '';
+          stimulus_cell.style.backgroundColor = "";
         }
-        
+
         // Wait for ISI, then show feedback
         // This works slightly differently than standard behavior: does not show feedback immediately for all remaining time
         this.jsPsych.pluginAPI.setTimeout(() => {
           // BORDER FEEDBACK:
           if (trial.show_feedback_border) {
-            grid.style.border = `3px solid ${is_correct ? trial.correct_color : trial.incorrect_color}`;
+            grid.style.border = `3px solid ${
+              is_correct ? trial.correct_color : trial.incorrect_color
+            }`;
           }
 
           // TEXT FEEDBACK:
           if (trial.show_feedback_text) {
-            let feedback_text = is_correct ? 'Correct!' : 'Incorrect!';
+            let feedback_text = is_correct ? "Correct!" : "Incorrect!";
             if (response_time !== null) {
               feedback_text += ` (${Math.round(response_time)}ms)`;
             }
             feedback_div.textContent = feedback_text;
             feedback_div.style.color = is_correct ? trial.correct_color : trial.incorrect_color;
-            feedback_div.style.visibility = 'visible';
+            feedback_div.style.visibility = "visible";
           }
         }, isi_time);
       } else {
         // Standard behavior: show feedback immediately
         // BORDER FEEDBACK:
         if (trial.show_feedback_border) {
-          grid.style.border = `3px solid ${is_correct ? trial.correct_color : trial.incorrect_color}`;
+          grid.style.border = `3px solid ${
+            is_correct ? trial.correct_color : trial.incorrect_color
+          }`;
         }
 
         // TEXT FEEDBACK:
         if (trial.show_feedback_text) {
-          let feedback_text = is_correct ? 'Correct!' : 'Incorrect!';
+          let feedback_text = is_correct ? "Correct!" : "Incorrect!";
           if (response_time !== null) {
             feedback_text += ` (${Math.round(response_time)}ms)`;
           }
           feedback_div.textContent = feedback_text;
           feedback_div.style.color = is_correct ? trial.correct_color : trial.incorrect_color;
-          feedback_div.style.visibility = 'visible';
+          feedback_div.style.visibility = "visible";
         }
       }
 
@@ -507,7 +532,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
         if (trial.stimulus_duration === null) {
           // If stimulus_duration is null, hide stimulus immediately when response is made
           if (made_response && stimulus_cell) {
-            stimulus_cell.style.backgroundColor = '';
+            stimulus_cell.style.backgroundColor = "";
           }
         } else {
           // Standard behavior: hide stimulus at predetermined time
@@ -515,7 +540,7 @@ class SpatialNbackPlugin implements JsPsychPlugin<Info> {
           if (stimulus_end_time > 0) {
             this.jsPsych.pluginAPI.setTimeout(() => {
               if (stimulus_cell) {
-                stimulus_cell.style.backgroundColor = '';
+                stimulus_cell.style.backgroundColor = "";
               }
             }, stimulus_end_time);
           }
