@@ -62,6 +62,7 @@ Plugin | Contributor | Description
 [video-several-keyboard-responses](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-video-several-keyboard-responses/README.md) | [Maria Emine Nylund](https://github.com/marianylund) | jsPsych plugin for playing a video file and getting several keyboard responses 
 [vsl-animate-occlusion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-animate-occlusion/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) animate occlusion plugin displays an animated sequence of shapes that disappear behind an occluding rectangle while they change from one shape to another. 
 [vsl-grid-scene](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-grid-scene/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) grid scene plugin displays images arranged in a grid. 
+[densitychart-button-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-densitychart-button-response/README.md) | [Courtney B. Hilton](https://github.com/courtney-bryce-hilton) | This plugin displays an interactive density chart to the participant.
 
 
 ### Extensions
