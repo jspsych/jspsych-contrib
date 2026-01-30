@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tower of London Plugin Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <!-- Once this plugin package is published, it can be loaded via
+<script src="https://unpkg.com/@jspsych-contrib/plugin-tower-of-london"></script>
+-->
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+    <style>
+      .jspsych-tower-of-london-container {
+        text-align: center;
+      }
+      .jspsych-tower-of-london-main {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 40px;
+        margin: 20px 0;
+      }
+      .jspsych-tower-of-london-goal {
+        text-align: center;
+      }
+      .jspsych-tower-of-london-goal-label {
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      .jspsych-tower-of-london-counter {
+        font-size: 18px;
+        margin: 10px 0;
+      }
+      .jspsych-tower-of-london-prompt {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        jsPsych.data.displayData();
+      },
+    });
+
+    // Example 1: Simple 3-move puzzle
+    const trial1 = {
+      type: jsPsychTowerOfLondon,
+      start_state: [["red", "green", "blue"], [], []],
+      goal_state: [["red"], ["green"], ["blue"]],
+      optimal_moves: 3,
+      prompt: "<p>Move the balls to match the goal configuration.</p>",
+    };
+
+    // Example 2: Classic Tower of London with restricted capacities
+    const trial2 = {
+      type: jsPsychTowerOfLondon,
+      start_state: [["red", "green", "blue"], [], []],
+      goal_state: [[], ["red"], ["green", "blue"]],
+      peg_capacities: [1, 2, 3],
+      optimal_moves: 5,
+      prompt:
+        "<p>Classic TOL: Left peg holds 1, middle holds 2, right holds 3 balls.</p>",
+    };
+
+    // Example 3: With done button (doesn't auto-complete)
+    const trial3 = {
+      type: jsPsychTowerOfLondon,
+      start_state: [["blue"], ["green"], ["red"]],
+      goal_state: [["red", "green", "blue"], [], []],
+      done_button_text: "I'm Done",
+      prompt: "<p>Click the button when you're finished (or give up).</p>",
+    };
+
+    // Example 4: With time limit
+    const trial4 = {
+      type: jsPsychTowerOfLondon,
+      start_state: [[], ["red", "green"], ["blue"]],
+      goal_state: [["blue", "green", "red"], [], []],
+      time_limit: 30000,
+      prompt: "<p>You have 30 seconds to solve this puzzle!</p>",
+    };
+
+    jsPsych.run([trial1, trial2, trial3, trial4]);
+  </script>
+</html>

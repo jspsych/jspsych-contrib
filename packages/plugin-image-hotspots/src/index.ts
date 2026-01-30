@@ -26,6 +26,11 @@ const info = <const>{
       type: ParameterType.STRING,
       default: "background-color: rgba(255, 255, 0, 0.3); border: 2px solid yellow;",
     },
+    /** This string can contain HTML markup. Any content here will be displayed below the stimulus. The intention is that it can be used to provide a reminder about the action the participant is supposed to take (e.g., click on a specific area). */
+    prompt: {
+      type: ParameterType.HTML_STRING,
+      default: null,
+    },
   },
   data: {
     /** The ID of the clicked hotspot region. */
@@ -54,7 +59,7 @@ type Info = typeof info;
 /**
  * **plugin-image-hotspots**
  *
- * A plugin for displaying an image with clickable regions
+ * A plugin for displaying an image with clickable regions (hotspots). This plugin allows researchers to present an image to participants and define rectangular regions that can be clicked like buttons. When a region is clicked or touched, visual feedback is provided and the trial records which region was selected along with response time and click coordinates.
  *
  * @author Claude
  * @see {@link /plugin-image-hotspots/README.md}}
@@ -68,12 +73,16 @@ class ImageHotspotsPlugin implements JsPsychPlugin<Info> {
     const start_time = performance.now();
 
     // Create the HTML structure
-    const html = `
+    let html = `
       <div id="jspsych-image-hotspots-container" style="position: relative; display: inline-block;">
         <img id="jspsych-image-hotspots-stimulus" src="${trial.stimulus}">
         <div id="jspsych-image-hotspots-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
       </div>
     `;
+    // Add prompt if there is one
+    if (trial.prompt !== null) {
+      html += trial.prompt;
+    }
 
     display_element.innerHTML = html;
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Trail Making Test Example</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    // Part A: Numbers only (1-2-3-4...)
+    const partA = {
+      type: jsPsychTrailMaking,
+      test_type: "A",
+      num_targets: 8,
+      prompt: "<h2>Part A</h2><p>Connect the circles in numerical order (1-2-3-4...)</p>",
+      seed: 12345
+    };
+
+    // Part B: Alternating numbers and letters (1-A-2-B-3-C...)
+    const partB = {
+      type: jsPsychTrailMaking,
+      test_type: "B",
+      num_targets: 8,
+      prompt: "<h2>Part B</h2><p>Connect the circles alternating between numbers and letters (1-A-2-B-3-C...)</p>",
+      seed: 54321
+    };
+
+    // Instructions
+    const instructions = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <h1>Trail Making Test</h1>
+        <p>In this task, you will connect circles in order as quickly as possible.</p>
+        <p><strong>Part A:</strong> Connect numbers in order (1, 2, 3, 4...)</p>
+        <p><strong>Part B:</strong> Alternate between numbers and letters (1, A, 2, B, 3, C...)</p>
+        <p>Press any key to begin.</p>
+      `
+    };
+
+    jsPsych.run([instructions, partA, partB]);
+  </script>
+</html>

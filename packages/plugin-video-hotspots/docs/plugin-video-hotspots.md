@@ -1,6 +1,6 @@
 # video-hotspots
 
-A plugin for displaying a video that automatically plays and then freezes on the final frame with clickable hotspot regions. This plugin is ideal for experiments where participants need to respond to specific elements or regions visible in the last frame of a video after watching the complete video content.
+A plugin for displaying a video that automatically plays and then freezes on the final frame with clickable hotspot regions. This plugin allows researchers to present a video to participants and define rectangular regions on the final frame that can be clicked like buttons. When a region is clicked or touched, visual feedback is provided and the trial records which region was selected along with response time and click coordinates. This plugin is ideal for experiments where participants need to respond to specific elements or regions visible in the last frame of a video after watching the complete video content.
 
 ## Key Features
 
@@ -22,6 +22,8 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | trial_duration          | int      | null                                                             | How long to show the trial in milliseconds after video ends. If null, trial waits for response.   |
 | hotspot_highlight_css   | string   | "background-color: rgba(255, 255, 0, 0.3); border: 2px solid yellow;" | CSS string to style the hotspot highlight overlay that appears when clicking/touching a region.    |
 | video_preload           | boolean  | true                                                             | Whether to preload the video for smoother playback.                                                |
+| prompt                | string           | null               | This string can contain HTML markup. Any content here will be displayed below the stimulus. The intention is that it can be used to provide a reminder about the action the participant is supposed to take (e.g., click on a specific area). |
+| show_prompt_on_video_end | boolean | true                                                             | Whether to wait until the video ends to display the prompt string (if there is one). If true (the default), the prompt will be shown when the video has ended. If false, the prompt is shown immediately. |
 
 ### Hotspot Object Properties
 

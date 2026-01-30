@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pursuit Rotor Plugin Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <!-- Once this plugin package is published, it can be loaded via
+<script src="https://unpkg.com/@jspsych-contrib/plugin-pursuit-rotor"></script>
+-->
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+    <style>
+      .jspsych-pursuit-rotor-prompt {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        jsPsych.data.displayData();
+      },
+    });
+
+    // Trial 1: Standard settings (15 second trial)
+    const trial1 = {
+      type: jsPsychPursuitRotor,
+      trial_duration: 15000,
+      prompt: "<p>Keep your cursor on the moving target. Trial 1 of 4.</p>",
+    };
+
+    // Trial 2: Faster rotation
+    const trial2 = {
+      type: jsPsychPursuitRotor,
+      trial_duration: 15000,
+      rotation_speed: 0.2,
+      prompt: "<p>Faster rotation! Trial 2 of 4.</p>",
+    };
+
+    // Trial 3: Counterclockwise
+    const trial3 = {
+      type: jsPsychPursuitRotor,
+      trial_duration: 15000,
+      rotation_direction: "counterclockwise",
+      prompt: "<p>Counterclockwise rotation. Trial 3 of 4.</p>",
+    };
+
+    // Trial 4: Smaller target (harder)
+    const trial4 = {
+      type: jsPsychPursuitRotor,
+      trial_duration: 15000,
+      target_radius: 15,
+      prompt: "<p>Smaller target! Trial 4 of 4.</p>",
+    };
+
+    jsPsych.run([trial1, trial2, trial3, trial4]);
+  </script>
+</html>
