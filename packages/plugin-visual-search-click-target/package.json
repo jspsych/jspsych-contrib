@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-visual-search-click-target",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Visual search trial with click response",
   "type": "module",
   "main": "dist/index.cjs",
