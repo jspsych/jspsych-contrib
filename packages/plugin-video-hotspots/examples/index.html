@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Video Hotspots Plugin Example</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.0.0"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+    <style>
+      body {
+        padding: 20px;
+        font-family: Arial, sans-serif;
+      }
+      .instruction {
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function(data) {
+        // Display the results
+        jsPsych.data.displayData();
+      }
+    });
+
+    // Create a simple test video with SVG animation (data URL)
+    const testVideoDataURL = 'data:video/webm;base64,' + btoa(`
+      <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="300" fill="#f0f0f0"/>
+        <text x="200" y="150" text-anchor="middle" font-family="Arial" font-size="18" fill="#333">
+          Video content would play here
+        </text>
+        <text x="200" y="180" text-anchor="middle" font-family="Arial" font-size="14" fill="#666">
+          (Demo with static frame)
+        </text>
+      </svg>
+    `);
+
+    const instructions = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <div class="instruction">
+          <h2>Video Hotspots Plugin Demo</h2>
+          <p>You will see a video that plays automatically.</p>
+          <p>When the video ends, clickable hotspot regions will appear.</p>
+          <p>Click on any hotspot region to complete the trial.</p>
+          <p><strong>Note:</strong> This demo uses a placeholder since we can't include actual video files in this example.</p>
+          <p><strong>Press any key to continue</strong></p>
+        </div>
+      `
+    };
+
+    const videoHotspotTrial = {
+      type: jsPsychVideoHotspots,
+      stimulus: "demo kid clip.mp4",
+      hotspots: [
+        {
+          id: "left_square",
+          x: 78,
+          y: 140,
+          width: 171,
+          height: 171
+        },
+        {
+          id: "center_square",
+          x: 315,
+          y: 140,
+          width: 171,
+          height: 171
+        },
+        {
+          id: "right_square",
+          x: 552,
+          y: 140,
+          width: 171,
+          height: 171
+        }
+      ],
+      hotspot_highlight_css: "background-color: rgba(0, 255, 0, 0.5); border: 3px solid green; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);",
+      prompt: "<div>Click on a square.<div>"
+    };
+
+    // Now we can run the actual video hotspots trial with the demo video
+    jsPsych.run([instructions, videoHotspotTrial]);
+  </script>
+</html>

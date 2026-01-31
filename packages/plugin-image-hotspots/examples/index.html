@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Image Hotspots Plugin Example</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.0.0"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function(data) {
+        // Display the results
+        jsPsych.data.displayData();
+      }
+    });
+
+
+    const hotspotTrial = {
+      type: jsPsychImageHotspots,
+      stimulus: "test-image.svg",
+      hotspots: [
+        {
+          id: "red_rectangle",
+          x: 50,
+          y: 60,
+          width: 120,
+          height: 80
+        },
+        {
+          id: "blue_rectangle",
+          x: 230,
+          y: 60,
+          width: 120,
+          height: 80
+        },
+        {
+          id: "green_rectangle",
+          x: 50,
+          y: 180,
+          width: 120,
+          height: 80
+        },
+        {
+          id: "yellow_rectangle",
+          x: 230,
+          y: 180,
+          width: 120,
+          height: 80
+        }
+      ]
+    };
+
+    jsPsych.run([hotspotTrial]);
+  </script>
+</html>
