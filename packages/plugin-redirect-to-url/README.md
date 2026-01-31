@@ -42,21 +42,24 @@ import jsPsychRedirectToUrl from "@jspsych-contrib/plugin-redirect-to-url";
 | `url`             | String           | `undefined`   | The URL to which the participant will be redirected.                                        |
 | `abort_on_submit` | Boolean          | `true`        | Whether to immediately end the experiment before redirecting (recommended at end of study). |
 | `open_in_new_tab` | Boolean          | `false`       | Whether to open the URL in a new browser tab.                                               |
+| `end_message` | HTML string | `null` | If `abort_on_submit` is true AND `open_in_new_tab` is true, this parameter specifies a message to display on the screen after the experiment is over. Can include HTMLformatting. |
+| `automatically_redirect` | Boolean | `false` | If true, the trial will automatically redirect to the specified URL without waiting for participant input. |
 
 **Default `button_html` function:**
 
 ```ts
-(choice: string, choice_index: number) =>
-  `<button class="jspsych-btn">${choice}</button>`;
+function (choice: string, choice_index: number) {
+  return `<button class="jspsych-btn">${choice}</button>`;
+}
 ```
 
 ---
 
 ## Data Generated
 
-| Name       | Type    | Description                                                     |
-| ---------- | ------- | --------------------------------------------------------------- |
-| `stimulus` | String  | The HTML string shown above the buttons.                        |
+| Name       | Type    | Description |
+| ---------- | ------- | ----------- |
+| `stimulus` | String  | The HTML string shown above the buttons. |
 | `rt`       | Integer | Time (in ms) from trial start to participant's button response. |
 | `response` | Integer | Index of the button clicked (0-indexed from `choices` array).   |
 

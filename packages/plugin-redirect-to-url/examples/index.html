@@ -11,7 +11,9 @@
 
   <body></body>
   <script>
-    const jsPsych = initJsPsych();
+    const jsPsych = initJsPsych({
+      on_finish: () => jsPsych.data.displayData(),
+    });
 
     const trial = {
       type: jsPsychPluginRedirectToUrl,

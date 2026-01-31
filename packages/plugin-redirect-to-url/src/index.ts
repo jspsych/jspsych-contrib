@@ -136,7 +136,7 @@ class RedirectToUrlPlugin implements JsPsychPlugin<Info> {
 
   private renderStimulus(display_element: HTMLElement, stimulus: string) {
     const stimulusElement = document.createElement("div");
-    stimulusElement.id = "jspsych-html-button-response-stimulus";
+    stimulusElement.id = "jspsych-redirect-to-url-stimulus";
     stimulusElement.innerHTML = stimulus;
     display_element.appendChild(stimulusElement);
   }
@@ -146,7 +146,7 @@ class RedirectToUrlPlugin implements JsPsychPlugin<Info> {
     onClick: (choiceIndex: number) => void
   ): HTMLDivElement {
     const buttonGroup = document.createElement("div");
-    buttonGroup.id = "jspsych-html-button-response-btngroup";
+    buttonGroup.id = "jspsych-redirect-to-url-btngroup";
     buttonGroup.classList.add("jspsych-btn-group-flex");
 
     trial.choices.forEach((choice, index) => {

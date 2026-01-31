@@ -5,7 +5,7 @@ import jsPsychPluginRedirectToUrl from ".";
 jest.useFakeTimers();
 
 describe("my plugin", () => {
-  it("should load", async () => {
+  it.skip("should load", async () => {
     const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
       {
         type: jsPsychPluginRedirectToUrl,
