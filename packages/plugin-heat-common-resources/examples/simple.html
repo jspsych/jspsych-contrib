@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Heat Common Resources Example</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function(data) {
+        jsPsych.data.displayData();
+      }
+    });
+
+    const trial = {
+      type: jsPsychPluginHeatCommonResources
+    };
+
+    jsPsych.run([trial]);
+  </script>
+</html>
