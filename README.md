@@ -73,6 +73,8 @@ Extension | Contributor | Description
 [device-motion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-device-motion/README.md) | [Pedro Neto](https://github.com/pasoneto) | jsPsych extension for tracking device motion 
 [mediapipe-face-mesh](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-mediapipe-face-mesh/README.md) | [C. Martin Grewe](https://github.com/mgrewe) | This extension provides online tracking of facial posture during trials using the [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh) library. 
 [touchscreen-buttons](https://github.com/jspsych/jspsych-contrib/blob/main/packages/extension-touchscreen-buttons/README.md) | [Younes Strittmatter](https://github.com/younesStrittmatter) | This extension displays touch buttons that allow the participant to respond to stimuli via a touchscreen on mobile devices. 
+[plugin-capture-url-params](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-capture-url-params/README.md) | [Courtney B. Hilton](https://github.com/courtney-bryce-hilton) | Captures URL parameters and saves them in the data. 
+[plugin-redirect-to-url](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-redirect-to-url/README.md) | [Courtney B. Hilton](https://github.com/courtney-bryce-hilton) | Facilitates redirecting to a URL at the end of a study. For example, this can facilitate running Prolific or other paid recruitment platforms. 
 
 ## Guidelines for contributions
 ### Contribution requirements

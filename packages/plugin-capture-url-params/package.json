@@ -1,6 +1,6 @@
 {
   "name": "plugin-capture-url-params",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Captures URL parameters and saves them in the data.",
   "type": "module",
   "main": "dist/index.cjs",
