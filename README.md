@@ -63,6 +63,7 @@ Plugin | Contributor | Description
 [visual-search-click-target](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-visual-search-click-target/README.md) | Josh de Leeuw | Visual search trial with click response 
 [vsl-animate-occlusion](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-animate-occlusion/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) animate occlusion plugin displays an animated sequence of shapes that disappear behind an occluding rectangle while they change from one shape to another. 
 [vsl-grid-scene](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-vsl-grid-scene/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | The VSL (visual statistical learning) grid scene plugin displays images arranged in a grid. 
+[histogram-button-response](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-histogram-button-response/README.md) | [Courtney B. Hilton](https://github.com/courtney-bryce-hilton) | This plugin displays an interactive histogram to the participant.
 
 
 ### Extensions
