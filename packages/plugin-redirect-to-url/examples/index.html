@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychPluginRedirectToUrl Example</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <!-- Load the published plugin package here, e.g.
+    <script src="https://unpkg.com/plugin-redirect-to-url"></script>-->
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => jsPsych.data.displayData(),
+    });
+
+    const trial = {
+      type: jsPsychPluginRedirectToUrl,
+      stimulus:
+        "<p>Click Next to open up the jsPsych website in a new tab.</p>",
+      choices: ["Next"],
+      url: "https://www.jspsych.org/",
+      open_in_new_tab: true,
+    };
+
+    jsPsych.run([trial]);
+  </script>
+</html>
