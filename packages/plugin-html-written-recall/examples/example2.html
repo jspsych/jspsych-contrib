@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://unpkg.com/jspsych@7.0.0"></script>
+		<script src="../dist/index.browser.js"></script>
+		<link rel="stylesheet" href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css">
+	</head>
+	<body></body>
+	<script>
+    // Example where a participant gives as many words as possible in time of 10 seconds
+    // 
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+    const total_block_duration = 10000 // 10 seconds
+    var free_recall_trial = {
+      type: 'html-written-recall',
+      prompt: 'Write down as many words as you can remember from the previous list.',
+      stimulus_duration: 500, // the word disappears after 500 ms (this is repeated after each subsequent press)
+      button_string: 'Next task', // Button displayed to finish the block
+      block_time_start: begin_block_time,
+      total_block_duration: total_block_duration // button appears based on global clock
+    }
+    var free_recall_block = {
+      timeline: [free_recall_trial],
+      on_start: function() {
+        begin_block_time = performance.now();
+      }, // set the initial block time so that participants have 30 seconds before the button appears
+      loop_function() {
+        // Loop until button pressed (not shown until 30 seconds)
+        if (jsPsych.data.get().last(1).values()[0].button_pressed) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    }
+    jsPsych.run([free_recall_block]);
+
+</script>
+</html>
