@@ -28,7 +28,7 @@ import jsPsychSurveyLikertSd from "plugin-survey-likert-sd";
 
 ## Documentation
 
-See [documentation](https://github.com/jspsych/jspsych-contrib/packages/plugin-survey-likert-sd/README.md)
+See [documentation](https://github.com/jspsych/jspsych-contrib/packages/plugin-survey-likert-sd/docs/plugin-survey-likert-sd.md)
 
 ## Author / Citation
 
