@@ -1,6 +1,6 @@
 # plugin-tangram-game
 
-A child-friendly tangram game with click-and-click interface and potential for custom puzzles
+A child-friendly tangram game with click-and-click interface and ability to create custom puzzles
 
 ## Parameters
 

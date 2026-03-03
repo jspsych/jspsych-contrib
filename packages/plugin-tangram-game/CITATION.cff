@@ -4,38 +4,14 @@ authors:
 - family-names: "Aline Normoyle"  # Replace with last name
   given-names: "Aline Normoyle"   # Replace with first name
   name-particle: "Aline Normoyle" # Replace with name particle(s)
-  orcid: "https://orcid.org/0000-0000-0000-0000"  # Replace with ORCID
+  orcid: "https://orcid.org/0000-0002-0984-7924
 # More  authors can be listed here in the same format as above
-contact:  # Contact person for this extension
+contact:
 - family-names: "Aline Normoyle"
   given-names: "Aline Normoyle"
-  email: "{email}"          # Replace with contact person's email
-  orcid: "https://orcid.org/0000-0000-0000-0000"  # Replace with contact person's ORCID
+  email: "anormoyle@brynmawr.edu"
+  orcid: "https://orcid.org/0000-0002-0984-7924
 title: "jsPsychTangramGame"
 version: 0.0.0
-doi: 10.5281/zenodo.1234    # Replace with DOI
-date-released: 2000-01-01
-url: "{softwareUrl}"        # Replace with URL to this extension
-
-# If you wish to cite a paper on this extension instead, you can use the following template:
-preferred-citation:
-  authors:
-  - family-names: "Aline Normoyle"
-    given-names: "Aline Normoyle"
-    name-particle: "Aline Normoyle"
-    orcid: "https://orcid.org/0000-0000-0000-0000"
-  # More authors can be listed here in the same format as above
-  date-published: 2023-05-11
-  doi: 10.21105/joss.12345 
-  issn: 1234-5678
-  issue: 01
-  journal: Journal for Open Source Software
-  publisher:
-    name: Open Journals
-  start: 0001
-  title: "{title}"
-  type: article               # Other options include: book, pamphlet, conference-paper...
-  url: "{linkToPublicationInJournal}"
-  volume: 1
-
-# More information on the preffered-citation CFF format can be found at https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-citation-files#citing-something-other-than-software
+date-released: 2026-03-01
+url: "https://github.com/alinen/tangram-game"        # Replace with URL to this extension

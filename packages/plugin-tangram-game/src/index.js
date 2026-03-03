@@ -1,61 +1,144 @@
-var jsPsychTangramGame = (function (jspsych) {
+var jsPsychTangram = (function (jspsych) {
   "use strict";
 
+  var version = "0.1.0";
+
   const info = {
-    name: "plugin-tangram-game",
-    version: "0.0.1", // When working in a Javascript environment with no build, you will need to manually put set the version information. This is used for metadata purposes and publishing.
+    name: "tangram",
+    version,
     parameters: {
-      /** Provide a clear description of the parameter_name that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
-      parameter_name: {
-        type: jspsych.ParameterType.INT,
-        default: undefined,
+      /**
+       * Path to the SVG file containing our puzzle.
+       */
+      svg: {
+        type: jspsych.ParameterType.STRING,
+        default: "puzzles/puzzle-rocket.svg",
       },
-      /** Provide a clear description of the parameter_name2 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
-      parameter_name2: {
-        type: jspsych.ParameterType.IMAGE,
-        default: undefined,
+
+      resetPieces: {
+        type: jspsych.ParameterType.BOOLEAN,
+        default: true,
+      },
+
+      resetPieceDuration: {
+        type: jspsych.ParameterType.Float, // seconds
+        default: 1.0,
+      },
+
+      /**
+       * Length of time before the trial ends (seconds).
+       */
+      duration: {
+        type: jspsych.ParameterType.INT,
+        default: null,
       },
     },
     data: {
-      /** Provide a clear description of the data1 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
-      data1: {
-        type: ParameterType.INT,
+      /** The length of time from the start of the trial to the end of the trial. */
+      solve_duration: {
+        type: jspsych.ParameterType.INT,
       },
-      /** Provide a clear description of the data2 that could be used as documentation. We will eventually use these comments to automatically build documentation and produce metadata. */
-      data2: {
-        type: ParameterType.STRING,
+      /** 1 if the puzzle was solved; 0 otherwise */
+      puzzle_solved: {
+        type: jspsych.ParameterType.INT,
       },
-      // When working in a Javascript environment with no build, you will need to manually put the citations information.
-      // You may find it useful to fill in the CITATION.cff file generated with this package and use this script to generate your citations:
-      // https://github.com/jspsych/jsPsych/blob/main/packages/config/generateCitations.js
-      // This is helpful for users of your plugin to easily cite it.
-      citations: '__CITATIONS__', // prettier-ignore
+    },
+    // prettier-ignore
+    citations: {
     },
   };
 
-  /**
-   * **plugin-tangram-game**
-   *
-   * A child-friendly tangram game with click-and-click interface and potential for custom puzzles
-   *
-   * @author Aline Normoyle
-   * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-tangram-game/README.md}
-   */
-  class TangramGamePlugin {
+  class TangramPlugin {
     constructor(jsPsych) {
       this.jsPsych = jsPsych;
+      this.tangram = null;
     }
-    trial(display_element, trial) {
-      // data saving
-      var trial_data = {
-        data1: 99, // Make sure this type and name matches the information for data1 in the data object contained within the info const.
-        data2: "hello world!", // Make sure this type and name matches the information for data2 in the data object contained within the info const.
+    static {
+      this.info = info;
+    }
+
+    trial(display_element, trial, on_load) {
+      this.display = display_element;
+      this.params = trial;
+      this.add_css();
+      this.add_html();
+
+      TangramPiece.duration = trial.resetPieceDuration;
+      TangramPiece.ResetPieces = trial.resetPieces;
+      this.tangram = new TangramGame(trial.duration);
+
+      const end_trial = () => {
+        if (typeof keyboardListener !== "undefined") {
+          this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
+        }
+
+        document.querySelector("#tangram-styles").remove();
+        document.querySelector("#container").remove();
+
+        var trial_data = {
+          solve_duration: this.tangram.timeBar.elapsedTime(),
+          puzzle_solved: this.tangram.gameOverMessage.includes("won"),
+        };
+        this.jsPsych.finishTrial(trial_data);
       };
-      // end trial
-      this.jsPsych.finishTrial(trial_data);
+
+      var animate_interval = setInterval(() => {
+        if (this.tangram.finished) {
+          end_trial();
+          clearInterval(animate_interval);
+        }
+      }, 3000);
+    }
+
+    add_css() {
+      document.querySelector("head").insertAdjacentHTML(
+        "beforeend",
+        `<style id="tangram-styles">
+          html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+          }
+
+          #container {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+          }
+
+          #svgObject, #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+          }
+
+          #overlay {
+            pointer-events: none; /* clicks go to SVG */
+          }
+        </style>`
+      );
+    }
+
+    add_html() {
+      document.querySelector("body").insertAdjacentHTML(
+        "beforeend",
+        `<div id="container">
+          <object id="svgObject"
+                  data="${this.params.svg}"
+                  type="image/svg+xml"
+                  preserveAspectRatio="xMidYMid meet"
+          </object>
+          <canvas id="overlay"></canvas>
+        </div> `
+      );
+
+      const svgDoc = document.getElementById("svgObject");
+      svgDoc.onload = () => {
+        this.tangram.start();
+      };
     }
   }
-  TangramGamePlugin.info = info;
-
-  return TangramGamePlugin;
+  return TangramPlugin;
 })(jsPsychModule);

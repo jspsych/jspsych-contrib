@@ -1,0 +1,29 @@
+<html>
+<link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+<link rel="stylesheet" href="../src/tangram.css">
+<script src="../src/tangramutils.js"></script>
+<script src="../src/tangrampiece.js"></script>
+<script src="../src/timebar.js"></script>
+<script src="../src/tangram.js"></script>
+<body>
+
+<div id="container">
+  <object id="svgObject" 
+          data="../puzzles/puzzle-rocket.svg" 
+          type="image/svg+xml" 
+          preserveAspectRatio="xMidYMid meet"
+          onload="start()">
+  </object>
+  <canvas id="overlay"></canvas>
+</div>
+
+<script>
+var tangram = null;
+function start() {
+  tangram = new TangramGame(60);
+  tangram.start();
+} 
+</script>
+
+</body>
+</html>

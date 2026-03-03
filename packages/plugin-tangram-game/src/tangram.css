@@ -1,0 +1,24 @@
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+}
+
+#svgObject, #overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+#overlay {
+  pointer-events: none; /* clicks go to SVG */
+}

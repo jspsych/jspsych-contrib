@@ -1,23 +1,48 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>jsPsychTangramGame Example</title>
-    <script src="https://unpkg.com/jspsych"></script>
-    <!-- Once this plugin package is published, it can be loaded via
-<script src="https://unpkg.com/@jspsych-contrib/plugin-tangram-game"></script>
-<script src="../dist/index.browser.js"></script> -->
-    <script src="../dist/index.browser.js"></script>
+    <script src="../dist/jspsych.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+    <script src="../src/tangramutils.js"></script>
+    <script src="../src/tangrampiece.js"></script>
+    <script src="../src/timebar.js"></script>
+    <script src="../src/tangram.js"></script>
+    <script src="../src/index.js"></script>
   </head>
-
   <body></body>
   <script>
-    const jsPsych = initJsPsych();
 
-    const trial = {
-      type: jsPsychTangramGame
-    };
+    var jsPsych = initJsPsych({
+      on_finish: () => {
+        jsPsych.data.displayData();
+      }
+    });
 
-    jsPsych.run([trial])
+    var tutorial = {
+      type: jsPsychTangram,
+      svg: "../puzzles/puzzle-arrow.svg",
+      duration: 30
+    }
+
+    var trial1 = {
+      type: jsPsychTangram,
+      svg: "../puzzles/puzzle-monster.svg",
+      duration: 30
+    }
+
+    var trial2 = {
+      type: jsPsychTangram,
+      svg: "../puzzles/puzzle-rocket.svg",
+      duration: 30
+    }
+
+    var trial3 = {
+      type: jsPsychTangram,
+      svg: '../puzzles/puzzle-square.svg',
+      duration: 30
+    }
+
+    jsPsych.run([tutorial, trial1, trial2, trial3]);
+
   </script>
 </html>
