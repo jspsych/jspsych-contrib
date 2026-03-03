@@ -8,7 +8,10 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 
 | Parameter           | Type             | Default Value      | Description                              |
 | ------------------- | ---------------- | ------------------ | ---------------------------------------- |
-|                     |                  |                    |                                          |
+| svg                 | str              | "puzzles/puzzle-rocket.svg"| Path to a valid SVG              |
+| resetPieces         | bool             | true               | If true, misplaced pieces reset position |
+| resetPieceDuration  | float            | 1.0                | Time in seconds to reset piece position  |
+| duration            | float            | null               | Length of time before the trial ends (s) |
 
 ## Data Generated
 
