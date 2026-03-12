@@ -26,21 +26,25 @@ npm install @jspsych-contrib/plugin-tangram-game
 
 ## Documentation
 
-See [documentation](https://github.com/jspsych/jspsych-contrib/packages/plugin-tangram-game/README.md)
+See [documentation](https://github.com/jspsych/jspsych-contrib/packages/plugin-tangram-game/docs/plugin-tangram-game.md)
 
 ## Author / Citation
 
 [Aline Normoyle](https://github.com/alinen)
 
-# How to run
+# How to build and run
 
-You will need to run a webserver to preview the game locally. I recommend using python's built in web server. Launch it from the main directory of this repository like so:
+From the plugin-tangram-game directory, we can install dependencies and build using npm from Node.js. 
 
-`python -m http.server 8000`
+```
+npm i
+npm run build
+```
 
-Then go to `http://127.0.0.1:8000/examples/index.html` or `http://127.0.0.1:8000/examples/index2.html` in your browser.
+You will need to run a webserver to preview the game locally. For example, using Node.js's http-server. 
 
-# Development notes
-To generate favicon.ico:
+```
+http-server -c10
+```
 
-`convert -background transparent "tangram.png" -define icon:auto-resize=16,24,32,48,64,72,96,128,256 "favicon.ico"`
+Then go to `http://127.0.0.1:8080/examples/example1.html` or `http://127.0.0.1:8000/examples/example2.html` in your browser.
