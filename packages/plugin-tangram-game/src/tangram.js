@@ -9,6 +9,7 @@ class TangramGame {
     this.gameOverMessage = "";
     this.gameOver = false;
     this.finished = false;
+    this.initialized = false;
 
     this.selectedPiece = null;
     this.puzzlePieces = [];
@@ -20,6 +21,12 @@ class TangramGame {
     this.interactionSound = "puzzles/tap.mp3";
     this.successSound = "puzzles/magic-spell-short.m4a";
     this.failureSound = "puzzles/sad-trombone.wav";
+
+    // Initialize canvas for drawing text
+    window.addEventListener("resize", (e) => {
+      this.resize(e);
+    });
+    this.resize();
   }
 
   mouseClick(e) {
@@ -99,9 +106,8 @@ class TangramGame {
         x = 275;
       }
     }
-
-    // The SVG can now be rendered visible because the pieces are in their start positions
-    this.svg.style.opacity = "1";
+    // After pieces have their starting positions, we are initialized
+    this.initialized = true;
 
     // Sound effects
     this.soundEffect = new Audio(this.interactionSound);
@@ -123,12 +129,6 @@ class TangramGame {
     window.requestAnimationFrame((t) => {
       this.tick(t);
     });
-
-    // Initialize canvas for drawing text
-    window.addEventListener("resize", (e) => {
-      this.resize(e);
-    });
-    this.resize();
   }
 
   puzzleSolved() {
@@ -151,15 +151,14 @@ class TangramGame {
       this.gameOver = true;
       this.gameOverMessage = this.failureMessage;
       this.loseSound.play();
-      this.draw();
     }
 
     if (this.puzzleSolved()) {
       this.gameOver = true;
       this.gameOverMessage = this.successMessage;
       this.winSound.play();
-      this.draw();
     }
+    this.draw();
 
     if (!this.gameOver)
       window.requestAnimationFrame((t) => {
@@ -174,7 +173,13 @@ class TangramGame {
   }
 
   draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (!this.initialized) {
+      this.ctx.fillStyle = "#ffffff";
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    } else {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
     if (this.gameOver) {
       this.ctx.font = "64px Arial";
       this.ctx.textAlign = "center";
