@@ -4,11 +4,11 @@
   "description": "A child-friendly tangram game with click-and-click interface and potential for custom puzzles",
   "unpkg": "dist/index.browser.min.js",
   "files": [
-    "index.js",
+    "src",
     "dist"
   ],
   "scripts": {
-    "build": "babel index.js --presets @babel/preset-env,minify --source-maps --out-file dist/index.browser.min.js",
+    "build": "esbuild src/*.js --minify --outdir=dist",
     "build:watch": "npm run build -- --watch"
   },
   "repository": {
