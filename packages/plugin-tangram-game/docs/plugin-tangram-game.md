@@ -32,21 +32,13 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 Using the CDN-hosted JavaScript file:
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-tangram-game/dist/index.js"></script>
-<script src="https://unpkg.com/@jspsych-contrib/plugin-tangram-game/dist/tangram.js"></script>
-<script src="https://unpkg.com/@jspsych-contrib/plugin-tangram-game/dist/tangrampiece.js"></script>
-<script src="https://unpkg.com/@jspsych-contrib/plugin-tangram-game/dist/tangramutils.js"></script>
-<script src="https://unpkg.com/@jspsych-contrib/plugin-tangram-game/dist/timebar.js"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-tangram-game/dist/index.browser.min.js"></script>
 ```
 
 Using the JavaScript file downloaded from a GitHub release dist archive:
 
 ```js
-<script src="jspsych-contrib/plugin-tangram-game/dist/index.js"></script>
-<script src="jspsych-contrib/plugin-tangram-game/dist/tangram.js"></script>
-<script src="jspsych-contrib/plugin-tangram-game/dist/tangrampiece.js"></script>
-<script src="jspsych-contrib/plugin-tangram-game/dist/tangramutils.js"></script>
-<script src="jspsych-contrib/plugin-tangram-game/dist/timebar.js"></script>
+<script src="jspsych-contrib/plugin-tangram-game/dist/index.browser.min.js"></script>
 ```
 
 ## Examples
@@ -89,6 +81,6 @@ Using the JavaScript file downloaded from a GitHub release dist archive:
 ## Making your own puzzles
 
 New puzzles can be made using vector graphic tools such as [Inkscape](https://inkscape.org/). 
-The loaded puzzle needs to have its graphics organized with three layers: a timebar layer, a puzzle outline layer, and the puzzle layer. The 
+The loaded puzzle needs to have its graphics organized with three layers: a timebar layer, a puzzle outline layer, and the puzzle layer. 
 
 Not all SVG vector transform types are supported in this implementation. However, if you create new puzzles by modifying existing puzzles, the new SVG files should inherit attributes that are supported. Please contact `anormoyle @ brynmawr.edu` with questions. If you are having problems loading a puzzle, please also send the puzzle SVG file. 

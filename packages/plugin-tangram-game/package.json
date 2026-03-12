@@ -8,7 +8,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "esbuild src/*.js --minify --outdir=dist",
+    "concat": "concat -o src/index.js src/timebar.js src/tangramutils.js src/tangrampiece.js src/tangram.js src/plugin-tangram.js",
+    "minify": "esbuild src/index.js --minify --sourcemap --outfile=dist/index.browser.min.js",
+    "build": "npm run concat && npm run minify",
     "build:watch": "npm run build -- --watch"
   },
   "repository": {
@@ -29,11 +31,12 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/packages/plugin-tangram-game/README.md",
   "dependencies": {
-    "jspsych": "^8.0.0",
     "@citation-js/core": "^0.7.14",
-    "@citation-js/plugin-software-formats": "^0.6.1",
     "@citation-js/plugin-bibtex": "^0.7.14",
-    "@citation-js/plugin-cff": "^0.6.1"
+    "@citation-js/plugin-cff": "^0.6.1",
+    "@citation-js/plugin-software-formats": "^0.6.1",
+    "concat": "^1.0.3",
+    "jspsych": "^8.0.0"
   },
   "devDependencies": {
     "@jspsych/config": "^3.2.2"
