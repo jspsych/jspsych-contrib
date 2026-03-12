@@ -4,15 +4,15 @@ class TimeBar {
     this.el = svgElement;
     this.timeLeft = duration != null ? duration : 99999;
     this.duration = duration;
-    this.elapsedTime = 0;
+    this.etime = 0;
   }
 
   elapsedTime() {
-    return this.elapsedTime;
+    return this.etime;
   }
 
   tick(dt) {
-    this.elapsedTime += dt;
+    this.etime += dt;
 
     if (this.duration != null) {
       this.timeLeft = Math.max(0, this.timeLeft - dt);
