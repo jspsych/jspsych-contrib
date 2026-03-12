@@ -1,16 +1,17 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
+title: "A child-friendly tangram game with click-and-click interface and potential for custom puzzles"
 authors:
-- family-names: "Aline Normoyle"  # Replace with last name
-  given-names: "Aline Normoyle"   # Replace with first name
-  name-particle: "Aline Normoyle" # Replace with name particle(s)
-  orcid: "https://orcid.org/0000-0002-0984-7924
+- family-names: "Normoyle"  # Replace with last name
+  given-names: "Aline"   # Replace with first name
+  name-particle: "" # Replace with name particle(s)
+  orcid: "https://orcid.org/0000-0002-0984-7924"
 # More  authors can be listed here in the same format as above
 contact:
-- family-names: "Aline Normoyle"
-  given-names: "Aline Normoyle"
+- family-names: "Normoyle"
+  given-names: "Aline"
   email: "anormoyle@brynmawr.edu"
-  orcid: "https://orcid.org/0000-0002-0984-7924
+  orcid: "https://orcid.org/0000-0002-0984-7924"
 title: "jsPsychTangramGame"
 version: 0.0.0
 date-released: 2026-03-01
