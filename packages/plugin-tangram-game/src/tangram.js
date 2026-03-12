@@ -1,31 +1,25 @@
 class TangramGame {
-  constructor(duration, resetPiece) {
+  constructor(duration) {
     this.canvas = document.getElementById("overlay");
     this.ctx = this.canvas.getContext("2d");
     this.svg = null;
 
-    this.gameOverMessage = "You win!";
+    this.successMessage = "You Won! :)";
+    this.failureMessage = "You lost! :(";
+    this.gameOverMessage = "";
     this.gameOver = false;
     this.finished = false;
 
     this.selectedPiece = null;
     this.puzzlePieces = [];
-    this.resetPiece = resetPiece;
 
     this.timeBar = null;
     this.duration = duration; // seconds
     this.lastTime = -1;
 
-    // Sound effects
-    this.soundEffect = new Audio("puzzles/tap.mp3");
-    this.winSound = new Audio("puzzles/magic-spell-short.m4a");
-    this.winSound.addEventListener("ended", (e) => {
-      this.finished = true;
-    });
-    this.loseSound = new Audio("puzzles/sad-trombone.wav");
-    this.loseSound.addEventListener("ended", (e) => {
-      this.finished = true;
-    });
+    this.interactionSound = "puzzles/tap.mp3";
+    this.successSound = "puzzles/magic-spell-short.m4a";
+    this.failureSound = "puzzles/sad-trombone.wav";
   }
 
   mouseClick(e) {
@@ -109,6 +103,17 @@ class TangramGame {
     // The SVG can now be rendered visible because the pieces are in their start positions
     this.svg.style.opacity = "1";
 
+    // Sound effects
+    this.soundEffect = new Audio(this.interactionSound);
+    this.winSound = new Audio(this.successSound);
+    this.winSound.addEventListener("ended", (e) => {
+      this.finished = true;
+    });
+    this.loseSound = new Audio(this.failureSound);
+    this.loseSound.addEventListener("ended", (e) => {
+      this.finished = true;
+    });
+
     // initialize time bar
     const barElement = svgDoc.getElementById("TimebarInterior");
     this.timeBar = new TimeBar(this.svg, barElement, this.duration);
@@ -144,14 +149,14 @@ class TangramGame {
     this.timeBar.tick(dt);
     if (this.timeBar.timeLeft <= 0) {
       this.gameOver = true;
-      this.gameOverMessage = "You Lost :(";
+      this.gameOverMessage = this.failureMessage;
       this.loseSound.play();
       this.draw();
     }
 
     if (this.puzzleSolved()) {
       this.gameOver = true;
-      this.gameOverMessage = "You won! :)";
+      this.gameOverMessage = this.successMessage;
       this.winSound.play();
       this.draw();
     }

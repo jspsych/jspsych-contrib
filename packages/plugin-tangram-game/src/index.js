@@ -1,11 +1,9 @@
 var jsPsychTangram = (function (jspsych) {
   "use strict";
 
-  var version = "0.1.0";
-
   const info = {
     name: "tangram",
-    version,
+    version: "0.0.1",
     parameters: {
       /**
        * Path to the SVG file containing our puzzle.
@@ -15,11 +13,57 @@ var jsPsychTangram = (function (jspsych) {
         default: "puzzles/puzzle-rocket.svg",
       },
 
+      /**
+       * Interaction sound to play when picking up and dropping pieces
+       */
+      interactionSound: {
+        type: jspsych.ParameterType.STRING,
+        default: "puzzles/tap.mp3",
+      },
+
+      /**
+       * Success sound effect to play when puzzle is solved
+       */
+      successSound: {
+        type: jspsych.ParameterType.STRING,
+        default: "puzzles/magic-spell-short.m4a",
+      },
+
+      /**
+       * Failure sound effect to play when puzzle is not solved
+       */
+      failureSound: {
+        type: jspsych.ParameterType.STRING,
+        default: "puzzles/sad-trombone.wav",
+      },
+
+      /**
+       * Success message
+       */
+      successMessage: {
+        type: jspsych.ParameterType.STRING,
+        default: "You won! :)",
+      },
+
+      /**
+       * Failure message
+       */
+      failureMessage: {
+        type: jspsych.ParameterType.STRING,
+        default: "You lose. :(",
+      },
+
+      /**
+       * Toggle whether pieces should auto-reset when placed incorrectly
+       */
       resetPieces: {
         type: jspsych.ParameterType.BOOLEAN,
         default: true,
       },
 
+      /**
+       * Length of time for a piece to reset to its original position (seconds).
+       */
       resetPieceDuration: {
         type: jspsych.ParameterType.Float, // seconds
         default: 1.0,
@@ -34,9 +78,9 @@ var jsPsychTangram = (function (jspsych) {
       },
     },
     data: {
-      /** The length of time from the start of the trial to the end of the trial. */
+      /** The length of time from the start of the trial to the end of the trial (seconds). */
       solve_duration: {
-        type: jspsych.ParameterType.INT,
+        type: jspsych.ParameterType.FLOAT,
       },
       /** 1 if the puzzle was solved; 0 otherwise */
       puzzle_solved: {
@@ -53,19 +97,30 @@ var jsPsychTangram = (function (jspsych) {
       this.jsPsych = jsPsych;
       this.tangram = null;
     }
-    static {
-      this.info = info;
-    }
 
     trial(display_element, trial, on_load) {
       this.display = display_element;
       this.params = trial;
+
       this.add_css();
       this.add_html();
 
+      // Configure Tangram Game piece behavior
       TangramPiece.duration = trial.resetPieceDuration;
       TangramPiece.ResetPieces = trial.resetPieces;
+
+      // Create and configure Tangram Game
       this.tangram = new TangramGame(trial.duration);
+      this.tangram.successMessage = trial.successMessage;
+      this.tangram.failureMessage = trial.failureMessage;
+      this.tangram.interactionSound = trial.interactionSound;
+      this.tangram.successSound = trial.successSound;
+      this.tangram.failureSound = trial.failureSound;
+
+      const svgDoc = document.getElementById("svgObject");
+      svgDoc.onload = () => {
+        this.tangram.start();
+      };
 
       const end_trial = () => {
         if (typeof keyboardListener !== "undefined") {
@@ -130,15 +185,14 @@ var jsPsychTangram = (function (jspsych) {
                   type="image/svg+xml"
                   preserveAspectRatio="xMidYMid meet"
           </object>
-          <canvas id="overlay"></canvas>
         </div> `
       );
-
-      const svgDoc = document.getElementById("svgObject");
-      svgDoc.onload = () => {
-        this.tangram.start();
-      };
+      document
+        .querySelector("#container")
+        .insertAdjacentHTML("beforeend", `<canvas id="overlay"></canvas>`);
     }
   }
+
+  TangramPlugin.info = info;
   return TangramPlugin;
 })(jsPsychModule);
