@@ -3,11 +3,11 @@ name: release
 env:
   HUSKY: 0
 
-on:
+on: [push, workflow_dispatch]
   push:
     branches:
       - main
-
+    
 jobs:
   release:
     name: Release
