@@ -55,8 +55,10 @@ type Info = typeof info;
 /**
  * **device-orientation**
  *
- * Require mobile devices to be in a specific orientation (landscape or portrait) before continuing.
- * On desktop devices, the trial ends immediately as orientation is not applicable.
+ * Require the device to be in a specific orientation (landscape or portrait) before continuing.
+ * If the device is already in the correct orientation, the trial ends immediately with `rt: null`.
+ * On desktop browsers, orientation is determined by the window dimensions, so the trial will
+ * typically end immediately unless the browser window is sized in the non-target orientation.
  *
  * @author Josh de Leeuw
  * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-device-orientation/README.md}
@@ -69,16 +71,11 @@ class DeviceOrientationPlugin implements JsPsychPlugin<Info> {
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     const startTime = performance.now();
 
-    // Check if this is a mobile/tablet device with orientation capability
-    const isMobileDevice = this.checkIfMobileDevice();
-
     // Get current orientation
     const getCurrentOrientation = (): "landscape" | "portrait" => {
       if (window.screen.orientation) {
-        // Modern API
         return window.screen.orientation.type.includes("landscape") ? "landscape" : "portrait";
       } else {
-        // Fallback for older browsers
         return window.innerWidth > window.innerHeight ? "landscape" : "portrait";
       }
     };
@@ -86,13 +83,13 @@ class DeviceOrientationPlugin implements JsPsychPlugin<Info> {
     const currentOrientation = getCurrentOrientation();
     const isCorrectOrientation = currentOrientation === trial.orientation;
 
-    // If desktop or already correct orientation, end trial immediately
-    if (!isMobileDevice || isCorrectOrientation) {
+    // If already correct orientation, end trial immediately
+    if (isCorrectOrientation) {
       this.jsPsych.finishTrial({
-        was_correct_orientation: isCorrectOrientation,
+        was_correct_orientation: true,
         final_orientation: currentOrientation,
         skipped: false,
-        rt: 0,
+        rt: null,
       });
       return;
     }
@@ -114,7 +111,6 @@ class DeviceOrientationPlugin implements JsPsychPlugin<Info> {
 
     // End trial function
     const endTrial = (skipped: boolean) => {
-      // Remove event listeners
       if (window.screen.orientation) {
         window.screen.orientation.removeEventListener("change", handleOrientationChange);
       }
@@ -135,16 +131,14 @@ class DeviceOrientationPlugin implements JsPsychPlugin<Info> {
 
     // Handle orientation change
     const handleOrientationChange = () => {
-      const newOrientation = getCurrentOrientation();
-      if (newOrientation === trial.orientation) {
+      if (getCurrentOrientation() === trial.orientation) {
         endTrial(false);
       }
     };
 
     // Handle resize (fallback for orientation change)
     const handleResize = () => {
-      const newOrientation = getCurrentOrientation();
-      if (newOrientation === trial.orientation) {
+      if (getCurrentOrientation() === trial.orientation) {
         endTrial(false);
       }
     };
@@ -163,27 +157,6 @@ class DeviceOrientationPlugin implements JsPsychPlugin<Info> {
           endTrial(true);
         });
     }
-  }
-
-  private checkIfMobileDevice(): boolean {
-    // Check for touch capability and mobile user agent
-    const hasTouchScreen =
-      "ontouchstart" in window ||
-      navigator.maxTouchPoints > 0 ||
-      (navigator as any).msMaxTouchPoints > 0;
-
-    // Check if screen orientation API exists and reports a mobile-like orientation
-    const hasOrientationAPI = !!window.screen.orientation;
-
-    // Check viewport dimensions - mobile devices typically have smaller screens
-    // and the width/height ratio changes with orientation
-    const isSmallScreen = Math.min(window.screen.width, window.screen.height) < 768;
-
-    // Use CSS media query for pointer type
-    const hasCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
-
-    // Consider it a mobile device if it has touch and either small screen or coarse pointer
-    return hasTouchScreen && (isSmallScreen || hasCoarsePointer);
   }
 }
 

@@ -15,52 +15,12 @@ const mockOrientation = (type: string) => {
   });
 };
 
-// Mock matchMedia for mobile detection
-const mockMatchMedia = (matches: boolean) => {
-  Object.defineProperty(window, "matchMedia", {
-    value: jest.fn().mockImplementation((query) => ({
-      matches,
-      media: query,
-      onchange: null,
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn(),
-    })),
-    writable: true,
-    configurable: true,
-  });
-};
-
 describe("DeviceOrientationPlugin", () => {
   beforeEach(() => {
-    // Default to desktop (non-mobile) environment
-    mockMatchMedia(false);
     mockOrientation("landscape-primary");
   });
 
-  test("ends immediately on desktop devices", async () => {
-    const { expectFinished, getData } = await startTimeline([
-      {
-        type: DeviceOrientationPlugin,
-        orientation: "landscape",
-      },
-    ]);
-
-    await expectFinished();
-
-    const data = getData().values()[0];
-    expect(data.skipped).toBe(false);
-    expect(data.rt).toBe(0);
-  });
-
-  test("ends immediately when already in correct orientation on mobile", async () => {
-    // Mock mobile device in landscape
-    mockMatchMedia(true);
-    Object.defineProperty(navigator, "maxTouchPoints", { value: 5, configurable: true });
-    mockOrientation("landscape-primary");
-
+  test("ends immediately when already in correct orientation", async () => {
     const { expectFinished, getData } = await startTimeline([
       {
         type: DeviceOrientationPlugin,
@@ -73,10 +33,60 @@ describe("DeviceOrientationPlugin", () => {
     const data = getData().values()[0];
     expect(data.was_correct_orientation).toBe(true);
     expect(data.final_orientation).toBe("landscape");
+    expect(data.skipped).toBe(false);
+    expect(data.rt).toBeNull();
+  });
+
+  test("shows message when in wrong orientation", async () => {
+    mockOrientation("portrait-primary");
+
+    const { expectRunning, getHTML } = await startTimeline([
+      {
+        type: DeviceOrientationPlugin,
+        orientation: "landscape",
+      },
+    ]);
+
+    await expectRunning();
+
+    expect(getHTML()).toContain("jspsych-device-orientation-message");
+    expect(getHTML()).toContain("landscape");
+  });
+
+  test("shows skip button when allow_skip is true", async () => {
+    mockOrientation("portrait-primary");
+
+    const { expectRunning, getHTML } = await startTimeline([
+      {
+        type: DeviceOrientationPlugin,
+        orientation: "landscape",
+        allow_skip: true,
+        skip_button_label: "Skip",
+      },
+    ]);
+
+    await expectRunning();
+
+    expect(getHTML()).toContain("jspsych-device-orientation-skip");
+    expect(getHTML()).toContain("Skip");
+  });
+
+  test("does not show skip button when allow_skip is false", async () => {
+    mockOrientation("portrait-primary");
+
+    const { expectRunning, getHTML } = await startTimeline([
+      {
+        type: DeviceOrientationPlugin,
+        orientation: "landscape",
+      },
+    ]);
+
+    await expectRunning();
+
+    expect(getHTML()).not.toContain("jspsych-device-orientation-skip");
   });
 
   test("records correct data structure", async () => {
-    // On desktop, trial ends immediately regardless of orientation param
     const { expectFinished, getData } = await startTimeline([
       {
         type: DeviceOrientationPlugin,

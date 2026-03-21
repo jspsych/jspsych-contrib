@@ -1,6 +1,6 @@
 # device-orientation
 
-Require mobile devices to be in a specific orientation (landscape or portrait) before continuing. On desktop devices, the trial ends immediately as orientation is not applicable.
+Require the device to be in a specific orientation (landscape or portrait) before continuing. If the device is already in the correct orientation, the trial ends immediately. On desktop browsers, orientation is determined by the window dimensions, so the trial will typically end immediately unless the browser window happens to be sized in the non-target orientation.
 
 ## Parameters
 
@@ -24,7 +24,7 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 | was_correct_orientation | boolean | Whether the device was already in the correct orientation when the trial started. |
 | final_orientation      | string  | The orientation of the device when the trial ended ("landscape" or "portrait"). |
 | skipped                | boolean | Whether the participant skipped the orientation requirement using the skip button. |
-| rt                     | number  | Time spent waiting for correct orientation in milliseconds. |
+| rt                     | number  | Time spent waiting for correct orientation in milliseconds. `null` if the device was already in the correct orientation. |
 
 ## Install
 
