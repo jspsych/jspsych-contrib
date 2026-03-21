@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-free-recall-response",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A plugin for collecting free recall responses one word at a time with mobile-friendly UI",
   "type": "module",
   "main": "dist/index.cjs",
