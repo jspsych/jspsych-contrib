@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychPluginCaptureUrlParams Example</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <!-- Load the published plugin package here, e.g.
+    <script src="https://unpkg.com/plugin-capture-url-params"></script> -->
+    <script src="../dist/index.browser.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => {
+        jsPsych.data.displayData();
+      },
+    });
+
+    const placeholder = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus:
+        "<p>Type Some URL parameters into your browser window before continuing.</p>" +
+        "<p>For example add to the end of the URL '?key1=value1&key2=value2'</p>" +
+        "<p>You may also click on the link below to see an example:</p>" +
+        '<a href="?key1=value1&key2=value2" target="_blank">?key1=value1&key2=value2</a>',
+      choices: ["Next"],
+    };
+
+    const trial = {
+      type: jsPsychPluginCaptureUrlParams,
+    };
+
+    jsPsych.run([placeholder, trial]);
+  </script>
+</html>

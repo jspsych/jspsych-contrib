@@ -31,26 +31,26 @@ describe("spr plugin", () => {
     expect(containsWords(displayElement, ["Five", "big", "booms"], "after")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWord(displayElement, "Five", "current")).toBe(true);
     expect(containsWords(displayElement, ["big", "booms"], "after")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWord(displayElement, "Five", "before")).toBe(true);
     expect(containsWord(displayElement, "big", "current")).toBe(true);
     expect(containsWord(displayElement, "booms", "after")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWords(displayElement, ["Five", "big"], "before")).toBe(true);
     expect(containsWord(displayElement, "booms", "current")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     await expectFinished();
 
@@ -77,26 +77,26 @@ describe("spr plugin", () => {
     expect(containsWords(displayElement, ["Five", "big", "booms"], "after")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWord(displayElement, "Five", "current")).toBe(true);
     expect(containsWords(displayElement, ["big", "booms"], "after")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWord(displayElement, "Five", "before")).toBe(true);
     expect(containsWord(displayElement, "big", "current")).toBe(true);
     expect(containsWord(displayElement, "booms", "after")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWords(displayElement, ["Five", "big"], "before")).toBe(true);
     expect(containsWord(displayElement, "booms", "current")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     await expectFinished();
 
@@ -123,26 +123,26 @@ describe("spr plugin", () => {
     expect(containsWords(displayElement, ["Five, big, booms"], "after")).toBe(false);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWord(displayElement, "Five", "current")).toBe(true);
     expect(containsWords(displayElement, ["big", "booms"], "after")).toBe(false);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWord(displayElement, "Five", "before")).toBe(false);
     expect(containsWord(displayElement, "big", "current")).toBe(true);
     expect(containsWord(displayElement, "booms", "after")).toBe(false);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWords(displayElement, ["Five", "big"], "before")).toBe(false);
     expect(containsWord(displayElement, "booms", "current")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     await expectFinished();
 
@@ -170,26 +170,26 @@ describe("spr plugin", () => {
     ).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWords(displayElement, ["What", "is"], "current")).toBe(true);
     expect(containsWords(displayElement, ["going", "on", "right", "now?"], "after")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWords(displayElement, ["What", "is"], "before")).toBe(true);
     expect(containsWord(displayElement, "going", "current")).toBe(true);
     expect(containsWords(displayElement, ["on", "right", "now?"], "after")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWords(displayElement, ["What", "is", "going"], "before")).toBe(true);
     expect(containsWords(displayElement, ["on", "right", "now?"], "current")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     await expectFinished();
 
@@ -212,26 +212,26 @@ describe("spr plugin", () => {
     ).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWords(displayElement, ["What", "is"], "current")).toBe(true);
     expect(containsWords(displayElement, ["going", "on", "right", "now?"], "after")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWords(displayElement, ["What", "is"], "before")).toBe(true);
     expect(containsWord(displayElement, "going", "current")).toBe(true);
     expect(containsWords(displayElement, ["on", "right", "now?"], "after")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     expect(containsWords(displayElement, ["What", "is", "going"], "before")).toBe(true);
     expect(containsWords(displayElement, ["on", "right", "now?"], "current")).toBe(true);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     await expectFinished();
 
@@ -279,27 +279,27 @@ describe("spr plugin", () => {
     ]);
 
     jest.advanceTimersByTime(100);
-    pressKey(" ");
+    await pressKey(" ");
 
     let lastHTML = displayElement.innerHTML;
     // try to advance before inter_word_interval
-    pressKey(" ");
+    await pressKey(" ");
     expect(displayElement.innerHTML).toBe(lastHTML);
     jest.advanceTimersByTime(200);
 
     // now it should advance
-    pressKey(" ");
+    await pressKey(" ");
     expect(displayElement.innerHTML).not.toBe(lastHTML);
 
     // multiple presses should also not advance
     lastHTML = displayElement.innerHTML;
-    pressKey(" ");
-    pressKey(" ");
-    pressKey(" ");
+    await pressKey(" ");
+    await pressKey(" ");
+    await pressKey(" ");
     expect(displayElement.innerHTML).toBe(lastHTML);
 
     jest.advanceTimersByTime(200);
-    pressKey(" ");
+    await pressKey(" ");
     expect(displayElement.innerHTML).not.toBe(lastHTML);
   });
 });

@@ -31,6 +31,16 @@ const info = <const>{
       type: ParameterType.BOOL,
       default: true,
     },
+    /** This string can contain HTML markup. Any content here will be displayed below the stimulus. The intention is that it can be used to provide a reminder about the action the participant is supposed to take (e.g., click on a specific area). */
+    prompt: {
+      type: ParameterType.HTML_STRING,
+      default: null,
+    },
+    /** Whether to wait until the video ends to display the prompt string (if there is one). If true (the default), the prompt will be shown when the video has ended. If false, the prompt is shown immediately. */
+    show_prompt_on_video_end: {
+      type: ParameterType.BOOL,
+      default: true,
+    },
   },
   data: {
     /** The ID of the clicked hotspot region. */
@@ -63,7 +73,7 @@ type Info = typeof info;
 /**
  * **plugin-video-hotspots**
  *
- * A plugin for displaying a video that freezes on the final frame with clickable hotspots
+ * A plugin for displaying a video that freezes on the final frame with clickable regions (hotspots). This plugin allows researchers to present a video to participants and define rectangular regions on the final frame that can be clicked like buttons. When a region is clicked or touched, visual feedback is provided and the trial records which region was selected along with response time and click coordinates.
  *
  * @author Claude
  * @see {@link /plugin-video-hotspots/README.md}}
@@ -77,7 +87,7 @@ class VideoHotspotsPlugin implements JsPsychPlugin<Info> {
     let video_end_time: number | null = null;
 
     // Create the HTML structure
-    const html = `
+    let html = `
       <div id="jspsych-video-hotspots-container" style="position: relative; display: inline-block;">
         <video id="jspsych-video-hotspots-stimulus"
                src="${trial.stimulus}"
@@ -90,6 +100,15 @@ class VideoHotspotsPlugin implements JsPsychPlugin<Info> {
         <div id="jspsych-video-hotspots-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
       </div>
     `;
+    // Add prompt if there is one
+    if (trial.prompt !== null) {
+      if (trial.show_prompt_on_video_end) {
+        // Add to the DOM and toggle visibility after video ends, rather than adding a new element later (which causes content position jump)
+        html += `<span id="jspsych-video-hotspots-prompt" style="visibility: hidden;">${trial.prompt}</span>`;
+      } else {
+        html += trial.prompt;
+      }
+    }
 
     display_element.innerHTML = html;
 
@@ -257,6 +276,14 @@ class VideoHotspotsPlugin implements JsPsychPlugin<Info> {
 
       // Create hotspots now that video has ended
       createHotspots();
+
+      // Add prompt if there is one and it should be shown when the video ends
+      if (trial.prompt !== null && trial.show_prompt_on_video_end) {
+        const prompt = display_element.querySelector(
+          "#jspsych-video-hotspots-prompt"
+        ) as HTMLSpanElement;
+        prompt.style.visibility = "visible";
+      }
 
       // Handle trial duration after video ends
       if (trial.trial_duration !== null) {
