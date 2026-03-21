@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-image-hotspots",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A plugin for displaying an image with clickable regions",
   "type": "module",
   "main": "dist/index.cjs",
