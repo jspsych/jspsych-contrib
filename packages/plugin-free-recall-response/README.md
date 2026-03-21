@@ -19,7 +19,7 @@ npm install @jspsych-contrib/plugin-free-recall-response
 ```
 
 ```js
-import jsPsychFreeRecallResponse from "plugin-free-recall-response";
+import jsPsychFreeRecallResponse from "@jspsych-contrib/plugin-free-recall-response";
 ```
 
 ## Compatibility
@@ -28,7 +28,7 @@ import jsPsychFreeRecallResponse from "plugin-free-recall-response";
 
 ## Documentation
 
-See [documentation](https://github.com/jspsych/jspsych-contrib/packages/plugin-free-recall-response/README.md)
+See [documentation](https://github.com/jspsych/jspsych-contrib/blob/main/packages/plugin-free-recall-response/docs/plugin-free-recall-response.md)
 
 ## Author / Citation
 

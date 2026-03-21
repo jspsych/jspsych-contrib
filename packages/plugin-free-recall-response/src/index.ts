@@ -186,7 +186,11 @@ class FreeRecallResponsePlugin implements JsPsychPlugin<Info> {
             padding: 6px 12px;
             border-radius: 4px;
             font-size: 16px;
-          ">${r.word}</span>
+          ">${r.word
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")}</span>
         `
         )
         .join("");
@@ -212,6 +216,8 @@ class FreeRecallResponsePlugin implements JsPsychPlugin<Info> {
 
     // End trial function
     const endTrial = () => {
+      this.jsPsych.pluginAPI.clearAllTimeouts();
+
       const endTime = performance.now();
       const rt = Math.round(endTime - startTime);
 
