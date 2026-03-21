@@ -101,7 +101,7 @@ class DeviceOrientationPlugin implements JsPsychPlugin<Info> {
     const messageHtml = trial.message.replace(/%ORIENTATION%/g, trial.orientation);
     let html = `<div class="jspsych-device-orientation-container" style="text-align: center; padding: 20px;">`;
     html += `<div class="jspsych-device-orientation-icon" style="font-size: 64px; margin-bottom: 20px;">`;
-    html += trial.orientation === "landscape" ? "📱↔️" : "📱↕️";
+    html += `🔄`;
     html += `</div>`;
     html += `<div class="jspsych-device-orientation-message">${messageHtml}</div>`;
 
