@@ -16,7 +16,7 @@ const info = <const>{
       type: ParameterType.COMPLEX,
       default: [["blue"], ["green"], ["red"]],
     },
-    /** Capacity of each peg (max number of balls). Array of 3 numbers. Classic TOL uses [1, 2, 3]. */
+    /** Capacity of each peg (max number of balls). Array of 3 numbers. Classic TOL uses [3, 2, 1]. */
     peg_capacities: {
       type: ParameterType.INT,
       array: true,
@@ -37,12 +37,12 @@ const info = <const>{
       type: ParameterType.INT,
       default: null,
     },
-    /** Width of the canvas in pixels */
+    /** Width of the display in pixels */
     canvas_width: {
       type: ParameterType.INT,
       default: 500,
     },
-    /** Height of the canvas in pixels */
+    /** Height of the display in pixels */
     canvas_height: {
       type: ParameterType.INT,
       default: 400,
@@ -66,7 +66,7 @@ const info = <const>{
       type: ParameterType.STRING,
       default: "#8B4513",
     },
-    /** Background color of the canvas */
+    /** Background color of the display */
     background_color: {
       type: ParameterType.STRING,
       default: "#f5f5f5",
@@ -95,6 +95,21 @@ const info = <const>{
     end_delay: {
       type: ParameterType.INT,
       default: 1000,
+    },
+    /** Duration of ball movement animation in milliseconds. Set to 0 to disable. */
+    animation_duration: {
+      type: ParameterType.INT,
+      default: 300,
+    },
+    /** Text displayed when the puzzle is solved. Set to null to disable. */
+    solved_text: {
+      type: ParameterType.STRING,
+      default: "Solved!",
+    },
+    /** Label text for the goal inset. */
+    goal_label: {
+      type: ParameterType.STRING,
+      default: "Goal",
     },
   },
   data: {
@@ -147,6 +162,8 @@ interface Move {
   time: number;
 }
 
+const SVG_NS = "http://www.w3.org/2000/svg";
+
 /**
  * **tower-of-london**
  *
@@ -159,16 +176,19 @@ interface Move {
 class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
   static info = info;
 
-  private canvas: HTMLCanvasElement;
-  private ctx: CanvasRenderingContext2D;
+  private svg: SVGSVGElement;
   private state: PuzzleState;
   private selectedPeg: number | null = null;
   private moves: Move[] = [];
   private startTime: number;
   private trialParams: TrialType<Info>;
   private display_element: HTMLElement;
-  private clickHandler: (e: MouseEvent) => void;
-  private touchHandler: (e: TouchEvent) => void;
+  private isAnimating = false;
+
+  // Layout constants derived from trial params
+  private pegSpacing: number;
+  private baseY: number;
+  private ballSlotHeight: number;
 
   constructor(private jsPsych: JsPsych) {}
 
@@ -177,6 +197,15 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
     this.trialParams = trial;
     this.moves = [];
     this.selectedPeg = null;
+    this.isAnimating = false;
+
+    const width = trial.canvas_width as number;
+    const height = trial.canvas_height as number;
+
+    // Precompute layout
+    this.pegSpacing = width / 4;
+    this.baseY = height - 30;
+    this.ballSlotHeight = (trial.ball_radius as number) * 2 + 5;
 
     // Deep copy the start state
     this.state = JSON.parse(JSON.stringify(trial.start_state)) as PuzzleState;
@@ -194,47 +223,43 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
     }
 
     html += '<div class="jspsych-tower-of-london-main">';
-
-    // Main puzzle canvas
-    html += `<canvas id="jspsych-tower-of-london-canvas" width="${trial.canvas_width}" height="${trial.canvas_height}"></canvas>`;
-
-    // Goal display
-    if (trial.show_goal) {
-      const goalWidth = Math.floor((trial.canvas_width as number) * 0.4);
-      const goalHeight = Math.floor((trial.canvas_height as number) * 0.4);
-      html += `<div class="jspsych-tower-of-london-goal">`;
-      html += `<div class="jspsych-tower-of-london-goal-label">Goal:</div>`;
-      html += `<canvas id="jspsych-tower-of-london-goal-canvas" width="${goalWidth}" height="${goalHeight}"></canvas>`;
-      html += `</div>`;
-    }
-
-    html += "</div>"; // main
+    html += `<div id="jspsych-tower-of-london-svg-container"></div>`;
+    html += "</div>";
 
     if (trial.done_button_text) {
       html += `<button id="jspsych-tower-of-london-done" class="jspsych-btn">${trial.done_button_text}</button>`;
     }
 
-    html += "</div>"; // container
+    html += "</div>";
 
     display_element.innerHTML = html;
 
-    // Get canvas contexts
-    this.canvas = document.getElementById("jspsych-tower-of-london-canvas") as HTMLCanvasElement;
-    this.ctx = this.canvas.getContext("2d")!;
+    // Create SVG
+    this.svg = document.createElementNS(SVG_NS, "svg");
+    this.svg.setAttribute("width", String(width));
+    this.svg.setAttribute("height", String(height));
+    this.svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    this.svg.id = "jspsych-tower-of-london-svg";
+    document.getElementById("jspsych-tower-of-london-svg-container")!.appendChild(this.svg);
 
     // Draw initial state
     this.draw();
 
-    // Draw goal if shown
-    if (trial.show_goal) {
-      this.drawGoal();
-    }
+    // Event listeners
+    this.svg.addEventListener("click", (e: MouseEvent) => {
+      if (this.isAnimating) return;
+      const rect = this.svg.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      this.handleInteraction(x);
+    });
 
-    // Set up event listeners with bound handlers
-    this.clickHandler = this.handleClick.bind(this);
-    this.touchHandler = this.handleTouch.bind(this);
-    this.canvas.addEventListener("click", this.clickHandler);
-    this.canvas.addEventListener("touchend", this.touchHandler);
+    this.svg.addEventListener("touchend", (e: TouchEvent) => {
+      e.preventDefault();
+      if (this.isAnimating) return;
+      const rect = this.svg.getBoundingClientRect();
+      const x = e.changedTouches[0].clientX - rect.left;
+      this.handleInteraction(x);
+    });
 
     if (trial.done_button_text) {
       document
@@ -242,7 +267,6 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
         .addEventListener("click", () => this.endTrial());
     }
 
-    // Set time limit if specified
     if (trial.time_limit) {
       this.jsPsych.pluginAPI.setTimeout(() => {
         this.endTrial();
@@ -253,142 +277,190 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
   }
 
   private draw() {
-    const ctx = this.ctx;
-    const width = this.canvas.width;
-    const height = this.canvas.height;
     const trial = this.trialParams;
+    const width = trial.canvas_width as number;
+    const height = trial.canvas_height as number;
 
-    // Clear canvas
-    ctx.fillStyle = trial.background_color as string;
-    ctx.fillRect(0, 0, width, height);
+    // Clear SVG
+    this.svg.innerHTML = "";
 
-    const pegWidth = 15;
-    const pegSpacing = width / 4;
-    const baseY = height - 30;
-    const pegHeight = height - 80;
+    // Background
+    const bg = document.createElementNS(SVG_NS, "rect");
+    bg.setAttribute("width", String(width));
+    bg.setAttribute("height", String(height));
+    bg.setAttribute("fill", trial.background_color as string);
+    this.svg.appendChild(bg);
 
-    // Draw base
-    ctx.fillStyle = trial.peg_color as string;
-    ctx.fillRect(20, baseY, width - 40, 20);
+    // Base
+    const base = document.createElementNS(SVG_NS, "rect");
+    base.setAttribute("x", "20");
+    base.setAttribute("y", String(this.baseY));
+    base.setAttribute("width", String(width - 40));
+    base.setAttribute("height", "20");
+    base.setAttribute("fill", trial.peg_color as string);
+    base.setAttribute("rx", "3");
+    this.svg.appendChild(base);
 
     // Draw pegs and balls
     for (let i = 0; i < 3; i++) {
-      const pegX = pegSpacing * (i + 1);
-
-      // Draw peg
-      ctx.fillStyle = trial.peg_color as string;
-      ctx.fillRect(pegX - pegWidth / 2, baseY - pegHeight, pegWidth, pegHeight);
-
-      // Draw capacity indicator (subtle dots)
+      const pegX = this.pegSpacing * (i + 1);
       const capacity = (trial.peg_capacities as number[])[i];
-      ctx.fillStyle = "#ccc";
-      for (let c = 0; c < capacity; c++) {
-        const dotY = baseY - 30 - c * ((trial.ball_radius as number) * 2 + 5);
-        ctx.beginPath();
-        ctx.arc(pegX + 30, dotY, 3, 0, Math.PI * 2);
-        ctx.fill();
+      const pegHeight = 20 + capacity * this.ballSlotHeight;
+      const pegWidth = 15;
+
+      // Peg
+      const peg = document.createElementNS(SVG_NS, "rect");
+      peg.setAttribute("x", String(pegX - pegWidth / 2));
+      peg.setAttribute("y", String(this.baseY - pegHeight));
+      peg.setAttribute("width", String(pegWidth));
+      peg.setAttribute("height", String(pegHeight));
+      peg.setAttribute("fill", trial.peg_color as string);
+      peg.setAttribute("rx", "4");
+      this.svg.appendChild(peg);
+
+      // Selection highlight
+      if (this.selectedPeg === i) {
+        const highlight = document.createElementNS(SVG_NS, "rect");
+        highlight.setAttribute("x", String(pegX - 50));
+        highlight.setAttribute("y", String(this.baseY - pegHeight - 10));
+        highlight.setAttribute("width", "100");
+        highlight.setAttribute("height", String(pegHeight + 5));
+        highlight.setAttribute("fill", "none");
+        highlight.setAttribute("stroke", "#f1c40f");
+        highlight.setAttribute("stroke-width", "3");
+        highlight.setAttribute("rx", "8");
+        highlight.setAttribute("stroke-dasharray", "8 4");
+        this.svg.appendChild(highlight);
       }
 
-      // Draw balls on this peg
+      // Balls
       const balls = this.state[i];
       for (let j = 0; j < balls.length; j++) {
         const ball = balls[j];
-        const ballY = baseY - 30 - j * ((trial.ball_radius as number) * 2 + 5);
         const ballX = pegX;
+        const ballY = this.baseY - 30 - j * this.ballSlotHeight;
+        const color = (trial.ball_colors as Record<string, string>)[ball] || ball;
 
-        ctx.fillStyle = (trial.ball_colors as Record<string, string>)[ball] || ball;
-        ctx.beginPath();
-        ctx.arc(ballX, ballY, trial.ball_radius as number, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = "#333";
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        this.drawBall(ballX, ballY, trial.ball_radius as number, color);
       }
+    }
 
-      // Highlight selected peg
-      if (this.selectedPeg === i) {
-        ctx.strokeStyle = "#f1c40f";
-        ctx.lineWidth = 4;
-        ctx.strokeRect(pegX - 50, baseY - pegHeight - 20, 100, pegHeight + 15);
-      }
+    // Goal inset
+    if (trial.show_goal) {
+      this.drawGoalInset();
     }
   }
 
-  private drawGoal() {
-    const goalCanvas = document.getElementById(
-      "jspsych-tower-of-london-goal-canvas"
-    ) as HTMLCanvasElement;
-    if (!goalCanvas) return;
+  private drawBall(cx: number, cy: number, r: number, color: string): SVGCircleElement {
+    const circle = document.createElementNS(SVG_NS, "circle");
+    circle.setAttribute("cx", String(cx));
+    circle.setAttribute("cy", String(cy));
+    circle.setAttribute("r", String(r));
+    circle.setAttribute("fill", color);
+    circle.setAttribute("stroke", "#333");
+    circle.setAttribute("stroke-width", "2");
+    this.svg.appendChild(circle);
+    return circle;
+  }
 
-    const ctx = goalCanvas.getContext("2d")!;
-    const width = goalCanvas.width;
-    const height = goalCanvas.height;
+  private drawGoalInset() {
     const trial = this.trialParams;
     const goalState = trial.goal_state as PuzzleState;
+    const width = trial.canvas_width as number;
+    const height = trial.canvas_height as number;
 
-    const scale = 0.4;
+    const scale = 0.3;
+    const insetWidth = Math.floor(width * scale);
+    const insetHeight = Math.floor(height * scale);
+    const padding = 10;
+    const insetX = width - insetWidth - padding;
+    const insetY = padding;
+
+    // Group for inset
+    const g = document.createElementNS(SVG_NS, "g");
+
+    // Background
+    const bgRect = document.createElementNS(SVG_NS, "rect");
+    bgRect.setAttribute("x", String(insetX));
+    bgRect.setAttribute("y", String(insetY));
+    bgRect.setAttribute("width", String(insetWidth));
+    bgRect.setAttribute("height", String(insetHeight));
+    bgRect.setAttribute("fill", "#ffffff");
+    bgRect.setAttribute("stroke", "#999");
+    bgRect.setAttribute("stroke-width", "1");
+    bgRect.setAttribute("rx", "4");
+    g.appendChild(bgRect);
+
+    // "Goal" label
+    const label = document.createElementNS(SVG_NS, "text");
+    label.setAttribute("x", String(insetX + 8));
+    label.setAttribute("y", String(insetY + 16));
+    label.setAttribute("font-size", String(Math.round(insetHeight * 0.12)));
+    label.setAttribute("font-family", "Arial, sans-serif");
+    label.setAttribute("font-weight", "bold");
+    label.setAttribute("fill", "#666");
+    label.textContent = trial.goal_label as string;
+    g.appendChild(label);
+
+    // Goal pegs and balls
     const ballRadius = (trial.ball_radius as number) * scale;
-    const pegWidth = 8;
-    const pegSpacing = width / 4;
-    const baseY = height - 15;
-    const pegHeight = height - 40;
+    const pegWidth = 6;
+    const pegSpacing = insetWidth / 4;
+    const baseY = insetY + insetHeight - 10;
+    const ballSlotHeight = ballRadius * 2 + 2;
 
-    // Clear
-    ctx.fillStyle = trial.background_color as string;
-    ctx.fillRect(0, 0, width, height);
+    // Base
+    const base = document.createElementNS(SVG_NS, "rect");
+    base.setAttribute("x", String(insetX + 8));
+    base.setAttribute("y", String(baseY));
+    base.setAttribute("width", String(insetWidth - 16));
+    base.setAttribute("height", "6");
+    base.setAttribute("fill", trial.peg_color as string);
+    base.setAttribute("rx", "2");
+    g.appendChild(base);
 
-    // Draw base
-    ctx.fillStyle = trial.peg_color as string;
-    ctx.fillRect(10, baseY, width - 20, 10);
-
-    // Draw pegs and balls
     for (let i = 0; i < 3; i++) {
-      const pegX = pegSpacing * (i + 1);
+      const pegX = insetX + pegSpacing * (i + 1);
+      const capacity = (trial.peg_capacities as number[])[i];
+      const pegHeight = 10 + capacity * ballSlotHeight;
 
-      // Draw peg
-      ctx.fillStyle = trial.peg_color as string;
-      ctx.fillRect(pegX - pegWidth / 2, baseY - pegHeight, pegWidth, pegHeight);
+      // Peg
+      const peg = document.createElementNS(SVG_NS, "rect");
+      peg.setAttribute("x", String(pegX - pegWidth / 2));
+      peg.setAttribute("y", String(baseY - pegHeight));
+      peg.setAttribute("width", String(pegWidth));
+      peg.setAttribute("height", String(pegHeight));
+      peg.setAttribute("fill", trial.peg_color as string);
+      peg.setAttribute("rx", "2");
+      g.appendChild(peg);
 
-      // Draw balls
+      // Balls
       const balls = goalState[i];
       for (let j = 0; j < balls.length; j++) {
         const ball = balls[j];
-        const ballY = baseY - 15 - j * (ballRadius * 2 + 2);
         const ballX = pegX;
+        const ballY = baseY - 10 - j * ballSlotHeight;
+        const color = (trial.ball_colors as Record<string, string>)[ball] || ball;
 
-        ctx.fillStyle = (trial.ball_colors as Record<string, string>)[ball] || ball;
-        ctx.beginPath();
-        ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = "#333";
-        ctx.lineWidth = 1;
-        ctx.stroke();
+        const circle = document.createElementNS(SVG_NS, "circle");
+        circle.setAttribute("cx", String(ballX));
+        circle.setAttribute("cy", String(ballY));
+        circle.setAttribute("r", String(ballRadius));
+        circle.setAttribute("fill", color);
+        circle.setAttribute("stroke", "#333");
+        circle.setAttribute("stroke-width", "1");
+        g.appendChild(circle);
       }
     }
-  }
 
-  private handleClick(e: MouseEvent) {
-    const rect = this.canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    this.handleInteraction(x);
-  }
-
-  private handleTouch(e: TouchEvent) {
-    e.preventDefault();
-    const rect = this.canvas.getBoundingClientRect();
-    const touch = e.changedTouches[0];
-    const x = touch.clientX - rect.left;
-    this.handleInteraction(x);
+    this.svg.appendChild(g);
   }
 
   private handleInteraction(x: number) {
-    const width = this.canvas.width;
-    const pegSpacing = width / 4;
-
     // Determine which peg was clicked
     let clickedPeg: number | null = null;
     for (let i = 0; i < 3; i++) {
-      const pegX = pegSpacing * (i + 1);
+      const pegX = this.pegSpacing * (i + 1);
       if (Math.abs(x - pegX) < 50) {
         clickedPeg = i;
         break;
@@ -404,39 +476,109 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
         this.draw();
       }
     } else {
-      // Try to move to the clicked peg
       if (clickedPeg === this.selectedPeg) {
         // Deselect
         this.selectedPeg = null;
         this.draw();
       } else {
         // Attempt move
-        const success = this.tryMove(this.selectedPeg, clickedPeg);
+        const fromPeg = this.selectedPeg;
+        const success = this.tryMove(fromPeg, clickedPeg);
         this.selectedPeg = null;
-        this.draw();
 
-        if (success) {
-          // Update move counter
-          const counter = document.getElementById("move-count");
-          if (counter) {
-            counter.textContent = this.moves.length.toString();
-          }
-
-          // Check for max moves
-          if (
-            this.trialParams.max_moves &&
-            this.moves.length >= (this.trialParams.max_moves as number)
-          ) {
-            this.endTrial();
-            return;
-          }
-
-          // Check for goal state (auto-complete if no done button)
-          if (!this.trialParams.done_button_text && this.checkGoal()) {
-            this.endTrial();
+        if (success && (this.trialParams.animation_duration as number) > 0) {
+          this.animateMove(fromPeg, clickedPeg);
+        } else {
+          this.draw();
+          if (success) {
+            this.afterMove();
           }
         }
       }
+    }
+  }
+
+  private animateMove(from: number, to: number) {
+    this.isAnimating = true;
+    const trial = this.trialParams;
+    const duration = trial.animation_duration as number;
+    const ballRadius = trial.ball_radius as number;
+
+    // The ball has already been moved in state by tryMove.
+    // We need to draw the state *without* the top ball on the destination,
+    // then animate it from the source to the destination.
+    const ball = this.state[to][this.state[to].length - 1];
+    const color = (trial.ball_colors as Record<string, string>)[ball] || ball;
+
+    // Source position: where the ball was (top of source peg, which now has one fewer)
+    const fromX = this.pegSpacing * (from + 1);
+    const fromSlot = this.state[from].length; // ball was at this index before pop
+    const fromY = this.baseY - 30 - fromSlot * this.ballSlotHeight;
+
+    // Destination position
+    const toX = this.pegSpacing * (to + 1);
+    const toSlot = this.state[to].length - 1;
+    const toY = this.baseY - 30 - toSlot * this.ballSlotHeight;
+
+    // Lift height: above the tallest peg
+    const maxCapacity = Math.max(...(trial.peg_capacities as number[]));
+    const liftY = this.baseY - 20 - maxCapacity * this.ballSlotHeight - ballRadius - 10;
+
+    // Draw state without the moving ball
+    const tempState = JSON.parse(JSON.stringify(this.state));
+    tempState[to].pop();
+    const savedState = this.state;
+    this.state = tempState;
+    this.draw();
+    this.state = savedState;
+
+    // Create the animated ball
+    const circle = this.drawBall(fromX, fromY, ballRadius, color);
+
+    // Build the animation path: lift -> move horizontally -> drop
+    const animX = document.createElementNS(SVG_NS, "animate");
+    animX.setAttribute("attributeName", "cx");
+    animX.setAttribute("values", `${fromX};${fromX};${toX};${toX}`);
+    animX.setAttribute("keyTimes", "0;0.3;0.7;1");
+    animX.setAttribute("dur", `${duration}ms`);
+    animX.setAttribute("fill", "freeze");
+    circle.appendChild(animX);
+
+    const animY = document.createElementNS(SVG_NS, "animate");
+    animY.setAttribute("attributeName", "cy");
+    animY.setAttribute("values", `${fromY};${liftY};${liftY};${toY}`);
+    animY.setAttribute("keyTimes", "0;0.3;0.7;1");
+    animY.setAttribute("dur", `${duration}ms`);
+    animY.setAttribute("fill", "freeze");
+    circle.appendChild(animY);
+
+    animX.beginElement();
+    animY.beginElement();
+
+    this.jsPsych.pluginAPI.setTimeout(() => {
+      this.isAnimating = false;
+      this.draw();
+      this.afterMove();
+    }, duration);
+  }
+
+  private afterMove() {
+    // Update move counter
+    const counter = document.getElementById("move-count");
+    if (counter) {
+      counter.textContent = this.moves.length.toString();
+    }
+
+    // Check for max moves
+    if (this.trialParams.max_moves && this.moves.length >= (this.trialParams.max_moves as number)) {
+      this.endTrial();
+      return;
+    }
+
+    // Check for goal state (auto-complete if no done button)
+    if (!this.trialParams.done_button_text && this.checkGoal()) {
+      this.showSuccess();
+      this.endTrial();
     }
   }
 
@@ -445,15 +587,12 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
     const toPeg = this.state[to];
     const capacity = (this.trialParams.peg_capacities as number[])[to];
 
-    // Check if move is valid
     if (fromPeg.length === 0) return false;
     if (toPeg.length >= capacity) return false;
 
-    // Make the move
     const ball = fromPeg.pop()!;
     toPeg.push(ball);
 
-    // Record the move
     this.moves.push({
       from,
       to,
@@ -462,6 +601,60 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
     });
 
     return true;
+  }
+
+  private showSuccess() {
+    const trial = this.trialParams;
+    if (!trial.solved_text) return;
+
+    const width = trial.canvas_width as number;
+    const height = trial.canvas_height as number;
+    const inset = 4;
+
+    // Green border overlay
+    const border = document.createElementNS(SVG_NS, "rect");
+    border.setAttribute("x", String(inset));
+    border.setAttribute("y", String(inset));
+    border.setAttribute("width", String(width - inset * 2));
+    border.setAttribute("height", String(height - inset * 2));
+    border.setAttribute("fill", "none");
+    border.setAttribute("stroke", "#27ae60");
+    border.setAttribute("stroke-width", "6");
+    border.setAttribute("rx", "8");
+    border.setAttribute("opacity", "0");
+    this.svg.appendChild(border);
+
+    // Fade in
+    const fadeIn = document.createElementNS(SVG_NS, "animate");
+    fadeIn.setAttribute("attributeName", "opacity");
+    fadeIn.setAttribute("from", "0");
+    fadeIn.setAttribute("to", "1");
+    fadeIn.setAttribute("dur", "300ms");
+    fadeIn.setAttribute("fill", "freeze");
+    border.appendChild(fadeIn);
+    fadeIn.beginElement();
+
+    // "Solved!" text
+    const text = document.createElementNS(SVG_NS, "text");
+    text.setAttribute("x", String(width / 2));
+    text.setAttribute("y", "30");
+    text.setAttribute("text-anchor", "middle");
+    text.setAttribute("font-size", "24");
+    text.setAttribute("font-family", "Arial, sans-serif");
+    text.setAttribute("font-weight", "bold");
+    text.setAttribute("fill", "#27ae60");
+    text.setAttribute("opacity", "0");
+    text.textContent = trial.solved_text as string;
+    this.svg.appendChild(text);
+
+    const textFade = document.createElementNS(SVG_NS, "animate");
+    textFade.setAttribute("attributeName", "opacity");
+    textFade.setAttribute("from", "0");
+    textFade.setAttribute("to", "1");
+    textFade.setAttribute("dur", "300ms");
+    textFade.setAttribute("fill", "freeze");
+    text.appendChild(textFade);
+    textFade.beginElement();
   }
 
   private checkGoal(): boolean {
@@ -494,16 +687,11 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
       goal_state: this.trialParams.goal_state,
     };
 
-    // Clean up event listeners immediately to prevent further interaction
-    this.canvas.removeEventListener("click", this.clickHandler);
-    this.canvas.removeEventListener("touchend", this.touchHandler);
-
     const finishTrial = () => {
       this.display_element.innerHTML = "";
       this.jsPsych.finishTrial(trial_data);
     };
 
-    // Show final state for end_delay duration before ending trial
     const endDelay = this.trialParams.end_delay as number;
     if (endDelay > 0) {
       this.jsPsych.pluginAPI.setTimeout(finishTrial, endDelay);
