@@ -117,6 +117,13 @@ const info = <const>{
       default: null,
     },
     /**
+     * Duration in milliseconds to wait after the last circle is clicked before ending the trial.
+     */
+    end_delay: {
+      type: ParameterType.INT,
+      default: 500,
+    },
+    /**
      * Random seed for reproducible target layouts. If null, uses random seed.
      */
     seed: {
@@ -294,7 +301,9 @@ class TrailMakingPlugin implements JsPsychPlugin<Info> {
 
         // Check if complete
         if (currentTargetIndex >= sequence.length) {
-          this.endTrial(targets, clicks, startTime, now, numErrors, interClickTimes, trial);
+          this.jsPsych.pluginAPI.setTimeout(() => {
+            this.endTrial(targets, clicks, startTime, now, numErrors, interClickTimes, trial);
+          }, trial.end_delay);
         }
       } else {
         // Error
