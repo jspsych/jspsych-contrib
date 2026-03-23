@@ -238,6 +238,11 @@ class TrailMakingPlugin implements JsPsychPlugin<Info> {
     const handleClick = (e: MouseEvent | TouchEvent) => {
       if (isShowingError) return;
 
+      // Prevent the synthetic click event that browsers fire after touchend
+      if (e instanceof TouchEvent) {
+        e.preventDefault();
+      }
+
       const rect = canvas.getBoundingClientRect();
       let clientX: number, clientY: number;
 
@@ -300,7 +305,8 @@ class TrailMakingPlugin implements JsPsychPlugin<Info> {
         // Show error feedback
         isShowingError = true;
         const visitedLabels = sequence.slice(0, currentTargetIndex);
-        this.drawCanvas(ctx, targets, visitedLabels, trial, true);
+        const errorLabel = clickedTargetIndex !== null ? targets[clickedTargetIndex].label : null;
+        this.drawCanvas(ctx, targets, visitedLabels, trial, errorLabel);
 
         this.jsPsych.pluginAPI.setTimeout(() => {
           isShowingError = false;
@@ -445,7 +451,7 @@ class TrailMakingPlugin implements JsPsychPlugin<Info> {
     targets: Target[],
     visitedLabels: string[],
     trial: TrialType<Info>,
-    showError: boolean = false
+    errorLabel: string | null = null
   ) {
     const width = trial.canvas_width;
     const height = trial.canvas_height;
@@ -478,7 +484,7 @@ class TrailMakingPlugin implements JsPsychPlugin<Info> {
       const isVisited = visitedLabels.includes(target.label);
 
       // Set fill color before drawing
-      if (showError && !isVisited) {
+      if (errorLabel !== null && target.label === errorLabel) {
         ctx.fillStyle = trial.error_color;
       } else if (isVisited) {
         ctx.fillStyle = trial.visited_color;
