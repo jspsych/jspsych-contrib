@@ -29,6 +29,10 @@ describe("pursuit-rotor plugin", () => {
         strokeCalls++;
       }),
       fill: jest.fn(),
+      fillText: jest.fn(),
+      font: "",
+      textAlign: "",
+      textBaseline: "",
     };
 
     // Mock getContext to return our mock
@@ -45,6 +49,7 @@ describe("pursuit-rotor plugin", () => {
       {
         type: jsPsychPursuitRotor,
         trial_duration: 1000,
+        wait_for_start: false,
       },
     ]);
 
@@ -56,6 +61,7 @@ describe("pursuit-rotor plugin", () => {
       {
         type: jsPsychPursuitRotor,
         trial_duration: 1000,
+        wait_for_start: false,
         prompt: "<p>Track the target!</p>",
       },
     ]);
@@ -68,6 +74,7 @@ describe("pursuit-rotor plugin", () => {
       {
         type: jsPsychPursuitRotor,
         trial_duration: 1000,
+        wait_for_start: false,
       },
     ]);
 
@@ -80,6 +87,7 @@ describe("pursuit-rotor plugin", () => {
       {
         type: jsPsychPursuitRotor,
         trial_duration: 500,
+        wait_for_start: false,
       },
     ]);
 
@@ -96,6 +104,7 @@ describe("pursuit-rotor plugin", () => {
       {
         type: jsPsychPursuitRotor,
         trial_duration: 500,
+        wait_for_start: false,
       },
     ]);
 
@@ -113,6 +122,7 @@ describe("pursuit-rotor plugin", () => {
         type: jsPsychPursuitRotor,
         trial_duration: 500,
         sample_interval: 100,
+        wait_for_start: false,
       },
     ]);
 
@@ -129,6 +139,7 @@ describe("pursuit-rotor plugin", () => {
       {
         type: jsPsychPursuitRotor,
         trial_duration: 1000,
+        wait_for_start: false,
         canvas_width: 600,
         canvas_height: 400,
       },
@@ -150,6 +161,7 @@ describe("pursuit-rotor plugin", () => {
         trial_duration: 100,
         path_radius: 200,
         show_path: true,
+        wait_for_start: false,
       },
     ]);
 
@@ -170,6 +182,7 @@ describe("pursuit-rotor plugin", () => {
         type: jsPsychPursuitRotor,
         trial_duration: 100,
         target_radius: 40,
+        wait_for_start: false,
       },
     ]);
 
@@ -193,6 +206,7 @@ describe("pursuit-rotor plugin", () => {
         canvas_width: 500,
         canvas_height: 500,
         start_angle: 0, // Start at right (x=center+radius)
+        wait_for_start: false,
       },
     ]);
 
@@ -229,6 +243,7 @@ describe("pursuit-rotor plugin", () => {
         rotation_speed: 0.25,
         path_radius: 150,
         start_angle: 0,
+        wait_for_start: false,
       },
     ]);
 
@@ -248,6 +263,7 @@ describe("pursuit-rotor plugin", () => {
         rotation_speed: 0.25,
         path_radius: 150,
         start_angle: 0,
+        wait_for_start: false,
       },
     ]);
 
@@ -272,6 +288,7 @@ describe("pursuit-rotor plugin", () => {
         type: jsPsychPursuitRotor,
         trial_duration: 100,
         show_path: false,
+        wait_for_start: false,
       },
     ]);
 
@@ -294,6 +311,7 @@ describe("pursuit-rotor plugin", () => {
         trial_duration: 100,
         show_path: true,
         path_radius: 150,
+        wait_for_start: false,
       },
     ]);
 
@@ -309,6 +327,7 @@ describe("pursuit-rotor plugin", () => {
       {
         type: jsPsychPursuitRotor,
         trial_duration: 2000,
+        wait_for_start: false,
       },
     ]);
 
@@ -325,6 +344,7 @@ describe("pursuit-rotor plugin", () => {
         type: jsPsychPursuitRotor,
         trial_duration: 500,
         sample_interval: 50,
+        wait_for_start: false,
       },
     ]);
 
@@ -374,6 +394,7 @@ describe("pursuit-rotor plugin", () => {
         trial_duration: 500,
         sample_interval: 50,
         require_mouse_down: true,
+        wait_for_start: false,
       },
     ]);
 
@@ -404,5 +425,79 @@ describe("pursuit-rotor plugin", () => {
     const data = getData().values()[0];
     // With require_mouse_down and no mouse down, time_on_target should be 0
     expect(data.time_on_target).toBe(0);
+  });
+
+  it("should wait for click before starting when wait_for_start is true", async () => {
+    const { displayElement, expectRunning } = await startTimeline([
+      {
+        type: jsPsychPursuitRotor,
+        trial_duration: 500,
+        wait_for_start: true,
+      },
+    ]);
+
+    const canvas = displayElement.querySelector(
+      "#jspsych-pursuit-rotor-canvas"
+    ) as HTMLCanvasElement;
+
+    // Trial timer should not have started yet
+    jest.advanceTimersByTime(600);
+    await expectRunning();
+
+    // Canvas should still be there (trial hasn't ended)
+    expect(displayElement.querySelector("#jspsych-pursuit-rotor-canvas")).not.toBeNull();
+  });
+
+  it("should start rotation after click when wait_for_start is true", async () => {
+    const { displayElement, expectFinished } = await startTimeline([
+      {
+        type: jsPsychPursuitRotor,
+        trial_duration: 500,
+        wait_for_start: true,
+      },
+    ]);
+
+    const canvas = displayElement.querySelector(
+      "#jspsych-pursuit-rotor-canvas"
+    ) as HTMLCanvasElement;
+
+    canvas.getBoundingClientRect = jest.fn(() => ({
+      left: 0,
+      top: 0,
+      right: 500,
+      bottom: 500,
+      width: 500,
+      height: 500,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    }));
+
+    // Click to start
+    canvas.dispatchEvent(
+      new MouseEvent("mousedown", { clientX: 250, clientY: 250, bubbles: true })
+    );
+
+    // Now advance past trial_duration
+    jest.advanceTimersByTime(500);
+    await expectFinished();
+  });
+
+  it("should display start text when waiting", async () => {
+    await startTimeline([
+      {
+        type: jsPsychPursuitRotor,
+        trial_duration: 1000,
+        wait_for_start: true,
+        start_text: "Tap to begin",
+      },
+    ]);
+
+    // The fillText mock should have been called with the start text
+    expect(mockCtx.fillText).toHaveBeenCalledWith(
+      "Tap to begin",
+      expect.any(Number),
+      expect.any(Number)
+    );
   });
 });
