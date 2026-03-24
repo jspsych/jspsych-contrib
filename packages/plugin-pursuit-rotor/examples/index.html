@@ -24,27 +24,29 @@
       },
     });
 
-    // Trial 1: Standard settings (15 second trial)
+    // Trial 1: Standard settings - waits for click to start (default)
     const trial1 = {
       type: jsPsychPursuitRotor,
       trial_duration: 15000,
-      prompt: "<p>Keep your cursor on the moving target. Trial 1 of 4.</p>",
+      prompt: "<p>Click the target to begin tracking. Trial 1 of 4.</p>",
     };
 
-    // Trial 2: Faster rotation
+    // Trial 2: Faster rotation with custom start text
     const trial2 = {
       type: jsPsychPursuitRotor,
       trial_duration: 15000,
       rotation_speed: 0.2,
+      start_text: "Tap to begin",
       prompt: "<p>Faster rotation! Trial 2 of 4.</p>",
     };
 
-    // Trial 3: Counterclockwise
+    // Trial 3: Counterclockwise, starts immediately
     const trial3 = {
       type: jsPsychPursuitRotor,
       trial_duration: 15000,
       rotation_direction: "counterclockwise",
-      prompt: "<p>Counterclockwise rotation. Trial 3 of 4.</p>",
+      wait_for_start: false,
+      prompt: "<p>Counterclockwise rotation (starts immediately). Trial 3 of 4.</p>",
     };
 
     // Trial 4: Smaller target (harder)
