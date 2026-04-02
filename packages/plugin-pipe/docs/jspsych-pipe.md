@@ -29,19 +29,19 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 ## Static Methods
 
-The pipe plugin provides three static methods that can be used to save data to DataPipe without using a trial. These methods are `save`, `saveBase64Data`, and `getCondition`.
+The pipe plugin provides three static methods that can be used to save data to DataPipe without using a trial. These methods are `saveData`, `saveBase64Data`, and `getCondition`.
 
-### save
+### saveData
 
 ```js
-jsPsychPipe.save(experiment_id, filename, data)
+jsPsychPipe.saveData(experiment_id, filename, data)
 ```
 
-The `save` method accepts an optional fourth boolean argument to control compression:
+The `saveData` method accepts an optional fourth boolean argument to control compression:
 
 ```js
-jsPsychPipe.save(experiment_id, filename, data, true)  // compressed (default)
-jsPsychPipe.save(experiment_id, filename, data, false) // uncompressed
+jsPsychPipe.saveData(experiment_id, filename, data, true)  // compressed (default)
+jsPsychPipe.saveData(experiment_id, filename, data, false) // uncompressed
 ```
 
 ### saveBase64Data
@@ -50,7 +50,7 @@ jsPsychPipe.save(experiment_id, filename, data, false) // uncompressed
 jsPsychPipe.saveBase64Data(experiment_id, filename, data)
 ```
 
-Like `save`, an optional fourth boolean argument controls compression:
+Like `saveData`, an optional fourth boolean argument controls compression:
 
 ```js
 jsPsychPipe.saveBase64Data(experiment_id, filename, data, true)  // compressed (default)
@@ -111,7 +111,7 @@ const save_data = {
 Or when using the static methods:
 
 ```javascript
-jsPsychPipe.save(expID, filename, data, false);
+jsPsychPipe.saveData(expID, filename, data, false);
 ```
 
 ## Examples

@@ -119,17 +119,21 @@ async function sendRequest(
   const jsonString = JSON.stringify(body);
 
   if (compress) {
-    const compressed = await gzipCompress(jsonString);
-    if (compressed) {
-      return fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Content-Encoding": "gzip",
-          Accept: "*/*",
-        },
-        body: compressed,
-      });
+    try {
+      const compressed = await gzipCompress(jsonString);
+      if (compressed) {
+        return fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Content-Encoding": "gzip",
+            Accept: "*/*",
+          },
+          body: compressed,
+        });
+      }
+    } catch (error) {
+      console.warn("plugin-pipe: Compression failed. Falling back to uncompressed upload.", error);
     }
   }
 
