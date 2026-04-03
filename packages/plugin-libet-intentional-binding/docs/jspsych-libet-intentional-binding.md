@@ -8,7 +8,7 @@ This plugin measures intentional binding using a Libet clock, and allows the par
 
 ## Parameters
 
-In addition to the [parameters available in all plugins](https://www.jspsych.org/overview/plugins#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of *undefined* must be specified. Parameters can be left unspecified if the default value is acceptable.
+In addition to the [parameters available in all plugins](https://www.jspsych.org/latest/overview/plugins/#parameters-available-in-all-plugins), this plugin accepts the following parameters. Parameters with a default value of *undefined* must be specified. Parameters can be left unspecified if the default value is acceptable.
 
 | Parameter                | Type             | Default Value        | Descripton                               |
 | ------------------------ | ---------------- | -------------------- | ---------------------------------------- |
@@ -28,8 +28,9 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | fixation_ms              | int              | 400                  | Duration of the pre-trial fixation cross in ms. |
 | clock_period             | int              | 2560                 | The period of the clock in ms. |
 | early_ms                 | int              | 2560                 | The earliest allowable keypress, measured in milliseconds since the clock hand begins rotating. If a keypress is made prior to this, the trial ends. |
-| early_fcn                | function         | `function(){}`         | Function called when the participant responds too early (e.g., to provide feedback). |
+| early_fcn                | function         | `function(){}`       | Function called when the participant responds too early (e.g., to provide feedback). |
 | timeout_ms               | int              | 4000                 | The maximum length of a trial, measured in milliseconds since the clock hand begins rotating. If a keypress is not made prior to this, the trial ends. |
+| timeout_fcn              | function         | `function(){}`       | Function called when the the trial times out. |
 | spin_continue_ms         | int              | 1000                 | The length of time, in ms, after the keypress or tone, whichever comes later, that the clock animation continues. |
 | clock_diam               | int              | 200                  | The diameter of the clock in pixels. |
 | n_maj_ticks              | int              | 60                   | The number of major ticks to draw on the clock face. |
@@ -40,13 +41,13 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | min_tick_start           | int              | `Math.PI*2/120`        | Where to draw the first minor tick, in radians. |
 | num                      | int              | `[60, 55, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5]` | The numbers to draw around the clock face. |
 | num_start                | int              | `Math.PI/2`            | Where to draw the first number, in radians. |
-| num_font                 | string           | `"5mm Arial"`          | The font for the numbers. |
+| num_font                 | string           | `"5mm Arial"`          | The font for the numbers, in the standard of a [CSS font](https://developer.mozilla.org/en-US/docs/Web/CSS/font). |
 | num_dist                 | int              | 30                   | Distance of the numbers from the outer circle of the clock, in pixels. |
 | hand_len                 | int              | 80                   | Length of the clock hand in pixels. |
 
 ## Data Generated
 
-In addition to the [default data collected by all plugins](https://www.jspsych.org/overview/plugins#data-collected-by-all-plugins), this plugin collects all parameter data described above and the following data for each trial.
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects all parameter data described above and the following data for each trial.
 
 | Name             | Type        | Value                                    |
 | ---------------- | ----------- | ---------------------------------------- |

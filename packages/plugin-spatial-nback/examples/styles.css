@@ -1,0 +1,139 @@
+/* Spatial N-Back Plugin Styles */
+
+.nback-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  max-width: 90vw;
+  margin: 0 auto;
+}
+
+.nback-instructions {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.nback-grid-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.nback-grid {
+  border: 2px solid #000;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.nback-grid-row {
+  display: flex;
+}
+
+.nback-grid-cell {
+  border: 1px solid #ccc;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+.nback-feedback-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.nback-feedback {
+  min-height: 30px;
+  padding: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* Blue button styling */
+.nback-response-btn {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 120px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: all 0.2s;
+}
+
+.nback-response-btn:hover:not(:disabled) {
+  background-color: #1976D2;
+}
+
+.nback-response-btn:disabled {
+  background-color: #2196F3;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Alternative inline styles from index.ts (keep these as reference) */
+#nback-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  max-width: 90vw;
+  margin: 0 auto;
+}
+
+#nback-instructions {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+#nback-grid-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+#nback-grid {
+  border: 2px solid #000;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+#nback-feedback-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+#nback-feedback {
+  min-height: 30px;
+  padding: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* Grid cells maintain dynamic width/height from index.ts */
+.nback-grid-cell {
+  /* width and height set dynamically based on final_cell_size */
+  border: 1px solid #ccc;
+  background-color: white;
+  box-sizing: border-box;
+}

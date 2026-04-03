@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="../dist/index.browser.js"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  /* Example with default and non-default parameters */
+
+  const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+  var timeline = []
+
+  /* shows welcome message */ 
+  var welcome = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: "Welcome to the experiment. Press any key to begin."
+  };
+
+  var preload = {
+        type: jsPsychPreload,
+        images: ['img/left.png', 'img/left_stop.png']
+  }
+
+  /* Trial with default params */
+  var trial1 = {
+    type: jsPsychStopSignal,
+    stimuli: ['img/left.png', 'img/left_stop.png'],
+    choices: ['Left', 'Right']
+  };
+
+  /* Trial with custom params */
+  var trial2 = {
+    type: jsPsychStopSignal,
+    stimuli: ['img/left.png', 'img/left_stop.png'],
+    stimulus_height: 200,
+    stimulus_width: 200,
+    trial_duration: 4000,
+    frame_delay: 2000,
+    choices: ['', 'Up', '', 'Left', '', 'Right','', 'Down', ''],
+    grid_rows: 2,
+    grid_columns: 3,
+    enable_button_after: 1000,
+    prompt: "Click the button that matches the arrow"
+
+  };
+
+  timeline.push(preload, welcome, trial1, trial2)
+  jsPsych.run(timeline)
+</script>
+
+</html>

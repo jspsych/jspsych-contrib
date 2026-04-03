@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <!-- The plugin is loaded here -->
+  <script src="https://unpkg.com/@jspsych/plugin-spr"></script>
+  <script src="../dist/index.browser.js"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: async function() {      
+      jsPsych.data.displayData();  
+    },
+    default_iti: 250
+  });
+
+  // basic trial, each key press advances the sentence by one word (segment)
+  // mode 3: each segment is displayed individually, switching to the next on key press
+  const regular_trial = {
+    type: jsPsychSpr,
+    sentence: "Pa's wijze lynx bezag vroom het fikse aquaduct.",
+    mode: 3, 
+  }
+
+  const choice_primer = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: '<p>Press F if the word has an even amount of characters, J if odd.<br>Press SPACE to continue on.</p>',
+    choices: [' ']
+  }
+
+  // you can have multiple choices per segment!
+  const choice_trial = {
+    type: jsPsychSpr,
+    sentence: "Příliš žluťoučký kůň úpěl ďábelské ódy.",
+    mode: 3,
+    choices: ["f", "j"],
+    show_first_blank: false // do not show the first segment as a blank
+  }
+
+  // for fun, you can also use this display method to display vertical lines bit by bit
+  const iroha_trial = {
+    type: jsPsychSpr,
+    sentence: "い\nろ\nは\nに\nほ\nへ\nと ち\nり\nぬ\nる\nを わ\nか\nよ\nた\nれ\nそ つ\nね\nな\nら\nむ う\nゐ\nの\nお\nく\nや\nま け\nふ\nこ\nえ\nて あ\nさ\nき\nゆ\nめ\nみ\nし ゑ\nひ\nも\nせ\nす",
+    mode: 3,
+    show_first_blank: false,
+    inter_word_interval: 500, // wait 500ms before a user can advance
+  }
+
+  jsPsych.run([regular_trial, choice_primer, choice_trial, iroha_trial]);
+</script>
+
+</html>

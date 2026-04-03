@@ -5,11 +5,5 @@
   "linked": [],
   "access": "public",
   "baseBranch": "main",
-  "updateInternalDependencies": "patch",
-  "ignore": [
-    "@jspsych-contrib/extension-template",
-    "@jspsych-contrib/extension-template-ts",
-    "@jspsych-contrib/plugin-template",
-    "@jspsych-contrib/plugin-template-ts"
-  ]
+  "updateInternalDependencies": "patch"
 }

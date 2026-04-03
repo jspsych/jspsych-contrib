@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <!-- The plugin is loaded here -->
+  <script src="https://unpkg.com/@jspsych/plugin-spr"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: async function() {      
+      jsPsych.data.displayData();  
+    },
+    default_iti: 250
+  });
+
+  // basic trial, each key press advances the sentence by one word (segment)
+  // mode 2: all segments after the current segment are unmasked.
+  const regular_trial = {
+    type: jsPsychSpr,
+    sentence: "D'ith cat mór dubh na héisc lofa go pras.",
+    mode: 2,
+  }
+
+  // you can change the delimiter to any character you like, including none
+  // for character-by-character presentation
+  const line_break_trial = {
+    type: jsPsychSpr,
+    sentence: "石室诗士施氏",
+    delimiter: "",
+    mode: 2,
+  }
+
+  // you can even use a custom mask character instead of underlines!
+  // note: this will force the fonts to be monospaced, to align the characters properly
+  const custom_mask_character = {
+    type: jsPsychSpr,
+    sentence: "Cantami o Diva del pelide Achille l'ira funesta.",
+    mode: 2,
+    mask_character: "X", 
+    mask_underline: false // remove the underlines
+  }
+
+  jsPsych.run([regular_trial, line_break_trial, custom_mask_character]);
+</script>
+
+</html>

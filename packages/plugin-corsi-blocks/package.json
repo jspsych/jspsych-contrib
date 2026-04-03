@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-corsi-blocks",
-  "version": "1.0.0",
-  "description": "Corsi blocks task plugin for jsPsych",
+  "version": "2.0.0",
+  "description": "This plugin displays a configurable Corsi blocks task and records a series of click responses.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -27,18 +27,21 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-corsi-blocks"
   },
-  "author": "Josh de Leeuw",
+  "author": {
+    "name": "Josh de Leeuw",
+    "url": "https://github.com/jodeleeuw"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-corsi-blocks",
   "peerDependencies": {
-    "jspsych": ">=7.3.2"
+    "jspsych": ">=8.0.0"
   },
   "devDependencies": {
-    "@jspsych/config": "^1.0.0",
+    "@jspsych/config": "^3.2.2",
     "@jspsych/test-utils": "^1.0.0",
-    "jspsych": "^7.3.2"
+    "jspsych": "^8.0.0"
   }
 }

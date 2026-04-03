@@ -1,0 +1,25 @@
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="200" y="30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="#333">
+    Click on the rectangles below!
+  </text>
+
+  <!-- Red rectangle -->
+  <rect x="50" y="60" width="120" height="80" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <text x="110" y="105" text-anchor="middle" font-family="Arial" font-size="14" fill="white">Red</text>
+
+  <!-- Blue rectangle -->
+  <rect x="230" y="60" width="120" height="80" fill="#3498db" stroke="#2980b9" stroke-width="2"/>
+  <text x="290" y="105" text-anchor="middle" font-family="Arial" font-size="14" fill="white">Blue</text>
+
+  <!-- Green rectangle -->
+  <rect x="50" y="180" width="120" height="80" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/>
+  <text x="110" y="225" text-anchor="middle" font-family="Arial" font-size="14" fill="white">Green</text>
+
+  <!-- Yellow rectangle -->
+  <rect x="230" y="180" width="120" height="80" fill="#f1c40f" stroke="#f39c12" stroke-width="2"/>
+  <text x="290" y="225" text-anchor="middle" font-family="Arial" font-size="14" fill="#333">Yellow</text>
+</svg>

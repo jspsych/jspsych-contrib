@@ -1,5 +1,17 @@
 # @jspsych-contrib/plugin-rdk
 
+## 2.0.0
+
+### Major Changes
+
+- [#144](https://github.com/jspsych/jspsych-contrib/pull/144) [`1a7604b7331df666e954156724dc29228b37ffe7`](https://github.com/jspsych/jspsych-contrib/commit/1a7604b7331df666e954156724dc29228b37ffe7) Thanks [@jadeddelta](https://github.com/jadeddelta)! - Plugin updated to use jsPsych v8, with data now properly typed, proper audio integration, unnecessary timeout/display clears removed, and citations added if they exist. To use v7, check the README.md file for which version is compatible.
+
+## 1.2.0
+
+### Minor Changes
+
+- [#147](https://github.com/jspsych/jspsych-contrib/pull/147) [`7c775983b5852b5c44949f4bcd5bd7d45b048b3b`](https://github.com/jspsych/jspsych-contrib/commit/7c775983b5852b5c44949f4bcd5bd7d45b048b3b) Thanks [@Hoboki](https://github.com/Hoboki)! - If you want coherent dots to change their directions during a trial, you can set `flip_timestamps` and flip their directions as much as you want.
+
 ## 1.1.0
 
 ### Minor Changes

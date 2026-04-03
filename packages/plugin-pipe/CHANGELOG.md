@@ -1,5 +1,23 @@
 # @jspsych-contrib/plugin-pipe
 
+## 0.6.0
+
+### Minor Changes
+
+- [#236](https://github.com/jspsych/jspsych-contrib/pull/236) [`befe0a88fd2d330a2337d8ff531917c2e36ecdbf`](https://github.com/jspsych/jspsych-contrib/commit/befe0a88fd2d330a2337d8ff531917c2e36ecdbf) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Add gzip compression for request bodies, enabled by default via a new `compression` parameter. This allows uploading datasets larger than the 32 MB server limit by compressing them before sending. Text data (JSON, CSV) typically compresses 2-10x, effectively raising the upload limit to 60-300+ MB for most experiment data. Compression uses the browser's built-in `CompressionStream` API and gracefully falls back to uncompressed uploads in unsupported browsers.
+
+## 0.5.0
+
+### Minor Changes
+
+- [#144](https://github.com/jspsych/jspsych-contrib/pull/144) [`1a7604b7331df666e954156724dc29228b37ffe7`](https://github.com/jspsych/jspsych-contrib/commit/1a7604b7331df666e954156724dc29228b37ffe7) Thanks [@jadeddelta](https://github.com/jadeddelta)! - Plugin updated to use jsPsych v8, with data now properly typed, proper audio integration, unnecessary timeout/display clears removed, and citations added if they exist. To use v7, check the README.md file for which version is compatible.
+
+## 0.4.0
+
+### Minor Changes
+
+- [#114](https://github.com/jspsych/jspsych-contrib/pull/114) [`4af83c6f77f0b48af1ddf0b7cab794e57a82500d`](https://github.com/jspsych/jspsych-contrib/commit/4af83c6f77f0b48af1ddf0b7cab794e57a82500d) Thanks [@Bankminer78](https://github.com/Bankminer78)! - Added ability to display wait message above loading graphics during upload.
+
 ## 0.3.0
 
 ### Minor Changes

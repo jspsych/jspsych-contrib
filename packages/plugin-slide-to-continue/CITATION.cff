@@ -1,0 +1,32 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: jspsych-plugin-slide-to-contuinue
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Vishnu
+    family-names: Lakshman
+    email: vlakshman@vassar.edu
+    affiliation: De Leeuw Lab - Vassar College
+repository-code: >-
+  https://github.com/jspsych/jspsych-contrib/tree/main/packages
+abstract: >-
+  The plugin-slider is a jspsych plugin that creates an
+  interactive slider interface similar to the "slide to
+  unlock" functionality found on mobile devices. Users must
+  drag a slider handle to complete the trial, making it
+  useful for consent screens, engagement checks, or
+  transition screens in psychological experiments.
+keywords:
+  - jspsych
+  - plugin
+  - slider
+  - jspsych-contrib
+license: MIT
+commit: First release
+version: 1.0.0
+date-released: '2025-07-14'

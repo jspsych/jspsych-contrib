@@ -9,7 +9,7 @@ Extension enables tracking of device motion. This will only work on you mobile p
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/extension-device-motion@1.0.0">
+<script src="https://unpkg.com/@jspsych-contrib/extension-device-motion@1.0.0"></script>
 ```
 
 ### Via NPM

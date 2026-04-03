@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/jspsych@8"></script>
+        <script src="../dist/index.browser.js"></script>
+        <link href="https://unpkg.com/jspsych@8/css/jspsych.css" rel="stylesheet" type="text/css">
+    </head>
+    <body></body>
+    <script>
+        const jsPsych = initJsPsych({
+            on_finish: function () {
+	            jsPsych.data.displayData();
+	        },
+        });
+
+        const trial = {
+            type: jsPsychSurveySlider,
+            questions: [
+                {prompt:'FIRST QUESTION', ticks:['Never','Always']},
+                {prompt:'SECOND QUESTION', ticks:['Just once','All the time!']},
+            ]
+        }
+
+        jsPsych.run([trial]);
+    </script>
+</html>

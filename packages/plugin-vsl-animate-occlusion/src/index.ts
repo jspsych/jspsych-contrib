@@ -1,8 +1,11 @@
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import Snap from "snapsvg";
 
+import { version } from "../package.json";
+
 const info = <const>{
   name: "vsl-animate-occlusion",
+  version: version,
   parameters: {
     /** Array containing path(s) to image file(s). */
     stimuli: {
@@ -11,7 +14,7 @@ const info = <const>{
       default: undefined,
       array: true,
     },
-    /** Array containing the key(s) that the subject is allowed to press in order to respond to the stimulus. */
+    /** Array containing the key(s) that the participant is allowed to press in order to respond to the stimulus. */
     choices: {
       type: ParameterType.KEYS,
       pretty_name: "Choices",
@@ -55,6 +58,37 @@ const info = <const>{
       type: ParameterType.INT,
       pretty_name: "Pre movement duration",
       default: 500,
+    },
+  },
+  data: {
+    /** Array containing all response information. Each element in the array is an object representing
+     *  each valid response. Each response item has three properties: `key` the key that was pressed,
+     * `stimulus` the index of the stimulus that was displayed when the response was made, and `rt`
+     * the response time measured since the start of the sequence. This will be encoded as a JSON string
+     *  when data is saved using the `.json()` or `.csv()` functions. */
+    response: {
+      type: ParameterType.COMPLEX,
+      array: true,
+      nested: {
+        /** The key that was pressed. */
+        key: {
+          type: ParameterType.STRING,
+        },
+        /** The index of the stimulus that was displayed when the response was made. */
+        stimulus: {
+          type: ParameterType.INT,
+        },
+        /** The response time measured since the start of the sequence. */
+        rt: {
+          type: ParameterType.INT,
+        },
+      },
+    },
+    /** Array where each element is a stimulus from the sequence, in the order that they were shown.
+     * This will be encoded as a JSON string when data is saved using the `.json()` or `.csv()` functions. */
+    stimuli: {
+      type: ParameterType.STRING,
+      array: true,
     },
   },
 };
@@ -204,8 +238,6 @@ class VslAnimateOcclusionPlugin implements JsPsychPlugin<Info> {
     }
 
     const endTrial = () => {
-      display_element.innerHTML = "";
-
       this.jsPsych.pluginAPI.cancelKeyboardResponse(key_listener);
 
       var trial_data = {

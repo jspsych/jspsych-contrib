@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BART Plugin - Simple Example</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <!-- Once this plugin package is published, it can be loaded via:
+    <script src="https://unpkg.com/@jspsych-contrib/plugin-bart"></script>
+    For local development: -->
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    // Single BART trial with fixed pop threshold, using cash-based point display formatting
+    const trial = {
+      type: jsPsychBart,
+      pop_threshold: 8,
+      show_balloon_value: true,
+      show_total_points: true,
+      starting_total_points: 0,
+      points_per_pump: 5,
+      pump_button_label: "Pump Balloon",
+      collect_button_label: "Collect Cash",
+      current_value_label: "Current Balloon Value",
+      total_points_label: "Your Total Cash",
+      point_display_format: (points) => `<strong style="color: #2a971b;">$${points}</strong>`,
+      total_points_format: (total) => `<strong style="color: #1b6ca8;">$${total}</strong>`,
+      balloon_color: "#ff4444"
+    };
+
+    jsPsych.run([trial]);
+  </script>
+</html>

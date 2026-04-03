@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/jspsych@8"></script>
+        <script src="../dist/index.browser.js"></script>
+        <link href="https://unpkg.com/jspsych@8/css/jspsych.css" rel="stylesheet" type="text/css">
+    </head>
+    <body></body>
+    <script>
+        const jsPsych = initJsPsych({
+            on_finish: function () {
+	            jsPsych.data.displayData();
+	        },
+        });
+
+        const trial = {
+            type: jsPsychSurveyNumber,
+            questions: [{
+                prompt: 'How old are you?',
+                name: 'age',
+                required: true,
+            }]
+        }
+
+        jsPsych.run([trial]);
+    </script>
+</html>

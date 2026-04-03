@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BART Plugin Example - Multiple Trials</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response"></script>
+    <!-- Once this plugin package is published, it can be loaded via:
+    <script src="https://unpkg.com/@jspsych-contrib/plugin-bart"></script>
+    For local development: -->
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    // Generate random pop thresholds for 5 trials
+    // This simulates the probabilistic approach
+    const generatePopThreshold = () => {
+      // Pop threshold randomly between 5 and 15 pumps
+      return Math.floor(Math.random() * 11) + 5;
+    };
+
+    // Instructions
+    const instructions = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <div style="max-width: 800px; margin: 0 auto;">
+          <h1>Balloon Analogue Risk Task (BART)</h1>
+          <p>In this task, you will see a balloon. You can pump the balloon to earn points.</p>
+          <p>Each pump adds <strong>1 point</strong> to the balloon's value.</p>
+          <p>You have two choices:</p>
+          <ul style="text-align: left;">
+            <li><strong>Pump:</strong> Increase the balloon's value by 1 point, but risk popping it</li>
+            <li><strong>Collect:</strong> Bank your current points and move to the next balloon</li>
+          </ul>
+          <p><strong>Warning:</strong> If the balloon pops, you lose all points from that balloon!</p>
+          <p>Try to earn as many points as possible across all balloons.</p>
+          <p>Press any key to begin.</p>
+        </div>
+      `,
+    };
+
+    // Create 5 BART trials with tracking total points
+    let total_points = 0;
+    const trials = [];
+
+    for (let i = 0; i < 5; i++) {
+      const trial = {
+        type: jsPsychBart,
+        pop_threshold: generatePopThreshold(),
+        show_balloon_value: true,
+        show_total_points: true,
+        starting_total_points: () => total_points,
+        points_per_pump: 1,
+        balloon_color: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'][i],
+        on_finish: function(data) {
+          total_points = data.total_points;
+        }
+      };
+      trials.push(trial);
+    }
+
+    // Final results screen
+    const debrief = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function() {
+        const bart_trials = jsPsych.data.get().filter({trial_type: 'bart'});
+        const total_pumps = bart_trials.select('pumps').sum();
+        const total_pops = bart_trials.filter({popped: true}).count();
+        const final_points = total_points;
+
+        return `
+          <div style="max-width: 800px; margin: 0 auto;">
+            <h1>Task Complete!</h1>
+            <h2>Your Results:</h2>
+            <p style="font-size: 24px;"><strong>Final Score: ${final_points} points</strong></p>
+            <p>Total Pumps: ${total_pumps}</p>
+            <p>Balloons Popped: ${total_pops} out of 5</p>
+            <p>Balloons Collected: ${5 - total_pops} out of 5</p>
+            <p>Press any key to see the full data.</p>
+          </div>
+        `;
+      }
+    };
+
+    // Run the experiment
+    jsPsych.run([instructions, ...trials, debrief]);
+  </script>
+</html>

@@ -11,7 +11,7 @@ The primary purpose of this extension is to use it in plugins. For instance, it 
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/extension-mediapipe-face-mesh@2.0.0">
+<script src="https://unpkg.com/@jspsych-contrib/extension-mediapipe-face-mesh@2.0.0"></script>
 ```
 
 ### Via NPM
@@ -66,7 +66,7 @@ record | boolean | false | Should the data generated as described below recorded
 
 ### Data Generated
 
-In addition to the [default data collected by all plugins](https://www.jspsych.org/overview/plugins#data-collected-by-all-plugins), this plugin collects all parameter data described above and the following data for each trial.
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects all parameter data described above and the following data for each trial.
 
 | Name             | Type        | Value                                    |
 | ---------------- | ----------- | ---------------------------------------- |

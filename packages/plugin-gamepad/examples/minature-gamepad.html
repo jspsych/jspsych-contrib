@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>jspsych-gamepad plugin test</title>
+        <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+        <script src="https://unpkg.com/jspsych@8"></script>
+        <script src="../dist/index.browser.js"></script>
+    </head>
+    <body>
+        <script>
+            const jsPsych = initJsPsych();
+
+            let trial = {
+                type: jsPsychGamepad,
+                display_minature_gamepad: true,
+                end_trial: () => {
+                    return false;
+                },
+            };
+
+            jsPsych.run([trial]);
+        </script>
+    </body>
+</html>

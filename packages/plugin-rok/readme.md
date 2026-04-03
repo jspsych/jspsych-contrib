@@ -2,7 +2,7 @@
 
 ## Overview
 
-This plugin displays oriented objects (oobs) that move and allows the subject to report the primary direction of motion or the primary orientation by pressing a key on the keyboard.  The stimulus can be displayed until a keyboard response is given or until a certain duration of time has passed. Oobs are objects that have an orientation (e.g. triangles).
+This plugin displays oriented objects (oobs) that move and allows the participant to report the primary direction of motion or the primary orientation by pressing a key on the keyboard.  The stimulus can be displayed until a keyboard response is given or until a certain duration of time has passed. Oobs are objects that have an orientation (e.g. triangles).
 
 
 ## Loading
@@ -10,7 +10,7 @@ This plugin displays oriented objects (oobs) that move and allows the subject to
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-rok@1.1.1"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-rok@2.0.0"></script>
 ```
 
 ### Via NPM
@@ -25,7 +25,7 @@ import jsPsychRok from '@jspsych-contrib/plugin-rok';
 
 ## Compatibility
 
-jsPsych v7.0.
+jsPsych v8.0. For compatibility with jsPsych v7.0, use version 1.1.1 of this plugin.
 
 ## Documentation
 
