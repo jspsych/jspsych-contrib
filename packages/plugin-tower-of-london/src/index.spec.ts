@@ -5,43 +5,7 @@ import jsPsychTowerOfLondon from ".";
 jest.useFakeTimers();
 
 describe("tower-of-london plugin", () => {
-  // Store original methods for restoration
-  let originalGetContext: typeof HTMLCanvasElement.prototype.getContext;
-  let mockCtx: any;
-  let arcCalls: Array<{ x: number; y: number; radius: number; fillStyle?: string }>;
-  let fillRectCalls: Array<{ x: number; y: number; width: number; height: number }>;
-
-  beforeEach(() => {
-    arcCalls = [];
-    fillRectCalls = [];
-
-    // Create mock context that tracks calls
-    mockCtx = {
-      fillStyle: "",
-      strokeStyle: "",
-      lineWidth: 0,
-      fillRect: jest.fn((x: number, y: number, w: number, h: number) => {
-        fillRectCalls.push({ x, y, width: w, height: h });
-      }),
-      strokeRect: jest.fn(),
-      beginPath: jest.fn(),
-      arc: jest.fn((x: number, y: number, radius: number) => {
-        arcCalls.push({ x, y, radius, fillStyle: mockCtx.fillStyle });
-      }),
-      stroke: jest.fn(),
-      fill: jest.fn(),
-    };
-
-    // Mock getContext to return our mock
-    originalGetContext = HTMLCanvasElement.prototype.getContext;
-    HTMLCanvasElement.prototype.getContext = jest.fn(() => mockCtx) as any;
-  });
-
-  afterEach(() => {
-    HTMLCanvasElement.prototype.getContext = originalGetContext;
-  });
-
-  it("should load and display canvas", async () => {
+  it("should load and display SVG", async () => {
     const { displayElement } = await startTimeline([
       {
         type: jsPsychTowerOfLondon,
@@ -50,13 +14,11 @@ describe("tower-of-london plugin", () => {
       },
     ]);
 
-    expect(displayElement.querySelector("#jspsych-tower-of-london-canvas")).not.toBeNull();
+    expect(displayElement.querySelector("#jspsych-tower-of-london-svg")).not.toBeNull();
   });
 
-  it("should draw pegs and base on canvas", async () => {
-    fillRectCalls = [];
-
-    await startTimeline([
+  it("should draw pegs as SVG rects", async () => {
+    const { displayElement } = await startTimeline([
       {
         type: jsPsychTowerOfLondon,
         start_state: [["red", "green", "blue"], [], []],
@@ -66,21 +28,14 @@ describe("tower-of-london plugin", () => {
       },
     ]);
 
-    // Should have fillRect calls for:
-    // - Background clear
-    // - Base (horizontal bar at bottom)
-    // - 3 pegs (vertical bars)
-    expect(fillRectCalls.length).toBeGreaterThanOrEqual(4);
-
-    // Base should be near the bottom of the canvas
-    const baseCalls = fillRectCalls.filter((call) => call.y > 350);
-    expect(baseCalls.length).toBeGreaterThan(0);
+    const svg = displayElement.querySelector("#jspsych-tower-of-london-svg")!;
+    const rects = svg.querySelectorAll("rect");
+    // Background + base + 3 pegs + goal inset rects
+    expect(rects.length).toBeGreaterThanOrEqual(5);
   });
 
-  it("should draw balls with correct colors on canvas", async () => {
-    arcCalls = [];
-
-    await startTimeline([
+  it("should draw balls as SVG circles", async () => {
+    const { displayElement } = await startTimeline([
       {
         type: jsPsychTowerOfLondon,
         start_state: [["red", "green", "blue"], [], []],
@@ -93,18 +48,20 @@ describe("tower-of-london plugin", () => {
       },
     ]);
 
-    // Should have arc calls for balls (radius = 30 by default)
-    const ballCalls = arcCalls.filter((call) => call.radius === 30);
-    expect(ballCalls.length).toBe(3); // 3 balls in start_state
+    const svg = displayElement.querySelector("#jspsych-tower-of-london-svg")!;
+    // Main balls (r=30) + goal balls (r=9)
+    const circles = svg.querySelectorAll("circle");
+    const mainBalls = Array.from(circles).filter((c) => c.getAttribute("r") === "30");
+    expect(mainBalls.length).toBe(3);
 
-    // Verify ball colors are being used
-    const colors = ballCalls.map((call) => call.fillStyle);
-    expect(colors).toContain("#e74c3c"); // red
-    expect(colors).toContain("#27ae60"); // green
-    expect(colors).toContain("#3498db"); // blue
+    // Verify ball colors
+    const fills = mainBalls.map((c) => c.getAttribute("fill"));
+    expect(fills).toContain("#e74c3c");
+    expect(fills).toContain("#27ae60");
+    expect(fills).toContain("#3498db");
   });
 
-  it("should show goal display when show_goal is true and draw goal state", async () => {
+  it("should draw goal inset with label when show_goal is true", async () => {
     const { displayElement } = await startTimeline([
       {
         type: jsPsychTowerOfLondon,
@@ -114,20 +71,32 @@ describe("tower-of-london plugin", () => {
       },
     ]);
 
-    const goalCanvas = displayElement.querySelector(
-      "#jspsych-tower-of-london-goal-canvas"
-    ) as HTMLCanvasElement;
-    expect(goalCanvas).not.toBeNull();
-
-    // Goal canvas should be smaller than main canvas
-    const mainCanvas = displayElement.querySelector(
-      "#jspsych-tower-of-london-canvas"
-    ) as HTMLCanvasElement;
-    expect(goalCanvas.width).toBeLessThan(mainCanvas.width);
-    expect(goalCanvas.height).toBeLessThan(mainCanvas.height);
+    const svg = displayElement.querySelector("#jspsych-tower-of-london-svg")!;
+    const text = svg.querySelector("text");
+    expect(text).not.toBeNull();
+    expect(text!.textContent).toBe("Goal");
   });
 
-  it("should hide goal display when show_goal is false", async () => {
+  it("should use custom goal_label text", async () => {
+    const { displayElement } = await startTimeline([
+      {
+        type: jsPsychTowerOfLondon,
+        show_goal: true,
+        goal_label: "Target",
+      },
+    ]);
+
+    const svg = displayElement.querySelector("#jspsych-tower-of-london-svg")!;
+    const text = svg.querySelector("text");
+    expect(text!.textContent).toBe("Target");
+
+    // Goal balls should be drawn at smaller radius (30 * 0.3 = 9)
+    const circles = svg.querySelectorAll("circle");
+    const goalBalls = Array.from(circles).filter((c) => c.getAttribute("r") === "9");
+    expect(goalBalls.length).toBe(3);
+  });
+
+  it("should not draw goal inset when show_goal is false", async () => {
     const { displayElement } = await startTimeline([
       {
         type: jsPsychTowerOfLondon,
@@ -135,7 +104,8 @@ describe("tower-of-london plugin", () => {
       },
     ]);
 
-    expect(displayElement.querySelector("#jspsych-tower-of-london-goal-canvas")).toBeNull();
+    const svg = displayElement.querySelector("#jspsych-tower-of-london-svg")!;
+    expect(svg.querySelector("text")).toBeNull();
   });
 
   it("should show move counter when show_move_counter is true", async () => {
@@ -193,7 +163,7 @@ describe("tower-of-london plugin", () => {
       {
         type: jsPsychTowerOfLondon,
         done_button_text: "Done",
-        end_delay: 0, // Skip delay for this test
+        end_delay: 0,
       },
     ]);
 
@@ -207,7 +177,7 @@ describe("tower-of-london plugin", () => {
       {
         type: jsPsychTowerOfLondon,
         time_limit: 1000,
-        end_delay: 0, // Skip delay for this test
+        end_delay: 0,
       },
     ]);
 
@@ -287,46 +257,48 @@ describe("tower-of-london plugin", () => {
       },
     ]);
 
-    const canvas = displayElement.querySelector(
-      "#jspsych-tower-of-london-canvas"
-    ) as HTMLCanvasElement;
-    expect(canvas.width).toBe(800);
-    expect(canvas.height).toBe(600);
+    const svg = displayElement.querySelector("#jspsych-tower-of-london-svg") as SVGSVGElement;
+    expect(svg.getAttribute("width")).toBe("800");
+    expect(svg.getAttribute("height")).toBe("600");
   });
 
-  it("should use custom peg capacities and draw capacity indicators", async () => {
-    arcCalls = [];
-
-    await startTimeline([
+  it("should scale peg heights by capacity", async () => {
+    const { displayElement } = await startTimeline([
       {
         type: jsPsychTowerOfLondon,
         peg_capacities: [3, 2, 1],
         start_state: [["red"], [], []],
         goal_state: [[], ["red"], []],
+        show_goal: false,
       },
     ]);
 
-    // Capacity indicators are drawn as small dots (radius 3)
-    const capacityIndicators = arcCalls.filter((call) => call.radius === 3);
-    // Should have 3 + 2 + 1 = 6 capacity indicator dots
-    expect(capacityIndicators.length).toBe(6);
+    const svg = displayElement.querySelector("#jspsych-tower-of-london-svg")!;
+    const rects = Array.from(svg.querySelectorAll("rect"));
+    // Filter for narrow peg rects (width=15)
+    const pegRects = rects.filter((r) => r.getAttribute("width") === "15");
+    expect(pegRects.length).toBe(3);
+
+    const heights = pegRects.map((r) => parseInt(r.getAttribute("height")!));
+    expect(heights[0]).toBeGreaterThan(heights[1]);
+    expect(heights[1]).toBeGreaterThan(heights[2]);
   });
 
   it("should use custom ball radius", async () => {
-    arcCalls = [];
-
-    await startTimeline([
+    const { displayElement } = await startTimeline([
       {
         type: jsPsychTowerOfLondon,
         ball_radius: 40,
         start_state: [["red", "green", "blue"], [], []],
         goal_state: [["blue"], ["green"], ["red"]],
+        show_goal: false,
       },
     ]);
 
-    // Balls should be drawn with radius 40
-    const ballCalls = arcCalls.filter((call) => call.radius === 40);
-    expect(ballCalls.length).toBe(3);
+    const svg = displayElement.querySelector("#jspsych-tower-of-london-svg")!;
+    const circles = svg.querySelectorAll("circle");
+    const ballsWithRadius40 = Array.from(circles).filter((c) => c.getAttribute("r") === "40");
+    expect(ballsWithRadius40.length).toBe(3);
   });
 
   it("should initialize moves array as empty", async () => {
@@ -363,7 +335,7 @@ describe("tower-of-london plugin", () => {
     expect(data.optimal).toBeNull();
   });
 
-  it("should respond to click events on canvas", async () => {
+  it("should respond to click events on SVG", async () => {
     const { displayElement } = await startTimeline([
       {
         type: jsPsychTowerOfLondon,
@@ -372,12 +344,9 @@ describe("tower-of-london plugin", () => {
       },
     ]);
 
-    const canvas = displayElement.querySelector(
-      "#jspsych-tower-of-london-canvas"
-    ) as HTMLCanvasElement;
+    const svg = displayElement.querySelector("#jspsych-tower-of-london-svg") as SVGSVGElement;
 
-    // Mock getBoundingClientRect for click position calculation
-    canvas.getBoundingClientRect = jest.fn(() => ({
+    svg.getBoundingClientRect = jest.fn(() => ({
       left: 0,
       top: 0,
       right: 500,
@@ -389,17 +358,16 @@ describe("tower-of-london plugin", () => {
       toJSON: () => {},
     }));
 
-    // Click on first peg area (around x=125 for a 500px wide canvas)
     const clickEvent = new MouseEvent("click", {
       clientX: 125,
       clientY: 200,
       bubbles: true,
     });
 
-    canvas.dispatchEvent(clickEvent);
+    svg.dispatchEvent(clickEvent);
 
-    // The canvas should still exist (test didn't crash)
-    expect(displayElement.querySelector("#jspsych-tower-of-london-canvas")).not.toBeNull();
+    // The SVG should still exist (test didn't crash)
+    expect(displayElement.querySelector("#jspsych-tower-of-london-svg")).not.toBeNull();
   });
 
   it("should delay trial end by end_delay duration", async () => {
@@ -413,13 +381,10 @@ describe("tower-of-london plugin", () => {
 
     (displayElement.querySelector("#jspsych-tower-of-london-done") as HTMLButtonElement).click();
 
-    // Trial should still be running (canvas shown for feedback)
     await expectRunning();
 
-    // Canvas should still be visible during delay
-    expect(displayElement.querySelector("#jspsych-tower-of-london-canvas")).not.toBeNull();
+    expect(displayElement.querySelector("#jspsych-tower-of-london-svg")).not.toBeNull();
 
-    // Advance past the delay
     jest.advanceTimersByTime(500);
 
     await expectFinished();

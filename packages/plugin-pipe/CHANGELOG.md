@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-pipe
 
+## 0.6.0
+
+### Minor Changes
+
+- [#236](https://github.com/jspsych/jspsych-contrib/pull/236) [`befe0a88fd2d330a2337d8ff531917c2e36ecdbf`](https://github.com/jspsych/jspsych-contrib/commit/befe0a88fd2d330a2337d8ff531917c2e36ecdbf) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Add gzip compression for request bodies, enabled by default via a new `compression` parameter. This allows uploading datasets larger than the 32 MB server limit by compressing them before sending. Text data (JSON, CSV) typically compresses 2-10x, effectively raising the upload limit to 60-300+ MB for most experiment data. Compression uses the browser's built-in `CompressionStream` API and gracefully falls back to uncompressed uploads in unsupported browsers.
+
 ## 0.5.0
 
 ### Minor Changes

@@ -86,6 +86,16 @@ const info = <const>{
       type: ParameterType.BOOL,
       default: false,
     },
+    /** Whether to wait for user interaction before starting rotation and timer */
+    wait_for_start: {
+      type: ParameterType.BOOL,
+      default: true,
+    },
+    /** Text displayed on the target before the user starts the trial (only used when wait_for_start is true) */
+    start_text: {
+      type: ParameterType.STRING,
+      default: "Click to start",
+    },
   },
   data: {
     /** Total time the cursor was on the target in milliseconds */
@@ -153,6 +163,7 @@ class PursuitRotorPlugin implements JsPsychPlugin<Info> {
   private deviationCount: number = 0;
   private centerX: number;
   private centerY: number;
+  private isWaiting: boolean = false;
 
   constructor(private jsPsych: JsPsych) {}
 
@@ -167,6 +178,7 @@ class PursuitRotorPlugin implements JsPsychPlugin<Info> {
     this.totalDeviation = 0;
     this.deviationCount = 0;
     this.lastSampleTime = 0;
+    this.isWaiting = trial.wait_for_start as boolean;
 
     this.centerX = (trial.canvas_width as number) / 2;
     this.centerY = (trial.canvas_height as number) / 2;
@@ -190,14 +202,26 @@ class PursuitRotorPlugin implements JsPsychPlugin<Info> {
     // Set up event listeners
     this.setupEventListeners();
 
-    // Start animation
+    if (this.isWaiting) {
+      // Draw initial static state with start text
+      this.canvas.style.cursor = "pointer";
+      const target = this.getTargetPosition(0);
+      this.draw(target.x, target.y, false);
+      this.drawStartText(target.x, target.y);
+    } else {
+      this.startRotation();
+    }
+  }
+
+  private startRotation() {
+    this.isWaiting = false;
+    this.canvas.style.cursor = "crosshair";
     this.startTime = performance.now();
     this.animate();
 
-    // Set trial timeout
     this.jsPsych.pluginAPI.setTimeout(() => {
       this.endTrial();
-    }, trial.trial_duration as number);
+    }, this.trialParams.trial_duration as number);
   }
 
   private setupEventListeners() {
@@ -220,6 +244,11 @@ class PursuitRotorPlugin implements JsPsychPlugin<Info> {
   }
 
   private handleMouseDown(e: MouseEvent) {
+    if (this.isWaiting) {
+      this.handleMouseMove(e);
+      this.startRotation();
+      return;
+    }
     this.isMouseDown = true;
     this.handleMouseMove(e);
   }
@@ -243,6 +272,11 @@ class PursuitRotorPlugin implements JsPsychPlugin<Info> {
   }
 
   private handleTouchStart(e: TouchEvent) {
+    if (this.isWaiting) {
+      this.handleTouchMove(e);
+      this.startRotation();
+      return;
+    }
     this.isMouseDown = true;
     this.handleTouchMove(e);
   }
@@ -372,6 +406,17 @@ class PursuitRotorPlugin implements JsPsychPlugin<Info> {
     ctx.arc(targetX, targetY, 3, 0, Math.PI * 2);
     ctx.fillStyle = "#fff";
     ctx.fill();
+  }
+
+  private drawStartText(targetX: number, targetY: number) {
+    const text = this.trialParams.start_text as string;
+    if (!text) return;
+    const ctx = this.ctx;
+    ctx.fillStyle = "#333";
+    ctx.font = "14px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, targetX, targetY + (this.trialParams.target_radius as number) + 20);
   }
 
   private endTrial() {
