@@ -9,7 +9,7 @@ Displays a set of questions with Likert scale responses on a grid. Participants 
 ### In browser
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-survey-grid@1.0.0"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-survey-grid@0.0.1"></script>
 ```
 
 ### Via NPM
