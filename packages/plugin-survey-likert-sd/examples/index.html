@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychSurveyLikertSd Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <!-- Once this plugin package is published, it can be loaded via
+<script src="https://unpkg.com/@jspsych-contrib/plugin-survey-likert-sd"></script>
+<script src="../dist/index.browser.js"></script> -->
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    var scale = ["Very", "Slightly", "Neutral", "Slightly", "Very"];
+
+    var sd_trial = {
+      type: jsPsychSurveyLikertSd,
+      stimulus: "img/sea.png",
+      preamble: "PREAMBLE",
+      image_caption: "CAPTION",
+      left_anchor_width: 300,
+      right_anchor_width: 300,
+      questions: [
+        {
+          prompt: "How beautiful is this image?",
+          left_anchor: "Beautiful",
+          right_anchor: "Not beautiful", 
+          name: 'Beautiful', 
+          labels: scale, 
+          required: true
+        },
+        {
+          prompt: "How comfortable is this image?", 
+          left_anchor: "Comfortable",
+          right_anchor: "Uncomfortable", 
+          name: 'Comfortable', 
+          labels: scale, 
+          required: true
+        }
+      ]
+    };
+
+    jsPsych.run([sd_trial]);
+    
+  </script>
+</html>
