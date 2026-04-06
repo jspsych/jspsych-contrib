@@ -82,27 +82,27 @@ const info = <const>{
       type: ParameterType.HTML_STRING,
       default: null,
     },
-    /** The width of the image. */
+    /** The width of the image in pixels. */
     image_width: {
       type: ParameterType.INT,
       default: 500,
     },
-    /** The height of the area where the scale is displayed. */
+    /** The height of the area where the scale is displayed in pixels. */
     scale_area_height: {
       type: ParameterType.INT,
       default: 300,
     },
-    /** The width of the left anchor. */
+    /** The width of the left anchor in pixels. */
     left_anchor_width: {
       type: ParameterType.INT,
       default: 200, // But, if left_anchor is not specified, it becomes 0.
     },
-    /** The width of the right anchor. */
+    /** The width of the right anchor in pixels. */
     right_anchor_width: {
       type: ParameterType.INT,
       default: 200, // But, if left_anchor is not specified, it becomes 0.
     },
-    /** A numeric value for adjusting the position of the anchors and the horizontal alignment. */
+    /** A numeric value for adjusting the position of the anchors and the horizontal alignment in pixels. */
     line_position: {
       type: ParameterType.INT,
       default: 20,

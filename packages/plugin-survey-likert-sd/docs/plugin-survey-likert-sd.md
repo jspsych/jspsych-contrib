@@ -18,11 +18,11 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | autocomplete | boolean | false | This determines whether or not all of the input elements on the page should allow autocomplete. Setting this to true will enable autocomplete or auto-fill for the form.|
 | stimulus | string | null | The file name of the image. When using the SD method, it will be displayed on the left side of the screen. This image is not automatically preloaded, but this should not be an issue for most surveys. If preloading is necessary, please use [the preload plugin](./preload.md) together.|
 | image_caption | string | null | The string displayed below the image.|
-| image_width | numeric | 500 | The width of the image. If it differs from the actual width, the image will be scaled up or down while maintaining its aspect ratio.|
-| scale_area_height | numeric | 300 | The height of the area where the scale is displayed when an image is presented. If there are many question items, a scrollbar will appear. The position of the image remains fixed.|
-| left_anchor_width | numeric | 200 | The width of the left anchor.|
-| right_anchor_width | numeric | 200 | The width of the right anchor.|
-| line_position | numeric | 20 | A numeric value used to adjust the vertical position of anchors so they align with the horizontal line.|
+| image_width | numeric | 500 | The width of the image in pixels. If it differs from the actual width, the image will be scaled up or down while maintaining its aspect ratio.|
+| scale_area_height | numeric | 300 | The height in pixels of the area where the scale is displayed when an image is presented. If there are many question items, a scrollbar will appear. The position of the image remains fixed.|
+| left_anchor_width | numeric | 200 | The width of the left anchor in pixels.|
+| right_anchor_width | numeric | 200 | The width of the right anchor in pixels.|
+| line_position | numeric | 20 | A numeric value in pixels used to adjust the vertical position of anchors so they align with the horizontal line.|
 
 ## Data Generated
 
@@ -62,7 +62,7 @@ import SurveyLikertSd from "@jspsych-contrib/plugin-survey-likert-sd";
 
 ## Examples
 
-### Title of Example
+### Impression ratings of people using the Semantic Differential (SD) method.
 
 ```javascript
 var trial = {

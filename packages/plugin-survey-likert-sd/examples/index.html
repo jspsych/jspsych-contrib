@@ -22,33 +22,25 @@
 
     var sd_trial = {
       type: jsPsychSurveyLikertSd,
-      stimulus: "img/happy_face_1.jpg",
+      stimulus: "img/sea.png",
       preamble: "PREAMBLE",
       image_caption: "CAPTION",
       left_anchor_width: 300,
       right_anchor_width: 300,
       questions: [
         {
-          prompt: "How friendly or unfriendly does this person appear to you?",
-          left_anchor: "Friendly",
-          right_anchor: "Unfriendly", 
-          name: 'Friendly', 
+          prompt: "How beautiful is this image?",
+          left_anchor: "Beautiful",
+          right_anchor: "Not beautiful", 
+          name: 'Beautiful', 
           labels: scale, 
           required: true
         },
         {
-          prompt: "How trustworthy or untrustworthy does this person seem?", 
-          left_anchor: "Trustworthy",
-          right_anchor: "Untrustworthy", 
-          name: 'Trustworthy', 
-          labels: scale, 
-          required: true
-        },
-        {
-          prompt: "How attractive or unattractive do you find this person?", 
-          left_anchor: "Attractive",
-          right_anchor: "Unattractive", 
-          name: 'Attractive', 
+          prompt: "How comfortable is this image?", 
+          left_anchor: "Comfortable",
+          right_anchor: "Uncomfortable", 
+          name: 'Comfortable', 
           labels: scale, 
           required: true
         }
