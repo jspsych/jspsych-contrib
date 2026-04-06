@@ -27,7 +27,7 @@ Note: The use of additional attention checks, such as infrequency items (Huang e
 
 ## Data Generated
 
-In addition to the [default data collected by all plugins](https://www.jspsych.org//7.3/overview/plugins/index.html#data-collected-by-all-plugins), this plugin collects the following data for each trial:
+In addition to the [default data collected by all plugins](https://www.jspsych.org/latest/overview/plugins/#data-collected-by-all-plugins), this plugin collects the following data for each trial:
 
 | Name        | Type   | Value |
 |-------------|--------|-------|

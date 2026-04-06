@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-survey-grid",
   "version": "1.0.0",
-  "description": "",
+  "description": "jsPsych plugin for gathering responses to questions on a likert scale in a grid format.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -34,11 +34,11 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-survey-grid",
   "peerDependencies": {
-    "jspsych": ">=7.0.0"
+    "jspsych": ">=8.0.0"
   },
   "devDependencies": {
-    "@jspsych/config": "^1.0.0",
-    "@jspsych/test-utils": "^1.0.0",
-    "jspsych": "^7.0.0"
+    "@jspsych/config": "^3.2.2",
+    "@jspsych/test-utils": "^1.2.0",
+    "jspsych": "^8.0.0"
   }
 }

@@ -1,6 +1,6 @@
-import { startTimeline } from "@jspsych/test-utils";
+import { clickTarget, startTimeline } from "@jspsych/test-utils";
 
-import SurveyGrid from ".";
+import jsPsychSurveyGrid from ".";
 
 jest.useFakeTimers();
 
@@ -20,6 +20,13 @@ describe("survey-grid plugin", () => {
     ]);
 
     await jest.runAllTimers();
+
+    // click middle buttons of both questions
+    await clickTarget(displayElement.querySelector(`input[type="radio"][name="q1"][pos="3"]`));
+    await clickTarget(displayElement.querySelector(`input[type="radio"][name="q2"][pos="3"]`));
+
+    // finish the survey
+    await clickTarget(displayElement.querySelector("#jspsych-survey-grid-next"));
 
     await expectFinished();
   });
