@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-survey-grid",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "jsPsych plugin for gathering responses to questions on a likert scale in a grid format.",
   "type": "module",
   "main": "dist/index.cjs",
