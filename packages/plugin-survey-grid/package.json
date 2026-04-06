@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-survey-grid",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "jsPsych plugin for gathering responses to questions on a likert scale in a grid format.",
   "type": "module",
   "main": "dist/index.cjs",
@@ -27,7 +27,10 @@
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages/plugin-survey-grid"
   },
-  "author": "Sam Zorowitz",
+  "author": {
+    "name": "Sam Zorowitz",
+    "url": "https://github.com/szorowi1"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
