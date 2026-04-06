@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-survey-likert-sd",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Extention of the survey-likert plugin to enable the use of the SD method.",
   "type": "module",
   "main": "dist/index.cjs",
