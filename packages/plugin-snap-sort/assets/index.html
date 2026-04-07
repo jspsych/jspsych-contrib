@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychPluginFreeSortOrdered Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plain-draggable@2.5.15"></script>
+    <!-- Load the published plugin package here, e.g.
+<script src="https://unpkg.com/plugin-snap-sort"></script>
+<script src="../dist/index.browser.js"></script> -->
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+    <link rel="stylesheet" href="../src/styles.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    const trial = {
+      type: jsPsychPluginFreeSortOrdered,
+      stimulus: [
+        '../assets/blue-rec.png',
+        '../assets/green-rec.png',
+        '../assets/red-rec.png',
+        '../assets/blue-rec.png',
+        '../assets/green-rec.png',
+      ],
+      stim_height: 100,
+      stim_width: 120,
+      scale_factor: 1.1,
+      holding_area_height: 400,
+      holding_area_width: 1000,
+      box_colors: ["#0271bc", "#3ab54b", "#FF0000", "#0271bc", "#3ab54b"],
+      check_correct_order: true,
+      allow_multiple: true,
+      box_margin: 30,
+      snap_margin: 15,
+      prompt: 'Drag and drop the boxes to sort them in order.',
+      prompt_location: 'above',
+      button_label: 'Continue',
+      include_counter: true,
+    };
+
+    jsPsych.run([trial])
+  </script>
+</html>
