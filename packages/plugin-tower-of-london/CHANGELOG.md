@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-tower-of-london
 
+## 1.0.0
+
+### Major Changes
+
+- [#232](https://github.com/jspsych/jspsych-contrib/pull/232) [`88821cba947f15edb1cebd84e84d45823c13c2f3`](https://github.com/jspsych/jspsych-contrib/commit/88821cba947f15edb1cebd84e84d45823c13c2f3) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - 1.0 release. Refactor rendering from canvas to SVG for crisp display at any DPI. Add ball movement animation, goal state solved indicator, and parameterized text labels (`solved_text`, `goal_label`). Goal state now renders as an inset on the main display. Peg heights scale to their capacity. New `animation_duration` parameter.
+
 ## 0.1.0
 
 ### Minor Changes

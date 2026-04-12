@@ -24,6 +24,8 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | prompt              | HTML_STRING      | null               | HTML prompt displayed above the canvas   |
 | sample_interval     | INT              | 16                 | Sampling interval in milliseconds for recording data |
 | require_mouse_down  | BOOL             | false              | Whether to require holding mouse button down (true) or just track cursor position (false) |
+| wait_for_start      | BOOL             | true               | Whether to wait for user click/tap before starting rotation and timer |
+| start_text          | STRING           | "Click to start"   | Text displayed below the target while waiting to start. Set to `null` or `""` to hide. |
 
 ## Data Generated
 
@@ -107,5 +109,27 @@ var trial = {
   trial_duration: 15000,
   require_mouse_down: true,
   prompt: "<p>Hold down the mouse button while tracking the target.</p>"
+};
+```
+
+### Start Immediately Without Waiting
+
+```javascript
+var trial = {
+  type: jsPsychPursuitRotor,
+  trial_duration: 15000,
+  wait_for_start: false,
+  prompt: "<p>Track the target!</p>"
+};
+```
+
+### Custom Start Text
+
+```javascript
+var trial = {
+  type: jsPsychPursuitRotor,
+  trial_duration: 15000,
+  start_text: "Tap to begin",
+  prompt: "<p>Tap the target to start tracking.</p>"
 };
 ```

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Recall Response Plugin Example</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    // Simple example - user types words one at a time
+    const recallTrial = {
+      type: jsPsychFreeRecallResponse,
+      prompt: "<p>Type the words you remember from the list.</p><p>Press <strong>Add</strong> after each word, or press Enter.</p>",
+      add_button_label: "Add Word",
+      done_button_label: "I'm Done",
+      placeholder: "Type a word...",
+      words_list_label: "Words you've recalled:"
+    };
+
+    jsPsych.run([recallTrial]);
+  </script>
+</html>

@@ -40,8 +40,8 @@ var jsPsychSurveyVas = (function (jspsych) {
             pretty_name: "Response required",
             default: false,
             description: "If true, the question must be answered before moving to the next trial",
-          }
-        }
+          },
+        },
       },
       randomize_question_order: {
         type: jspsych.ParameterType.BOOL,
@@ -72,7 +72,7 @@ var jsPsychSurveyVas = (function (jspsych) {
       marker_type: {
         type: jspsych.ParameterType.STRING,
         pretty_name: "Marker type",
-        default: 'vline'
+        default: "vline",
       },
       /** Allows the user to drag the response markers */
       marker_draggable: {
@@ -135,7 +135,7 @@ var jsPsychSurveyVas = (function (jspsych) {
         type: jspsych.ParameterType.HTML_STRING,
         pretty_name: "Button label",
         default: "Continue",
-      }
+      },
     },
     data: {
       /** The response time in milliseconds for the participant to make a response.
@@ -150,7 +150,7 @@ var jsPsychSurveyVas = (function (jspsych) {
       /** The order in which the questions were presented. */
       question_order: {
         type: jspsych.ParameterType.STRING,
-      }
+      },
     },
     citations: {
       apa: "Kinley, I. (2022). A jsPsych plugin for visual analogue scales. PsyArXiv. https://doi.org/10.31234/osf.io/avj92 ",
@@ -172,7 +172,7 @@ var jsPsychSurveyVas = (function (jspsych) {
     trial(display_element, trial) {
       // constrain hline_pct to < 100
       if (trial.hline_pct > 100) {
-        console.log('hline_pct is greater than 100! This makes no sense. Setting to 100.');
+        console.log("hline_pct is greater than 100! This makes no sense. Setting to 100.");
         trial.hline_pct = 100;
       }
 
@@ -190,25 +190,24 @@ var jsPsychSurveyVas = (function (jspsych) {
         ppn_tick = Math.max(Math.min(ppn_tick, 1), 0); // Constrain to 0 - 1
         // Round to nearest increment, if needed
         if (trial.n_scale_points) {
-          ppn_tick =
-            Math.round(ppn_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
+          ppn_tick = Math.round(ppn_tick * (trial.n_scale_points - 1)) / (trial.n_scale_points - 1);
         }
         var marker = document.getElementById("jspsych-survey-vas-marker-" + i);
-        marker.style.left = (ppn_tick * hline_rect.width - trial.marker_size/2) + "px";
+        marker.style.left = ppn_tick * hline_rect.width - trial.marker_size / 2 + "px";
         marker.style.visibility = "visible"; // idempotent
         var continue_button = document.getElementById("jspsych-survey-vas-next");
         // Record in data associated with this hline
-        hline.dataset['markerpos'] = ppn_tick;
+        hline.dataset["markerpos"] = ppn_tick;
         // Enable continue button if all required questions are answered
         check_if_required_questions_answered();
-      };
+      }
 
       // To get an update function for a specific VAS:
       function get_vas_update_fn(i) {
         // i is defined within the enclosing scope of update_fn
-        var update_fn = function(e) {
-          update_vas(e, i)
-        }
+        var update_fn = function (e) {
+          update_vas(e, i);
+        };
         return update_fn;
       }
 
@@ -217,9 +216,9 @@ var jsPsychSurveyVas = (function (jspsych) {
         var all_answered = true;
         var i;
         for (i = 0; i < trial.questions.length; i++) {
-          var elem = document.getElementById('jspsych-survey-vas-hline-' + i);
-          if (elem.dataset['required'] == 'true') {
-            if (elem.dataset['markerpos'] == 'null') {
+          var elem = document.getElementById("jspsych-survey-vas-hline-" + i);
+          if (elem.dataset["required"] == "true") {
+            if (elem.dataset["markerpos"] == "null") {
               all_answered = false;
               break;
             }
@@ -227,14 +226,14 @@ var jsPsychSurveyVas = (function (jspsych) {
         }
         if (all_answered) {
           // enable continue button
-          var continue_button = document.getElementById('jspsych-survey-vas-next');
+          var continue_button = document.getElementById("jspsych-survey-vas-next");
           continue_button.disabled = false;
         }
       }
-      
+
       // wrapper for all questions
       var html = '<div id="jspsych-survey-vas-wrapper" style="margin: 100px 0px;">';
-      
+
       html +=
         '<div class="jspsych-survey-vas-container" style="position:relative; margin: 0 auto 3em auto; ';
       if (trial.scale_width !== null) {
@@ -243,7 +242,7 @@ var jsPsychSurveyVas = (function (jspsych) {
         html += "width:auto;";
       }
       html += '">';
-      
+
       // show preamble text
       if (trial.preamble !== null) {
         html +=
@@ -273,59 +272,136 @@ var jsPsychSurveyVas = (function (jspsych) {
         var question = trial.questions[question_order[i]];
         any_questions_required = any_questions_required || question.required; // idempotent
         // Add prompt
-        html += '<div>' + question.prompt + "</div>";
+        html += "<div>" + question.prompt + "</div>";
         // Create clickable container for VAS
         html +=
-          '<div id="jspsych-survey-vas-clickable-' + i + '" style="position: relative; left: 0px; top: 0px; ' + 
-          'height: ' + trial.scale_height + 'px; ' +
-          'width: 100%; ' +
-          'margin-bottom: 80px; ' +
-          "cursor: " + trial.scale_cursor + ';' + 
+          '<div id="jspsych-survey-vas-clickable-' +
+          i +
+          '" style="position: relative; left: 0px; top: 0px; ' +
+          "height: " +
+          trial.scale_height +
+          "px; " +
+          "width: 100%; " +
+          "margin-bottom: 80px; " +
+          "cursor: " +
+          trial.scale_cursor +
+          ";" +
           '">';
         // Draw horizontal line in clickable VAS container
         html +=
-          '<div id="jspsych-survey-vas-hline-' + i + '" ' +
+          '<div id="jspsych-survey-vas-hline-' +
+          i +
+          '" ' +
           'data-markerpos="null" ' +
-          'data-qname="' + (question.name ?? ('Q' + question_order[i])) + '" ' +
-          'data-required="' + question.required + '" ' +
+          'data-qname="' +
+          (question.name ?? "Q" + question_order[i]) +
+          '" ' +
+          'data-required="' +
+          question.required +
+          '" ' +
           'style="position: relative; ' +
-          'background: ' + trial.scale_colour + "; " +
-          'width: ' + trial.hline_pct + '%; ' +
-          'left: ' + (100 - trial.hline_pct)/2 + '%; ' + // Keep the horizontal line centred within clickable region
-          'height: 2px; ' +
-          'top: ' + (trial.scale_height / 2 - 1) + 'px; ' +
+          "background: " +
+          trial.scale_colour +
+          "; " +
+          "width: " +
+          trial.hline_pct +
+          "%; " +
+          "left: " +
+          (100 - trial.hline_pct) / 2 +
+          "%; " + // Keep the horizontal line centred within clickable region
+          "height: 2px; " +
+          "top: " +
+          (trial.scale_height / 2 - 1) +
+          "px; " +
           '">';
         // Draw response marker, but hide it at first
-        var svg = '<svg width="' + trial.marker_size + '" height="' + trial.marker_size + '" ' + 
-          'id="jspsych-survey-vas-marker-' + i + '" style="visibility: hidden; position: absolute; left: 0px; top: ' + -(trial.marker_size/2 - 1) + 'px; ' +
+        var svg =
+          '<svg width="' +
+          trial.marker_size +
+          '" height="' +
+          trial.marker_size +
+          '" ' +
+          'id="jspsych-survey-vas-marker-' +
+          i +
+          '" style="visibility: hidden; position: absolute; left: 0px; top: ' +
+          -(trial.marker_size / 2 - 1) +
+          "px; " +
           'xmlns="http://www.w3.org/2000/svg">';
-        if (trial.marker_type == 'vline') {
-          svg += '<line x1="' + (trial.marker_size/2) + '" x2="' + (trial.marker_size/2) + '" y1="0" y2="' + trial.marker_size + '" ' + trial.marker_svg_attrs + '/>';
-        } else if (trial.marker_type == 'cross') {
-          svg += '<line x1="1" y1="1" x2="' + (trial.marker_size - 1) + '" y2="' + (trial.marker_size - 1) + '" ' + trial.marker_svg_attrs + '/>' +
-            '<line x1="1" y1="' + (trial.marker_size - 1) + '" x2="' + (trial.marker_size - 1) + '" y2="1" ' + trial.marker_svg_attrs + '/>';
-        } else if (trial.marker_type == 'circle') {
-          svg += '<circle cx="' + (trial.marker_size/2) + '" cy="' + (trial.marker_size/2) + '" r="' + (trial.marker_size/2 - 2) + '" fill="none" ' + trial.marker_svg_attrs + '/>';
-        } else if (trial.marker_type == 'square') {
-          svg += '<rect width="' + (trial.marker_size - 2) + '" height="' + (trial.marker_size - 2) + '" x="1" y="1" fill="none" ' + trial.marker_svg_attrs + '/>'
+        if (trial.marker_type == "vline") {
+          svg +=
+            '<line x1="' +
+            trial.marker_size / 2 +
+            '" x2="' +
+            trial.marker_size / 2 +
+            '" y1="0" y2="' +
+            trial.marker_size +
+            '" ' +
+            trial.marker_svg_attrs +
+            "/>";
+        } else if (trial.marker_type == "cross") {
+          svg +=
+            '<line x1="1" y1="1" x2="' +
+            (trial.marker_size - 1) +
+            '" y2="' +
+            (trial.marker_size - 1) +
+            '" ' +
+            trial.marker_svg_attrs +
+            "/>" +
+            '<line x1="1" y1="' +
+            (trial.marker_size - 1) +
+            '" x2="' +
+            (trial.marker_size - 1) +
+            '" y2="1" ' +
+            trial.marker_svg_attrs +
+            "/>";
+        } else if (trial.marker_type == "circle") {
+          svg +=
+            '<circle cx="' +
+            trial.marker_size / 2 +
+            '" cy="' +
+            trial.marker_size / 2 +
+            '" r="' +
+            (trial.marker_size / 2 - 2) +
+            '" fill="none" ' +
+            trial.marker_svg_attrs +
+            "/>";
+        } else if (trial.marker_type == "square") {
+          svg +=
+            '<rect width="' +
+            (trial.marker_size - 2) +
+            '" height="' +
+            (trial.marker_size - 2) +
+            '" x="1" y="1" fill="none" ' +
+            trial.marker_svg_attrs +
+            "/>";
         }
-        html += svg + '</svg>';
+        html += svg + "</svg>";
         // Add minor ticks
 
         if (trial.ticks) {
           var j;
           for (j = 0; j < question.labels.length; j++) {
             var pct_of_range = j * (100 / (question.labels.length - 1));
-            html += '<div style="display: inline-block; position: absolute; ' + 
-            'left: ' + pct_of_range + '%; ' +
-            '">'
-            html += '<div style="' +
-              'position: absolute; ' +
-              'height: ' + trial.scale_height / 2 + "px; " +
-              'width: 2px; ' +
-              'top: ' + -(trial.scale_height/4 - 1) + "px; " +
-              'background: ' + trial.tick_colour + '; ' + 
-              'left: -1px; ' +
+            html +=
+              '<div style="display: inline-block; position: absolute; ' +
+              "left: " +
+              pct_of_range +
+              "%; " +
+              '">';
+            html +=
+              '<div style="' +
+              "position: absolute; " +
+              "height: " +
+              trial.scale_height / 2 +
+              "px; " +
+              "width: 2px; " +
+              "top: " +
+              -(trial.scale_height / 4 - 1) +
+              "px; " +
+              "background: " +
+              trial.tick_colour +
+              "; " +
+              "left: -1px; " +
               '"></div>';
             html += "</div>";
           }
@@ -334,22 +410,34 @@ var jsPsychSurveyVas = (function (jspsych) {
         html += "</div>"; // horizontal line
 
         // Add labels
-        html += '<div style="position: relative; ' + // div to align label centers with appropriate points on horizontal line
-          'width: ' + trial.hline_pct + '%; ' +
-          'left: ' + (100 - trial.hline_pct)/2 + '%; ' +
-          'top: ' + '100%; ' +
-           '">';
+        html +=
+          '<div style="position: relative; ' + // div to align label centers with appropriate points on horizontal line
+          "width: " +
+          trial.hline_pct +
+          "%; " +
+          "left: " +
+          (100 - trial.hline_pct) / 2 +
+          "%; " +
+          "top: " +
+          "100%; " +
+          '">';
         for (var j = 0; j < question.labels.length; j++) {
           var percent_of_range = j * (100 / (question.labels.length - 1));
-          html += '<div style="display: inline-block; position: absolute; ' + 
-          'left: ' + percent_of_range + '%; ' +
-          '">'
+          html +=
+            '<div style="display: inline-block; position: absolute; ' +
+            "left: " +
+            percent_of_range +
+            "%; " +
+            '">';
           // html += '<span style="text-align: center; font-size: 80%">' + trial.labels[j] + "</span>";
-          html += '<span style="font-size: 80%; position: relative; left: -50%;">' + question.labels[j] + "</span>";
+          html +=
+            '<span style="font-size: 80%; position: relative; left: -50%;">' +
+            question.labels[j] +
+            "</span>";
           html += "</div>";
         }
         html += "</div>"; // special alignment div
-        
+
         html += "</div>"; // clickable region
       }
 
@@ -367,16 +455,23 @@ var jsPsychSurveyVas = (function (jspsych) {
       display_element.innerHTML = html;
 
       // Dragging makes an ugly "operation forbidden" cursor appear---easiest to just prevent any dragging
-      document.addEventListener("dragstart", function(e) {e.preventDefault()});
-
+      document.addEventListener("dragstart", function (e) {
+        e.preventDefault();
+      });
 
       if (trial.marker_draggable) {
         // Track mouse state---whether to respond to mouse position depends on mouse position
         var mouse_state = "up"; // or "down"
-        document.addEventListener("mousedown", function() {mouse_state = 'down'});
+        document.addEventListener("mousedown", function () {
+          mouse_state = "down";
+        });
         // document.addEventListener("dblclick", function() {mouse_state = 'down'});
-        document.addEventListener("mouseup", function() {mouse_state = 'up'});
-        document.addEventListener("dragend", function() {mouse_state = 'up'});
+        document.addEventListener("mouseup", function () {
+          mouse_state = "up";
+        });
+        document.addEventListener("dragend", function () {
+          mouse_state = "up";
+        });
       }
       // Function to make a single VAS responsive
       function make_vas_responsive(i) {
@@ -391,8 +486,8 @@ var jsPsychSurveyVas = (function (jspsych) {
             var do_update = true;
             test_mouse_state = test_mouse_state ?? true; // test by default
             if (test_mouse_state) {
-              if (mouse_state == 'up') {
-                do_update = false
+              if (mouse_state == "up") {
+                do_update = false;
               }
             }
             if (do_update) {
@@ -401,9 +496,9 @@ var jsPsychSurveyVas = (function (jspsych) {
           }
           clickable.addEventListener("mousemove", drag_update);
           clickable.addEventListener("drag", drag_update);
-          clickable.addEventListener("touchmove", function(e) {
+          clickable.addEventListener("touchmove", function (e) {
             e.preventDefault(); // So that whole screen doesn't move in MS Edge
-            drag_update(e, false) // Don't test whether mouse is down
+            drag_update(e, false); // Don't test whether mouse is down
           });
         }
       }
@@ -419,14 +514,14 @@ var jsPsychSurveyVas = (function (jspsych) {
         var response = {};
         var i;
         for (i = 0; i < trial.questions.length; i++) {
-          var hline = document.getElementById('jspsych-survey-vas-hline-' + question_order[i]);
+          var hline = document.getElementById("jspsych-survey-vas-hline-" + question_order[i]);
           response[hline.dataset.qname] = hline.dataset.markerpos;
         }
         // save data
         var trialdata = {
           rt: Math.round(endTime - startTime),
           response: JSON.stringify(response),
-          question_order: JSON.stringify(question_order)
+          question_order: JSON.stringify(question_order),
         };
 
         // next trial

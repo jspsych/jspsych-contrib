@@ -208,6 +208,7 @@ describe("trail-making plugin", () => {
       canvas.dispatchEvent(clickEvent);
     }
 
+    jest.advanceTimersByTime(500);
     await expectFinished();
 
     const data = getData().values()[0];
@@ -280,6 +281,7 @@ describe("trail-making plugin", () => {
       })
     );
 
+    jest.advanceTimersByTime(500);
     await expectFinished();
 
     const data = getData().values()[0];
@@ -336,6 +338,7 @@ describe("trail-making plugin", () => {
     jest.advanceTimersByTime(300);
     canvas.dispatchEvent(new MouseEvent("click", { clientX: 300, clientY: 300, bubbles: true }));
 
+    jest.advanceTimersByTime(500);
     await expectFinished();
 
     const data = getData().values()[0];
@@ -378,6 +381,7 @@ describe("trail-making plugin", () => {
     canvas.dispatchEvent(new MouseEvent("click", { clientX: 100, clientY: 0, bubbles: true }));
     canvas.dispatchEvent(new MouseEvent("click", { clientX: 100, clientY: 100, bubbles: true }));
 
+    jest.advanceTimersByTime(500);
     await expectFinished();
 
     const data = getData().values()[0];
@@ -414,6 +418,7 @@ describe("trail-making plugin", () => {
     canvas.dispatchEvent(new MouseEvent("click", { clientX: 100, clientY: 100, bubbles: true }));
     canvas.dispatchEvent(new MouseEvent("click", { clientX: 200, clientY: 200, bubbles: true }));
 
+    jest.advanceTimersByTime(500);
     await expectFinished();
 
     const data = getData().values()[0];
@@ -453,6 +458,7 @@ describe("trail-making plugin", () => {
     canvas.dispatchEvent(new MouseEvent("click", { clientX: 100, clientY: 100, bubbles: true }));
     canvas.dispatchEvent(new MouseEvent("click", { clientX: 200, clientY: 200, bubbles: true }));
 
+    jest.advanceTimersByTime(500);
     await expectFinished();
 
     const data = getData().values()[0];
@@ -516,6 +522,7 @@ describe("trail-making plugin", () => {
     canvas.dispatchEvent(createTouchEvent(100, 100));
     canvas.dispatchEvent(createTouchEvent(200, 200));
 
+    jest.advanceTimersByTime(500);
     await expectFinished();
   });
 });
