@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nekrug/jspsych-contrib.git",
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
     "directory": "packages"
   },
   "keywords": [
@@ -27,7 +27,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nekrug/jspsych-contrib/issues"
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/packages/plugin-tangram-game/README.md",
   "dependencies": {
