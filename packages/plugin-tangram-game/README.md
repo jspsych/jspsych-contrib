@@ -48,3 +48,4 @@ http-server -c10
 ```
 
 Then go to `http://127.0.0.1:8080/examples/example1.html` or `http://127.0.0.1:8000/examples/example2.html` in your browser.
+Alternatively, if you're using VSCode you can install the Live Server extension. this will also act as a web server for running.
