@@ -23,6 +23,15 @@ class TimeBar {
   }
 }
 
+function safeset(inputVal, defaultVal) {
+  if (typeof inputVal !== typeof defaultVal) {
+    console.warn("Tangram Puzzle: Invalid input type ", inputVal);
+  } else if (inputVal !== undefined && inputVal !== null) {
+    return inputVal;
+  }
+  return defaultVal;
+}
+
 function client2svg(px, py, svg, canvas) {
   // Assumes width > height with aspect ratio and midpoint alignment
   var vb = svg.viewBox.baseVal;
@@ -247,13 +256,16 @@ class TangramPiece {
 }
 
 class TangramGame {
-  constructor(duration) {
+  constructor() {
     this.canvas = document.getElementById("overlay");
     this.ctx = this.canvas.getContext("2d");
     this.svg = null;
 
-    this.successMessage = "You Won! :)";
-    this.failureMessage = "You lost! :(";
+    this.duration = null;
+    this.successMessage = "You won!";
+    this.failureMessage = "You lost!";
+    this.overlayImage = "";
+    this.overlayImagePosition = "";
     this.gameOverMessage = "";
     this.gameOver = false;
     this.finished = false;
@@ -263,12 +275,12 @@ class TangramGame {
     this.puzzlePieces = [];
 
     this.timeBar = null;
-    this.duration = duration; // seconds
     this.lastTime = -1;
 
-    this.interactionSound = "puzzles/tap.mp3";
-    this.successSound = "puzzles/magic-spell-short.m4a";
-    this.failureSound = "puzzles/sad-trombone.wav";
+    this.interactionSound = "";
+    this.successSound = "";
+    this.failureSound = "";
+    this.endGameDelay = 3.0;
 
     // Initialize canvas for drawing text
     window.addEventListener("resize", (e) => {
@@ -283,7 +295,7 @@ class TangramGame {
       var pos = this.selectedPiece.el.getBoundingClientRect();
       var svgpos = client2svg(pos.x, pos.y, this.svg, this.canvas);
       this.selectedPiece.drop(svgpos);
-      this.soundEffect.play();
+      if (this.soundEffect !== null) this.soundEffect.play();
       //this.selectedPiece.isAtTarget is true when the piece was correctly placed
       this.selectedPiece = null;
       return;
@@ -299,7 +311,7 @@ class TangramGame {
       if (piece.intersects(clickPos)) {
         this.selectedPiece = piece;
         this.selectedPiece.pickup(clickPos);
-        this.soundEffect.play();
+        if (this.soundEffect !== null) this.soundEffect.play();
         break;
       }
     }
@@ -358,15 +370,26 @@ class TangramGame {
     this.initialized = true;
 
     // Sound effects
-    this.soundEffect = new Audio(this.interactionSound);
-    this.winSound = new Audio(this.successSound);
-    this.winSound.addEventListener("ended", (e) => {
-      this.finished = true;
-    });
-    this.loseSound = new Audio(this.failureSound);
-    this.loseSound.addEventListener("ended", (e) => {
-      this.finished = true;
-    });
+    this.soundEffect = null;
+    if (this.interactionSound !== "") {
+      this.soundEffect = new Audio(this.interactionSound);
+    }
+
+    this.winSound = null;
+    if (this.successSound !== "") {
+      this.winSound = new Audio(this.successSound);
+      this.winSound.addEventListener("ended", (e) => {
+        this.finished = true;
+      });
+    }
+
+    this.loseSound = null;
+    if (this.failureSound !== "") {
+      this.loseSound = new Audio(this.failureSound);
+      this.loseSound.addEventListener("ended", (e) => {
+        this.finished = true;
+      });
+    }
 
     // initialize time bar
     const barElement = svgDoc.getElementById("TimebarInterior");
@@ -398,20 +421,29 @@ class TangramGame {
     if (this.timeBar.timeLeft <= 0) {
       this.gameOver = true;
       this.gameOverMessage = this.failureMessage;
-      this.loseSound.play();
+      if (this.loseSound !== null) this.loseSound.play();
+      else
+        setTimeout(() => {
+          this.finished = true;
+        }, this.endGameDelay * 1000);
     }
 
     if (this.puzzleSolved()) {
       this.gameOver = true;
       this.gameOverMessage = this.successMessage;
-      this.winSound.play();
+      if (this.winSound !== null) this.winSound.play();
+      else
+        setTimeout(() => {
+          this.finished = true;
+        }, this.endGameDelay * 1000);
     }
     this.draw();
 
-    if (!this.gameOver)
+    if (!this.gameOver) {
       window.requestAnimationFrame((t) => {
         this.tick(t);
       });
+    }
   }
 
   resize() {
@@ -447,14 +479,14 @@ var jsPsychTangram = (function (jspsych) {
 
   const info = {
     name: "tangram",
-    version: "0.0.1",
+    version: "0.1.0",
     parameters: {
       /**
        * Path to the SVG file containing our puzzle.
        */
       svg: {
         type: jspsych.ParameterType.STRING,
-        default: "puzzles/puzzle-rocket.svg",
+        default: "",
       },
 
       /**
@@ -462,7 +494,7 @@ var jsPsychTangram = (function (jspsych) {
        */
       interactionSound: {
         type: jspsych.ParameterType.STRING,
-        default: "puzzles/tap.mp3",
+        default: "",
       },
 
       /**
@@ -470,7 +502,7 @@ var jsPsychTangram = (function (jspsych) {
        */
       successSound: {
         type: jspsych.ParameterType.STRING,
-        default: "puzzles/magic-spell-short.m4a",
+        default: "",
       },
 
       /**
@@ -478,7 +510,7 @@ var jsPsychTangram = (function (jspsych) {
        */
       failureSound: {
         type: jspsych.ParameterType.STRING,
-        default: "puzzles/sad-trombone.wav",
+        default: "",
       },
 
       /**
@@ -486,7 +518,7 @@ var jsPsychTangram = (function (jspsych) {
        */
       successMessage: {
         type: jspsych.ParameterType.STRING,
-        default: "You won! :)",
+        default: "You won!",
       },
 
       /**
@@ -494,7 +526,7 @@ var jsPsychTangram = (function (jspsych) {
        */
       failureMessage: {
         type: jspsych.ParameterType.STRING,
-        default: "You lose. :(",
+        default: "You lose.",
       },
 
       /**
@@ -514,11 +546,35 @@ var jsPsychTangram = (function (jspsych) {
       },
 
       /**
+       * Distance (in pixels) used for snapping pieces into their solution position. A large radius makes the snapping more forgiving.
+       */
+      dropThreshold: {
+        type: jspsych.ParameterType.INT,
+        default: 9,
+      },
+
+      /**
        * Length of time before the trial ends (seconds).
        */
       duration: {
         type: jspsych.ParameterType.INT,
-        default: null,
+        default: 60,
+      },
+
+      /**
+       * Length of time before the trial ends (seconds).
+       */
+      overlayImage: {
+        type: jspsych.ParameterType.STRING,
+        default: "",
+      },
+
+      /**
+       * Length of time before the trial ends (seconds).
+       */
+      overlayImagePosition: {
+        type: jspsych.ParameterType.STRING,
+        default: "TOP_RIGHT",
       },
     },
     data: {
@@ -526,9 +582,25 @@ var jsPsychTangram = (function (jspsych) {
       solve_duration: {
         type: jspsych.ParameterType.FLOAT,
       },
-      /** 1 if the puzzle was solved; 0 otherwise */
+      /** Percentage puzzle completion. 1 if the puzzle was completely solved; 0 if not piece was correctly placed. */
       puzzle_solved: {
+        type: jspsych.ParameterType.FLOAT,
+      },
+      /** Comma-delimited list of piece names that were correctly placed */
+      pieces_solved: {
+        type: jspsych.ParameterType.FLOAT,
+      },
+      /** Number of mouse clicks during this trial. */
+      num_total_clicks: {
         type: jspsych.ParameterType.INT,
+      },
+      /** Number of times a piece was dropped in a location other than the solution location.  */
+      num_piece_drops: {
+        type: jspsych.ParameterType.INT,
+      },
+      /** Number of seconds before the first click.  */
+      first_click_time: {
+        type: jspsych.ParameterType.FLOAT,
       },
     },
     // prettier-ignore
@@ -546,20 +618,27 @@ var jsPsychTangram = (function (jspsych) {
       this.display = display_element;
       this.params = trial;
 
+      // Ensure valid SVG name type before calling add_html()
+      this.params.svg = safeset(trial.svg, "");
+
       this.add_css();
       this.add_html();
 
       // Configure Tangram Game piece behavior
-      TangramPiece.duration = trial.resetPieceDuration;
-      TangramPiece.ResetPieces = trial.resetPieces;
+      TangramPiece.duration = safeset(trial.resetPieceDuration, 1.0);
+      TangramPiece.ResetPieces = safeset(trial.resetPieces, true);
+      TangramPiece.threshold = safeset(trial.dropThreshold, 9);
 
       // Create and configure Tangram Game
-      this.tangram = new TangramGame(trial.duration);
-      this.tangram.successMessage = trial.successMessage;
-      this.tangram.failureMessage = trial.failureMessage;
-      this.tangram.interactionSound = trial.interactionSound;
-      this.tangram.successSound = trial.successSound;
-      this.tangram.failureSound = trial.failureSound;
+      this.tangram = new TangramGame();
+      this.tangram.duration = safeset(trial.duration, 60);
+      this.tangram.successMessage = safeset(trial.successMessage, "You won!");
+      this.tangram.failureMessage = safeset(trial.failureMessage, "You lose.");
+      this.tangram.interactionSound = safeset(trial.interactionSound, "");
+      this.tangram.successSound = safeset(trial.successSound, "");
+      this.tangram.failureSound = safeset(trial.failureSound, "");
+      this.tangram.overlayImage = safeset(trial.overlayImage, "");
+      this.tangram.overlayImagePosition = safeset(trial.overlayImagePosition, "TOP_RIGHT");
 
       const svgDoc = document.getElementById("svgObject");
       svgDoc.onload = () => {

@@ -1,3 +1,12 @@
+function safeset(inputVal, defaultVal) {
+  if (typeof inputVal !== typeof defaultVal) {
+    console.warn("Tangram Puzzle: Invalid input type ", inputVal);
+  } else if (inputVal !== undefined && inputVal !== null) {
+    return inputVal;
+  }
+  return defaultVal;
+}
+
 function client2svg(px, py, svg, canvas) {
   // Assumes width > height with aspect ratio and midpoint alignment
   var vb = svg.viewBox.baseVal;

@@ -1,11 +1,14 @@
 class TangramGame {
-  constructor(duration) {
+  constructor() {
     this.canvas = document.getElementById("overlay");
     this.ctx = this.canvas.getContext("2d");
     this.svg = null;
 
-    this.successMessage = "You Won! :)";
-    this.failureMessage = "You lost! :(";
+    this.duration = null;
+    this.successMessage = "You won!";
+    this.failureMessage = "You lost!";
+    this.overlayImage = "";
+    this.overlayImagePosition = "";
     this.gameOverMessage = "";
     this.gameOver = false;
     this.finished = false;
@@ -15,12 +18,12 @@ class TangramGame {
     this.puzzlePieces = [];
 
     this.timeBar = null;
-    this.duration = duration; // seconds
     this.lastTime = -1;
 
-    this.interactionSound = "puzzles/tap.mp3";
-    this.successSound = "puzzles/magic-spell-short.m4a";
-    this.failureSound = "puzzles/sad-trombone.wav";
+    this.interactionSound = "";
+    this.successSound = "";
+    this.failureSound = "";
+    this.endGameDelay = 3.0;
 
     // Initialize canvas for drawing text
     window.addEventListener("resize", (e) => {
@@ -35,7 +38,7 @@ class TangramGame {
       var pos = this.selectedPiece.el.getBoundingClientRect();
       var svgpos = client2svg(pos.x, pos.y, this.svg, this.canvas);
       this.selectedPiece.drop(svgpos);
-      this.soundEffect.play();
+      if (this.soundEffect !== null) this.soundEffect.play();
       //this.selectedPiece.isAtTarget is true when the piece was correctly placed
       this.selectedPiece = null;
       return;
@@ -51,7 +54,7 @@ class TangramGame {
       if (piece.intersects(clickPos)) {
         this.selectedPiece = piece;
         this.selectedPiece.pickup(clickPos);
-        this.soundEffect.play();
+        if (this.soundEffect !== null) this.soundEffect.play();
         break;
       }
     }
@@ -110,15 +113,26 @@ class TangramGame {
     this.initialized = true;
 
     // Sound effects
-    this.soundEffect = new Audio(this.interactionSound);
-    this.winSound = new Audio(this.successSound);
-    this.winSound.addEventListener("ended", (e) => {
-      this.finished = true;
-    });
-    this.loseSound = new Audio(this.failureSound);
-    this.loseSound.addEventListener("ended", (e) => {
-      this.finished = true;
-    });
+    this.soundEffect = null;
+    if (this.interactionSound !== "") {
+      this.soundEffect = new Audio(this.interactionSound);
+    }
+
+    this.winSound = null;
+    if (this.successSound !== "") {
+      this.winSound = new Audio(this.successSound);
+      this.winSound.addEventListener("ended", (e) => {
+        this.finished = true;
+      });
+    }
+
+    this.loseSound = null;
+    if (this.failureSound !== "") {
+      this.loseSound = new Audio(this.failureSound);
+      this.loseSound.addEventListener("ended", (e) => {
+        this.finished = true;
+      });
+    }
 
     // initialize time bar
     const barElement = svgDoc.getElementById("TimebarInterior");
@@ -150,20 +164,29 @@ class TangramGame {
     if (this.timeBar.timeLeft <= 0) {
       this.gameOver = true;
       this.gameOverMessage = this.failureMessage;
-      this.loseSound.play();
+      if (this.loseSound !== null) this.loseSound.play();
+      else
+        setTimeout(() => {
+          this.finished = true;
+        }, this.endGameDelay * 1000);
     }
 
     if (this.puzzleSolved()) {
       this.gameOver = true;
       this.gameOverMessage = this.successMessage;
-      this.winSound.play();
+      if (this.winSound !== null) this.winSound.play();
+      else
+        setTimeout(() => {
+          this.finished = true;
+        }, this.endGameDelay * 1000);
     }
     this.draw();
 
-    if (!this.gameOver)
+    if (!this.gameOver) {
       window.requestAnimationFrame((t) => {
         this.tick(t);
       });
+    }
   }
 
   resize() {

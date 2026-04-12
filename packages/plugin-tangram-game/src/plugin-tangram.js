@@ -3,14 +3,14 @@ var jsPsychTangram = (function (jspsych) {
 
   const info = {
     name: "tangram",
-    version: "0.0.1",
+    version: "0.1.0",
     parameters: {
       /**
        * Path to the SVG file containing our puzzle.
        */
       svg: {
         type: jspsych.ParameterType.STRING,
-        default: "puzzles/puzzle-rocket.svg",
+        default: "",
       },
 
       /**
@@ -18,7 +18,7 @@ var jsPsychTangram = (function (jspsych) {
        */
       interactionSound: {
         type: jspsych.ParameterType.STRING,
-        default: "puzzles/tap.mp3",
+        default: "",
       },
 
       /**
@@ -26,7 +26,7 @@ var jsPsychTangram = (function (jspsych) {
        */
       successSound: {
         type: jspsych.ParameterType.STRING,
-        default: "puzzles/magic-spell-short.m4a",
+        default: "",
       },
 
       /**
@@ -34,7 +34,7 @@ var jsPsychTangram = (function (jspsych) {
        */
       failureSound: {
         type: jspsych.ParameterType.STRING,
-        default: "puzzles/sad-trombone.wav",
+        default: "",
       },
 
       /**
@@ -42,7 +42,7 @@ var jsPsychTangram = (function (jspsych) {
        */
       successMessage: {
         type: jspsych.ParameterType.STRING,
-        default: "You won! :)",
+        default: "You won!",
       },
 
       /**
@@ -50,7 +50,7 @@ var jsPsychTangram = (function (jspsych) {
        */
       failureMessage: {
         type: jspsych.ParameterType.STRING,
-        default: "You lose. :(",
+        default: "You lose.",
       },
 
       /**
@@ -70,11 +70,35 @@ var jsPsychTangram = (function (jspsych) {
       },
 
       /**
+       * Distance (in pixels) used for snapping pieces into their solution position. A large radius makes the snapping more forgiving.
+       */
+      dropThreshold: {
+        type: jspsych.ParameterType.INT,
+        default: 9,
+      },
+
+      /**
        * Length of time before the trial ends (seconds).
        */
       duration: {
         type: jspsych.ParameterType.INT,
-        default: null,
+        default: 60,
+      },
+
+      /**
+       * Length of time before the trial ends (seconds).
+       */
+      overlayImage: {
+        type: jspsych.ParameterType.STRING,
+        default: "",
+      },
+
+      /**
+       * Length of time before the trial ends (seconds).
+       */
+      overlayImagePosition: {
+        type: jspsych.ParameterType.STRING,
+        default: "TOP_RIGHT",
       },
     },
     data: {
@@ -82,9 +106,25 @@ var jsPsychTangram = (function (jspsych) {
       solve_duration: {
         type: jspsych.ParameterType.FLOAT,
       },
-      /** 1 if the puzzle was solved; 0 otherwise */
+      /** Percentage puzzle completion. 1 if the puzzle was completely solved; 0 if not piece was correctly placed. */
       puzzle_solved: {
+        type: jspsych.ParameterType.FLOAT,
+      },
+      /** Comma-delimited list of piece names that were correctly placed */
+      pieces_solved: {
+        type: jspsych.ParameterType.FLOAT,
+      },
+      /** Number of mouse clicks during this trial. */
+      num_total_clicks: {
         type: jspsych.ParameterType.INT,
+      },
+      /** Number of times a piece was dropped in a location other than the solution location.  */
+      num_piece_drops: {
+        type: jspsych.ParameterType.INT,
+      },
+      /** Number of seconds before the first click.  */
+      first_click_time: {
+        type: jspsych.ParameterType.FLOAT,
       },
     },
     // prettier-ignore
@@ -102,20 +142,27 @@ var jsPsychTangram = (function (jspsych) {
       this.display = display_element;
       this.params = trial;
 
+      // Ensure valid SVG name type before calling add_html()
+      this.params.svg = safeset(trial.svg, "");
+
       this.add_css();
       this.add_html();
 
       // Configure Tangram Game piece behavior
-      TangramPiece.duration = trial.resetPieceDuration;
-      TangramPiece.ResetPieces = trial.resetPieces;
+      TangramPiece.duration = safeset(trial.resetPieceDuration, 1.0);
+      TangramPiece.ResetPieces = safeset(trial.resetPieces, true);
+      TangramPiece.threshold = safeset(trial.dropThreshold, 9);
 
       // Create and configure Tangram Game
-      this.tangram = new TangramGame(trial.duration);
-      this.tangram.successMessage = trial.successMessage;
-      this.tangram.failureMessage = trial.failureMessage;
-      this.tangram.interactionSound = trial.interactionSound;
-      this.tangram.successSound = trial.successSound;
-      this.tangram.failureSound = trial.failureSound;
+      this.tangram = new TangramGame();
+      this.tangram.duration = safeset(trial.duration, 60);
+      this.tangram.successMessage = safeset(trial.successMessage, "You won!");
+      this.tangram.failureMessage = safeset(trial.failureMessage, "You lose.");
+      this.tangram.interactionSound = safeset(trial.interactionSound, "");
+      this.tangram.successSound = safeset(trial.successSound, "");
+      this.tangram.failureSound = safeset(trial.failureSound, "");
+      this.tangram.overlayImage = safeset(trial.overlayImage, "");
+      this.tangram.overlayImagePosition = safeset(trial.overlayImagePosition, "TOP_RIGHT");
 
       const svgDoc = document.getElementById("svgObject");
       svgDoc.onload = () => {
