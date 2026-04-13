@@ -22,6 +22,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | failureMessage | str | "You lose." | Message to show when the player runs out of time |
 | overlayImage | str | "" | Image to show along with the puzzle. No image is shown with empty strin. No image is shown with empty string. |
 | overlayImagePosition | str | "TOP_RIGHT" | Position to place the user_image. Valid values are "TOP_LEFT" and "TOP_RIGHT"|
+| overlayImageWidth | int | 30 | Width to display the image. The height is scaled to match the aspect ratio of the image. |
 
 ## Data Generated
 

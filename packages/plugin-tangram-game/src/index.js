@@ -164,6 +164,7 @@ const jsPsychTangramDefaultPuzzleSVG = `
     </g>
   </svg>
 `;
+
 class TangramPiece {
   static threshold = 9; // pixels in svg space
   static duration = 1; // seconds for reset animation
@@ -342,8 +343,6 @@ class TangramGame {
     this.duration = null;
     this.successMessage = "You won!";
     this.failureMessage = "You lost!";
-    this.overlayImage = "";
-    this.overlayImagePosition = "";
     this.gameOverMessage = "";
     this.gameOver = false;
     this.finished = false;
@@ -359,6 +358,11 @@ class TangramGame {
     this.successSound = "";
     this.failureSound = "";
     this.endGameDelay = 3.0;
+
+    this.overlayImage = "";
+    this.overlayImagePosition = "";
+    this.overlayImageWidth = 30;
+    this.overlayIcon = null;
 
     // Initialize canvas for drawing text
     window.addEventListener("resize", (e) => {
@@ -478,6 +482,13 @@ class TangramGame {
       });
     }
 
+    // icon
+    this.overlayIcon = null;
+    if (this.overlayImage !== "") {
+      this.overlayIcon = new Image();
+      this.overlayIcon.src = this.overlayImage;
+    }
+
     // initialize time bar
     const barElement = svgDoc.getElementById("TimebarInterior");
     this.timeBar = new TimeBar(this.svg, barElement, this.duration);
@@ -545,6 +556,24 @@ class TangramGame {
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     } else {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    if (this.overlayIcon) {
+      var imgw = this.overlayIcon.width;
+      var imgh = this.overlayIcon.height;
+      var aspect = imgh / imgw;
+      var x = 5;
+      var y = 5;
+      if (this.overlayImagePosition === "TOP_RIGHT") {
+        x = this.canvas.width - imgw - 5;
+      }
+      this.ctx.drawImage(
+        this.overlayIcon,
+        x,
+        y,
+        this.overlayImageWidth,
+        this.overlayImageWidth * aspect
+      );
     }
 
     if (this.gameOver) {
@@ -723,6 +752,7 @@ var jsPsychTangram = (function (jspsych) {
       this.tangram.failureSound = safeset(trial.failureSound, "");
       this.tangram.overlayImage = safeset(trial.overlayImage, "");
       this.tangram.overlayImagePosition = safeset(trial.overlayImagePosition, "TOP_RIGHT");
+      this.tangram.overlayImageWidth = safeset(trial.overlayImageWidth, 30);
 
       if (trial.svg !== "") {
         const svgDoc = document.getElementById("svgObject");

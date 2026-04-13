@@ -14,38 +14,20 @@
       }
     });
 
-    var tutorial = {
+     var trial1 = {
       type: jsPsychTangram,
-      svg: "puzzles/puzzle-arrow.svg",
+      svg: "puzzles/puzzle-monster.svg",
       successMessage: "You did it!",
       failureMessage: "Maybe next time.",
       interactionSound: "puzzles/tap.mp3",
       successSound: "puzzles/magic-spell-short.m4a",
       failureSound: "puzzles/sad-trombone.wav",
-      duration: 30
-    }
-
-    var trial1 = {
-      type: jsPsychTangram,
-      svg: "puzzles/puzzle-monster.svg",
       overlayImage: "puzzles/no.png",
       overlayImagePosition: "TOP_RIGHT",
       duration: 30
     }
 
-    var trial2 = {
-      type: jsPsychTangram,
-      svg: "puzzles/puzzle-rocket.svg",
-      duration: 30
-    }
-
-    var trial3 = {
-      type: jsPsychTangram,
-      svg: 'puzzles/puzzle-square.svg',
-      duration: 30
-    }
-
-    jsPsych.run([tutorial, trial1, trial2, trial3]);
+    jsPsych.run([trial1]);
 
   </script>
 </html>

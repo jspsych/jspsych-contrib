@@ -160,6 +160,7 @@ var jsPsychTangram = (function (jspsych) {
       this.tangram.failureSound = safeset(trial.failureSound, "");
       this.tangram.overlayImage = safeset(trial.overlayImage, "");
       this.tangram.overlayImagePosition = safeset(trial.overlayImagePosition, "TOP_RIGHT");
+      this.tangram.overlayImageWidth = safeset(trial.overlayImageWidth, 30);
 
       if (trial.svg !== "") {
         const svgDoc = document.getElementById("svgObject");
