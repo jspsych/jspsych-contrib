@@ -12,6 +12,13 @@ class TangramGame {
     this.finished = false;
     this.initialized = false;
 
+    // performance logging
+    this.clickCount = 0;
+    this.timeToFirstClick = -1;
+    this.missDropCount = 0;
+    this.percentComplete = 0;
+    this.piecesSolved = "";
+
     this.selectedPiece = null;
     this.puzzlePieces = [];
 
@@ -36,13 +43,16 @@ class TangramGame {
   }
 
   mouseClick(e) {
+    if (this.timeToFirstClick === -1) this.timeToFirstClick = this.timeBar.elapsedTime();
+    this.clickCount++;
+
     if (this.selectedPiece != null) {
       // drop it
       var pos = this.selectedPiece.el.getBoundingClientRect();
       var svgpos = client2svg(pos.x, pos.y, this.svg, this.canvas);
       this.selectedPiece.drop(svgpos);
+      if (!this.selectedPiece.isAtTarget) this.missDropCount++;
       if (this.soundEffect !== null) this.soundEffect.play();
-      //this.selectedPiece.isAtTarget is true when the piece was correctly placed
       this.selectedPiece = null;
       return;
     }
@@ -169,6 +179,21 @@ class TangramGame {
       if (!piece.isAtTarget) return false;
     }
     return true;
+  }
+
+  computePuzzleCompletionStats() {
+    var placedPieceCount = 0;
+    var placedPieceNames = "";
+    var sep = "";
+    for (const piece of this.puzzlePieces) {
+      if (piece.isAtTarget) {
+        placedPieceCount++;
+        placedPieceNames += sep + piece.el.id;
+        sep = ",";
+      }
+    }
+    this.percentComplete = placedPieceCount / this.puzzlePieces.length;
+    this.piecesSolved = placedPieceNames;
   }
 
   tick(timestamp) {

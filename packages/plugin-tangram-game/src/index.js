@@ -348,6 +348,13 @@ class TangramGame {
     this.finished = false;
     this.initialized = false;
 
+    // performance logging
+    this.clickCount = 0;
+    this.timeToFirstClick = -1;
+    this.missDropCount = 0;
+    this.percentComplete = 0;
+    this.piecesSolved = "";
+
     this.selectedPiece = null;
     this.puzzlePieces = [];
 
@@ -372,13 +379,16 @@ class TangramGame {
   }
 
   mouseClick(e) {
+    if (this.timeToFirstClick === -1) this.timeToFirstClick = this.timeBar.elapsedTime();
+    this.clickCount++;
+
     if (this.selectedPiece != null) {
       // drop it
       var pos = this.selectedPiece.el.getBoundingClientRect();
       var svgpos = client2svg(pos.x, pos.y, this.svg, this.canvas);
       this.selectedPiece.drop(svgpos);
+      if (!this.selectedPiece.isAtTarget) this.missDropCount++;
       if (this.soundEffect !== null) this.soundEffect.play();
-      //this.selectedPiece.isAtTarget is true when the piece was correctly placed
       this.selectedPiece = null;
       return;
     }
@@ -505,6 +515,21 @@ class TangramGame {
       if (!piece.isAtTarget) return false;
     }
     return true;
+  }
+
+  computePuzzleCompletionStats() {
+    var placedPieceCount = 0;
+    var placedPieceNames = "";
+    var sep = "";
+    for (const piece of this.puzzlePieces) {
+      if (piece.isAtTarget) {
+        placedPieceCount++;
+        placedPieceNames += sep + piece.el.id;
+        sep = ",";
+      }
+    }
+    this.percentComplete = placedPieceCount / this.puzzlePieces.length;
+    this.piecesSolved = placedPieceNames;
   }
 
   tick(timestamp) {
@@ -698,7 +723,7 @@ var jsPsychTangram = (function (jspsych) {
       solve_duration: {
         type: jspsych.ParameterType.FLOAT,
       },
-      /** Percentage puzzle completion. 1 if the puzzle was completely solved; 0 if not piece was correctly placed. */
+      /** Percentage puzzle completion. 1 if the puzzle was completely solved; 0 if no piece was correctly placed. */
       puzzle_solved: {
         type: jspsych.ParameterType.FLOAT,
       },
@@ -771,9 +796,14 @@ var jsPsychTangram = (function (jspsych) {
         document.querySelector("#tangram-styles").remove();
         document.querySelector("#container").remove();
 
+        this.tangram.computePuzzleCompletionStats();
         var trial_data = {
           solve_duration: this.tangram.timeBar.elapsedTime(),
-          puzzle_solved: this.tangram.gameOverMessage.includes("won"),
+          puzzle_solved: this.tangram.percentComplete,
+          pieces_solved: this.tangram.piecesSolved,
+          num_total_clicks: this.tangram.clickCount,
+          num_piece_drops: this.tangram.missDropCount,
+          first_click_time: this.tangram.timeToFirstClick,
         };
         this.jsPsych.finishTrial(trial_data);
       };

@@ -106,7 +106,7 @@ var jsPsychTangram = (function (jspsych) {
       solve_duration: {
         type: jspsych.ParameterType.FLOAT,
       },
-      /** Percentage puzzle completion. 1 if the puzzle was completely solved; 0 if not piece was correctly placed. */
+      /** Percentage puzzle completion. 1 if the puzzle was completely solved; 0 if no piece was correctly placed. */
       puzzle_solved: {
         type: jspsych.ParameterType.FLOAT,
       },
@@ -179,9 +179,14 @@ var jsPsychTangram = (function (jspsych) {
         document.querySelector("#tangram-styles").remove();
         document.querySelector("#container").remove();
 
+        this.tangram.computePuzzleCompletionStats();
         var trial_data = {
           solve_duration: this.tangram.timeBar.elapsedTime(),
-          puzzle_solved: this.tangram.gameOverMessage.includes("won"),
+          puzzle_solved: this.tangram.percentComplete,
+          pieces_solved: this.tangram.piecesSolved,
+          num_total_clicks: this.tangram.clickCount,
+          num_piece_drops: this.tangram.missDropCount,
+          first_click_time: this.tangram.timeToFirstClick,
         };
         this.jsPsych.finishTrial(trial_data);
       };
