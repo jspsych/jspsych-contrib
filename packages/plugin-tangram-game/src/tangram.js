@@ -70,13 +70,22 @@ class TangramGame {
 
   start() {
     const obj = document.getElementById("svgObject");
-    const svgDoc = obj.contentDocument;
+    var svgDoc = obj.contentDocument;
     if (!svgDoc) {
-      console.error("Error: No SVG document found.");
-      return;
+      console.warn("Error: No SVG document loaded. Reverting to default puzzle.");
+      obj.removeAttribute("id");
+      obj.removeAttribute("data");
+      obj.removeAttribute("preserveAspectRatio");
+      obj.innerHTML = jsPsychTangramDefaultPuzzleSVG;
+      svgDoc = document;
     }
 
     this.svg = svgDoc.querySelector("svg");
+    if (this.svg === null) {
+      console.error("Cannot load SVG.");
+      return;
+    }
+
     this.svg.addEventListener("mousemove", (e) => {
       this.mouseMove(e);
     });

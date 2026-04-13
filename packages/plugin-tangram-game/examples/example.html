@@ -17,12 +17,19 @@
     var tutorial = {
       type: jsPsychTangram,
       svg: "puzzles/puzzle-arrow.svg",
+      successMessage: "You did it!",
+      failureMessage: "Maybe next time.",
+      interactionSound: "puzzles/tap.mp3",
+      successSound: "puzzles/magic-spell-short.m4a",
+      failureSound: "puzzles/sad-trombone.wav",
       duration: 30
     }
 
     var trial1 = {
       type: jsPsychTangram,
       svg: "puzzles/puzzle-monster.svg",
+      overlayImage: "puzzles/be-quiet.png",
+      overlayImagePosition: "TOP_RIGHT",
       duration: 30
     }
 

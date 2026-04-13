@@ -86,6 +86,84 @@ function svgComputePath(element) {
   return points;
 }
 
+const jsPsychTangramDefaultPuzzleSVG = `
+  <svg
+    id="svgObject"
+    preserveAspectRatio="xMidYMid meet"
+    width="600"
+    height="300"
+    viewBox="-1 0 600 300"
+    version="0.1"
+    id="svg5"
+    xmlns="http://www.w2.org/2000/svg"
+    xmlns:svg="http://www.w2.org/2000/svg">
+    <g id="PuzzleLayer" >
+      <path
+        style="opacity:1;fill:#ff7676;fill-opacity:1;stroke:none;stroke-width:1.36277"
+        d="M 90.226414,119.66329 159.36499,51.524708 H 23.087838 Z"
+        id="T0"
+        />
+      <path
+        style="opacity:1;fill:#6265ff;fill-opacity:1;stroke:none;stroke-width:1.36277"
+        d="m 90.670314,119.87647 -68.138566,-68.138572 -2e-5,136.277162 z"
+        id="T1"
+        />
+      <path
+        style="opacity:1;fill:#ffcc4d;fill-opacity:1;stroke:none;stroke-width:1.36277"
+        d="m 88.815574,188.0532 68.138596,-68.1386 v 68.1386 z"
+        id="T2"
+        />
+      <path
+        style="opacity:1;fill:#ff49e1;fill-opacity:1;stroke:none;stroke-width:2.72554;stroke-linecap:butt;stroke-opacity:1"
+        d="m 91.128774,119.77587 -34.069285,34.06929 68.138571,1e-5 z"
+        id="T3"
+        />
+      <path
+        style="opacity:1;fill:#66fff4;fill-opacity:1;stroke:none;stroke-width:1.36277"
+        d="M 57.163263,153.52636 H 126.30185 L 92.232554,187.59565 H 24.093973 Z"
+        id="P"
+        />
+      <path
+        style="opacity:1;fill:#ad54ff;fill-opacity:1;stroke:none;stroke-width:1.36277"
+        d="m 123.11366,86.437446 34.0693,34.069304 V 52.368146 Z"
+        id="T4"
+        />
+      <path
+        style="opacity:1;fill:#66ff43;fill-opacity:1;stroke:none;stroke-width:2.72554;stroke-linecap:butt;stroke-opacity:1"
+        d="m 89.799844,119.61315 34.069296,-34.069304 34.0693,34.069304 -34.0693,34.06929 z"
+        id="S"
+        />
+    </g>
+    <g
+      id="OutlineLayer"
+      transform="translate(0,0)">
+      <path
+        style="fill:none;stroke:#000000;stroke-opacity:1;stroke-width:2;stroke-dasharray:none"
+        d="M 21.964458,49.973559 H 157.43098 V 187.87035 H 22.278404 Z"
+        id="path4008" />
+    </g>
+    <g
+      id="TimebarLayer"
+      style="image-rendering:auto">
+      <rect
+        style="fill:#00b500;fill-opacity:1;stroke:none;stroke-width:2.90695;stroke-dasharray:none;stroke-opacity:1"
+        id="TimebarInterior"
+        width="599"
+        height="9"
+        x="-1"
+        y="289"
+        />
+      <rect
+        style="fill:none;fill-opacity:0;stroke:#000000;stroke-width:1.45347;stroke-dasharray:none;stroke-opacity:1"
+        id="TimebarOutline"
+        width="599"
+        height="9"
+        x="-1"
+        y="289"
+        />
+    </g>
+  </svg>
+`;
 class TangramPiece {
   static threshold = 9; // pixels in svg space
   static duration = 1; // seconds for reset animation
@@ -327,13 +405,22 @@ class TangramGame {
 
   start() {
     const obj = document.getElementById("svgObject");
-    const svgDoc = obj.contentDocument;
+    var svgDoc = obj.contentDocument;
     if (!svgDoc) {
-      console.error("Error: No SVG document found.");
-      return;
+      console.warn("Error: No SVG document loaded. Reverting to default puzzle.");
+      obj.removeAttribute("id");
+      obj.removeAttribute("data");
+      obj.removeAttribute("preserveAspectRatio");
+      obj.innerHTML = jsPsychTangramDefaultPuzzleSVG;
+      svgDoc = document;
     }
 
     this.svg = svgDoc.querySelector("svg");
+    if (this.svg === null) {
+      console.error("Cannot load SVG.");
+      return;
+    }
+
     this.svg.addEventListener("mousemove", (e) => {
       this.mouseMove(e);
     });
@@ -618,9 +705,6 @@ var jsPsychTangram = (function (jspsych) {
       this.display = display_element;
       this.params = trial;
 
-      // Ensure valid SVG name type before calling add_html()
-      this.params.svg = safeset(trial.svg, "");
-
       this.add_css();
       this.add_html();
 
@@ -640,10 +724,14 @@ var jsPsychTangram = (function (jspsych) {
       this.tangram.overlayImage = safeset(trial.overlayImage, "");
       this.tangram.overlayImagePosition = safeset(trial.overlayImagePosition, "TOP_RIGHT");
 
-      const svgDoc = document.getElementById("svgObject");
-      svgDoc.onload = () => {
+      if (trial.svg !== "") {
+        const svgDoc = document.getElementById("svgObject");
+        svgDoc.onload = () => {
+          this.tangram.start();
+        };
+      } else {
         this.tangram.start();
-      };
+      }
 
       const end_trial = () => {
         if (typeof keyboardListener !== "undefined") {
@@ -704,9 +792,9 @@ var jsPsychTangram = (function (jspsych) {
         "beforeend",
         `<div id="container">
           <object id="svgObject"
-                  data="${this.params.svg}"
                   type="image/svg+xml"
-                  preserveAspectRatio="xMidYMid meet"
+                  data="${this.params.svg}"
+                  preserveAspectRatio="xMidYMid meet">
           </object>
         </div> `
       );

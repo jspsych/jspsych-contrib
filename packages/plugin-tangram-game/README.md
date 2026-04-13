@@ -4,7 +4,7 @@
 
 A child-friendly tangram game with click-and-click interface and potential for custom puzzles
 
-![Tangram Game Demo](Tangram-demo.gif "Tangram Demo")
+![Tangram Game Demo](docs/Tangram-demo.gif "Tangram Demo")
 
 ## Loading
 

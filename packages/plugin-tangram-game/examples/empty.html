@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+    <script src="../dist/index.browser.min.js"></script>
+  </head>
+  <body></body>
+  <script>
+
+    var jsPsych = initJsPsych({
+      on_finish: () => {
+        jsPsych.data.displayData();
+      }
+    });
+
+    var defaultPuzzle = {
+      type: jsPsychTangram
+    }
+
+    jsPsych.run([defaultPuzzle]);
+
+  </script>
+</html>

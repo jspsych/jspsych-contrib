@@ -142,9 +142,6 @@ var jsPsychTangram = (function (jspsych) {
       this.display = display_element;
       this.params = trial;
 
-      // Ensure valid SVG name type before calling add_html()
-      this.params.svg = safeset(trial.svg, "");
-
       this.add_css();
       this.add_html();
 
@@ -164,10 +161,14 @@ var jsPsychTangram = (function (jspsych) {
       this.tangram.overlayImage = safeset(trial.overlayImage, "");
       this.tangram.overlayImagePosition = safeset(trial.overlayImagePosition, "TOP_RIGHT");
 
-      const svgDoc = document.getElementById("svgObject");
-      svgDoc.onload = () => {
+      if (trial.svg !== "") {
+        const svgDoc = document.getElementById("svgObject");
+        svgDoc.onload = () => {
+          this.tangram.start();
+        };
+      } else {
         this.tangram.start();
-      };
+      }
 
       const end_trial = () => {
         if (typeof keyboardListener !== "undefined") {
@@ -228,9 +229,9 @@ var jsPsychTangram = (function (jspsych) {
         "beforeend",
         `<div id="container">
           <object id="svgObject"
-                  data="${this.params.svg}"
                   type="image/svg+xml"
-                  preserveAspectRatio="xMidYMid meet"
+                  data="${this.params.svg}"
+                  preserveAspectRatio="xMidYMid meet">
           </object>
         </div> `
       );
