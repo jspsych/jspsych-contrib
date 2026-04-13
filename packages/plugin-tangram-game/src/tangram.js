@@ -52,7 +52,7 @@ class TangramGame {
       var svgpos = client2svg(pos.x, pos.y, this.svg, this.canvas);
       this.selectedPiece.drop(svgpos);
       if (!this.selectedPiece.isAtTarget) this.missDropCount++;
-      if (this.soundEffect !== null) this.soundEffect.play();
+      if (this.soundEffect !== null && this.soundEffect.readyState) this.soundEffect.play();
       this.selectedPiece = null;
       return;
     }
@@ -208,7 +208,7 @@ class TangramGame {
     if (this.timeBar.timeLeft <= 0) {
       this.gameOver = true;
       this.gameOverMessage = this.failureMessage;
-      if (this.loseSound !== null) this.loseSound.play();
+      if (this.loseSound !== null && this.loseSound.readyState) this.loseSound.play();
       else
         setTimeout(() => {
           this.finished = true;
@@ -218,7 +218,7 @@ class TangramGame {
     if (this.puzzleSolved()) {
       this.gameOver = true;
       this.gameOverMessage = this.successMessage;
-      if (this.winSound !== null) this.winSound.play();
+      if (this.winSound !== null && this.winSound.readyState) this.winSound.play();
       else
         setTimeout(() => {
           this.finished = true;
