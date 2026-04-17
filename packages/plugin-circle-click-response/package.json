@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-circle-click-response",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A plugin that displays a central HTML stimulus surrounded by clickable options arranged in a circle",
   "type": "module",
   "main": "dist/index.cjs",
