@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>circle-click-response Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        jsPsych.data.displayData();
+      },
+    });
+
+    // Instructions
+    const instructions = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <h2>circle-click-response Demo</h2>
+        <p>You will see two example trials:</p>
+        <ol style="text-align: left; max-width: 500px; margin: auto;">
+          <li><strong>Digit search:</strong> Find a target digit among distractors.</li>
+          <li><strong>Color matching:</strong> Click the colored circle that matches the center.</li>
+        </ol>
+        <p>Press any key to begin.</p>
+      `,
+    };
+
+    // Trial 1: Digit search — find the target number
+    const digit_trial = {
+      type: jsPsychCircleClickResponse,
+      stimulus: "<p style='font-size: 28px;'>Find the <strong>7</strong></p>",
+      choices: [
+        "<span style='font-size: 36px; font-weight: bold;'>3</span>",
+        "<span style='font-size: 36px; font-weight: bold;'>9</span>",
+        "<span style='font-size: 36px; font-weight: bold;'>7</span>",
+        "<span style='font-size: 36px; font-weight: bold;'>2</span>",
+        "<span style='font-size: 36px; font-weight: bold;'>5</span>",
+        "<span style='font-size: 36px; font-weight: bold;'>1</span>",
+      ],
+      correct_choice: 2,
+      feedback_correct:
+        "<p style='color: green; font-size: 20px;'>&#10003; Correct!</p>",
+      feedback_incorrect:
+        "<p style='color: red; font-size: 20px;'>&#10007; Wrong — the 7 was in position 3.</p>",
+      feedback_duration: 1500,
+      prompt: "<p>Click the digit 7.</p>",
+      circle_radius: 180,
+    };
+
+    // Trial 2: Colored circles — match the center color
+    function colorCircle(color) {
+      return (
+        "<div style='width: 60px; height: 60px; border-radius: 50%; background: " +
+        color +
+        "; border: 2px solid #333; cursor: pointer;'></div>"
+      );
+    }
+
+    const color_trial = {
+      type: jsPsychCircleClickResponse,
+      stimulus: colorCircle("dodgerblue"),
+      choices: [
+        colorCircle("red"),
+        colorCircle("dodgerblue"),
+        colorCircle("green"),
+        colorCircle("orange"),
+        colorCircle("purple"),
+        colorCircle("gold"),
+        colorCircle("hotpink"),
+        colorCircle("teal"),
+      ],
+      correct_choice: 1,
+      feedback_correct:
+        "<p style='color: green; font-size: 20px;'>&#10003; Correct — that's the matching color!</p>",
+      feedback_incorrect:
+        "<p style='color: red; font-size: 20px;'>&#10007; Wrong — the matching color was blue.</p>",
+      feedback_duration: 1500,
+      prompt: "<p>Click the circle that matches the color in the center.</p>",
+      circle_radius: 220,
+    };
+
+    jsPsych.run([instructions, digit_trial, color_trial]);
+  </script>
+</html>
