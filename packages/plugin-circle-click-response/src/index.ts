@@ -32,7 +32,7 @@ const info = <const>{
       type: ParameterType.INT,
       default: null,
     },
-    /** The duration in milliseconds to display the stimulus before the choices appear. If 0, stimulus and choices appear simultaneously. */
+    /** The duration in milliseconds to display the stimulus. Choices are shown immediately and the stimulus is hidden after this duration. If null, the stimulus remains visible. */
     stimulus_duration: {
       type: ParameterType.INT,
       default: null,
@@ -99,6 +99,10 @@ class CircleClickResponsePlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
+    if (trial.choices.length === 0) {
+      throw new Error("circle-click-response plugin requires at least one choice.");
+    }
+
     const n_choices = trial.choices.length;
     const radius = trial.circle_radius;
 
@@ -189,6 +193,9 @@ class CircleClickResponsePlugin implements JsPsychPlugin<Info> {
     choice_elements.forEach((el) => {
       el.addEventListener("click", (e) => {
         const target = (e.currentTarget as HTMLElement).getAttribute("data-choice-index");
+        if (target === null) {
+          return;
+        }
         end_trial(parseInt(target, 10));
       });
     });
