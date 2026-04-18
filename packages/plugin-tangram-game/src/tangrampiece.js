@@ -1,5 +1,5 @@
 class TangramPiece {
-  static threshold = 9; // pixels in svg space
+  static threshold = 20; // pixels in svg space
   static duration = 1; // seconds for reset animation
   static NONE = 0;
   static DRAG = 1;

@@ -33,11 +33,21 @@ function safeset(inputVal, defaultVal) {
 }
 
 function client2svg(px, py, svg, canvas) {
-  // Assumes width > height with aspect ratio and midpoint alignment
+  // Assumes SVG width > height with aspect ratio and midpoint alignment
   var vb = svg.viewBox.baseVal;
-  var scaledHeight = (vb.height / vb.width) * canvas.width;
-  var x = (px / canvas.width) * vb.width;
-  var y = ((py - (canvas.height - scaledHeight) / 2) / scaledHeight) * vb.height;
+  var aspect = canvas.width / canvas.height;
+  if (aspect > 2.0) {
+    // scale the width
+    var scaledWidth = (vb.width / vb.height) * canvas.height;
+    var y = (py / canvas.height) * vb.height;
+    var x = ((px - (canvas.width - scaledWidth) / 2) / scaledWidth) * vb.width;
+  } else {
+    // scale the height
+    var scaledHeight = (vb.height / vb.width) * canvas.width;
+    var x = (px / canvas.width) * vb.width;
+    var y = ((py - (canvas.height - scaledHeight) / 2) / scaledHeight) * vb.height;
+  }
+  //console.log(canvas.height, px, py, "=>", x, y)
   return { x: x, y: y };
 }
 
@@ -166,7 +176,7 @@ const jsPsychTangramDefaultPuzzleSVG = `
 `;
 
 class TangramPiece {
-  static threshold = 9; // pixels in svg space
+  static threshold = 20; // pixels in svg space
   static duration = 1; // seconds for reset animation
   static NONE = 0;
   static DRAG = 1;
@@ -379,6 +389,7 @@ class TangramGame {
   }
 
   mouseClick(e) {
+    if (this.gameOver) return;
     if (this.timeToFirstClick === -1) this.timeToFirstClick = this.timeBar.elapsedTime();
     this.clickCount++;
 
@@ -388,7 +399,7 @@ class TangramGame {
       var svgpos = client2svg(pos.x, pos.y, this.svg, this.canvas);
       this.selectedPiece.drop(svgpos);
       if (!this.selectedPiece.isAtTarget) this.missDropCount++;
-      if (this.soundEffect !== null && this.soundEffect.readyState) this.soundEffect.play();
+      if (this.soundEffect !== null) this.soundEffect.play();
       this.selectedPiece = null;
       return;
     }
@@ -445,7 +456,7 @@ class TangramGame {
     var idx = 0;
     var x = 275;
     var y = 25;
-    var maxsize = 0;
+    var maxheight = 0;
     const puzzleLayer = svgDoc.getElementById("PuzzleLayer");
 
     // assert that puzzle layer does not have a transform on it
@@ -454,18 +465,18 @@ class TangramGame {
 
     for (const el of puzzleLayer.children) {
       var piece = new TangramPiece(el);
+      if (x + piece.width > 600) {
+        y = y + maxheight + 10;
+        x = 275;
+        maxheight = 0;
+      }
       piece.initPosition(x, y);
       this.puzzlePieces.push(piece);
       //console.log(`${el.id} ${x} ${y}`);
 
       x = x + piece.width + 10;
-      if (maxsize < piece.height) maxsize = piece.height;
-
+      if (maxheight < piece.height) maxheight = piece.height;
       idx = idx + 1;
-      if (idx % 3 == 0 && idx < 4) {
-        y = y + maxsize + 10;
-        x = 275;
-      }
     }
     // After pieces have their starting positions, we are initialized
     this.initialized = true;
@@ -542,23 +553,35 @@ class TangramGame {
 
     this.timeBar.tick(dt);
     if (this.timeBar.timeLeft <= 0) {
+      if (this.selectedPiece) {
+        // drop the piece
+        var pos = this.selectedPiece.el.getBoundingClientRect();
+        var svgpos = client2svg(pos.x, pos.y, this.svg, this.canvas);
+        this.selectedPiece.drop(svgpos);
+        this.selectedPiece = null;
+      }
+
       this.gameOver = true;
       this.gameOverMessage = this.failureMessage;
-      if (this.loseSound !== null && this.loseSound.readyState) this.loseSound.play();
-      else
+      if (this.loseSound !== null) this.loseSound.play();
+      else {
         setTimeout(() => {
           this.finished = true;
         }, this.endGameDelay * 1000);
+      }
+      this.computePuzzleCompletionStats();
     }
 
     if (this.puzzleSolved()) {
       this.gameOver = true;
       this.gameOverMessage = this.successMessage;
-      if (this.winSound !== null && this.winSound.readyState) this.winSound.play();
-      else
+      if (this.winSound !== null) this.winSound.play();
+      else {
         setTimeout(() => {
           this.finished = true;
         }, this.endGameDelay * 1000);
+      }
+      this.computePuzzleCompletionStats();
     }
     this.draw();
 
@@ -590,7 +613,7 @@ class TangramGame {
       var x = 5;
       var y = 5;
       if (this.overlayImagePosition === "TOP_RIGHT") {
-        x = this.canvas.width - imgw - 5;
+        x = this.canvas.width - this.overlayImageWidth - 5;
       }
       this.ctx.drawImage(
         this.overlayIcon,
@@ -605,8 +628,14 @@ class TangramGame {
       this.ctx.font = "64px Arial";
       this.ctx.textAlign = "center";
       this.ctx.lineWidth = 2;
-      this.ctx.fillStyle = "red";
-      this.ctx.strokeStyle = "black";
+      var completion = Math.abs(this.percentComplete - 1.0);
+      if (completion < 0.001) {
+        this.ctx.fillStyle = "#00AA00";
+        this.ctx.strokeStyle = "black";
+      } else {
+        this.ctx.fillStyle = "red";
+        this.ctx.strokeStyle = "black";
+      }
       var halfx = this.canvas.width * 0.5;
       var halfy = this.canvas.height * 0.5;
       this.ctx.fillText(this.gameOverMessage, halfx, halfy);
@@ -765,7 +794,7 @@ var jsPsychTangram = (function (jspsych) {
       // Configure Tangram Game piece behavior
       TangramPiece.duration = safeset(trial.resetPieceDuration, 1.0);
       TangramPiece.ResetPieces = safeset(trial.resetPieces, true);
-      TangramPiece.threshold = safeset(trial.dropThreshold, 9);
+      TangramPiece.threshold = safeset(trial.dropThreshold, 20);
 
       // Create and configure Tangram Game
       this.tangram = new TangramGame();
@@ -796,7 +825,6 @@ var jsPsychTangram = (function (jspsych) {
         document.querySelector("#tangram-styles").remove();
         document.querySelector("#container").remove();
 
-        this.tangram.computePuzzleCompletionStats();
         var trial_data = {
           solve_duration: this.tangram.timeBar.elapsedTime(),
           puzzle_solved: this.tangram.percentComplete,
