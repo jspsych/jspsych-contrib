@@ -1,4 +1,6 @@
 class TangramGame {
+  static START_X = 275;
+
   constructor() {
     this.canvas = document.getElementById("overlay");
     this.ctx = this.canvas.getContext("2d");
@@ -121,7 +123,7 @@ class TangramGame {
       var piece = new TangramPiece(el);
       if (x + piece.width > 600) {
         y = y + maxheight + 10;
-        x = 275;
+        x = TangramGame.START_X;
         maxheight = 0;
       }
       piece.initPosition(x, y);
@@ -280,7 +282,7 @@ class TangramGame {
 
     if (this.gameOver) {
       this.ctx.font = "64px Arial";
-      this.ctx.textAlign = "center";
+      this.ctx.textAlign = "left";
       this.ctx.lineWidth = 2;
       var completion = Math.abs(this.percentComplete - 1.0);
       if (completion < 0.001) {
@@ -290,6 +292,7 @@ class TangramGame {
         this.ctx.fillStyle = "red";
         this.ctx.strokeStyle = "black";
       }
+      //var test = this.ctx.measureText(this.gameOverMessage).width *0.5;
       var halfx = this.canvas.width * 0.5;
       var halfy = this.canvas.height * 0.5;
       this.ctx.fillText(this.gameOverMessage, halfx, halfy);
