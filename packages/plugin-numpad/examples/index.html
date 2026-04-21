@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>plugin-numpad example</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        jsPsych.data.displayData();
+      },
+    });
+
+    // Basic trial using all defaults
+    const basic = {
+      type: jsPsychNumpad,
+      preamble: "<p>Enter any number using the numpad below.</p>",
+    };
+
+    // PIN entry — exactly 4 digits required, masked preview
+    const pin = {
+      type: jsPsychNumpad,
+      preamble: "<p><strong>Enter a 4-digit PIN.</strong></p>",
+      min_digits: 4,
+      max_digits: 4,
+      error_message: "Please enter exactly 4 digits.",
+    };
+
+    // Custom layout — numpad arranged phone-style (1-2-3 on top) with a custom delete label
+    const phonePad = {
+      type: jsPsychNumpad,
+      preamble: "<p>How old are you? (phone-style layout)</p>",
+      numpad_layout: [1, 2, 3, 4, 5, 6, 7, 8, 9, "X", 0, "C"],
+      delete_button_text: "⌫",
+      continue_button_text: "OK",
+      min_digits: 1,
+      max_digits: 3,
+    };
+
+    // No preview, keyboard disabled
+    const noPreview = {
+      type: jsPsychNumpad,
+      preamble: "<p>Enter a number. (preview hidden, keyboard disabled)</p>",
+      show_preview: false,
+      allow_keyboard: false,
+    };
+
+    jsPsych.run([basic, pin, phonePad, noPreview]);
+  </script>
+</html>
