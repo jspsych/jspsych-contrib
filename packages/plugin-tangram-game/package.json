@@ -1,0 +1,44 @@
+{
+  "name": "@jspsych-contrib/plugin-tangram-game",
+  "version": "0.1.0",
+  "description": "A child-friendly tangram game with click-and-click interface and potential for custom puzzles",
+  "unpkg": "dist/index.browser.min.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "scripts": {
+    "concat": "concat -o src/index.js src/timebar.js src/tangramutils.js src/tangrampiece.js src/tangram.js src/plugin-tangram.js",
+    "minify": "esbuild src/index.js --minify --sourcemap --outfile=dist/index.browser.min.js",
+    "build": "npm run concat && npm run minify",
+    "build:watch": "npm run build -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages"
+  },
+  "keywords": [
+    "jsPsych"
+  ],
+  "author": {
+    "name": "Aline Normoyle",
+    "url": "https://github.com/alinen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-contrib/packages/plugin-tangram-game/README.md",
+  "dependencies": {
+    "@citation-js/core": "^0.7.14",
+    "@citation-js/plugin-bibtex": "^0.7.14",
+    "@citation-js/plugin-cff": "^0.6.1",
+    "@citation-js/plugin-software-formats": "^0.6.1",
+    "concat": "^1.0.3",
+    "jspsych": "^8.0.0"
+  },
+  "devDependencies": {
+    "@jspsych/config": "^3.2.2"
+  }
+}

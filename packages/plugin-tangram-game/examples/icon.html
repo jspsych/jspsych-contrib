@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+    <script src="../dist/index.browser.min.js"></script>
+  </head>
+  <body></body>
+  <script>
+
+    var jsPsych = initJsPsych({
+      on_finish: () => {
+        jsPsych.data.displayData();
+      }
+    });
+
+     var trial1 = {
+      type: jsPsychTangram,
+      svg: "puzzles/puzzle-monster.svg",
+      successMessage: "You did it!",
+      failureMessage: "Maybe next time.",
+      interactionSound: "puzzles/tap.mp3",
+      successSound: "puzzles/magic-spell-short.m4a",
+      failureSound: "puzzles/sad-trombone.wav",
+      overlayImage: "puzzles/no.png",
+      overlayImagePosition: "TOP_RIGHT",
+      duration: 10
+    }
+
+    jsPsych.run([trial1]);
+
+  </script>
+</html>
