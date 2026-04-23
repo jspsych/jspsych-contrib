@@ -128,10 +128,11 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: clamp(8px, 2vw, 16px);
-        padding: clamp(8px, 3vw, 16px);
+        gap: 16px;
+        padding: 16px;
         box-sizing: border-box;
         width: 100%;
+        max-width: 360px;
         margin: 0 auto;
       }
       .jspsych-numpad-preamble {
@@ -162,7 +163,7 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
       .jspsych-numpad-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: clamp(6px, 2vw, 10px);
+        gap: 10px;
         width: 100%;
       }
       .jspsych-numpad-button {
@@ -321,6 +322,7 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
           }
         },
         valid_responses: [...validDigits, trial.delete_key, trial.continue_key],
+        persist: true,
       });
     }
 
