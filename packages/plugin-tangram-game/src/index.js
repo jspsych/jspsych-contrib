@@ -559,7 +559,7 @@ class TangramGame {
         // drop the piece
         var pos = this.selectedPiece.el.getBoundingClientRect();
         var svgpos = client2svg(pos.x, pos.y, this.svg, this.canvas);
-        this.selectedPiece.drop(svgpos);
+        this.isAtTarget = false;
         this.selectedPiece = null;
       }
 

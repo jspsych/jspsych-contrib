@@ -32,7 +32,7 @@ See [documentation](https://github.com/jspsych/jspsych-contrib/packages/plugin-t
 
 [Aline Normoyle](https://github.com/alinen)
 
-# How to build and run
+# How to build, run, and release
 
 From the plugin-tangram-game directory, we can install dependencies and build using npm from Node.js. 
 
@@ -49,3 +49,9 @@ http-server -c10
 
 Then go to `http://127.0.0.1:8080/examples/example1.html` or `http://127.0.0.1:8000/examples/example2.html` in your browser.
 Alternatively, if you're using VSCode you can install the Live Server extension. this will also act as a web server for running.
+
+Run `changeset` to create a new release. The version number is stored in `plugin-tangram.js` and `packages.json`
+
+```
+npm run changeset
+```
