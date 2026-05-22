@@ -112,7 +112,7 @@ var jsPsychTangram = (function (jspsych) {
       },
       /** Comma-delimited list of piece names that were correctly placed */
       pieces_solved: {
-        type: jspsych.ParameterType.FLOAT,
+        type: jspsych.ParameterType.STRING,
       },
       /** Number of mouse clicks during this trial. */
       num_total_clicks: {

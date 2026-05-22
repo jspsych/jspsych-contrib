@@ -652,7 +652,7 @@ var jsPsychTangram = (function (jspsych) {
 
   const info = {
     name: "tangram",
-    version: "0.1.0",
+    version: "1.0.0",
     parameters: {
       /**
        * Path to the SVG file containing our puzzle.
@@ -761,7 +761,7 @@ var jsPsychTangram = (function (jspsych) {
       },
       /** Comma-delimited list of piece names that were correctly placed */
       pieces_solved: {
-        type: jspsych.ParameterType.FLOAT,
+        type: jspsych.ParameterType.STRING,
       },
       /** Number of mouse clicks during this trial. */
       num_total_clicks: {
