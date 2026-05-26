@@ -16,7 +16,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jspsych/jspsych-contrib.git",
-    "directory": "packages"
+    "directory": "packages/plugin-tangram-game"
   },
   "keywords": [
     "jsPsych"
@@ -30,15 +30,11 @@
     "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/packages/plugin-tangram-game/README.md",
-  "dependencies": {
-    "@citation-js/core": "^0.7.14",
-    "@citation-js/plugin-bibtex": "^0.7.14",
-    "@citation-js/plugin-cff": "^0.6.1",
-    "@citation-js/plugin-software-formats": "^0.6.1",
-    "concat": "^1.0.3",
+  "peerDependencies": {
     "jspsych": "^8.0.0"
   },
   "devDependencies": {
-    "@jspsych/config": "^3.2.2"
+    "@jspsych/config": "^3.2.2",
+    "concat": "^1.0.3"
   }
 }
