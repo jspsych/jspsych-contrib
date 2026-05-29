@@ -5,6 +5,9 @@ on: [push, pull_request]
 env:
   HUSKY: 0
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Build, lint, and test on Node.js ${{ matrix.node }}
