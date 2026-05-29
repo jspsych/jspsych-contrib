@@ -5,6 +5,9 @@ on: [push, pull_request]
 env:
   HUSKY: 0
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Build, lint, and test on Node.js ${{ matrix.node }}
@@ -15,10 +18,10 @@ jobs:
         node: [18.x, 20.x]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Setup Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ matrix.node }}
 
