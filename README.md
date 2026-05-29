@@ -126,3 +126,7 @@ We would like to encourage you to contribute plugins and extensions that are com
 At the same time, we realize that there may be jsPsych users who have created very useful plugins/extensions with jsPsych v6 that they would like to share with the community, but don't know how to or have the time/resources to convert their contributions into the jsPsych v7+ Node package format.
 
 As a first step to helping make this conversion easier, we offer a general migration guide for [v6.x to v7.x](https://www.jspsych.org/latest/support/migration-v7/) and for [v7.x to v8.x](https://www.jspsych.org/latest/support/migration-v8/). If you have suggestions/requests for additional documentation on migration, please open a thread on our [discussion board](https://github.com/jspsych/jsPsych/discussions/).
+
+## Security
+
+Please do not report security vulnerabilities through public GitHub issues. See our [Security Policy](SECURITY.md) for information about reporting vulnerabilities.
