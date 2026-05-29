@@ -29,7 +29,7 @@ jobs:
           NODE_OPTIONS: "--max-old-space-size=4096" # Increase heap size for jest
 
       - name: Create Release Pull Request or Publish Packages
-        uses: changesets/action@master
+        uses: changesets/action@41adcfa1f4c9a2f03ee74a426a8878a2b8cf7b85 # master
         with:
           version: npm run changeset:version
           publish: npm run changeset:publish
