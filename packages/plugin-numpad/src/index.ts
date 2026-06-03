@@ -94,9 +94,9 @@ const info = <const>{
     },
   },
   data: {
-    /** The number that was entered by the participant, `null` if no response was given. */
+    /** The number, as a string, that was entered by the participant, `null` if no response was given. */
     response: {
-      type: ParameterType.INT,
+      type: ParameterType.STRING,
     },
     /** The response time in milliseconds for the trial. */
     rt: {
@@ -310,7 +310,9 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
     }
 
     if (trial.allow_keyboard) {
-      const validDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+      const validDigits = trial.numpad_layout
+        .filter((k): k is number => typeof k === "number")
+        .map((k) => String(k));
       this.jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: (info: { key: string }) => {
           if (info.key === trial.delete_key) {
@@ -332,7 +334,7 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
       }
       const rt = Math.round(performance.now() - startTime);
       this.jsPsych.finishTrial({
-        response: currentInput === "" ? null : parseInt(currentInput, 10),
+        response: currentInput === "" ? null : currentInput,
         rt,
       });
     };

@@ -19,7 +19,7 @@ npm install @jspsych-contrib/plugin-numpad
 ```
 
 ```js
-import jsPsychNumpad from "plugin-numpad";
+import jsPsychNumpad from "@jspsych-contrib/plugin-numpad";
 ```
 
 ## Compatibility

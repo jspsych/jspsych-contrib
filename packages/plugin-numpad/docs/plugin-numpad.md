@@ -26,7 +26,7 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 | Name      | Type    | Value                                    |
 | --------- | ------- | ---------------------------------------- |
-| response | integer | The number that was entered by the participant, `null` if no response was given. |
+| response | string | The number, as a string, that was entered by the participant, `null` if no response was given. |
 | rt | integer | The response time in milliseconds for the trial. |
 
 ## Install
