@@ -19,7 +19,25 @@ describe("plugin-numpad", () => {
     await expectFinished();
 
     const data = getData().values()[0];
-    expect(data.response).toBe(1);
+    expect(data.response).toBe("1");
     expect(data.rt).toBeGreaterThan(0);
+  });
+
+  it("preserves leading zeros in the response", async () => {
+    const { expectFinished, getData } = await startTimeline([
+      {
+        type: jsPsychNumpad,
+      },
+    ]);
+
+    clickTarget(document.querySelector(".jspsych-numpad-button-digit[data-digit='0']"));
+    clickTarget(document.querySelector(".jspsych-numpad-button-digit[data-digit='0']"));
+    clickTarget(document.querySelector(".jspsych-numpad-button-digit[data-digit='7']"));
+    clickTarget(document.querySelector(".jspsych-numpad-button-continue"));
+
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.response).toBe("007");
   });
 });

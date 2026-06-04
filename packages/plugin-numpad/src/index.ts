@@ -94,7 +94,7 @@ const info = <const>{
     },
   },
   data: {
-    /** The number, as a string, that was entered by the participant, `null` if no response was given. */
+    /** The digits entered by the participant, as a string to preserve leading zeros, `null` if no response was given. */
     response: {
       type: ParameterType.STRING,
     },
