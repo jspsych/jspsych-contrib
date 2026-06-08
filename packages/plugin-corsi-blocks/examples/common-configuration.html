@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Corsi Blocks Plugin - Common Parameters</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+    <style>
+      body {
+        margin: 20px;
+        font-family: Arial, sans-serif;
+        touch-action: manipulation;
+      }
+    </style>
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData('json');
+      }
+    });
+
+    const timeline = [];
+
+    // Instructions
+    timeline.push({
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <h1>Corsi Blocks - Common Configuration</h1>
+        <p>This example uses commonly reported parameters:</p>
+        <ul>
+          <li>1000ms stimulus duration</li>
+          <li>1000ms inter-stimulus interval</li>
+          <li>500ms post-sequence delay</li>
+          <li>1500ms inter-trial delay</li>
+          <li>Blue/Yellow color scheme</li>
+          <li>No response timeout</li>
+        </ul>
+        <p><strong>Press any key to begin</strong></p>
+      `
+    });
+
+    // Example trial with commonly used parameters
+    timeline.push({
+      type: jsPsychCorsiBlocks,
+      sequence: [2, 5, 1, 6],
+      mode: 'display',
+      sequence_block_duration: 1000,         // Common: 1000ms
+      sequence_gap_duration: 1000,           // Common: 1000ms
+      pre_stim_duration: 500,
+      inter_trial_delay: 0,                  // No delay in display mode
+      block_color: '#0066cc',                // Blue
+      highlight_color: '#ffcc00',            // Yellow
+      background_color: '#000000',           // Black
+      display_width: '400px',
+      display_height: '400px',
+      block_size: 12,
+      prompt: 'Watch the sequence'
+    });
+
+    timeline.push({
+      type: jsPsychCorsiBlocks,
+      sequence: [2, 5, 1, 6],
+      mode: 'input',
+      post_sequence_delay: 500,              // Common: 500ms
+      response_timeout: null,                // No timeout
+      response_animation_duration: 200,      // ~200ms
+      inter_trial_delay: 1500,               // Common: 1500ms
+      block_color: '#0066cc',
+      correct_color: '#00ff00',
+      incorrect_color: '#ff0000',
+      background_color: '#000000',
+      display_width: '400px',
+      display_height: '400px',
+      block_size: 12,
+      prompt: 'Tap the blocks in the same order'
+    });
+
+    // Feedback
+    timeline.push({
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function() {
+        const lastTrial = jsPsych.data.get().last(1).values()[0];
+        return `
+          <h2>${lastTrial.correct ? 'Correct!' : 'Incorrect'}</h2>
+          <p>Sequence length: ${lastTrial.sequence.length}</p>
+          <p>Press any key to finish</p>
+        `;
+      }
+    });
+
+    jsPsych.run(timeline);
+  </script>
+</html>
