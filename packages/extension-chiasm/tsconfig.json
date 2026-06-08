@@ -1,0 +1,8 @@
+{
+  "extends": "@jspsych/config/tsconfig.contrib.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "resolveJsonModule": true
+  },
+  "include": ["src"]
+}

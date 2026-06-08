@@ -11,3 +11,7 @@ coverage/
 dist.zip
 .idea
 .claude/
+packages/extension-chiasm/examples/config.local.js
+packages/extension-chiasm/examples/chiasm-tracker.v*.js
+**/config.local.js
+**/config.local.json

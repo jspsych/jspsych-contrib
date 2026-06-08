@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - name: "Chiasm"
+    website: "https://chiasm.eu"
+title: "jsPsychChiasmCalibrate"
+version: 0.0.1
+date-released: 2026-06-05
+url: "https://chiasm.eu"
+repository-code: "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-chiasm-calibrate"
+identifiers:
+  - type: url
+    value: "https://docs.chiasm.eu/"
+    description: "Chiasm documentation"
+license: MIT
