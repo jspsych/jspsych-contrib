@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychVideoTextResponse Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <!-- Once this plugin package is published, you can load it from a CDN instead:
+<script src="https://unpkg.com/@jspsych-contrib/plugin-video-text-response"></script> -->
+    <script src="../dist/index.browser.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+
+    const trial = {
+      type: jsPsychVideoTextResponse
+    };
+
+    jsPsych.run([trial])
+  </script>
+</html>
