@@ -24,6 +24,11 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | pump_animation_duration    | int     | 200           | Duration of pump animation in milliseconds.                                                                                              |
 | pop_animation_duration     | int     | 300           | Duration of pop animation in milliseconds.                                                                                               |
 | balloon_color              | string  | "#ff0000"     | Base color of the balloon (any CSS color).                                                                                               |
+| balloon_stage_height       | int     | 400           | Height of the balloon stage (the area the balloon is drawn in), in pixels. The balloon scales to fit this area.                          |
+| value_text_color           | string  | "currentColor" | CSS color for the value/total point numbers in the info boxes. Defaults to `currentColor` so it adapts to light/dark themes.            |
+| label_text_color           | string  | "color-mix(in srgb, currentColor 60%, transparent)" | CSS color for the labels above the value/total point numbers. Defaults to a muted, theme-adaptive color. |
+| info_box_border_color      | string  | "currentColor" | CSS color for the info box borders. Defaults to `currentColor` so it adapts to light/dark themes.                                       |
+| info_box_background_color  | string  | "color-mix(in srgb, currentColor 6%, transparent)" | CSS color for the info box backgrounds. Defaults to a subtle, theme-adaptive tint.                       |
 | max_pumps                  | int     | 20            | Maximum expected pumps for visual scaling. The balloon will scale to fit the container at this pump count. Does not prevent pumping beyond this value. |
 
 ## Data Generated
