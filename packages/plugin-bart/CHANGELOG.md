@@ -1,5 +1,15 @@
 # @jspsych-contrib/plugin-bart
 
+## 1.2.0
+
+### Minor Changes
+
+- [#268](https://github.com/jspsych/jspsych-contrib/pull/268) [`2af2d92aa999ee633d7489cffb38cd1a86f27f76`](https://github.com/jspsych/jspsych-contrib/commit/2af2d92aa999ee633d7489cffb38cd1a86f27f76) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Improve CSS customizability of the BART plugin:
+
+  - Add `value_text_color`, `label_text_color`, `info_box_border_color`, and `info_box_background_color` parameters for the info box text, borders, and backgrounds. Their defaults are derived from `currentColor`, so the display now adapts to light/dark page themes without consumer overrides, replacing the previously hard-coded `#333`/`#666`/`#f0f0f0` values.
+  - Add a `balloon_stage_height` parameter (default 400) to control the balloon stage height, which was previously hard-coded and required `!important` overrides.
+  - Document the existing `max_pumps` parameter in the README.
+
 ## 1.1.0
 
 ### Minor Changes
