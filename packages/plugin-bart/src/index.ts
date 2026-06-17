@@ -86,6 +86,31 @@ const info = <const>{
       type: ParameterType.STRING,
       default: "#ff0000",
     },
+    /** Height of the balloon stage (the area the balloon is drawn in), in pixels. The balloon scales to fit this area. */
+    balloon_stage_height: {
+      type: ParameterType.INT,
+      default: 400,
+    },
+    /** CSS color for the value/total point numbers in the info boxes. Defaults to `currentColor` so it inherits the surrounding text color and adapts to light/dark themes. */
+    value_text_color: {
+      type: ParameterType.STRING,
+      default: "currentColor",
+    },
+    /** CSS color for the labels above the value/total point numbers. Defaults to a muted version of the surrounding text color so it adapts to light/dark themes. */
+    label_text_color: {
+      type: ParameterType.STRING,
+      default: "color-mix(in srgb, currentColor 60%, transparent)",
+    },
+    /** CSS color for the info box borders. Defaults to `currentColor` so it inherits the surrounding text color and adapts to light/dark themes. */
+    info_box_border_color: {
+      type: ParameterType.STRING,
+      default: "currentColor",
+    },
+    /** CSS color for the info box backgrounds. Defaults to a subtle tint of the surrounding text color so it adapts to light/dark themes. */
+    info_box_background_color: {
+      type: ParameterType.STRING,
+      default: "color-mix(in srgb, currentColor 6%, transparent)",
+    },
     /** Maximum expected pumps for visual scaling. The balloon will scale to fit the container at this pump count. Does not prevent pumping beyond this value. */
     max_pumps: {
       type: ParameterType.INT,
@@ -146,11 +171,19 @@ class BartPlugin implements JsPsychPlugin<Info> {
     let trial_start_time = performance.now();
     const pump_times: number[] = [];
 
-    // Calculate adjusted balloon sizing based on max_pumps to keep balloon contained
-    // At max_pumps, balloon should be roughly 350px tall (87.5% of 400px container)
+    // Calculate adjusted balloon sizing based on max_pumps to keep balloon contained.
+    // All math here is in viewBox units (the viewBox stays 300x400 regardless of the
+    // rendered balloon_stage_height). At max_pumps the balloon is ~350 units tall (87.5%
+    // of the 400-unit viewBox height).
     // Balloon height in balloon coordinates is ~300 units (from -150 to +115 with knot)
     // Target final scale at max_pumps: 350/300 ≈ 1.17
     const target_final_scale = 1.17;
+
+    // Stage dimensions. The internal SVG coordinate system (viewBox) is kept at 300x400
+    // so all the balloon/string positioning math below stays valid; only the rendered
+    // size scales with balloon_stage_height (width preserves the 300:400 = 0.75 ratio).
+    const stage_height = trial.balloon_stage_height;
+    const stage_width = stage_height * 0.75;
 
     // Keep starting size constant, only adjust increment
     const adjusted_starting_size = trial.balloon_starting_size;
@@ -168,10 +201,10 @@ class BartPlugin implements JsPsychPlugin<Info> {
           flex-wrap: wrap;
         }
         #jspsych-bart-info-container > div {
-          border: 2px solid #333;
+          border: 2px solid ${trial.info_box_border_color};
           border-radius: 8px;
           padding: 12px 24px;
-          background-color: #f0f0f0;
+          background-color: ${trial.info_box_background_color};
           min-width: 180px;
           flex: 1 1 auto;
           max-width: 250px;
@@ -211,8 +244,8 @@ class BartPlugin implements JsPsychPlugin<Info> {
         }
       </style>
       <div id="jspsych-bart-container" style="text-align: center; padding: 20px;">
-        <div id="jspsych-bart-balloon-container" style="margin: 30px auto; height: 400px; display: flex; align-items: center; justify-content: center;">
-          <svg id="jspsych-bart-balloon-svg" width="300" height="400" viewBox="0 0 300 400">
+        <div id="jspsych-bart-balloon-container" style="margin: 30px auto; height: ${stage_height}px; display: flex; align-items: center; justify-content: center;">
+          <svg id="jspsych-bart-balloon-svg" width="${stage_width}" height="${stage_height}" viewBox="0 0 300 400">
             <!-- Curved string - will be dynamically updated, placed behind balloon -->
             <path id="jspsych-bart-balloon-string"
                   d=""
@@ -251,24 +284,26 @@ class BartPlugin implements JsPsychPlugin<Info> {
           ${
             trial.show_balloon_value
               ? `<div id="jspsych-bart-balloon-value">
-              <div style="font-size: 14px; color: #666; margin-bottom: 4px;">${
-                trial.current_value_label
-              }</div>
-              <div style="font-size: 24px; font-weight: bold; color: #333;" id="jspsych-bart-balloon-value-number">${trial.point_display_format(
-                0
-              )}</div>
+              <div style="font-size: 14px; color: ${trial.label_text_color}; margin-bottom: 4px;">${
+                  trial.current_value_label
+                }</div>
+              <div style="font-size: 24px; font-weight: bold; color: ${
+                trial.value_text_color
+              };" id="jspsych-bart-balloon-value-number">${trial.point_display_format(0)}</div>
             </div>`
               : ""
           }
           ${
             trial.show_total_points
               ? `<div id="jspsych-bart-total-points">
-              <div style="font-size: 14px; color: #666; margin-bottom: 4px;">${
-                trial.total_points_label
-              }</div>
-              <div style="font-size: 24px; font-weight: bold; color: #333;" id="jspsych-bart-total-points-value">${trial.total_points_format(
-                trial.starting_total_points
-              )}</div>
+              <div style="font-size: 14px; color: ${trial.label_text_color}; margin-bottom: 4px;">${
+                  trial.total_points_label
+                }</div>
+              <div style="font-size: 24px; font-weight: bold; color: ${
+                trial.value_text_color
+              };" id="jspsych-bart-total-points-value">${trial.total_points_format(
+                  trial.starting_total_points
+                )}</div>
             </div>`
               : ""
           }

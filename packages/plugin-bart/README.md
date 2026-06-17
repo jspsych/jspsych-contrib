@@ -44,6 +44,16 @@ import jsPsychBart from "@jspsych-contrib/plugin-bart";
 | pump_animation_duration   | INT     | 200           | Duration of pump animation in milliseconds.                                                       |
 | pop_animation_duration    | INT     | 300           | Duration of pop animation in milliseconds.                                                        |
 | balloon_color             | STRING  | "#ff0000"     | Base color of the balloon (CSS color value).                                                      |
+| balloon_stage_height      | INT     | 400           | Height of the balloon stage (the area the balloon is drawn in), in pixels. The balloon scales to fit this area. |
+| value_text_color          | STRING  | "currentColor" | CSS color for the value/total point numbers in the info boxes. Defaults to `currentColor` so it inherits the surrounding text color and adapts to light/dark themes. |
+| label_text_color          | STRING  | "color-mix(in srgb, currentColor 60%, transparent)" | CSS color for the labels above the value/total point numbers. Defaults to a muted version of the surrounding text color so it adapts to light/dark themes. |
+| info_box_border_color     | STRING  | "currentColor" | CSS color for the info box borders. Defaults to `currentColor` so it inherits the surrounding text color and adapts to light/dark themes. |
+| info_box_background_color | STRING  | "color-mix(in srgb, currentColor 6%, transparent)" | CSS color for the info box backgrounds. Defaults to a subtle tint of the surrounding text color so it adapts to light/dark themes. |
+| max_pumps                 | INT     | 20            | Maximum expected pumps, used for visual scaling. The balloon scales to fit the stage at this pump count. Does **not** prevent pumping beyond this value (use `pop_threshold` for that). |
+
+## Theming
+
+By default, the info box text, borders, and backgrounds are derived from `currentColor` (the inherited text color), so the display adapts to light and dark page themes without any per-trial configuration. To take explicit control, set `value_text_color`, `label_text_color`, `info_box_border_color`, and `info_box_background_color` to any CSS color value. The balloon stage size is controlled with `balloon_stage_height` (no `!important` overrides needed).
 
 ## Data Generated
 
@@ -105,10 +115,16 @@ const trial = {
   balloon_color: "#00aaff",
   balloon_starting_size: 0.3,
   balloon_size_increment: 0.08,
+  balloon_stage_height: 500,
   pump_button_label: "Inflate",
   collect_button_label: "Cash Out",
   show_balloon_value: true,
-  show_total_points: false
+  show_total_points: false,
+  // Explicit theming (defaults adapt to light/dark themes automatically)
+  value_text_color: "#ffffff",
+  label_text_color: "#cccccc",
+  info_box_border_color: "#00aaff",
+  info_box_background_color: "#102030"
 };
 ```
 

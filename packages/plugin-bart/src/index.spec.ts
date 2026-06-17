@@ -280,6 +280,78 @@ describe("jsPsych BART plugin", () => {
     expect(getHTML()).toContain("#0000ff");
   });
 
+  it("should apply custom info box and text colors", async () => {
+    const { getHTML } = await startTimeline([
+      {
+        type: jsPsychBart,
+        pop_threshold: 10,
+        value_text_color: "rgb(10, 20, 30)",
+        label_text_color: "rgb(40, 50, 60)",
+        info_box_border_color: "rgb(70, 80, 90)",
+        info_box_background_color: "rgb(100, 110, 120)",
+      },
+    ]);
+
+    const html = getHTML();
+    expect(html).toContain("rgb(10, 20, 30)");
+    expect(html).toContain("rgb(40, 50, 60)");
+    expect(html).toContain("rgb(70, 80, 90)");
+    expect(html).toContain("rgb(100, 110, 120)");
+  });
+
+  it("should use currentColor-based defaults for info box and text colors", async () => {
+    const { getHTML } = await startTimeline([
+      {
+        type: jsPsychBart,
+        pop_threshold: 10,
+      },
+    ]);
+
+    const html = getHTML();
+    // Defaults inherit the surrounding text color so they adapt to light/dark themes
+    expect(html).toContain("currentColor");
+    // Hard-coded legacy colors should no longer be present
+    expect(html).not.toContain("#333");
+    expect(html).not.toContain("#666");
+    expect(html).not.toContain("#f0f0f0");
+  });
+
+  it("should apply a custom balloon stage height", async () => {
+    const { displayElement } = await startTimeline([
+      {
+        type: jsPsychBart,
+        pop_threshold: 10,
+        balloon_stage_height: 600,
+      },
+    ]);
+
+    const container = displayElement.querySelector(
+      "#jspsych-bart-balloon-container"
+    ) as HTMLElement;
+    expect(container.style.height).toBe("600px");
+
+    const svg = displayElement.querySelector("#jspsych-bart-balloon-svg") as SVGSVGElement;
+    expect(svg.getAttribute("height")).toBe("600");
+    // Width preserves the 300:400 (0.75) aspect ratio of the viewBox
+    expect(svg.getAttribute("width")).toBe("450");
+    // viewBox stays at the original coordinate system so balloon math is unaffected
+    expect(svg.getAttribute("viewBox")).toBe("0 0 300 400");
+  });
+
+  it("should default the balloon stage height to 400px", async () => {
+    const { displayElement } = await startTimeline([
+      {
+        type: jsPsychBart,
+        pop_threshold: 10,
+      },
+    ]);
+
+    const container = displayElement.querySelector(
+      "#jspsych-bart-balloon-container"
+    ) as HTMLElement;
+    expect(container.style.height).toBe("400px");
+  });
+
   it("should scale balloon with custom starting size and increment", async () => {
     const { displayElement } = await startTimeline([
       {
