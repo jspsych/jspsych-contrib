@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-numpad",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "an interactable and responsive numpad supporting both touch and keyboard interaction for numerical input.",
   "type": "module",
   "main": "dist/index.cjs",
