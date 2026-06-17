@@ -15,7 +15,8 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | search_area_width   | FLOAT            | `90`               | Width of the search area as a percentage of viewport width (vw). |
 | search_area_height  | FLOAT            | `80`               | Height of the search area as a percentage of viewport height (vh). |
 | background_color    | STRING           | `"#ffffff"`        | Background color of the search display. |
-| image_positions     | ARRAY of OBJECT  | `null`             | Array of `{x, y}` objects specifying the center position of each image as percentages (0-100) of the search area. `x` is the horizontal position and `y` is the vertical position. If `null`, positions are generated randomly with non-overlapping placement. When provided, the array must have the same length as `images`. |
+| fit_container       | BOOL             | `false`            | If `true`, the search display fills its display element using container-relative units (cqw/cqh/cqmin) instead of covering the viewport. Use this to embed the task in a sized container (a card or panel) rather than running it full screen. The display element must have a defined width and height. |
+| image_positions     | ARRAY of OBJECT  | `[]`               | Array of `{x, y}` objects specifying the center position of each image as percentages (0-100) of the search area. `x` is the horizontal position and `y` is the vertical position. If left empty (the default), positions are generated randomly with non-overlapping placement. When provided, the array must have the same length as `images`. |
 
 ## Data Generated
 
@@ -105,5 +106,23 @@ var trial = {
     { x: 20, y: 30 },  // distractor upper-left area
     { x: 80, y: 70 },  // distractor lower-right area
   ],
+};
+```
+
+### Embedding in a sized container
+
+By default the task covers the viewport. Set `fit_container: true` to run it inside a sized element instead — the layout is then expressed in container-relative units, so it fills whatever element you give jsPsych as its `display_element`. That element must have a defined width and height.
+
+```javascript
+const jsPsych = initJsPsych({
+  display_element: document.getElementById('search-panel'), // e.g. a 480×360 card
+});
+
+const trial = {
+  type: jsPsychVisualSearchClickTarget,
+  images: ['img/target.png', 'img/distractor1.png', 'img/distractor2.png'],
+  target_present: true,
+  target_index: 0,
+  fit_container: true,
 };
 ```

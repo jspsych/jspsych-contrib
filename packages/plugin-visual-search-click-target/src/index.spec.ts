@@ -160,4 +160,43 @@ describe("visual-search-click-target plugin", () => {
     expect(data.image_positions[0]).toHaveProperty("x");
     expect(data.image_positions[0]).toHaveProperty("y");
   });
+
+  it("covers the viewport by default", async () => {
+    const { displayElement } = await startTimeline([
+      {
+        type: jsPsychPluginVisualSearchClickTarget,
+        images: ["target.png", "distractor1.png"],
+        target_present: true,
+        target_index: 0,
+      },
+    ]);
+
+    const container = displayElement.querySelector("div") as HTMLDivElement;
+    expect(container.style.position).toBe("fixed");
+
+    // Clean up
+    (displayElement.querySelector('img[data-index="0"]') as HTMLImageElement).click();
+  });
+
+  it("fills its display element when fit_container is true", async () => {
+    const { expectFinished, getData, displayElement } = await startTimeline([
+      {
+        type: jsPsychPluginVisualSearchClickTarget,
+        images: ["target.png", "distractor1.png"],
+        target_present: true,
+        target_index: 0,
+        fit_container: true,
+      },
+    ]);
+
+    // Embedded mode lays out inside the container instead of fixing to the
+    // viewport.
+    const container = displayElement.querySelector("div") as HTMLDivElement;
+    expect(container.style.position).toBe("relative");
+
+    // Still fully functional in embedded mode.
+    (displayElement.querySelector('img[data-index="0"]') as HTMLImageElement).click();
+    await expectFinished();
+    expect(getData().values()[0].correct).toBe(true);
+  });
 });
