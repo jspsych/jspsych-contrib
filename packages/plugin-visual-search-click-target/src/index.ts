@@ -42,14 +42,23 @@ const info = <const>{
       type: ParameterType.STRING,
       default: "#ffffff",
     },
+    /** If `true`, the search display fills its display element using
+     * container-relative units (cqw/cqh/cqmin) instead of covering the
+     * viewport. Use this to embed the task in a sized container (a card,
+     * a panel) rather than running it full screen. The display element must
+     * have a defined width and height. */
+    fit_container: {
+      type: ParameterType.BOOL,
+      default: false,
+    },
     /** Array of {x, y} objects specifying the position of each image as percentages (0-100)
      * of the search area dimensions. x and y specify the center of the image.
-     * If null, positions are generated randomly with non-overlapping placement.
-     * The array must have the same length as `images`. */
+     * If left empty (the default), positions are generated randomly with non-overlapping
+     * placement. When provided, the array must have the same length as `images`. */
     image_positions: {
       type: ParameterType.COMPLEX,
       array: true,
-      default: null,
+      default: [],
       nested: {
         x: {
           type: ParameterType.FLOAT,
@@ -110,9 +119,27 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     const startTime = performance.now();
 
+    // Layout units. By default the display covers the viewport (vw/vh/vmin).
+    // When `fit_container` is set, the same layout is expressed in container
+    // query units (cqw/cqh/cqmin) so it fills the display element instead.
+    const fit = trial.fit_container;
+    const uw = fit ? "cqw" : "vw";
+    const uh = fit ? "cqh" : "vh";
+    const umin = fit ? "cqmin" : "vmin";
+
     // Create container for the entire display
     const container = document.createElement("div");
-    container.style.cssText = `
+    container.style.cssText = fit
+      ? `
+      display: flex;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      container-type: size;
+      overflow: hidden;
+      background: ${trial.background_color};
+    `
+      : `
       display: flex;
       width: 100vw;
       height: 100vh;
@@ -125,12 +152,12 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
     // Create absent box container (left side)
     const absentContainer = document.createElement("div");
     absentContainer.style.cssText = `
-      width: ${100 - trial.search_area_width}vw;
-      height: 100vh;
+      width: ${100 - trial.search_area_width}${uw};
+      height: 100${uh};
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      padding-left: 1vw;
+      padding-left: 1${uw};
     `;
 
     // Create absent button
@@ -138,8 +165,8 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
     absentButton.textContent = "Absent";
     absentButton.className = "jspsych-btn";
     absentButton.style.cssText = `
-      padding: 2vmin 4vmin;
-      font-size: 2vmin;
+      padding: 2${umin} 4${umin};
+      font-size: 2${umin};
       cursor: pointer;
     `;
     absentContainer.appendChild(absentButton);
@@ -147,16 +174,16 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
     // Create search area container (right side)
     const searchArea = document.createElement("div");
     searchArea.style.cssText = `
-      width: ${trial.search_area_width}vw;
-      height: ${trial.search_area_height}vh;
+      width: ${trial.search_area_width}${uw};
+      height: ${trial.search_area_height}${uh};
       position: relative;
-      margin: ${(100 - trial.search_area_height) / 2}vh 0;
+      margin: ${(100 - trial.search_area_height) / 2}${uh} 0;
     `;
 
     // Determine image positions: use custom positions if provided, otherwise generate random
     let positions: Array<{ x: number; y: number }>;
 
-    if (trial.image_positions != null) {
+    if (trial.image_positions != null && trial.image_positions.length > 0) {
       if (trial.image_positions.length !== trial.images.length) {
         throw new Error(
           `visual-search-click-target plugin: image_positions array length (${trial.image_positions.length}) ` +
@@ -181,8 +208,8 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
       img.dataset.index = index.toString();
       img.style.cssText = `
         position: absolute;
-        width: ${trial.image_size}vmin;
-        height: ${trial.image_size}vmin;
+        width: ${trial.image_size}${umin};
+        height: ${trial.image_size}${umin};
         object-fit: contain;
         left: ${positions[index].x}%;
         top: ${positions[index].y}%;
