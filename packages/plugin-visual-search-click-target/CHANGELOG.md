@@ -1,5 +1,11 @@
 # @jspsych-contrib/plugin-visual-search-click-target
 
+## 0.4.0
+
+### Minor Changes
+
+- [#272](https://github.com/jspsych/jspsych-contrib/pull/272) [`2b2295b5582bbbcdae394b34272bc0917451c812`](https://github.com/jspsych/jspsych-contrib/commit/2b2295b5582bbbcdae394b34272bc0917451c812) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Add a `show_absent_button` parameter (default `true`). When set to `false`, the "Absent" button is not rendered and the search area is centered in its place — useful for target-always-present displays where an absent response isn't needed.
+
 ## 0.3.0
 
 ### Minor Changes
