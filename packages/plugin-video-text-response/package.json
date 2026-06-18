@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-video-text-response",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Initial release: Plays a video and collects free-text responses, recording the video time of each response.",
   "type": "module",
   "main": "dist/index.cjs",
