@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Fajardo" # Replace with last name
+    given-names: "Gabriel" # Replace with first name
+    # name-particle: ""  # Optional: name particle(s), e.g. "de", "van"
+    orcid: "https://orcid.org/0009-0005-7572-1229" # Replace with ORCID
+  - family-names: "Guan" # Replace with last name
+    given-names: "Xinyi" # Replace with first name
+    orcid: "https://orcid.org/0000-0000-0000-0000" # Replace with ORCID
+# More authors can be listed here in the same format as above
+contact: # Contact person for this plugin
+  - family-names: "Fajardo" # Replace with last name
+    given-names: "Gabriel" # Replace with first name
+    email: "gabriel.j.fajardo.gr@dartmouth.edu" # Replace with contact person's email
+    orcid: "https://orcid.org/0009-0005-7572-1229" # Replace with contact person's ORCID
+title: "jsPsychVideoTextResponse"
+version: 0.0.0
+doi: 10.5281/zenodo.1234 # Replace with DOI
+date-released: 2026-06-18
+url: "https://github.com/jspsych/jspsych-contrib" # Replace with URL to this plugin
+
+
+# If you wish to cite a paper on this plugin instead, you can use the following template:
+# preferred-citation:
+#   authors:
+#     - family-names: "" # Replace with last name
+#       given-names: "" # Replace with first name
+#       # name-particle: ""  # Optional: name particle(s)
+#       orcid: "https://orcid.org/0000-0000-0000-0000"
+#   # More authors can be listed here in the same format as above
+#   date-published: 2023-05-11
+#   doi: 10.21105/joss.12345
+#   issn: 1234-5678
+#   issue: 01
+#   journal: Journal for Open Source Software
+#   publisher:
+#     name: Open Journals
+#   start: 0001
+#   title: "" # Replace with the title of the publication
+#   type: article # Other options include: book, pamphlet, conference-paper...
+#   url: "" # Replace with URL to the publication
+#   volume: 1
+
+# More information on the preffered-citation CFF format can be found at https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-citation-files#citing-something-other-than-software
