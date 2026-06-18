@@ -42,6 +42,14 @@ const info = <const>{
       type: ParameterType.STRING,
       default: "#ffffff",
     },
+    /** Whether to show the "Absent" button. When `false`, the button is not
+     * rendered and the search area is centered in its place. Only set this to
+     * `false` for displays where the target is always present, since there is
+     * otherwise no way to respond "absent". */
+    show_absent_button: {
+      type: ParameterType.BOOL,
+      default: true,
+    },
     /** If `true`, the search display fills its display element using
      * container-relative units (cqw/cqh/cqmin) instead of covering the
      * viewport. Use this to embed the task in a sized container (a card,
@@ -149,27 +157,31 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
       background: ${trial.background_color};
     `;
 
-    // Create absent box container (left side)
-    const absentContainer = document.createElement("div");
-    absentContainer.style.cssText = `
-      width: ${100 - trial.search_area_width}${uw};
-      height: 100${uh};
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      padding-left: 1${uw};
-    `;
+    // Create the absent button and its column (left side), unless suppressed.
+    // When hidden, the search area is centered in the container instead.
+    let absentContainer: HTMLDivElement | null = null;
+    let absentButton: HTMLButtonElement | null = null;
+    if (trial.show_absent_button) {
+      absentContainer = document.createElement("div");
+      absentContainer.style.cssText = `
+        width: ${100 - trial.search_area_width}${uw};
+        height: 100${uh};
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding-left: 1${uw};
+      `;
 
-    // Create absent button
-    const absentButton = document.createElement("button");
-    absentButton.textContent = "Absent";
-    absentButton.className = "jspsych-btn";
-    absentButton.style.cssText = `
-      padding: 2${umin} 4${umin};
-      font-size: 2${umin};
-      cursor: pointer;
-    `;
-    absentContainer.appendChild(absentButton);
+      absentButton = document.createElement("button");
+      absentButton.textContent = "Absent";
+      absentButton.className = "jspsych-btn";
+      absentButton.style.cssText = `
+        padding: 2${umin} 4${umin};
+        font-size: 2${umin};
+        cursor: pointer;
+      `;
+      absentContainer.appendChild(absentButton);
+    }
 
     // Create search area container (right side)
     const searchArea = document.createElement("div");
@@ -220,8 +232,13 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
       searchArea.appendChild(img);
     });
 
-    // Assemble display
-    container.appendChild(absentContainer);
+    // Assemble display. With the absent column present it sits to the left of
+    // the search area; without it, the search area is centered.
+    if (absentContainer) {
+      container.appendChild(absentContainer);
+    } else {
+      container.style.justifyContent = "center";
+    }
     container.appendChild(searchArea);
     display_element.appendChild(container);
 
@@ -262,8 +279,8 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
       });
     });
 
-    // Add click handler to absent button
-    absentButton.addEventListener("click", () => {
+    // Add click handler to absent button (when shown)
+    absentButton?.addEventListener("click", () => {
       endTrial("absent", null);
     });
   }
