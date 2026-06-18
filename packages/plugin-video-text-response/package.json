@@ -24,8 +24,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gloriaguan2000/jspsych-contrib.git",
-    "directory": "packages"
+    "url": "https://github.com/jspsych/jspsych-contrib",
+    "directory": "packages/plugin-video-text-response"
   },
   "keywords": [
     "jsPsych"
@@ -36,7 +36,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gloriaguan2000/jspsych-contrib/issues"
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
   "homepage": "https://github.com/jspsych/jspsych-contrib/packages/plugin-video-text-response/README.md",
   "dependencies": {
