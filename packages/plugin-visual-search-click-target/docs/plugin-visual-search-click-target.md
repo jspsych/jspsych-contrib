@@ -16,6 +16,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | search_area_height  | FLOAT            | `80`               | Height of the search area as a percentage of viewport height (vh). |
 | background_color    | STRING           | `"#ffffff"`        | Background color of the search display. |
 | fit_container       | BOOL             | `false`            | If `true`, the search display fills its display element using container-relative units (cqw/cqh/cqmin) instead of covering the viewport. Use this to embed the task in a sized container (a card or panel) rather than running it full screen. The display element must have a defined width and height. |
+| show_absent_button  | BOOL             | `true`             | Whether to show the "Absent" button. When `false`, the button is not rendered and the search area is centered in its place. Only set this to `false` for displays where the target is always present, since there is otherwise no way to respond "absent". |
 | image_positions     | ARRAY of OBJECT  | `[]`               | Array of `{x, y}` objects specifying the center position of each image as percentages (0-100) of the search area. `x` is the horizontal position and `y` is the vertical position. If left empty (the default), positions are generated randomly with non-overlapping placement. When provided, the array must have the same length as `images`. |
 
 ## Data Generated

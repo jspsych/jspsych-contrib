@@ -199,4 +199,39 @@ describe("visual-search-click-target plugin", () => {
     await expectFinished();
     expect(getData().values()[0].correct).toBe(true);
   });
+
+  it("shows the absent button by default", async () => {
+    const { displayElement } = await startTimeline([
+      {
+        type: jsPsychPluginVisualSearchClickTarget,
+        images: ["target.png", "distractor1.png"],
+        target_present: true,
+        target_index: 0,
+      },
+    ]);
+
+    expect(displayElement.querySelector("button")).not.toBeNull();
+
+    // Clean up
+    (displayElement.querySelector('img[data-index="0"]') as HTMLImageElement).click();
+  });
+
+  it("omits the absent button when show_absent_button is false", async () => {
+    const { expectFinished, getData, displayElement } = await startTimeline([
+      {
+        type: jsPsychPluginVisualSearchClickTarget,
+        images: ["target.png", "distractor1.png", "distractor2.png"],
+        target_present: true,
+        target_index: 0,
+        show_absent_button: false,
+      },
+    ]);
+
+    expect(displayElement.querySelector("button")).toBeNull();
+    // The images still render and the trial completes by clicking the target.
+    expect(displayElement.querySelectorAll("img").length).toBe(3);
+    (displayElement.querySelector('img[data-index="0"]') as HTMLImageElement).click();
+    await expectFinished();
+    expect(getData().values()[0].correct).toBe(true);
+  });
 });
