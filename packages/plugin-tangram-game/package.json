@@ -34,7 +34,7 @@
     "jspsych": "^8.0.0"
   },
   "devDependencies": {
-    "@jspsych/config": "^3.2.2",
+    "@jspsych/config": "^3.3.3",
     "concat": "^1.0.3"
   }
 }
