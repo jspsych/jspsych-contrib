@@ -4,7 +4,7 @@ authors:
   - family-names: "Fajardo" # Replace with last name
     given-names: "Gabriel" # Replace with first name
     # name-particle: ""  # Optional: name particle(s), e.g. "de", "van"
-    orcid: "https://orcid.org/0000-0000-0000-0000" # Replace with ORCID
+    orcid: "https://orcid.org/0009-0005-7572-1229" # Replace with ORCID
   - family-names: "Guan" # Replace with last name
     given-names: "Xinyi" # Replace with first name
     orcid: "https://orcid.org/0000-0000-0000-0000" # Replace with ORCID
@@ -13,7 +13,7 @@ contact: # Contact person for this plugin
   - family-names: "Fajardo" # Replace with last name
     given-names: "Gabriel" # Replace with first name
     email: "gabriel.j.fajardo.gr@dartmouth.edu" # Replace with contact person's email
-    orcid: "https://orcid.org/0000-0000-0000-0000" # Replace with contact person's ORCID
+    orcid: "https://orcid.org/0009-0005-7572-1229" # Replace with contact person's ORCID
 title: "jsPsychVideoTextResponse"
 version: 0.0.0
 doi: 10.5281/zenodo.1234 # Replace with DOI
