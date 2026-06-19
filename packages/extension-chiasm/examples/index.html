@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>extension-chiasm example</title>
+
+    <!-- jsPsych core + plugins. Safe to load in <head>. -->
+    <script src="https://unpkg.com/jspsych@8.2.2"></script>
+    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" />
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-instructions@2.1.0"></script>
+  </head>
+
+  <body></body>
+
+  <!--
+    The Chiasm tracker auto-creates a UI root and appends it to document.body
+    on script evaluation, so it MUST load after the <body> element exists.
+    Loading it in <head> throws "Cannot read properties of null (reading 'appendChild')".
+
+    Default: version-pinned CDN. Recommended for any deployment because it
+    locks the tracker to the exact version this example was tested against.
+
+    The unpinned `latest` URL (https://cdn.chiasm.eu/latest/chiasm-tracker.js)
+    exists for development against the rolling release; prefer a pinned tag in
+    anything you intend to keep working.
+  -->
+  <script src="https://cdn.chiasm.eu/v0.5.0/chiasm-tracker.v0.5.0.js"></script>
+
+  <!--
+    Local overrides. Sits next to index.html, gitignored.
+    Copy `config.local.example.js` to `config.local.js` and fill in your own
+    `experimentId` and `authToken`. The `onerror="..."` swallows the 404 when
+    the file is absent so the demo still loads (the experiment will fail at
+    tracker setup if no credentials are supplied).
+  -->
+  <script src="./config.local.js" onerror="this.dataset.absent=1"></script>
+
+  <!-- Local builds of the Chiasm extension and companion plugins. -->
+  <script src="../dist/index.browser.min.js"></script>
+  <script src="../../plugin-chiasm-setup/dist/index.browser.min.js"></script>
+  <script src="../../plugin-chiasm-calibrate/dist/index.browser.min.js"></script>
+
+  <script>
+    // ----- Configure here ---------------------------------------------------
+    //
+    // `experimentId` and `authToken` are supplied via the gitignored
+    // `config.local.js` so neither value lives in source control. See
+    // `config.local.example.js` for the expected shape.
+    //
+    const LOCAL = window.CHIASM_LOCAL_CONFIG || {};
+    const CHIASM_CONFIG = {
+      experimentId: LOCAL.experimentId,
+      participantId: LOCAL.participantId || "demo-participant",
+      authToken: LOCAL.authToken || "",
+      saveData: true,
+      // Internal/dev only: target a non-production backend. Honored at runtime
+      // by the extension but intentionally absent from its public API. Set these
+      // in the gitignored `config.local.js`; leave unset for production.
+      ...(LOCAL.environment ? { environment: LOCAL.environment } : {}),
+      ...(LOCAL.baseURL ? { baseURL: LOCAL.baseURL } : {}),
+    };
+    // -----------------------------------------------------------------------
+
+    // ----- Data export mode ------------------------------------------------
+    //
+    // The extension treats Chiasm's backend and jsPsych's local data store as
+    // two streams. Behavioral data + `chiasm_timestamps` are available per-trial
+    // immediately. Gaze predictions arrive asynchronously from the Chiasm
+    // backend and are matched to the trials they belong to at the end of the
+    // experiment (or on demand via `flushPredictionsToTrials()`).
+    //
+    // Two workflows are supported. Pick one; the other is shown commented.
+    //
+    // ===== END-OF-EXPERIMENT MODE (default, active) ========================
+    // Drain the prediction buffer once at the end, then save and display the
+    // merged dataset locally.
+    const jsPsych = initJsPsych({
+      default_iti: 250,
+      extensions: [{ type: jsPsychExtensionChiasm, params: CHIASM_CONFIG }],
+      on_finish: async function () {
+        await jsPsych.extensions.chiasm.ensureAllPredictionsReturned();
+        jsPsych.data.displayData();
+        jsPsych.data.get().localSave("json", "chiasm_experiment_data.json");
+        try {
+          await jsPsych.extensions.chiasm.cleanup();
+        } catch (err) {
+          console.error("extension-chiasm: cleanup error", err);
+        }
+      },
+    });
+    //
+    // ===== INCREMENTAL SAVE MODE (uncomment to use) ========================
+    // Persist behavioral data + `chiasm_timestamps` per trial as it arrives.
+    // At experiment end, await `ensureAllPredictionsReturned()` so predictions
+    // are matched in, then send a final flush with the merged dataset. Even if
+    // the participant closes the window mid-experiment, completed trials are
+    // already persisted, and the Chiasm backend retains the predictions
+    // (joinable by `frame_id`).
+    //
+    // const jsPsych = initJsPsych({
+    //   default_iti: 250,
+    //   extensions: [{ type: jsPsychExtensionChiasm, params: CHIASM_CONFIG }],
+    //   on_trial_finish: function (data) {
+    //     navigator.sendBeacon("/save", JSON.stringify(data));
+    //   },
+    //   on_finish: async function () {
+    //     await jsPsych.extensions.chiasm.ensureAllPredictionsReturned();
+    //     navigator.sendBeacon("/save-final", jsPsych.data.get().json());
+    //     try {
+    //       await jsPsych.extensions.chiasm.cleanup();
+    //     } catch (err) {
+    //       console.error("extension-chiasm: cleanup error", err);
+    //     }
+    //   },
+    // });
+    // -----------------------------------------------------------------------
+
+    const preload = { type: jsPsychPreload, auto_preload: true };
+
+    const welcome = {
+      type: jsPsychInstructions,
+      pages: ["<p>Welcome. This demo uses Chiasm eye tracking.</p>"],
+      show_clickable_nav: true,
+    };
+
+    // Init tracker + start backend session (no UI beyond a loading message).
+    const setup = { type: jsPsychChiasmSetup };
+
+    // Full ceremony: screen size + camera + fullscreen + gaze cal + validation.
+    const calibrate = {
+      type: jsPsychChiasmCalibrate,
+      screen_calibration: true,
+    };
+
+    // Tracked trials. The `chiasm` extension records frame timestamps and
+    // attaches matched gaze predictions to each trial's data automatically.
+    const trial_1 = {
+      type: jsPsychImageKeyboardResponse,
+      stimulus: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800",
+      choices: ["y", "n"],
+      stimulus_width: 800,
+      trial_duration: 3000,
+      prompt: '<p>Do you like this image? Press "y" or "n".</p>',
+      extensions: [
+        { type: jsPsychExtensionChiasm, params: { event_id: "image_1" } },
+      ],
+    };
+
+    const trial_2 = {
+      type: jsPsychImageKeyboardResponse,
+      stimulus: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=800",
+      choices: ["y", "n"],
+      stimulus_width: 800,
+      trial_duration: 3000,
+      prompt: '<p>Do you like this image? Press "y" or "n".</p>',
+      extensions: [
+        { type: jsPsychExtensionChiasm, params: { event_id: "image_2" } },
+      ],
+    };
+
+    jsPsych.run([preload, welcome, setup, calibrate, trial_1, trial_2]);
+  </script>
+</html>
