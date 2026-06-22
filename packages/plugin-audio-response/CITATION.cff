@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: ""
+  given-names: ""
+title: "jsPsychPluginAudioResponse"
+version: 0.0.0
+doi: 10.5281/zenodo.1234    # Replace with DOI
+date-released: 2000-01-01    # Replace with release date
+url: ""
