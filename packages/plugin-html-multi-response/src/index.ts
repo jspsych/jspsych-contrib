@@ -242,7 +242,7 @@ class HtmlMultiResponsePlugin implements JsPsychPlugin<Info> {
         " responded";
 
       // disable all the buttons after a response
-      var btns = document.querySelectorAll(".jspsych-html-multi-response-button button");
+      var btns = display_element.querySelectorAll(".jspsych-html-multi-response-button button");
       for (var i = 0; i < btns.length; i++) {
         //btns[i].removeEventListener('click');
         btns[i].setAttribute("disabled", "disabled");

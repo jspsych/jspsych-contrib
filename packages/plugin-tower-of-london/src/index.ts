@@ -240,7 +240,7 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
     this.svg.setAttribute("height", String(height));
     this.svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
     this.svg.id = "jspsych-tower-of-london-svg";
-    document.getElementById("jspsych-tower-of-london-svg-container")!.appendChild(this.svg);
+    display_element.querySelector("#jspsych-tower-of-london-svg-container")!.appendChild(this.svg);
 
     // Draw initial state
     this.draw();
@@ -262,8 +262,8 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
     });
 
     if (trial.done_button_text) {
-      document
-        .getElementById("jspsych-tower-of-london-done")!
+      display_element
+        .querySelector("#jspsych-tower-of-london-done")!
         .addEventListener("click", () => this.endTrial());
     }
 
@@ -564,7 +564,7 @@ class TowerOfLondonPlugin implements JsPsychPlugin<Info> {
 
   private afterMove() {
     // Update move counter
-    const counter = document.getElementById("move-count");
+    const counter = this.display_element.querySelector("#move-count");
     if (counter) {
       counter.textContent = this.moves.length.toString();
     }

@@ -38,7 +38,7 @@ const info = <const>{
     initial_direction: {
       type: ParameterType.SELECT,
       pretty_name: "Initial direction",
-      choices: ["left", "right"],
+      options: ["left", "right"],
       default: "left",
     },
     /** If true, display a rectangle in the center of the screen that is just wide enough to occlude the image completely as it passes behind. */
@@ -181,7 +181,9 @@ class VslAnimateOcclusionPlugin implements JsPsychPlugin<Info> {
       trial.canvas_size[1] +
       "></svg>";
 
-    var paper = Snap("#jspsych-vsl-animate-occlusion-canvas");
+    var paper = Snap(
+      display_element.querySelector<SVGSVGElement>("#jspsych-vsl-animate-occlusion-canvas")
+    );
 
     var c = paper
       .image(

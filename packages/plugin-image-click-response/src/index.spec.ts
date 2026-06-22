@@ -51,7 +51,7 @@ describe("imag-click-response", () => {
     const response_button = displayElement.querySelector(
       "#image-click-response-button"
     ) as HTMLButtonElement;
-    const svg_container = document.getElementById("image-click-response-svg") as HTMLElement;
+    const svg_container = displayElement.querySelector<HTMLElement>("#image-click-response-svg");
 
     await expectRunning();
 
@@ -90,7 +90,7 @@ describe("imag-click-response", () => {
     const response_button = displayElement.querySelector(
       "#image-click-response-button"
     ) as HTMLButtonElement;
-    const svg_container = document.getElementById("image-click-response-svg") as HTMLElement;
+    const svg_container = displayElement.querySelector<HTMLElement>("#image-click-response-svg");
 
     await clickTarget(svg_container);
     await clickTarget(response_button);

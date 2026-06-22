@@ -382,7 +382,7 @@ class ImageMultiResponsePlugin implements JsPsychPlugin<Info> {
         " responded";
 
       // disable all the buttons after a response
-      var btns = document.querySelectorAll(".jspsych-image-multi-response-button button");
+      var btns = display_element.querySelectorAll(".jspsych-image-multi-response-button button");
       for (var i = 0; i < btns.length; i++) {
         //btns[i].removeEventListener('click');
         btns[i].setAttribute("disabled", "disabled");

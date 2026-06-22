@@ -34,7 +34,7 @@ describe("free-recall-response plugin", () => {
   });
 
   it("should add words when add button is clicked", async () => {
-    const { displayElement, getData } = await startTimeline([
+    const { displayElement, getData, expectFinished } = await startTimeline([
       {
         type: jsPsychFreeRecallResponse,
       },
@@ -60,6 +60,7 @@ describe("free-recall-response plugin", () => {
     // Click done
     const doneBtn = displayElement.querySelector("#free-recall-done-btn") as HTMLButtonElement;
     doneBtn.click();
+    await expectFinished();
 
     // Check data
     const data = getData().values()[0];
@@ -69,7 +70,7 @@ describe("free-recall-response plugin", () => {
   });
 
   it("should add words when Enter key is pressed", async () => {
-    const { displayElement, getData } = await startTimeline([
+    const { displayElement, getData, expectFinished } = await startTimeline([
       {
         type: jsPsychFreeRecallResponse,
       },
@@ -90,6 +91,7 @@ describe("free-recall-response plugin", () => {
     // Click done
     const doneBtn = displayElement.querySelector("#free-recall-done-btn") as HTMLButtonElement;
     doneBtn.click();
+    await expectFinished();
 
     const data = getData().values()[0];
     expect(data.responses).toHaveLength(1);

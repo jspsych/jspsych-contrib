@@ -201,8 +201,12 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
     };
 
     // References to container and stimulus
-    const container_div = document.getElementById("jspsych-html-swipe-response-stimulus-container");
-    const stimulus_div = document.getElementById("jspsych-html-swipe-response-stimulus");
+    const container_div = display_element.querySelector<HTMLElement>(
+      "#jspsych-html-swipe-response-stimulus-container"
+    );
+    const stimulus_div = display_element.querySelector<HTMLElement>(
+      "#jspsych-html-swipe-response-stimulus"
+    );
 
     let position = {
       x: 0,
@@ -302,9 +306,11 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
 
     // disable all the buttons after a response
     const disable_buttons = () => {
-      document.querySelectorAll(".jspsych-html-swipe-response-button button").forEach((element) => {
-        element.setAttribute("disabled", "disabled");
-      });
+      display_element
+        .querySelectorAll(".jspsych-html-swipe-response-button button")
+        .forEach((element) => {
+          element.setAttribute("disabled", "disabled");
+        });
     };
 
     // function to handle swipe responses by the participant
@@ -548,7 +554,9 @@ class HtmlSwipeResponsePlugin implements JsPsychPlugin<Info> {
 
     if (data.rt !== null) {
       if (data.swipe_response !== null) {
-        const test_stimulus_div = document.getElementById("jspsych-html-swipe-response-stimulus");
+        const test_stimulus_div = display_element.querySelector<HTMLElement>(
+          "#jspsych-html-swipe-response-stimulus"
+        );
 
         let pageX = trial.swipe_threshold * 5;
         if (data.swipe_response === "left") {

@@ -64,7 +64,7 @@ describe("plugin-html-multi-response", () => {
   });
 
   test("display should clear after button click", async () => {
-    const { getHTML, expectFinished } = await startTimeline([
+    const { getHTML, expectFinished, displayElement } = await startTimeline([
       {
         type: htmlMultiResponse,
         stimulus: "this is html",
@@ -76,7 +76,7 @@ describe("plugin-html-multi-response", () => {
       '<div id="jspsych-html-multi-response-stimulus">this is html</div>'
     );
 
-    clickTarget(document.querySelector("#jspsych-html-multi-response-button-0"));
+    clickTarget(displayElement.querySelector("#jspsych-html-multi-response-button-0"));
 
     await expectFinished();
   });
@@ -158,7 +158,7 @@ describe("plugin-html-multi-response", () => {
   });
 
   test("should end trial when button is clicked", async () => {
-    const { getHTML, expectFinished } = await startTimeline([
+    const { getHTML, expectFinished, displayElement } = await startTimeline([
       {
         type: htmlMultiResponse,
         stimulus: "this is html",
@@ -171,12 +171,12 @@ describe("plugin-html-multi-response", () => {
       '<div id="jspsych-html-multi-response-stimulus">this is html</div>'
     );
 
-    clickTarget(document.querySelector("#jspsych-html-multi-response-button-0"));
+    clickTarget(displayElement.querySelector("#jspsych-html-multi-response-button-0"));
     await expectFinished();
   });
 
   test("class should say responded when key is pressed", async () => {
-    const { getHTML, expectRunning } = await startTimeline([
+    const { getHTML, expectRunning, displayElement } = await startTimeline([
       {
         type: htmlMultiResponse,
         stimulus: "this is html",
@@ -191,7 +191,7 @@ describe("plugin-html-multi-response", () => {
 
     pressKey("f");
 
-    expect(document.querySelector("#jspsych-html-multi-response-stimulus").className).toBe(
+    expect(displayElement.querySelector("#jspsych-html-multi-response-stimulus").className).toBe(
       " responded"
     );
 
@@ -199,7 +199,7 @@ describe("plugin-html-multi-response", () => {
   });
 
   test("class should have responded when button is clicked", async () => {
-    const { getHTML } = await startTimeline([
+    const { getHTML, displayElement } = await startTimeline([
       {
         type: htmlMultiResponse,
         stimulus: "this is html",
@@ -212,8 +212,8 @@ describe("plugin-html-multi-response", () => {
       '<div id="jspsych-html-multi-response-stimulus">this is html</div>'
     );
 
-    clickTarget(document.querySelector("#jspsych-html-multi-response-button-0"));
-    expect(document.querySelector("#jspsych-html-multi-response-stimulus").className).toBe(
+    clickTarget(displayElement.querySelector("#jspsych-html-multi-response-button-0"));
+    expect(displayElement.querySelector("#jspsych-html-multi-response-stimulus").className).toBe(
       " responded"
     );
   });

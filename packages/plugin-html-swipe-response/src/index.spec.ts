@@ -68,7 +68,7 @@ describe("plugin-html-swipe-response", () => {
   });
 
   test("display should clear after button click", async () => {
-    const { getHTML, expectFinished } = await startTimeline([
+    const { getHTML, expectFinished, displayElement } = await startTimeline([
       {
         type: htmlSwipeResponse,
         stimulus: "this is html",
@@ -81,7 +81,7 @@ describe("plugin-html-swipe-response", () => {
       '<div id="jspsych-html-swipe-response-stimulus">this is html</div>'
     );
 
-    clickTarget(document.querySelector("#jspsych-html-swipe-response-button-0"));
+    clickTarget(displayElement.querySelector("#jspsych-html-swipe-response-button-0"));
 
     await expectFinished();
   });
@@ -172,7 +172,7 @@ describe("plugin-html-swipe-response", () => {
   });
 
   test("should end trial when button is clicked", async () => {
-    const { getHTML, expectFinished } = await startTimeline([
+    const { getHTML, expectFinished, displayElement } = await startTimeline([
       {
         type: htmlSwipeResponse,
         stimulus: "this is html",
@@ -187,12 +187,12 @@ describe("plugin-html-swipe-response", () => {
       '<div id="jspsych-html-swipe-response-stimulus">this is html</div>'
     );
 
-    clickTarget(document.querySelector("#jspsych-html-swipe-response-button-0"));
+    clickTarget(displayElement.querySelector("#jspsych-html-swipe-response-button-0"));
     await expectFinished();
   });
 
   test("class should say responded when key is pressed", async () => {
-    const { getHTML, expectRunning } = await startTimeline([
+    const { getHTML, expectRunning, displayElement } = await startTimeline([
       {
         type: htmlSwipeResponse,
         stimulus: "this is html",
@@ -208,11 +208,11 @@ describe("plugin-html-swipe-response", () => {
 
     pressKey("f");
 
-    expect(document.querySelector("#jspsych-html-swipe-response-stimulus").className).toBe(
+    expect(displayElement.querySelector("#jspsych-html-swipe-response-stimulus").className).toBe(
       " responded"
     );
 
-    document
+    displayElement
       .querySelectorAll("#jspsych-html-swipe-response-button-0 > button")
       .forEach((element) => {
         expect(element.className).toBe(" responded");
@@ -222,7 +222,7 @@ describe("plugin-html-swipe-response", () => {
   });
 
   test("class should have responded when button is clicked", async () => {
-    const { getHTML } = await startTimeline([
+    const { getHTML, displayElement } = await startTimeline([
       {
         type: htmlSwipeResponse,
         stimulus: "this is html",
@@ -235,8 +235,8 @@ describe("plugin-html-swipe-response", () => {
       '<div id="jspsych-html-swipe-response-stimulus">this is html</div>'
     );
 
-    clickTarget(document.querySelector("#jspsych-html-swipe-response-button-0"));
-    expect(document.querySelector("#jspsych-html-swipe-response-stimulus").className).toBe(
+    clickTarget(displayElement.querySelector("#jspsych-html-swipe-response-button-0"));
+    expect(displayElement.querySelector("#jspsych-html-swipe-response-stimulus").className).toBe(
       " responded"
     );
   });
@@ -261,10 +261,11 @@ describe("plugin-html-swipe-response", () => {
   });
 
   test("should disable buttons on keyboard response", async () => {
-    await startTimeline([
+    const { displayElement } = await startTimeline([
       {
         type: htmlSwipeResponse,
         stimulus: "this is html",
+        button_choices: ["button-choice-0"],
         keyboard_choices: ["f", "j"],
         swipe_animation_duration: 500,
       },
@@ -272,13 +273,15 @@ describe("plugin-html-swipe-response", () => {
 
     pressKey("f");
 
-    document.querySelectorAll(".jspsych-html-swipe-response-button button").forEach((element) => {
-      expect(element.getAttribute("disabled")).toBe("disabled");
-    });
+    displayElement
+      .querySelectorAll(".jspsych-html-swipe-response-button button")
+      .forEach((element) => {
+        expect(element.getAttribute("disabled")).toBe("disabled");
+      });
   });
 
   test("should disable buttons on click response", async () => {
-    await startTimeline([
+    const { displayElement } = await startTimeline([
       {
         type: htmlSwipeResponse,
         stimulus: "this is html",
@@ -287,11 +290,13 @@ describe("plugin-html-swipe-response", () => {
       },
     ]);
 
-    clickTarget(document.querySelector("#jspsych-html-swipe-response-button-0"));
+    clickTarget(displayElement.querySelector("#jspsych-html-swipe-response-button-0"));
 
-    document.querySelectorAll(".jspsych-html-swipe-response-button button").forEach((element) => {
-      expect(element.getAttribute("disabled")).toBe("disabled");
-    });
+    displayElement
+      .querySelectorAll(".jspsych-html-swipe-response-button button")
+      .forEach((element) => {
+        expect(element.getAttribute("disabled")).toBe("disabled");
+      });
   });
 
   test("should move container and stimulus together during drag", async () => {

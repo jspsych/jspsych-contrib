@@ -129,8 +129,8 @@ class ImageClickResponsePlugin implements JsPsychPlugin<Info> {
     let svg_html = `<div><svg id='image-click-response-svg' xmlns='http://www.w3.org/2000/svg'><image id='image-click-response-image' href='${trial.stimulus}' xlink:href='${trial.stimulus}' crossorigin="anonymous"></image></svg></div>`;
     display_element.innerHTML = preamble_html + svg_html + button_html;
 
-    let svg_container = document.getElementById("image-click-response-svg") as HTMLElement;
-    let button = document.getElementById("image-click-response-button") as HTMLButtonElement;
+    let svg_container = display_element.querySelector<HTMLElement>("#image-click-response-svg");
+    let button = display_element.querySelector<HTMLButtonElement>("#image-click-response-button");
 
     // Style svg container
     svg_container.addEventListener("click", svgImageClicked);

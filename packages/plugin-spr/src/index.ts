@@ -166,10 +166,12 @@ class SprPlugin implements JsPsychPlugin<Info> {
   // --- data fields ---
   private results = [];
   private startTime: number;
+  private display_element: HTMLElement;
 
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
+    this.display_element = display_element;
     // setup styles and trial parameters
     var css = this.initializeVariables(trial);
 
@@ -241,7 +243,7 @@ class SprPlugin implements JsPsychPlugin<Info> {
       callback_function: (info) => {
         const keyTime = performance.now();
         const iwi = this.index === -1 ? 0 : trial.inter_word_interval;
-        if (keyTime - this.startTime > iwi) {
+        if (keyTime - this.startTime >= iwi) {
           if (this.index === -1)
             this.addDataPoint(this.generateBlank(this.readingString[0]), info.key);
           else this.addDataPoint(this.readingString[this.index], info.key);
@@ -378,7 +380,8 @@ class SprPlugin implements JsPsychPlugin<Info> {
         this.isVisible[this.index - 1] = this.mode === 2;
       }
       this.isVisible[this.index] = true;
-      document.querySelector("#jspsych-spr-content").innerHTML = this.generateDisplayString();
+      this.display_element.querySelector("#jspsych-spr-content").innerHTML =
+        this.generateDisplayString();
     }
   }
 

@@ -69,7 +69,7 @@ describe("plugin-image-multi-response", () => {
   });
 
   test("display should clear after button click", async () => {
-    const { getHTML, expectFinished } = await startTimeline([
+    const { getHTML, expectFinished, displayElement } = await startTimeline([
       {
         type: imageMultiResponse,
         stimulus: "../media/blue.png",
@@ -82,7 +82,7 @@ describe("plugin-image-multi-response", () => {
       '<img draggable="false" src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
-    clickTarget(document.querySelector("#jspsych-image-multi-response-button-0"));
+    clickTarget(displayElement.querySelector("#jspsych-image-multi-response-button-0"));
 
     await expectFinished();
   });
@@ -166,7 +166,7 @@ describe("plugin-image-multi-response", () => {
   });
 
   test("should end trial when button is clicked", async () => {
-    const { getHTML, expectFinished } = await startTimeline([
+    const { getHTML, expectFinished, displayElement } = await startTimeline([
       {
         type: imageMultiResponse,
         stimulus: "../media/blue.png",
@@ -180,7 +180,7 @@ describe("plugin-image-multi-response", () => {
       '<img draggable="false" src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
-    clickTarget(document.querySelector("#jspsych-image-multi-response-button-0"));
+    clickTarget(displayElement.querySelector("#jspsych-image-multi-response-button-0"));
     await expectFinished();
   });
 
@@ -203,7 +203,7 @@ describe("plugin-image-multi-response", () => {
   });
 
   test("class should say responded when key is pressed", async () => {
-    const { getHTML, expectRunning } = await startTimeline([
+    const { getHTML, expectRunning, displayElement } = await startTimeline([
       {
         type: imageMultiResponse,
         stimulus: "../media/blue.png",
@@ -219,7 +219,7 @@ describe("plugin-image-multi-response", () => {
 
     pressKey("f");
 
-    expect(document.querySelector("#jspsych-image-multi-response-stimulus").className).toBe(
+    expect(displayElement.querySelector("#jspsych-image-multi-response-stimulus").className).toBe(
       " responded"
     );
 
@@ -227,7 +227,7 @@ describe("plugin-image-multi-response", () => {
   });
 
   test("class should have responded when button is clicked", async () => {
-    const { getHTML } = await startTimeline([
+    const { getHTML, displayElement } = await startTimeline([
       {
         type: imageMultiResponse,
         stimulus: "../media/blue.png",
@@ -241,8 +241,8 @@ describe("plugin-image-multi-response", () => {
       '<img draggable="false" src="../media/blue.png" id="jspsych-image-multi-response-stimulus"'
     );
 
-    clickTarget(document.querySelector("#jspsych-image-multi-response-button-0"));
-    expect(document.querySelector("#jspsych-image-multi-response-stimulus").className).toBe(
+    clickTarget(displayElement.querySelector("#jspsych-image-multi-response-button-0"));
+    expect(displayElement.querySelector("#jspsych-image-multi-response-stimulus").className).toBe(
       " responded"
     );
   });
