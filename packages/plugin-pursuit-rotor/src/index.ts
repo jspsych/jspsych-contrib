@@ -196,7 +196,9 @@ class PursuitRotorPlugin implements JsPsychPlugin<Info> {
     display_element.innerHTML = html;
 
     // Get canvas context
-    this.canvas = document.getElementById("jspsych-pursuit-rotor-canvas") as HTMLCanvasElement;
+    this.canvas = display_element.querySelector(
+      "#jspsych-pursuit-rotor-canvas"
+    ) as HTMLCanvasElement;
     this.ctx = this.canvas.getContext("2d")!;
 
     // Set up event listeners
