@@ -44,13 +44,15 @@
     "@citation-js/plugin-bibtex": "^0.7.14",
     "@citation-js/plugin-cff": "^0.6.1",
     "@citation-js/plugin-software-formats": "^0.6.1",
-    "@huggingface/transformers": "^3.8.1",
-    "@types/audioworklet": "^0.0.75",
-    "jspsych": "^8.0.0",
-    "vad-audio-worklet": "^0.1.4"
+    "@huggingface/transformers": "^3.8.1"
+  },
+  "peerDependencies": {
+    "jspsych": ">=8.0.0"
   },
   "devDependencies": {
     "@jspsych/config": "^3.2.2",
-    "@jspsych/test-utils": "^1.0.0"
+    "@jspsych/test-utils": "^1.0.0",
+    "@types/audioworklet": "^0.0.75",
+    "jspsych": "^8.0.0"
   }
 }

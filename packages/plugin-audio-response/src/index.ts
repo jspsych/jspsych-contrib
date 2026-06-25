@@ -1,7 +1,8 @@
-import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import { pipeline } from "@huggingface/transformers";
+import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 import { version } from "../package.json";
+import { vadWorkletSource } from "./vad-worklet-source";
 
 let _transcriber: any = null;
 
@@ -356,7 +357,11 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
    * "listening…" indicator is shown. Once recording is active the done button appears
    * (if enabled) and the prompt is visible.
    */
-  private showDisplay(display_element: HTMLElement, trial: TrialType<Info>, recording_active: boolean) {
+  private showDisplay(
+    display_element: HTMLElement,
+    trial: TrialType<Info>,
+    recording_active: boolean
+  ) {
     let html = "";
 
     if (trial.prompt !== null) {
@@ -376,7 +381,9 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
 
     if (recording_active && trial.show_done_button) {
       display_element.querySelector("#finish-trial").addEventListener("click", () => {
-        this.rt = Math.round(performance.now() - (this.audio_onset_time ?? this.recorder_start_time_perf));
+        this.rt = Math.round(
+          performance.now() - (this.audio_onset_time ?? this.recorder_start_time_perf)
+        );
         this.stopRecording().then(() => this.afterStopRecording(trial, display_element));
       });
     }
@@ -390,7 +397,8 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
     };
 
     this.stop_event_handler = () => {
-      const data = new Blob(this.recorded_data_chunks, { type: this.recorded_data_chunks[0].type });
+      const mimeType = this.recorded_data_chunks[0]?.type ?? "audio/webm";
+      const data = new Blob(this.recorded_data_chunks, { type: mimeType });
       this.audio_data = data;
       this.audio_url = URL.createObjectURL(data);
       if (trial.local_download) {
@@ -458,14 +466,13 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
     trial: TrialType<Info>,
     display_element: HTMLElement,
     event: MessageEvent,
-    resolve: () => void,
+    resolve: () => void
   ) {
     if (event.data.cmd === "speech") {
       if (!this.speech_start_time) {
         this.speech_start_time = event.timeStamp;
       }
       this.started_speaking = true;
-      this.onStartedSpeaking();
       if (this.no_speech_timer) {
         clearTimeout(this.no_speech_timer);
         this.no_speech_timer = null;
@@ -478,7 +485,6 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
       if (!this.speech_end_time) {
         this.speech_end_time = event.timeStamp;
       }
-      this.onStartSilence();
       this.silence_timer = this.jsPsych.pluginAPI.setTimeout(() => {
         this.onStoppedSpeaking(trial, display_element);
         this.jsPsych.pluginAPI.clearAllTimeouts();
@@ -497,7 +503,10 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
     });
   }
 
-  private createConnectProcessor(audioContext: AudioContext, microphone: MediaStreamAudioSourceNode) {
+  private createConnectProcessor(
+    audioContext: AudioContext,
+    microphone: MediaStreamAudioSourceNode
+  ) {
     return new Promise<void>((resolve) => {
       this.processorNode = new AudioWorkletNode(audioContext, "vad", {
         outputChannelCount: [1],
@@ -519,21 +528,23 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
     const audioContext = new AudioContext();
     const microphone = audioContext.createMediaStreamSource(stream);
     try {
-      await audioContext.audioWorklet.addModule("/src/vad-audio-worklet.js");
+      // Load the VAD worklet from an inlined Blob URL so the plugin is
+      // self-contained and does not require the worklet files to be served from
+      // a particular path on the host.
+      const workletUrl = URL.createObjectURL(
+        new Blob([vadWorkletSource], { type: "application/javascript" })
+      );
+      try {
+        await audioContext.audioWorklet.addModule(workletUrl);
+      } finally {
+        URL.revokeObjectURL(workletUrl);
+      }
       await this.createConnectProcessor(audioContext, microphone);
       await this.setupPortOnMessage(trial, display_element);
     } catch (err) {
-      throw new Error(`[plugin-audio-response] Error loading vad-audio-worklet.js: ${err}`);
+      throw new Error(`[plugin-audio-response] Error loading VAD worklet: ${err}`);
     }
   };
-
-  private onStartedSpeaking() {
-    document.querySelector("body").style.backgroundColor = "red";
-  }
-
-  private onStartSilence() {
-    document.querySelector("body").style.backgroundColor = "white";
-  }
 
   private onStoppedSpeaking(trial: TrialType<Info>, display_element: HTMLElement) {
     this.stopRecording().then(() => this.afterStopRecording(trial, display_element));
@@ -560,7 +571,8 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
     this.recorder.removeEventListener("stop", this.stop_event_handler);
 
     const ref = this.audio_onset_time ?? this.recorder_start_time_perf;
-    const estimated_speech_onset = this.speech_start_time !== null ? Math.round(this.speech_start_time - ref) : null;
+    const estimated_speech_onset =
+      this.speech_start_time !== null ? Math.round(this.speech_start_time - ref) : null;
 
     // Priority: button-click time → VAD onset → Whisper-derived onset → null.
     // Whisper timestamps are seconds from the start of the recording that produced
@@ -571,7 +583,10 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
     if (rt === null) {
       if (estimated_speech_onset !== null) {
         rt = estimated_speech_onset;
-      } else if (this.transcript_chunks?.length > 0 && this.transcript_chunks[0].timestamp?.[0] != null) {
+      } else if (
+        this.transcript_chunks?.length > 0 &&
+        this.transcript_chunks[0].timestamp?.[0] != null
+      ) {
         rt = Math.round(this.transcript_chunks[0].timestamp[0] * 1000);
       }
     }
@@ -582,7 +597,8 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
       response: this.response,
       audio_onset: Math.round((this.audio_onset_time ?? ref) - this.trial_start_time),
       estimated_speech_onset: estimated_speech_onset,
-      estimated_speech_offset: this.speech_end_time !== null ? Math.round(this.speech_end_time - ref) : null,
+      estimated_speech_offset:
+        this.speech_end_time !== null ? Math.round(this.speech_end_time - ref) : null,
       transcript: this.transcript,
       transcript_chunks: this.transcript_chunks,
       correct: this.correct,
@@ -601,7 +617,6 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
   private async afterStopRecording(trial: TrialType<Info>, display_element: HTMLElement) {
     this.jsPsych.pluginAPI.clearAllTimeouts();
     this.processorNode?.port.postMessage({ stopped_speaking: true });
-    this.onStartSilence();
 
     if (trial.transcription) {
       display_element.innerHTML = `
@@ -630,7 +645,10 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
         this.transcript_chunks = result.chunks;
 
         if (trial.response_choices !== null) {
-          const words = this.transcript.toLowerCase().replace(/[^a-z\s]/g, "").split(/\s+/);
+          const words = this.transcript
+            .toLowerCase()
+            .replace(/[^a-z\s]/g, "")
+            .split(/\s+/);
           const choices: string[] = trial.response_choices.map((c: string) => c.toLowerCase());
           this.detected_response = words.find((w) => choices.includes(w)) ?? null;
         }
@@ -665,7 +683,11 @@ class AudioResponsePlugin implements JsPsychPlugin<Info> {
         console.error("[plugin-audio-response] transcription failed:", err);
       }
 
-      if (trial.require_keyword && trial.response_choices !== null && this.detected_response === null) {
+      if (
+        trial.require_keyword &&
+        trial.response_choices !== null &&
+        this.detected_response === null
+      ) {
         display_element.innerHTML = `<p style="text-align:center; margin-top:100px; font-size:24px;">${trial.keyword_retry_message}</p>`;
         await new Promise<void>((resolve) => setTimeout(resolve, 1000));
         this.started_speaking = false;
