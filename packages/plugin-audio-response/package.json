@@ -40,10 +40,6 @@
   },
   "homepage": "/plugin-audio-response/README.md",
   "dependencies": {
-    "@citation-js/core": "^0.7.14",
-    "@citation-js/plugin-bibtex": "^0.7.14",
-    "@citation-js/plugin-cff": "^0.6.1",
-    "@citation-js/plugin-software-formats": "^0.6.1",
     "@huggingface/transformers": "^3.8.1"
   },
   "peerDependencies": {
