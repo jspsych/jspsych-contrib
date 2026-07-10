@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Axis1/Axis2/Axis3 Measurements</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://unpkg.com/jspsych@8.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-instructions@1.0.0"></script>
+    <script src="../src/index.js"></script>
+    <link
+      href="https://unpkg.com/jspsych@7.3.0/css/jspsych.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧪</text></svg>"
+    />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-7..0,200..900&display=swap");
+
+      :root {
+        --primary: 32, 107, 248;
+        --paperColor: 255, 253, 245;
+        --column-width: 720px;
+      }
+
+      body {
+        background-color: rgb(var(--paperColor));
+        margin: 0;
+        padding: 0;
+      }
+
+      .jspsych-display-element,
+      .jspsych-display-element input[type="text"],
+      .jspsych-btn,
+      button,
+      textarea,
+      p,
+      * {
+        font-family: "Inter", sans-serif;
+      }
+
+      #jspsych-content {
+        width: 100%;
+        max-width: unset;
+      }
+
+      #thc-player {
+        background-color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let jsPsych = initJsPsych({
+        on_finish: function () {
+          jsPsych.data.displayData();
+        },
+      });
+      const subjectId = jsPsych.randomization.randomID(10);
+      const filename = `${subjectId}.json`;
+
+      const videos = ["BulletTrainFriction.webm"];
+
+      jsPsych.data.addProperties({
+        subject: subjectId,
+      });
+
+      let experiment = [
+        {
+          type: jsTripleHandleController,
+          axis_1: 0,
+          axis_2: 1,
+          axis_3: 2,
+          axis_location: ["L", "R", "L"],
+          axis1_labels: ["low", "neutral", "high"],
+          axis2_labels: ["negative", "neutral", "positive"],
+          css_clases: ["thc-override"],
+          axes_labels: ["axis1 (axis 1)", "axis2 (axis 2)", "item 3 (axis 3)"],
+          title: "Bullet Train Friction",
+          // A monitor refresh rate of 60 Hz means that
+          // the screen changes every 16.7 ms or higher.
+          rate: 1000 / 60,
+        },
+      ];
+
+      async function createExperiment() {
+        const videoSrc = `./videos/${videos[0]}`;
+        experiment[0].video_src = videoSrc;
+        jsPsych.run(experiment);
+      }
+
+      createExperiment();
+    </script>
+  </body>
+</html>
