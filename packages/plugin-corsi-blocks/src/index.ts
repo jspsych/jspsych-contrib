@@ -331,15 +331,14 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
           display_element
             .querySelector(`.jspsych-corsi-block[data-id="${id}"]`)
             .animate(correct_animation, animation_timing);
-          if (trial_data.response.length == trial.sequence.length) {
-            trial_data.correct = true;
-            setTimeout(end_trial, trial.response_animation_duration); // allows animation to finish
-          }
         } else {
           display_element
             .querySelector(`.jspsych-corsi-block[data-id="${id}"]`)
             .animate(incorrect_animation, animation_timing);
-          trial_data.correct = false;
+        }
+        // Only end the trial when the response length matches the sequence length
+        if (trial_data.response.length == trial.sequence.length) {
+          trial_data.correct = JSON.stringify(trial_data.response) === JSON.stringify(trial.sequence);
           setTimeout(end_trial, trial.response_animation_duration); // allows animation to finish
         }
       };
