@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@8.0.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@2.0.0"></script>    
+    <script src="../dist/index.browser.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.0.0"></script>
+    <link href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      },
+      default_iti: 250
+    });
+
+    // manually preload the image files, since they are passed to the image-keyboard-response stimulus parameter
+    // through timeline variables, and therefore cannot be automatically preloaded
+
+    var initialize = {
+    type: jsPsychInitializeMicrophone
+    };
+
+    const colors = ['RED', 'BLUE', 'YELLOW', 'GREEN'];
+
+    const rand_color = () => colors[Math.floor(Math.random() * colors.length)];
+
+    const stroop_procedure = {
+    timeline: [
+        {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: '+',
+            choices: "NO_KEYS",
+            trial_duration: 500
+        },
+        {
+          type: jsPsychSpeechRecognition,
+          stimulus: function(){
+                  const html = `<p style="font-size:48px; color:${jsPsych.evaluateTimelineVariable('color')}; font-weight: bold;">${rand_color()}</p>`;
+                  return html;
+              },
+          prompt: '<p>Say the font color of the text.</p>',
+          trial_duration: 1000,
+          choices: ['Red', 'Green', 'Blue', 'Yellow'],
+          show_done_button: false,
+          middle_node: true,
+        }
+    ],
+    timeline_variables: [
+        { color: 'red'},
+        { color: 'blue'},
+        { color: 'yellow'},
+        { color: 'green'}
+    ],
+    sample: {
+        type: 'with-replacement',
+        size: 1
+    }
+    };
+    const process_audio = {
+      type: jsPsychSpeechRecognition,
+      choices: ['Red', 'Green', 'Blue', 'Yellow'],
+      end_process_node: true,
+      audio_url: () =>{
+        url = []
+        for (const trial in jsPsych.data.get().values()){
+          if (trial[0].audio_url){
+            url.push(trial.audio_url)
+          }
+        }
+        console.log(url)
+        return url}
+    }
+
+    jsPsych.run([initialize, stroop_procedure, process_audio]);
+
+  </script>
+</html>
