@@ -7,6 +7,12 @@ describe("extension-chiasm", () => {
     expect(jsPsychExtensionChiasm.info.name).toBe("chiasm");
     expect(jsPsychExtensionChiasm.info.data?.chiasm_timestamps).toBeDefined();
     expect(jsPsychExtensionChiasm.info.data?.chiasm_predictions).toBeDefined();
+    expect(jsPsychExtensionChiasm.info.data?.chiasm_predictions?.nested).toMatchObject({
+      frame_id: expect.anything(),
+      x: expect.anything(),
+      y: expect.anything(),
+      timestamp: expect.anything(),
+    });
   });
 
   it("initializes without contacting the Chiasm backend", async () => {

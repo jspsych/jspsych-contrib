@@ -35,8 +35,20 @@ export interface ChiasmFrameTimestamp {
   timestamp: number;
 }
 
-/** Gaze prediction emitted by the Chiasm tracker; opaque shape passed through to data. */
-export type ChiasmPrediction = Record<string, unknown> & { timestamp?: number };
+/**
+ * Gaze prediction emitted by the Chiasm tracker (PredictionData from /predict_gaze).
+ * Stored on trial rows in `chiasm_predictions` after frame matching.
+ */
+export interface ChiasmPrediction {
+  /** Opaque frame id echoed from the tracker; primary join key. */
+  frame_id?: string;
+  /** Screen-space gaze X. */
+  x: number;
+  /** Screen-space gaze Y. */
+  y: number;
+  /** Unix ms timestamp when present; optional in the backend schema. */
+  timestamp?: number | null;
+}
 
 /** Minimal type for the Chiasm tracker handle returned by `initChiasmTracker`. */
 export interface ChiasmTracker {

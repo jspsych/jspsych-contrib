@@ -57,7 +57,7 @@ var trial = {
 | Name                 | Type    | Value                                                                                                                                       |
 | -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `chiasm_timestamps`  | array   | Frame timestamps for the trial. Each entry: `{ frame_number, frame_id, timestamp }`.                                                        |
-| `chiasm_predictions` | array   | Gaze predictions matched to this trial's frames. Attached at end-of-experiment (or via `flushPredictionsToTrials()`). `undefined` until matches are attached, so guard before accessing (e.g. `data.chiasm_predictions?.length`). |
+| `chiasm_predictions` | array   | Gaze predictions matched to this trial's frames. Each entry: `{ frame_id, x, y, timestamp? }` (screen-space gaze). Attached at end-of-experiment (or via `flushPredictionsToTrials()`). `undefined` until matches are attached, so guard before accessing (e.g. `data.chiasm_predictions?.length`). |
 | `chiasm_recording_error` | string | Error message if `startRecording()` failed for this trial. Absent on success.                                                          |
 
 ## Functions

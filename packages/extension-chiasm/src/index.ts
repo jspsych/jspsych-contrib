@@ -86,10 +86,16 @@ class ChiasmExtension implements JsPsychExtension {
           timestamp: { type: ParameterType.FLOAT },
         },
       },
-      /** Array of gaze predictions received by Chiasm during this trial. */
+      /** Array of gaze predictions matched to this trial's frames. */
       chiasm_predictions: {
         type: ParameterType.COMPLEX,
         array: true,
+        nested: {
+          frame_id: { type: ParameterType.STRING },
+          x: { type: ParameterType.FLOAT },
+          y: { type: ParameterType.FLOAT },
+          timestamp: { type: ParameterType.FLOAT },
+        },
       },
       /** Error message if recording failed to start for this trial, otherwise absent. */
       chiasm_recording_error: {
@@ -409,10 +415,7 @@ class ChiasmExtension implements JsPsychExtension {
     const stillUnmatched: ChiasmPrediction[] = [];
     let firstUnmatched: ChiasmPrediction | undefined;
     for (const pred of this.predictionBuffer) {
-      const frameId =
-        (pred as Record<string, unknown>).frame_id ??
-        (pred as Record<string, unknown>).frameID ??
-        (pred as Record<string, unknown>).frameId;
+      const frameId = pred.frame_id;
       let trial = typeof frameId === "string" ? trialByFrameId.get(frameId) : undefined;
       if (!trial && typeof pred.timestamp === "number") {
         trial = findTrialByTimestamp(pred.timestamp);
