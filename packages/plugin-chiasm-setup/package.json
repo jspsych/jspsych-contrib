@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-contrib/plugin-chiasm-setup",
   "version": "0.0.1",
-  "description": "jsPsych plugin that initializes the Chiasm eye tracker and starts a recording session",
+  "description": "Initializes the Chiasm eye tracker and starts a backend recording session in a single timeline trial.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {

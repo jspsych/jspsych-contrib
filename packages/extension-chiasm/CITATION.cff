@@ -4,7 +4,6 @@ authors:
   - name: "Chiasm"
     website: "https://chiasm.eu"
 title: "jsPsychExtensionChiasm"
-version: 0.0.1
 date-released: 2026-06-05
 url: "https://chiasm.eu"
 repository-code: "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-chiasm"
