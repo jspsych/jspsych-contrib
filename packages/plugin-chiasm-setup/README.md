@@ -17,7 +17,7 @@ The visible calibration ceremony belongs to
 ### In browser
 
 ```html
-<script src="https://cdn.chiasm.eu/v0.5.0/chiasm-tracker.v0.5.0.js"></script>
+<script src="https://cdn.chiasm.eu/v0.6.0/chiasm-tracker.v0.6.0.js"></script>
 <script src="https://unpkg.com/@jspsych-contrib/extension-chiasm"></script>
 <script src="https://unpkg.com/@jspsych-contrib/plugin-chiasm-setup"></script>
 ```

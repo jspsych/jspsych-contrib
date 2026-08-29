@@ -22,7 +22,7 @@ plugins:
 ### In browser
 
 ```html
-<script src="https://cdn.chiasm.eu/v0.5.0/chiasm-tracker.v0.5.0.js"></script>
+<script src="https://cdn.chiasm.eu/v0.6.0/chiasm-tracker.v0.6.0.js"></script>
 <script src="https://unpkg.com/@jspsych-contrib/extension-chiasm"></script>
 ```
 
@@ -51,7 +51,7 @@ init time.
 | Component                          | Supported range  |
 | ---------------------------------- | ---------------- |
 | `@jspsych-contrib/extension-chiasm`| `0.x`            |
-| `chiasm-tracker.js`                | `0.5.x`          |
+| `chiasm-tracker.js`                | `0.6.x`          |
 | `jspsych`                          | `>=8.0.0`        |
 
 Other tracker majors are not supported by this extension line; pin both the

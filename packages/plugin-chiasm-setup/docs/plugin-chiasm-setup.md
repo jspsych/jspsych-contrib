@@ -35,7 +35,7 @@ Using the CDN-hosted JavaScript files (also load the Chiasm tracker and the
 companion extension; pin to the versions you have tested against):
 
 ```js
-<script src="https://cdn.chiasm.eu/v0.5.0/chiasm-tracker.v0.5.0.js"></script>
+<script src="https://cdn.chiasm.eu/v0.6.0/chiasm-tracker.v0.6.0.js"></script>
 <script src="https://unpkg.com/@jspsych-contrib/extension-chiasm"></script>
 <script src="https://unpkg.com/@jspsych-contrib/plugin-chiasm-setup"></script>
 ```
