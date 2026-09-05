@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/extension-chiasm",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Wires the [Chiasm](https://chiasm.eu) eye tracker into the jsPsych trial lifecycle, recording frame timestamps and attaching matched gaze predictions to trial data.",
   "type": "module",
   "main": "dist/index.cjs",
