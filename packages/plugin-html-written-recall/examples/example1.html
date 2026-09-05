@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://unpkg.com/jspsych@7.0.0"></script>
+		<script src="../dist/index.browser.js"></script>
+		<link rel="stylesheet" href="https://unpkg.com/jspsych@7.0.0/css/jspsych.css">
+	</head>
+	<body></body>
+	<script>
+    // Example where a participant gives as many words as possible in time of 10 seconds
+    // The participant is given a cue word and they have to give as many words as possible
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+    var free_association_trial = {
+      type: 'html-written-recall',
+      stimulus: 'Dog',
+      prompt: 'Write the first word that comes to mind.',
+      stimulus_duration: 500, // the word disappears after 500 ms
+      button_string: 'Next task', // Button displayed to finish the block
+      button_delay: 5000 // button appears after 5 seconds, though this timer resets after each word submitted (so 5 seconds from final submission they can move on)
+    }
+
+    var free_association_block = {
+      timeline: [free_association_trial],
+      loop_function() {
+        // Loop until 10 trials are completed
+        if (jsPsych.data.get().last(1).values()[0].button_pressed) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    }
+    jsPsych.run([free_association_block]);
+
+</script>
+</html>
