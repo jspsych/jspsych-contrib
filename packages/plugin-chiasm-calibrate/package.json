@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-contrib/plugin-chiasm-calibrate",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Runs the participant-facing Chiasm eye-tracking calibration ceremony in a single timeline trial.",
   "type": "module",
   "main": "dist/index.cjs",
