@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychChiasmSetup Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    // NOTE: This plugin does not run standalone.
+    //
+    // `plugin-chiasm-setup` only drives the `chiasm` extension: its trial looks
+    // up the `chiasm` extension on the jsPsych instance and calls `start()`. With
+    // no extension registered (and no `chiasm-tracker.js` loaded) the trial aborts
+    // immediately, so a self-contained timeline here would not be runnable.
+    //
+    // For a complete, runnable demo that registers the extension, loads the
+    // tracker, and chains setup -> calibrate -> tracked trials, see:
+    //
+    //   packages/extension-chiasm/examples/index.html
+    //
+    // The setup trial itself is added to a timeline like this:
+    //
+    //   const setup = { type: jsPsychChiasmSetup };
+    //
+    //   const jsPsych = initJsPsych({
+    //     extensions: [{ type: jsPsychExtensionChiasm, params: CHIASM_CONFIG }],
+    //   });
+    //   jsPsych.run([setup, /* ...calibrate, tracked trials... */]);
+  </script>
+</html>

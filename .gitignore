@@ -11,3 +11,11 @@ coverage/
 dist.zip
 .idea
 .claude/
+
+# Locally vendored Chiasm tracker bundle for offline example development.
+# The published example uses the CDN; this file is intentionally not committed.
+packages/extension-chiasm/examples/chiasm-tracker.v*.js
+
+# Local secrets / overrides for example scripts. Never commit.
+**/config.local.js
+**/config.local.json
