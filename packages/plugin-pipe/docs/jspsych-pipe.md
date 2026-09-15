@@ -16,6 +16,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | data_string | string | null | The string of data to save. If action is `save` then this can be text data in any format (e.g., CSV, JSON, TXT, etc.). If `action` is `saveBase64`, then this should be a base64 encoded string and the `filename` should have the appropriate extension. |
 | wait_message | HTML_string | `<p>Saving data. Please do not close this page.</p>` | An HTML message to be displayed above the loading graphics in the experiment during data upload. |
 | compression | boolean | `true` | Whether to gzip-compress the request body before sending. See the [Compression](#compression) section below for details. |
+| base_url | string | `null` | The DataPipe deployment to send this trial to. Defaults to `https://pipe.jspsych.org`, or to whatever `jsPsychPipe.setBaseURL()` was last given. |
 
 
 ## Data Generated
@@ -29,7 +30,7 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 ## Static Methods
 
-The pipe plugin provides three static methods that can be used to save data to DataPipe without using a trial. These methods are `saveData`, `saveBase64Data`, and `getCondition`.
+The pipe plugin provides static methods that can be used to save data to DataPipe without using a trial: `saveData`, `saveBase64Data`, and `getCondition`, plus `setBaseURL` for pointing the plugin at a different deployment.
 
 ### saveData
 
@@ -70,6 +71,16 @@ jsPsychPipe.getCondition(experiment_id).then(condition => {
   // do something with the condition
 })
 ```
+
+### setBaseURL
+
+```js
+jsPsychPipe.setBaseURL("https://datapipe-test.web.app")
+```
+
+Sends every subsequent request to a different DataPipe deployment. Call it once, before the timeline runs. Individual trials can override it with the `base_url` parameter, and the static methods accept it in their options argument. Pass an empty string to go back to the default.
+
+You will not normally need this. It exists so that an experiment can be tested end to end against a test deployment without writing into a real study's data.
 
 ## Compression
 
