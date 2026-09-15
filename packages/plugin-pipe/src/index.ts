@@ -11,9 +11,23 @@ import { version } from "../package.json";
 const DEFAULT_BASE_URL = "https://pipe.jspsych.org";
 let baseURL = DEFAULT_BASE_URL;
 
-/** Strip any trailing slash so `${base}/api/data/` never doubles it. */
+/**
+ * Strip any trailing slash so `${base}/api/data/` never doubles it.
+ *
+ * Deliberately a loop and not `url.replace(/\/+$/, "")`. CodeQL flags that
+ * regex as js/polynomial-redos: in the general backtracking model, every
+ * starting position in a run of slashes matches `/+` to the end and then
+ * fails the anchor. V8 appears to optimise the anchored case -- a 60k-slash
+ * string showed no measurable slowdown -- and nothing hostile reaches this
+ * anyway, since the value is the researcher's own base_url and not
+ * participant input. So this is not a fix for an observed problem. It is
+ * here because the loop is provably linear, reads no worse, and costs less
+ * than re-arguing the alert every time someone scans this package.
+ */
 function normalizeBaseURL(url: string): string {
-  return url.replace(/\/+$/, "");
+  let end = url.length;
+  while (end > 0 && url.charCodeAt(end - 1) === 47 /* "/" */) end--;
+  return url.slice(0, end);
 }
 
 function endpoint(path: string, override?: string): string {
