@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Corsi Blocks Plugin - Custom Parameters</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+    <style>
+      body {
+        margin: 20px;
+        font-family: Arial, sans-serif;
+        touch-action: manipulation;
+      }
+    </style>
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData('json');
+      }
+    });
+
+    const timeline = [];
+
+    // Instructions
+    timeline.push({
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <h1>Corsi Blocks - Custom Parameters</h1>
+        <p>This example demonstrates customized timing, colors, and display settings.</p>
+        <ul>
+          <li>Faster presentation (750ms per block)</li>
+          <li>Custom colors (grey/red theme)</li>
+          <li>Response timeout (10 seconds)</li>
+          <li>Larger display area</li>
+        </ul>
+        <p><strong>Press any key to begin</strong></p>
+      `
+    });
+
+    // Display trial with custom parameters
+    timeline.push({
+      type: jsPsychCorsiBlocks,
+      sequence: [0, 4, 2, 7, 3],
+      mode: 'display',
+      sequence_block_duration: 750,          // Faster presentation
+      sequence_gap_duration: 800,            // Shorter gap
+      pre_stim_duration: 300,                // Shorter initial delay
+      inter_trial_delay: 1000,               // Shorter between-trial delay
+      block_color: '#555555',                // Grey inactive blocks
+      highlight_color: '#ff0000',            // Red active blocks
+      background_color: '#1a1a1a',           // Dark grey background
+      display_width: '600px',                // Larger display
+      display_height: '600px',
+      block_size: 15,                        // Larger blocks
+      prompt: 'Watch carefully - faster speed!'
+    });
+
+    // Input trial with custom parameters
+    timeline.push({
+      type: jsPsychCorsiBlocks,
+      sequence: [0, 4, 2, 7, 3],
+      mode: 'input',
+      post_sequence_delay: 300,              // Short delay before input
+      response_timeout: 10000,               // 10 second timeout
+      response_animation_duration: 150,      // Quick feedback flash
+      inter_trial_delay: 1000,
+      block_color: '#555555',
+      correct_color: '#00ff00',              // Green for correct
+      incorrect_color: '#ff0000',            // Red for incorrect
+      background_color: '#1a1a1a',
+      display_width: '600px',
+      display_height: '600px',
+      block_size: 15,
+      prompt: 'Repeat the sequence (10 second limit)'
+    });
+
+    // Show result with RT info
+    timeline.push({
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function() {
+        const lastTrial = jsPsych.data.get().last(1).values()[0];
+        const avgRT = lastTrial.rt.reduce((a, b) => a + b, 0) / lastTrial.rt.length;
+
+        let html = '<h2>Trial Complete</h2>';
+        html += `<p><strong>Result:</strong> ${lastTrial.correct ? '<span style="color: green;">Correct</span>' : '<span style="color: red;">Incorrect</span>'}</p>`;
+        html += `<p><strong>Your sequence:</strong> [${lastTrial.response.join(', ')}]</p>`;
+        html += `<p><strong>Correct sequence:</strong> [${lastTrial.sequence.join(', ')}]</p>`;
+        html += `<p><strong>Average RT:</strong> ${Math.round(avgRT)}ms</p>`;
+        html += '<p>Press any key to continue</p>';
+
+        return html;
+      }
+    });
+
+    jsPsych.run(timeline);
+  </script>
+</html>
