@@ -16,7 +16,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | data_string | string | null | The string of data to save. If action is `save` then this can be text data in any format (e.g., CSV, JSON, TXT, etc.). If `action` is `saveBase64`, then this should be a base64 encoded string and the `filename` should have the appropriate extension. |
 | wait_message | HTML_string | `<p>Saving data. Please do not close this page.</p>` | An HTML message to be displayed above the loading graphics in the experiment during data upload. |
 | compression | boolean | `true` | Whether to gzip-compress the request body before sending. See the [Compression](#compression) section below for details. |
-| base_url | string | `null` | The DataPipe deployment to send this trial to. Defaults to `https://pipe.jspsych.org`, or to whatever `jsPsychPipe.setBaseURL()` was last given. |
+| base_url | string | `null` | Send this trial to a different DataPipe deployment. `null` leaves the current base URL alone, which is `https://pipe.jspsych.org` unless `jsPsychPipe.setBaseURL()` has changed it. |
 
 
 ## Data Generated

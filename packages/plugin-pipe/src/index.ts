@@ -102,9 +102,11 @@ const info = <const>{
       default: true,
     },
     /**
-     * The DataPipe deployment to talk to. Defaults to
-     * `https://pipe.jspsych.org`. Set this (or call
-     * `jsPsychPipe.setBaseURL()`) to point an experiment at a test deployment.
+     * Send this trial to a different DataPipe deployment. `null` leaves the
+     * current base URL alone, which is `https://pipe.jspsych.org` unless
+     * `jsPsychPipe.setBaseURL()` has changed it.
+     *
+     * Use it to point an experiment at a test deployment.
      */
     base_url: {
       type: ParameterType.STRING,
