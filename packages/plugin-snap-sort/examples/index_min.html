@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychPluginSnapSort Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/plain-draggable@2.5.15"></script> -->
+    <!-- Load the published plugin package here, e.g.
+<script src="https://unpkg.com/plugin-snap-sort"></script>
+<script src="../dist/index.browser.js"></script> -->
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+    <link rel="stylesheet" href="../src/styles.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+    const trial_by_color = {
+      type: jsPsychPluginSnapSort,
+      stimulus: [
+        {file: '../assets/blue-rec.png', color: '#0271bc', height: 50, width: 200, correct_box_id: 0},
+        {file: '../assets/green-rec.png', color: '#3ab54b', height: 75, width: 200, correct_box_id: 1},
+        {file: '../assets/red-rec.png', color: '#FF0000', height: 100, width: 200, correct_box_id: 2}
+      ],
+      holding_area_location: "above",
+      scale_factor: 1.1,
+      boxes: [
+        {id: 0, color: '#0271bc', height: 50, width: 200},
+        {id: 1, color: '#3ab54b', height: 75, width: 200},
+        {id: 2, color: '#FF0000', height: 100, width: 200}
+      ],
+      use_correctness: true,
+      allow_multiple_per_box: false,
+      box_margin: 40,
+      snap_margin: 20,
+      prompt: 'Drag and drop the boxes to sort them in order.',
+      prompt_location: 'above',
+      button_label: 'Continue',
+      include_counter: true,
+    };
+
+    const trial_by_shape = {
+      type: jsPsychPluginSnapSort,
+      stimulus: [
+        {file: '../assets/blue-rec.png', color: '#0271bc', height: 50, width: 200, correct_box_id: 0},
+        {file: '../assets/green-rec.png', color: '#3ab54b', height: 75, width: 200, correct_box_id: 1},
+        {file: '../assets/red-rec.png', color: '#FF0000', height: 50, width: 200, correct_box_id: 0}
+      ],
+      stim_height: 100,
+      stim_width: 120,
+      scale_factor: 1.1,
+      boxes: [
+        {id: 0, color: '#5B7C99', height: 50, width: 200},
+        {id: 1, color: '#5B7C99', height: 75, width: 200},
+        {id: 2, color: '#5B7C99', height: 100, width: 200}
+      ],
+      use_correctness: true,
+      allow_multiple_per_box: true,
+      box_margin: 40,
+      snap_margin: 20,
+      prompt: 'Drag and drop the boxes to sort them in order.',
+      prompt_location: 'above',
+      button_label: 'Continue',
+      include_counter: true,
+    };
+
+    const trial_by_hidden = {
+      type: jsPsychPluginSnapSort,
+      stimulus: [
+        {file: '../assets/blue-rec.png', color: '#0271bc', height: 50, width: 200, correct_box_id: 1},
+        {file: '../assets/green-rec.png', color: '#3ab54b', height: 75, width: 200, correct_box_id: 2},
+        {file: '../assets/red-rec.png', color: '#FF0000', height: 50, width: 200, correct_box_id: 0}
+      ],
+      holding_area_location: "left",
+      stim_height: 100,
+      stim_width: 120,
+      scale_factor: 1.1,
+      boxes: [
+        {id: 0, color: '#5B7C99', height: 50, width: 200},
+        {id: 1, color: '#5B7C99', height: 75, width: 200},
+        {id: 2, color: '#5B7C99', height: 100, width: 200}
+      ],
+      use_correctness: true,
+      allow_multiple_per_box: true,
+      box_margin: 40,
+      snap_margin: 20,
+      prompt: 'Drag and drop the boxes to sort them in order.',
+      prompt_location: 'above',
+      button_label: 'Continue',
+      include_counter: true,
+    };
+
+    const anything_goes = {
+      type: jsPsychPluginSnapSort,
+      stimulus: [
+        {file: '../assets/blue-rec.png', color: '#0271bc', height: 50, width: 200, correct_box_id: 1},
+        {file: '../assets/green-rec.png', color: '#3ab54b', height: 75, width: 200, correct_box_id: 2},
+        {file: '../assets/red-rec.png', color: '#FF0000', height: 50, width: 200, correct_box_id: 0}
+      ],
+      stim_height: 100,
+      stim_width: 120,
+      scale_factor: 1.1,
+      holding_area_location: "right",
+      boxes: [
+        {id: 0, color: '#5B7C99', height: 50, width: 200},
+        {id: 1, color: '#5B7C99', height: 75, width: 200},
+        {id: 2, color: '#5B7C99', height: 100, width: 200}
+      ],
+      use_correctness: false,
+      allow_multiple_per_box: true,
+      box_margin: 40,
+      snap_margin: 20,
+      prompt: 'Drag and drop the boxes to sort them in order.',
+      prompt_location: 'above',
+      button_label: 'Continue',
+      include_counter: true,
+    };
+
+    jsPsych.run([
+      trial_by_color,
+      trial_by_shape,
+      trial_by_hidden,
+      anything_goes
+    ]);
+  </script>
+</html>
