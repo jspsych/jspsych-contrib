@@ -410,7 +410,9 @@ class PipePlugin implements JsPsychPlugin<Info> {
    * Get the condition assignment for the current participant using pipe.jspsych.org.
    *
    * @param expID The 12-character experiment ID provided by pipe.jspsych.org.
-   * @returns The condition assignment as an integer.
+   * @returns The condition assignment as an integer. If DataPipe refuses the
+   * request, the response body instead (with an `error` and a `message`), and
+   * if the request fails, the `Error`.
    */
   static async getCondition(expID: string, options: { base_url?: string } = {}): Promise<any> {
     if (!expID) {
@@ -430,7 +432,12 @@ class PipePlugin implements JsPsychPlugin<Info> {
       // Inside the try: a response that is not JSON (an HTML 404 page from a
       // mistyped base_url, say) makes this throw.
       const result = await response.json();
-      return result.condition;
+      // A refused request has no condition. Return the body so the reason
+      // ends up in the trial data, rather than an undefined that says nothing.
+      if (result && typeof result === "object" && "condition" in result) {
+        return result.condition;
+      }
+      return result;
     } catch (error) {
       return error;
     }

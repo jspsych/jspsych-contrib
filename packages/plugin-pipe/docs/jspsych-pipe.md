@@ -25,7 +25,7 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 | Name      | Type    | Value                                    |
 | --------- | ------- | ---------------------------------------- |
-| response | JSON | The response from the server. |
+| result | JSON | The response from the server. For `condition`, this is the assigned condition as an integer when the request succeeds. |
 | success | boolean | If the response was successful or not. |
 
 ## Static Methods
@@ -72,13 +72,15 @@ jsPsychPipe.getCondition(experiment_id).then(condition => {
 })
 ```
 
+If DataPipe refuses the request, for example because condition assignment is not switched on for the experiment, `getCondition` returns the response body, with an `error` code and a `message`, instead of a number. If the request fails outright, it returns the `Error`. Check that the value is a number before using it as a condition.
+
 ### setBaseURL
 
 ```js
 jsPsychPipe.setBaseURL("https://datapipe-test.web.app")
 ```
 
-Sends every subsequent request to a different DataPipe deployment. Call it once, before the timeline runs. Individual trials can override it with the `base_url` parameter, and the static methods accept it in their options argument. Pass an empty string to go back to the default.
+Sends every subsequent request to a different DataPipe deployment. Call it once, before the timeline runs. Individual trials can override it with the `base_url` parameter, and the static methods accept it in their options argument. Pass an empty string to go back to the default. `jsPsychPipe.getBaseURL()` returns the base URL requests currently go to.
 
 You will not normally need this. It exists so that an experiment can be tested end to end against a test deployment without writing into a real study's data.
 

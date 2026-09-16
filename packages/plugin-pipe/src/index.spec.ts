@@ -153,6 +153,8 @@ describe("trial success", () => {
     });
 
     expect(data.success).toBe(false);
+    // The reason is kept, so a researcher can tell why from the data.
+    expect(data.result).toMatchObject({ error: "CONDITION_ASSIGNMENT_NOT_ACTIVE" });
   });
 
   it("finishes rather than hanging when the condition response is not JSON", async () => {
