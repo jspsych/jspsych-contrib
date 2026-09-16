@@ -155,6 +155,37 @@ describe("trial success", () => {
     expect(data.success).toBe(false);
   });
 
+  it("finishes rather than hanging when the condition response is not JSON", async () => {
+    // A mistyped base_url typically gets an HTML 404 page back, and parsing
+    // it threw outside getCondition's try.
+    (global as any).fetch = jest.fn(async () => ({
+      ok: false,
+      status: 404,
+      json: async () => {
+        throw new SyntaxError("Unexpected token '<'");
+      },
+    }));
+
+    const data = await runTrial({
+      type: PluginPipe,
+      action: "condition",
+      experiment_id: "EXP12345",
+    });
+
+    expect(data.success).toBe(false);
+  });
+
+  it("finishes rather than hanging when a required parameter is missing", async () => {
+    // saveData throws on an empty data_string -- e.g. a save placed before
+    // anything has been recorded -- and that throw escaped the trial.
+    const fetchMock = routeFetch({ "/api/data/": () => ({ message: "Success" }) });
+
+    const data = await runTrial({ ...saveTrial(), data_string: "" });
+
+    expect(data.success).toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("treats condition 0 as a success", async () => {
     routeFetch({ "/api/condition/": () => ({ condition: 0 }) });
 

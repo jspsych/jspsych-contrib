@@ -282,27 +282,35 @@ class PipePlugin implements JsPsychPlugin<Info> {
 
     display_element.innerHTML = progressHTML;
 
+    // Anything thrown here -- a missing parameter, say -- is recorded as the
+    // result rather than escaping. `trial()` does not await `run()`, so an
+    // escaped error would leave the trial unfinished and the participant on
+    // the spinner.
     let result: any;
-    if (trial.action === "save") {
-      result = await PipePlugin.saveData(
-        trial.experiment_id,
-        trial.filename,
-        trial.data_string,
-        trial.compression,
-        { base_url: trial.base_url }
-      );
-    }
-    if (trial.action === "saveBase64") {
-      result = await PipePlugin.saveBase64Data(
-        trial.experiment_id,
-        trial.filename,
-        trial.data_string,
-        trial.compression,
-        { base_url: trial.base_url }
-      );
-    }
-    if (trial.action === "condition") {
-      result = await PipePlugin.getCondition(trial.experiment_id, { base_url: trial.base_url });
+    try {
+      if (trial.action === "save") {
+        result = await PipePlugin.saveData(
+          trial.experiment_id,
+          trial.filename,
+          trial.data_string,
+          trial.compression,
+          { base_url: trial.base_url }
+        );
+      }
+      if (trial.action === "saveBase64") {
+        result = await PipePlugin.saveBase64Data(
+          trial.experiment_id,
+          trial.filename,
+          trial.data_string,
+          trial.compression,
+          { base_url: trial.base_url }
+        );
+      }
+      if (trial.action === "condition") {
+        result = await PipePlugin.getCondition(trial.experiment_id, { base_url: trial.base_url });
+      }
+    } catch (error) {
+      result = error;
     }
 
     // data saving
@@ -408,9 +416,8 @@ class PipePlugin implements JsPsychPlugin<Info> {
     if (!expID) {
       throw new Error("Missing required parameter(s).");
     }
-    let response: Response;
     try {
-      response = await fetch(endpoint("condition", options.base_url), {
+      const response = await fetch(endpoint("condition", options.base_url), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -420,11 +427,13 @@ class PipePlugin implements JsPsychPlugin<Info> {
           experimentID: expID,
         }),
       });
+      // Inside the try: a response that is not JSON (an HTML 404 page from a
+      // mistyped base_url, say) makes this throw.
+      const result = await response.json();
+      return result.condition;
     } catch (error) {
       return error;
     }
-    const result = await response.json();
-    return result.condition;
   }
 }
 
