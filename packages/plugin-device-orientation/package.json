@@ -47,7 +47,7 @@
     "@citation-js/plugin-cff": "^0.6.1"
   },
   "devDependencies": {
-    "@jspsych/config": "^3.2.2",
+    "@jspsych/config": "^3.3.3",
     "@jspsych/test-utils": "^1.0.0"
   }
 }
