@@ -12,7 +12,7 @@
     "build": "npm run build -ws",
     "update-unpkg-links": "gulp updateUnpkgLinks",
     "update-readme": "gulp updateReadme",
-    "prepare": "husky install",
+    "prepare": "husky",
     "changeset": "changeset",
     "changeset:version": "changeset version && npm install && npm run update-unpkg-links && npm run update-readme",
     "changeset:publish": "npm run build && changeset publish"
@@ -25,7 +25,7 @@
     "@changesets/changelog-github": "^0.4.0",
     "@changesets/cli": "^2.16.0",
     "@jspsych/config": "^3.2.2",
-    "husky": "^7.0.1",
+    "husky": "^9.1.7",
     "import-sort-style-module": "^6.0.0",
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
