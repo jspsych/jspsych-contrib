@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the DataPipe paper as below."
+title: "jsPsychPipe"
+type: software
+authors:
+  - family-names: Leeuw
+    given-names: Joshua R.
+    name-particle: de
+    orcid: "https://orcid.org/0000-0003-4815-2364"
+repository-code: "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-pipe"
+url: "https://pipe.jspsych.org"
+license: MIT
+abstract: >-
+  A jsPsych plugin for DataPipe, a service that sends data from online
+  experiments directly to the OSF, and that assigns participants to
+  conditions, without a backend server.
+keywords:
+  - jsPsych
+  - DataPipe
+  - OSF
+  - open data
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Leeuw
+      given-names: Joshua R.
+      name-particle: de
+      orcid: "https://orcid.org/0000-0003-4815-2364"
+  title: "DataPipe: Born-open data collection for online experiments"
+  journal: "Behavior Research Methods"
+  year: 2024
+  volume: 56
+  issue: 3
+  start: 2499
+  end: 2506
+  doi: "10.3758/s13428-023-02161-x"

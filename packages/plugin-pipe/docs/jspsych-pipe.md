@@ -16,6 +16,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | data_string | string | null | The string of data to save. If action is `save` then this can be text data in any format (e.g., CSV, JSON, TXT, etc.). If `action` is `saveBase64`, then this should be a base64 encoded string and the `filename` should have the appropriate extension. |
 | wait_message | HTML_string | `<p>Saving data. Please do not close this page.</p>` | An HTML message to be displayed above the loading graphics in the experiment during data upload. |
 | compression | boolean | `true` | Whether to gzip-compress the request body before sending. See the [Compression](#compression) section below for details. |
+| base_url | string | `null` | Send this trial to a different DataPipe deployment. `null` leaves the current base URL alone, which is `https://pipe.jspsych.org` unless `jsPsychPipe.setBaseURL()` has changed it. |
 
 
 ## Data Generated
@@ -24,12 +25,12 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 | Name      | Type    | Value                                    |
 | --------- | ------- | ---------------------------------------- |
-| response | JSON | The response from the server. |
+| result | JSON | The response from the server. For `condition`, this is the assigned condition as an integer when the request succeeds. |
 | success | boolean | If the response was successful or not. |
 
 ## Static Methods
 
-The pipe plugin provides three static methods that can be used to save data to DataPipe without using a trial. These methods are `saveData`, `saveBase64Data`, and `getCondition`.
+The pipe plugin provides static methods that can be used to save data to DataPipe without using a trial: `saveData`, `saveBase64Data`, and `getCondition`, plus `setBaseURL` for pointing the plugin at a different deployment.
 
 ### saveData
 
@@ -70,6 +71,18 @@ jsPsychPipe.getCondition(experiment_id).then(condition => {
   // do something with the condition
 })
 ```
+
+If DataPipe refuses the request, for example because condition assignment is not switched on for the experiment, `getCondition` returns the response body, with an `error` code and a `message`, instead of a number. If the request fails outright, it returns the `Error`. Check that the value is a number before using it as a condition.
+
+### setBaseURL
+
+```js
+jsPsychPipe.setBaseURL("https://datapipe-test.web.app")
+```
+
+Sends every subsequent request to a different DataPipe deployment. Call it once, before the timeline runs. Individual trials can override it with the `base_url` parameter, and the static methods accept it in their options argument. Pass an empty string to go back to the default. `jsPsychPipe.getBaseURL()` returns the base URL requests currently go to.
+
+You will not normally need this. It exists so that an experiment can be tested end to end against a test deployment without writing into a real study's data.
 
 ## Compression
 

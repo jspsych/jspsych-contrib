@@ -35,3 +35,7 @@ See [documentation](https://github.com/jspsych/jspsych-contrib/blob/main/package
 ## Author / Citation
 
 This plugin was developed by [Josh de Leeuw](https://github.com/jodeleeuw). 
+
+If you use this plugin, please cite the DataPipe paper:
+
+> de Leeuw, J. R. (2024). DataPipe: Born-open data collection for online experiments. *Behavior Research Methods, 56*(3), 2499–2506. https://doi.org/10.3758/s13428-023-02161-x

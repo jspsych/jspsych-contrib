@@ -2,6 +2,38 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 import { version } from "../package.json";
 
+// The deployment every request goes to unless overridden.
+//
+// Made configurable because it had to be: nothing in this plugin could be
+// exercised against DataPipe's test deployment while the URL was written into
+// three fetch calls, which meant every change here was first tried in
+// production against real researchers' experiments.
+const DEFAULT_BASE_URL = "https://pipe.jspsych.org";
+let baseURL = DEFAULT_BASE_URL;
+
+/**
+ * Strip any trailing slash so `${base}/api/data/` never doubles it.
+ *
+ * Deliberately a loop and not `url.replace(/\/+$/, "")`. CodeQL flags that
+ * regex as js/polynomial-redos: in the general backtracking model, every
+ * starting position in a run of slashes matches `/+` to the end and then
+ * fails the anchor. V8 appears to optimise the anchored case -- a 60k-slash
+ * string showed no measurable slowdown -- and nothing hostile reaches this
+ * anyway, since the value is the researcher's own base_url and not
+ * participant input. So this is not a fix for an observed problem. It is
+ * here because the loop is provably linear, reads no worse, and costs less
+ * than re-arguing the alert every time someone scans this package.
+ */
+function normalizeBaseURL(url: string): string {
+  let end = url.length;
+  while (end > 0 && url.charCodeAt(end - 1) === 47 /* "/" */) end--;
+  return url.slice(0, end);
+}
+
+function endpoint(path: string, override?: string): string {
+  return `${normalizeBaseURL(override || baseURL)}/api/${path}/`;
+}
+
 const info = <const>{
   name: "pipe",
   version: version,
@@ -69,6 +101,17 @@ const info = <const>{
       type: ParameterType.BOOL,
       default: true,
     },
+    /**
+     * Send this trial to a different DataPipe deployment. `null` leaves the
+     * current base URL alone, which is `https://pipe.jspsych.org` unless
+     * `jsPsychPipe.setBaseURL()` has changed it.
+     *
+     * Use it to point an experiment at a test deployment.
+     */
+    base_url: {
+      type: ParameterType.STRING,
+      default: null,
+    },
   },
   data: {
     /**
@@ -106,6 +149,32 @@ async function gzipCompress(data: string): Promise<Blob | null> {
   const stream = new Blob([encoder.encode(data)]).stream();
   const compressedStream = stream.pipeThrough(new CompressionStream("gzip"));
   return new Response(compressedStream).blob();
+}
+
+/**
+ * Did an action succeed?
+ *
+ * `result.error ? false : true` looked right and was wrong twice over:
+ *
+ *  - A NETWORK FAILURE READ AS SUCCESS. saveData and friends catch a failed
+ *    fetch and return the thrown Error itself, and an Error has no `.error`
+ *    property -- so a participant whose data never left the browser was
+ *    recorded with `success: true`.
+ *  - A CONDITION REFUSAL CRASHED THE TRIAL. getCondition returns
+ *    `response.condition`, which is undefined when DataPipe answers with an
+ *    error (condition assignment switched off, say), and `undefined.error`
+ *    throws inside the trial -- which then never finishes, and the experiment
+ *    hangs on the spinner.
+ *
+ * A number is a success (a condition, including condition 0). A 202 counts:
+ * DataPipe answers `error: null` when it has queued the data for retry, and it
+ * holds that copy durably.
+ */
+function isSuccessfulResult(result: unknown): boolean {
+  if (result === undefined || result === null) return false;
+  if (result instanceof Error) return false;
+  if (typeof result === "object" && (result as { error?: unknown }).error) return false;
+  return true;
 }
 
 /**
@@ -213,31 +282,41 @@ class PipePlugin implements JsPsychPlugin<Info> {
 
     display_element.innerHTML = progressHTML;
 
+    // Anything thrown here -- a missing parameter, say -- is recorded as the
+    // result rather than escaping. `trial()` does not await `run()`, so an
+    // escaped error would leave the trial unfinished and the participant on
+    // the spinner.
     let result: any;
-    if (trial.action === "save") {
-      result = await PipePlugin.saveData(
-        trial.experiment_id,
-        trial.filename,
-        trial.data_string,
-        trial.compression
-      );
-    }
-    if (trial.action === "saveBase64") {
-      result = await PipePlugin.saveBase64Data(
-        trial.experiment_id,
-        trial.filename,
-        trial.data_string,
-        trial.compression
-      );
-    }
-    if (trial.action === "condition") {
-      result = await PipePlugin.getCondition(trial.experiment_id);
+    try {
+      if (trial.action === "save") {
+        result = await PipePlugin.saveData(
+          trial.experiment_id,
+          trial.filename,
+          trial.data_string,
+          trial.compression,
+          { base_url: trial.base_url }
+        );
+      }
+      if (trial.action === "saveBase64") {
+        result = await PipePlugin.saveBase64Data(
+          trial.experiment_id,
+          trial.filename,
+          trial.data_string,
+          trial.compression,
+          { base_url: trial.base_url }
+        );
+      }
+      if (trial.action === "condition") {
+        result = await PipePlugin.getCondition(trial.experiment_id, { base_url: trial.base_url });
+      }
+    } catch (error) {
+      result = error;
     }
 
     // data saving
     var trial_data = {
       result: result,
-      success: result.error ? false : true,
+      success: isSuccessfulResult(result),
     };
 
     // end trial
@@ -257,21 +336,43 @@ class PipePlugin implements JsPsychPlugin<Info> {
     expID: string,
     filename: string,
     data: string,
-    compress: boolean = true
+    compress: boolean = true,
+    options: { base_url?: string } = {}
   ): Promise<any> {
     if (!expID || !filename || !data) {
       throw new Error("Missing required parameter(s).");
     }
     try {
       const response = await sendRequest(
-        "https://pipe.jspsych.org/api/data/",
-        { experimentID: expID, filename: filename, data: data },
+        endpoint("data", options.base_url),
+        {
+          experimentID: expID,
+          filename: filename,
+          data: data,
+        },
         compress
       );
       return await response.json();
     } catch (error) {
       return error;
     }
+  }
+
+  /**
+   * Point every request at a different DataPipe deployment.
+   *
+   * The reason to want this is testing: an experiment can be run end to end
+   * against a test deployment without touching production. Call it once,
+   * before the timeline runs. Individual trials can override it with
+   * `base_url`.
+   */
+  static setBaseURL(url: string): void {
+    baseURL = url ? normalizeBaseURL(url) : DEFAULT_BASE_URL;
+  }
+
+  /** The deployment requests currently go to. */
+  static getBaseURL(): string {
+    return baseURL;
   }
 
   /**
@@ -287,14 +388,15 @@ class PipePlugin implements JsPsychPlugin<Info> {
     expID: string,
     filename: string,
     data: string,
-    compress: boolean = true
+    compress: boolean = true,
+    options: { base_url?: string } = {}
   ): Promise<any> {
     if (!expID || !filename || !data) {
       throw new Error("Missing required parameter(s).");
     }
     try {
       const response = await sendRequest(
-        "https://pipe.jspsych.org/api/base64/",
+        endpoint("base64", options.base_url),
         { experimentID: expID, filename: filename, data: data },
         compress
       );
@@ -308,15 +410,16 @@ class PipePlugin implements JsPsychPlugin<Info> {
    * Get the condition assignment for the current participant using pipe.jspsych.org.
    *
    * @param expID The 12-character experiment ID provided by pipe.jspsych.org.
-   * @returns The condition assignment as an integer.
+   * @returns The condition assignment as an integer. If DataPipe refuses the
+   * request, the response body instead (with an `error` and a `message`), and
+   * if the request fails, the `Error`.
    */
-  static async getCondition(expID: string): Promise<any> {
+  static async getCondition(expID: string, options: { base_url?: string } = {}): Promise<any> {
     if (!expID) {
       throw new Error("Missing required parameter(s).");
     }
-    let response: Response;
     try {
-      response = await fetch("https://pipe.jspsych.org/api/condition/", {
+      const response = await fetch(endpoint("condition", options.base_url), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -326,11 +429,18 @@ class PipePlugin implements JsPsychPlugin<Info> {
           experimentID: expID,
         }),
       });
+      // Inside the try: a response that is not JSON (an HTML 404 page from a
+      // mistyped base_url, say) makes this throw.
+      const result = await response.json();
+      // A refused request has no condition. Return the body so the reason
+      // ends up in the trial data, rather than an undefined that says nothing.
+      if (result && typeof result === "object" && "condition" in result) {
+        return result.condition;
+      }
+      return result;
     } catch (error) {
       return error;
     }
-    const result = await response.json();
-    return result.condition;
   }
 }
 
