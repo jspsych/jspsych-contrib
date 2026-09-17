@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/jspsych@8.0.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@1.0.3"></script>
+    <script src="../dist/index.browser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0"></script>
+    <link href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      },
+      //default_iti: 250
+    });
+
+    // manually preload the image files, since they are passed to the image-keyboard-response stimulus parameter
+    // through timeline variables, and therefore cannot be automatically preloaded
+
+    var initialize = {
+    type: jsPsychInitializeMicrophone
+    };
+
+    var audio = {
+        type: jsPsychSpeechRecognition,
+        stimulus: '<img src="red_text_blue_color.png" style="width: 100px; height: 100px;">',
+        prompt: '<p>Say the word that corresponds to the color of the box.</p>',
+        trial_duration: 20000,
+        choices: ['Red', 'Green', 'Blue'],
+        };
+
+    jsPsych.run([initialize, audio, audio, audio, audio]);
+
+  </script>
+</html>
