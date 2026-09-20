@@ -106,12 +106,37 @@ const info = <const>{
       default: 500,
     },
     /**
+     * The duration, in milliseconds, between the end of the sequence display
+     * and when the participant is allowed to respond (input mode only).
+     */
+    post_sequence_delay: {
+      type: ParameterType.INT,
+      default: 500,
+    },
+    /**
      * The duration, in milliseconds, to show the feedback response animation
      * during input mode.
      */
     response_animation_duration: {
       type: ParameterType.INT,
-      default: 500,
+      default: 200,
+    },
+    /**
+     * The duration, in milliseconds, between trials. This delay occurs after
+     * the response animation completes (input mode) or after the sequence ends
+     * (display mode).
+     */
+    inter_trial_delay: {
+      type: ParameterType.INT,
+      default: 1500,
+    },
+    /**
+     * The maximum time, in milliseconds, allowed for the participant to complete
+     * their response in input mode. If null, there is no time limit.
+     */
+    response_timeout: {
+      type: ParameterType.INT,
+      default: null,
     },
     /**
      * The color of unselected, unhighlighted blocks.
@@ -140,6 +165,13 @@ const info = <const>{
     incorrect_color: {
       type: ParameterType.STRING,
       default: "#ff0000",
+    },
+    /**
+     * The background color of the display area.
+     */
+    background_color: {
+      type: ParameterType.STRING,
+      default: "#000000",
     },
   },
   data: {
@@ -201,26 +233,27 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     let css = `<style id="jspsych-corsi-css">
-      #jspsych-corsi-stimulus { 
-        position: relative; 
-        width:${trial.display_width}; 
+      #jspsych-corsi-stimulus {
+        position: relative;
+        width:${trial.display_width};
         height:${trial.display_height};
+        background-color: ${trial.background_color};
       }
-      .jspsych-corsi-block { 
-        background-color: ${trial.block_color}; 
-        position: absolute; 
-        width: ${trial.block_size}%; 
+      .jspsych-corsi-block {
+        background-color: ${trial.block_color};
+        position: absolute;
+        width: ${trial.block_size}%;
         height: ${trial.block_size}%;
         transform: translate(-50%, -50%);
       }
-      #jspsych-corsi-prompt { 
-        position: absolute; 
-        text-align: center; 
-        width: ${trial.display_width}; 
-        top: 100%; 
+      #jspsych-corsi-prompt {
+        position: absolute;
+        text-align: center;
+        width: ${trial.display_width};
+        top: 100%;
       }
-      #jspsych-corsi-prompt p { 
-        font-size: 18px; 
+      #jspsych-corsi-prompt p {
+        font-size: 18px;
       }
       ${trial.mode == "input" ? ".jspsych-corsi-block { cursor: pointer; }" : ""}
     </style>`;
@@ -285,7 +318,7 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
             display_phase = "iti";
           }
           if (sequence_location == trial.sequence.length) {
-            end_trial();
+            wait(end_trial, trial.inter_trial_delay);
           }
         } else if (display_phase == "iti") {
           const block: HTMLElement = display_element.querySelector(
@@ -319,9 +352,24 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
         iterations: 1,
       };
 
+      let input_enabled = false;
+      let timeout_id = null;
+
+      const enable_input = () => {
+        input_enabled = true;
+        if (trial.response_timeout !== null) {
+          timeout_id = setTimeout(() => {
+            if (trial_data.correct === null) {
+              trial_data.correct = false;
+              setTimeout(() => end_trial(), trial.inter_trial_delay);
+            }
+          }, trial.response_timeout);
+        }
+      };
+
       const register_click = (id: string) => {
-        if (trial_data.correct !== null) {
-          return; // extra click during timeout, do nothing
+        if (!input_enabled || trial_data.correct !== null) {
+          return; // input not enabled yet or already finished
         }
         const rt = Math.round(performance.now() - start_time);
         trial_data.response.push(parseInt(id));
@@ -333,14 +381,24 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
             .animate(correct_animation, animation_timing);
           if (trial_data.response.length == trial.sequence.length) {
             trial_data.correct = true;
-            setTimeout(end_trial, trial.response_animation_duration); // allows animation to finish
+            if (timeout_id !== null) {
+              clearTimeout(timeout_id);
+            }
+            setTimeout(() => {
+              setTimeout(end_trial, trial.inter_trial_delay);
+            }, trial.response_animation_duration);
           }
         } else {
           display_element
             .querySelector(`.jspsych-corsi-block[data-id="${id}"]`)
             .animate(incorrect_animation, animation_timing);
           trial_data.correct = false;
-          setTimeout(end_trial, trial.response_animation_duration); // allows animation to finish
+          if (timeout_id !== null) {
+            clearTimeout(timeout_id);
+          }
+          setTimeout(() => {
+            setTimeout(end_trial, trial.inter_trial_delay);
+          }, trial.response_animation_duration);
         }
       };
 
@@ -350,6 +408,9 @@ class CorsiBlocksPlugin implements JsPsychPlugin<Info> {
           register_click((e.target as HTMLElement).getAttribute("data-id"));
         });
       }
+
+      // Enable input after post_sequence_delay
+      setTimeout(enable_input, trial.post_sequence_delay);
     }
   }
 }
