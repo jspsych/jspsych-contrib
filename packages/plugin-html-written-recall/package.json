@@ -1,0 +1,32 @@
+{
+    "name": "@jspsych-contrib/plugin-html-written-recall",
+    "version": "0.1.0",
+    "description": "This plugin displays a text box for participants to write a response to a prompt. The response is saved as a string. The trial advances when a certain keyboard input is pressed (default is `Spacebar`). The idea is that a general survey-text box allows for editing as well as observing prior responses whereas this input mimics verbal free recall. ",
+    "unpkg": "dist/index.browser.min.js",
+    "files": [
+      "index.js",
+      "dist"
+    ],
+    "scripts": {
+      "build": "babel index.js --presets @babel/preset-env,minify --source-maps --out-file dist/index.browser.min.js",
+      "build:watch": "npm run build -- --watch"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+      "directory": "packages/plugin-html-written-recall"
+    },
+    "author": {
+      "name": "Ata Karagoz",
+      "url": "https://github.com/atakaragoz"
+    },
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/jspsych/jspsych-contrib/issues"
+    },
+    "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-html-written-recall",
+    "devDependencies": {
+      "@jspsych/config": "^2.0.0",
+      "jspsych": "^7.0.0"
+    }
+  }
