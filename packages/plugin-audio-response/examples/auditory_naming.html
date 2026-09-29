@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>plugin-audio-response Example — Auditory Naming</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@2.1.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  /*
+   * Auditory naming / word repetition example.
+   *
+   * Each trial:
+   *   1. Fixation cross (500 ms)
+   *   2. Audio stimulus plays (e.g. "Say the word: dog")
+   *   3. After audio ends, microphone recording begins automatically
+   *   4. VAD detects speech onset and ends the trial after 1 s of silence
+   *   5. Whisper transcribes the response; correctness is scored
+   *
+   * For voice onset time (VOT) studies, set recording_start: "audio_start"
+   * and use headphones to prevent the stimulus from being picked up by the mic.
+   */
+
+  const jsPsych = initJsPsych({
+    on_finish: function () {
+      jsPsych.data.displayData();
+    }
+  });
+
+  const trials = [
+    { audio: 'audio/dog.mp3',  correct: ['dog','dogs']  },
+    { audio: 'audio/cat.mp3',  correct: ['cat','cats']  },
+    { audio: 'audio/bird.mp3', correct: ['bird','birds'] },
+  ];
+
+  const init_mic = {
+    type: jsPsychInitializeMicrophone
+  };
+
+  const auditory_naming = {
+    timeline: [
+      {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: '<p style="font-size: 48px;">+</p>',
+        choices: "NO_KEYS",
+        trial_duration: 500,
+      },
+      {
+        type: jsPsychPluginAudioResponse,
+        stimulus: function () { return jsPsych.evaluateTimelineVariable('audio'); },
+        prompt: '<p style="font-size: 24px;">Repeat the word you hear.</p>',
+        recording_start: 'audio_end',
+        recording_duration: 5000,
+        silence_threshold: 1000,
+        transcription: true,
+        response_choices: ['dog','dogs', 'cat', 'cats', 'bird', 'birds'],
+        correct_response: function () { return jsPsych.evaluateTimelineVariable('correct'); },
+        show_feedback: true,
+        feedback_duration: 1000,
+        require_keyword: true,
+        keyword_retry_message: '<p style="font-size: 24px;">Please try again.</p>',
+        replay_on_retry: true,
+      }
+    ],
+    timeline_variables: trials,
+    randomize_order: true,
+  };
+
+  jsPsych.run([init_mic, auditory_naming]);
+</script>
+
+</html>
