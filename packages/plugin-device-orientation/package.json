@@ -41,7 +41,7 @@
   "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-device-orientation",
   "dependencies": {
     "jspsych": "^8.0.0",
-    "@citation-js/core": "^0.7.14",
+    "@citation-js/core": "^0.7.21",
     "@citation-js/plugin-software-formats": "^0.6.1",
     "@citation-js/plugin-bibtex": "^0.7.14",
     "@citation-js/plugin-cff": "^0.6.1"
