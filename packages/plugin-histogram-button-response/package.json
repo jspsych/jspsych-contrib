@@ -42,7 +42,7 @@
   "dependencies": {
     "@citation-js/core": "^0.7.14",
     "@citation-js/plugin-bibtex": "^0.7.14",
-    "@citation-js/plugin-cff": "^0.6.1",
+    "@citation-js/plugin-cff": "^0.6.2",
     "@citation-js/plugin-software-formats": "^0.6.1",
     "chart.js": "^4.4.7",
     "chartjs-plugin-annotation": "^3.1.0",
