@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "extension-humancheck"
+abstract: >-
+  A jsPsych extension that collects evidence a participant is a bot or an AI agent rather than a
+  person, and scores each session without blocking anyone. It records interaction traces, probes the
+  browser for signs of automation, and plants a hidden honeypot field and a hidden canary
+  instruction in each trial it is attached to.
+authors:
+  - family-names: "Mowinckel"
+    given-names: "Athanasia M."
+    orcid: "https://orcid.org/0000-0002-5756-0223"
+    affiliation: "Center for Lifespan Changes in Brain and Cognition, University of Oslo"
+repository-code: "https://github.com/capro-uio/jspsych-humancheck"
+url: "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-humancheck"
+license: MIT
+keywords:
+  - jsPsych
+  - bot detection
+  - data quality
+  - online experiments
+  - research methods
+version: 0.1.0
+date-released: 2026-10-21
+# The Zenodo concept DOI: always resolves to the newest archived version, rather than pinning
+# readers to the release that happened to be current when they looked.
+doi: "10.5281/zenodo.23541522"

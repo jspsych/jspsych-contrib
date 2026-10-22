@@ -1,0 +1,55 @@
+{
+  "name": "@jspsych-contrib/extension-humancheck",
+  "version": "0.1.0",
+  "description": "Collects evidence that a participant is a bot or an AI agent rather than a person, and scores each session without blocking anyone.",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "typings": "dist/index.d.ts",
+  "unpkg": "dist/index.browser.min.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "source": "src/index.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
+    "tsc": "tsc",
+    "build": "rollup --config",
+    "build:watch": "npm run build -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/extension-humancheck"
+  },
+  "keywords": [
+    "jsPsych",
+    "bot detection",
+    "data quality",
+    "attention check",
+    "online experiments"
+  ],
+  "author": {
+    "name": "Athanasia M. Mowinckel",
+    "url": "https://github.com/drmowinckels"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/capro-uio/jspsych-humancheck/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/extension-humancheck",
+  "peerDependencies": {
+    "jspsych": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@jspsych/config": "^3.2.2",
+    "@jspsych/plugin-html-button-response": "^2.0.0",
+    "@jspsych/test-utils": "^1.0.0",
+    "jspsych": "^8.0.0"
+  }
+}

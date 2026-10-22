@@ -1,0 +1,1 @@
+# @jspsych-contrib/extension-humancheck

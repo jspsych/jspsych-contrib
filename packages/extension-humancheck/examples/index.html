@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>extension-humancheck example</title>
+    <script src="https://unpkg.com/jspsych@8.3.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-text@2"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8.3.0/css/jspsych.css" />
+  </head>
+  <body>
+    <script>
+      const jsPsych = initJsPsych({
+        extensions: [{ type: jsPsychExtensionHumanCheck }],
+        on_finish: () => {
+          const summary = jsPsych.extensions.humancheck.summarize();
+          document.body.innerHTML = `
+            <main style="max-width:44em;margin:2em auto;font-family:system-ui">
+              <h1>Score: ${summary.score} ${summary.score >= 0.5 ? "(flagged)" : "(not flagged)"}</h1>
+              <p>${summary.trials_observed} trials observed, ${summary.checks_observed} with hidden probes.</p>
+              <h2>Flags</h2>
+              <pre>${summary.flags.length ? JSON.stringify(summary.flags, null, 2) : "none"}</pre>
+              <h2>All data</h2>
+              <pre style="white-space:pre-wrap">${JSON.stringify(jsPsych.data.get().values(), null, 2)}</pre>
+            </main>`;
+        },
+      });
+
+      const stroop = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: () =>
+          `<p style="font-size:2em">Which colour is this word printed in?</p>
+           <p style="font-size:3em;color:${jsPsych.evaluateTimelineVariable("ink")}">${jsPsych.evaluateTimelineVariable("word")}</p>`,
+        choices: ["red", "green", "blue"],
+      };
+
+      jsPsych.run([
+        {
+          extensions: [{ type: jsPsychExtensionHumanCheck }],
+          timeline: [
+            {
+              type: jsPsychHtmlButtonResponse,
+              stimulus: `<p>This example collects mouse, keyboard and timing data, and hides a honeypot
+                         field and a hidden instruction in each trial. Nothing is blocked; the score is
+                         shown at the end.</p>`,
+              choices: ["Begin"],
+            },
+            {
+              timeline: [stroop],
+              timeline_variables: [
+                { word: "RED", ink: "blue" },
+                { word: "GREEN", ink: "green" },
+                { word: "BLUE", ink: "red" },
+                { word: "RED", ink: "red" },
+              ],
+            },
+            {
+              type: jsPsychSurveyText,
+              questions: [
+                { prompt: "In a sentence or two, describe what you can see from where you are sitting.", rows: 4, columns: 50 },
+              ],
+            },
+            {
+              type: jsPsychSurveyText,
+              questions: [{ prompt: "To show you are reading carefully, type the name of a fruit that is yellow." }],
+              extensions: [{ type: jsPsychExtensionHumanCheck, params: { expected: ["banana", "lemon"] } }],
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>
