@@ -276,7 +276,9 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
     // build display
     display_element.innerHTML = `<style id="jspsych-numpad-styles">${this.getCss()}</style>
       <div id="jspsych-numpad-container" class="jspsych-numpad-container"
-        style="--jspsych-numpad-cols: ${cols}; --jspsych-numpad-rows: ${rows};">
+        style="--jspsych-numpad-cols: ${cols}; --jspsych-numpad-rows: ${rows};
+          --jspsych-numpad-has-preamble: ${trial.preamble !== null ? 1 : 0};
+          --jspsych-numpad-has-preview: ${trial.show_preview ? 1 : 0};">
         ${
           trial.preamble !== null
             ? `<div id="jspsych-numpad-preamble" class="jspsych-numpad-preamble">${trial.preamble}</div>`
@@ -285,7 +287,7 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
         <div class="jspsych-numpad-body">
           ${
             trial.show_preview
-              ? `<div id="jspsych-numpad-preview" class="jspsych-numpad-preview"></div>`
+              ? `<div id="jspsych-numpad-preview" class="jspsych-numpad-preview"><span class="jspsych-numpad-preview-text"></span></div>`
               : ""
           }
           <div id="jspsych-numpad-error" class="jspsych-numpad-error"></div>
@@ -634,16 +636,31 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
     return groups.join(this.params.separator_character);
   }
 
-  /** shows the input through `format_function`, shrinking the font until it fits. */
+  /**
+   * shows the input through `format_function`, shrinking the font (between 1.6em and 0.5em) to fit.
+   * if it still doesn't fit at 0.5em, scrolls to the end so the latest input stays visible.
+   */
   private updatePreview() {
     if (!this.preview) return;
-    this.preview.textContent = String(this.params.format_function(this.formatInput()));
-    let fontSize = 1.6;
-    this.preview.style.fontSize = `${fontSize}em`;
-    while (this.preview.scrollWidth > this.preview.clientWidth && fontSize > 0.5) {
-      fontSize = Math.round((fontSize - 0.05) * 100) / 100;
-      this.preview.style.fontSize = `${fontSize}em`;
+    const text = this.preview.querySelector<HTMLElement>(".jspsych-numpad-preview-text");
+    text.textContent = String(this.params.format_function(this.formatInput()));
+
+    // text width scales with font size, so measure once at the current size and scale to fit
+    const currentSize = parseFloat(this.preview.style.fontSize) || 1.6;
+    const style = getComputedStyle(this.preview);
+    const available =
+      this.preview.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+    const width = text.getBoundingClientRect().width;
+    let size = 1.6;
+    if (width > 0 && available > 0) {
+      size = Math.floor(((currentSize * available) / width) * 100) / 100;
+      size = Math.min(1.6, Math.max(0.5, size));
     }
+    this.preview.style.fontSize = `${size}em`;
+
+    const overflowing = (width * size) / currentSize > available;
+    this.preview.classList.toggle("jspsych-numpad-preview-overflow", overflowing);
+    if (overflowing) this.preview.scrollLeft = this.preview.scrollWidth;
   }
 
   private getCss() {
@@ -661,11 +678,22 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
         box-sizing: border-box;
         width: 100%;
         margin: 0 auto;
-        /* the rendered column width: full size, or an equal share of the window minus padding and gaps */
+        /* vertical space used by non-grid items */
+        --jspsych-numpad-reserved-height: calc(
+          32px + 2.52em + 16px + var(--jspsych-numpad-has-preview) * (52px + 16px) +
+            var(--jspsych-numpad-has-preamble) * 4.75em
+        );
+        /* columns are either full width of equal share of window width/height minus everything else */
         --jspsych-numpad-cell-width: min(
           var(--jspsych-numpad-cell),
           (100vw - 32px - (var(--jspsych-numpad-cols) - 1) * var(--jspsych-numpad-gap)) /
-            var(--jspsych-numpad-cols)
+            var(--jspsych-numpad-cols),
+          max(
+            44px,
+            (100dvh - var(--jspsych-numpad-reserved-height) -
+                (var(--jspsych-numpad-rows) - 1) * var(--jspsych-numpad-gap)) /
+              var(--jspsych-numpad-rows)
+          )
         );
       }
       /* holds the preview, error, and grid; never wider than the grid, so they always line up */
@@ -675,7 +703,7 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
         gap: 16px;
         width: 100%;
         max-width: calc(
-          var(--jspsych-numpad-cols) * var(--jspsych-numpad-cell) +
+          var(--jspsych-numpad-cols) * var(--jspsych-numpad-cell-width) +
             (var(--jspsych-numpad-cols) - 1) * var(--jspsych-numpad-gap)
         );
       }
@@ -696,6 +724,9 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
         letter-spacing: 0.15em;
         white-space: nowrap;
       }
+      .jspsych-numpad-preview-overflow {
+        box-shadow: inset 16px 0 10px -10px rgba(0, 0, 0, 0.25);
+      }
       /* always reserves two lines (enough for the default messages), so showing an error doesn't shift the numpad */
       .jspsych-numpad-error {
         color: #c0392b;
@@ -706,8 +737,11 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
       }
       .jspsych-numpad-grid {
         display: grid;
-        /* columns are up to --jspsych-numpad-cell wide but may shrink to fit narrow screens */
-        grid-template-columns: repeat(var(--jspsych-numpad-cols), minmax(0, var(--jspsych-numpad-cell)));
+        /* columns are up to --jspsych-numpad-cell-width wide but may shrink further to fit their container */
+        grid-template-columns: repeat(
+          var(--jspsych-numpad-cols),
+          minmax(0, var(--jspsych-numpad-cell-width))
+        );
         grid-template-rows: repeat(var(--jspsych-numpad-rows), auto);
         justify-content: center;
         gap: var(--jspsych-numpad-gap);
@@ -747,26 +781,66 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
       .jspsych-numpad-button-continue .jspsych-numpad-label {
         font-size: min(1em, var(--jspsych-numpad-cell-width) * 0.17);
       }
-      .jspsych-numpad-button:hover {
-        background: #e8e8e8;
-      }
-      .jspsych-numpad-button:active {
-        background: #d0d0d0;
-        transform: scale(0.95);
-      }
       .jspsych-numpad-button-delete {
         background: #fdf0f0;
         border-color: #e0a0a0;
-      }
-      .jspsych-numpad-button-delete:hover {
-        background: #f8d7d7;
       }
       .jspsych-numpad-button-continue {
         background: #eaf4ea;
         border-color: #8bc48b;
       }
-      .jspsych-numpad-button-continue:hover {
-        background: #cde8cd;
+      /* only on devices that can hover; on touch screens :hover sticks to the last tapped key */
+      @media (hover: hover) {
+        .jspsych-numpad-button:hover {
+          background: #e8e8e8;
+        }
+        .jspsych-numpad-button-delete:hover {
+          background: #f8d7d7;
+        }
+        .jspsych-numpad-button-continue:hover {
+          background: #cde8cd;
+        }
+      }
+      .jspsych-numpad-button:active {
+        background: #d0d0d0;
+        transform: scale(0.95);
+      }
+      /* preamble, preview, and error on the left if phone is landscaped */
+      @media (orientation: landscape) and (max-height: 500px) {
+        .jspsych-numpad-container {
+          --jspsych-numpad-cell-width: min(
+            var(--jspsych-numpad-cell),
+            (100vw - 32px - 24px - 200px - (var(--jspsych-numpad-cols) - 1) * var(--jspsych-numpad-gap)) /
+              var(--jspsych-numpad-cols),
+            max(
+              44px,
+              (100dvh - 32px - (var(--jspsych-numpad-rows) - 1) * var(--jspsych-numpad-gap)) /
+                var(--jspsych-numpad-rows)
+            )
+          );
+          display: grid;
+          grid-template-columns: minmax(200px, 1fr) auto;
+          grid-template-rows: 1fr auto auto auto 1fr;
+          column-gap: 24px;
+          row-gap: 12px;
+          width: min(100vw, 900px);
+        }
+        .jspsych-numpad-body {
+          display: contents;
+        }
+        .jspsych-numpad-preamble {
+          grid-area: 2 / 1;
+        }
+        .jspsych-numpad-preview {
+          grid-area: 3 / 1;
+        }
+        .jspsych-numpad-error {
+          grid-area: 4 / 1;
+        }
+        .jspsych-numpad-grid {
+          grid-area: 1 / 2 / -1 / 3;
+          align-self: center;
+        }
       }
     `;
   }
