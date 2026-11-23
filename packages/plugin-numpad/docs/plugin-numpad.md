@@ -11,10 +11,11 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | numpad_layout        | array       | `[[1, 2, 3], [4, 5, 6], [7, 8, 9], ["delete", 0, "continue"]]` | A 2D array describing the numpad, one inner array per row. Every row must have the same length. Identical keys placed next to each other merge into one larger button, as long as they form a rectangle; otherwise each key may appear only once. See [Layouts](#layouts) for the keys each cell can have. |
 | max_digits           | integer     | `null`        | The maximum number of digits that can be entered. If the participant tries to enter more than this, the extra input is ignored; a multi-digit key like `"00"` that would go over the limit is ignored entirely. Only digits count, not the minus sign, decimal character, or separators. `null` for no limit. |
 | min_digits           | integer     | `1`           | The minimum number of digits that must be entered in order to continue. If the participant tries to continue with fewer, `error_message` is shown with reason `"min_digits"` and they cannot continue until they enter enough digits. Only digits count. `0` allows an empty response. Must not be greater than `max_digits`. |
-| validate_fn          | function    | `null`        | An optional function `(input) => boolean`, called with the current contents of the field when the participant tries to continue, after the `min_digits` and format checks pass. `input` is the response exactly as displayed (e.g. `"-1,234.5"`), or `""` if nothing was entered. Return `true` to accept the response, or `false` to reject it and show `error_message` with reason `"validate_fn"`. |
+| validate_fn          | function    | `null`        | An optional function `(input) => boolean`, called with the current contents of the field when the participant tries to continue, after the `min_digits` and format checks pass. `input` is the response as entered, with any separators but without `format_function` applied (e.g. `"-1,234.5"`), or `""` if nothing was entered. Return `true` to accept the response, or `false` to reject it and show `error_message` with reason `"validate_fn"`. |
 | error_message        | function    | see description | A function `(input, reason) => string` returning the error message displayed between the preview and the numpad when the participant cannot continue. `input` is the current contents of the field. `reason` is `"min_digits"` (too few digits), `"format"` (the response ends in a minus sign, decimal character, or separator), or `"validate_fn"` (`validate_fn` returned `false`). The default returns a generic message for each reason. |
 | show_preview         | boolean     | `true`        | If true, a preview of the current input is displayed above the numpad. If false, no preview is displayed. |
-| preamble             | HTML string | `null`        | An HTML string displayed above the numpad, and above the preview if it is shown. |
+| format_function      | function    | `(input) => input` | A function `(input) => string` returning the text to show in the preview, for adding text around the number, e.g. `(input) => "$" + input` or `(input) => input + " kg"`. It is called with `""` before anything is entered, so a prefix or unit shows from the start. This only changes what is displayed to the participant, and is not reflected in the data, `validate_fn`, or `error_message`. Has no effect if `show_preview` is false. |
+| preamble             | HTML string | `null`        | An HTML string displayed above the numpad and the preview, if not `null`. |
 | continue_button_text | string      | `"Continue"`  | The text for the `"continue"` key. |
 | delete_button_text   | string      | `"Delete"`    | The text for the `"delete"` key. |
 | negative_button_text | string      | `"±"`         | The text for the `"negative"` key. |
@@ -24,6 +25,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | allow_keyboard       | boolean     | `true`        | If true, the participant may use the keyboard to enter input in addition to clicking on the numpad. Only keys present on the numpad can be typed: single-digit keys, `-` for `"negative"`, `decimal_character` for `"decimal"`, and `separator_character` for `"separator"`. Multi-digit keys such as `"00"` can only be clicked. If false, only clicking on the numpad is allowed. |
 | delete_key           | key         | `"Backspace"` | If `allow_keyboard` is true, the key the participant can press to delete the last character they entered. |
 | continue_key         | key         | `"Enter"`     | If `allow_keyboard` is true, the key the participant can press to continue and submit their input. |
+| trial_duration       | integer     | `null`        | How long to wait for the participant to continue before ending the trial, in milliseconds. When time runs out, the trial ends with whatever has been entered so far, with no validation (the `min_digits`, format, and `validate_fn` checks are skipped), and `rt` is `null`. `null` for no time limit. |
 
 The trial throws an error at the start if its parameters can never produce a valid response, for example a malformed layout, `min_digits` greater than `max_digits`, or no `"continue"` key while `allow_keyboard` is false.
 
@@ -47,9 +49,18 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 
 | Name      | Type    | Value                                    |
 | --------- | ------- | ---------------------------------------- |
-| response | string | The response exactly as displayed to the participant, including any minus sign, decimal character, and separators (e.g. `"-1,234.5"`). Kept as a string to preserve leading zeros. `null` if no response was given. |
+| response | string | The response as entered, including any minus sign, decimal character, and separators, but without `format_function` applied (e.g. `"-1,234.5"`). Kept as a string to preserve leading zeros. If `trial_duration` ran out, this is whatever had been entered, even if incomplete (e.g. `"5."`). `null` if no response was given. |
 | raw_number | float | The response parsed as a number, ignoring separators, removing leading zeros, and reading the decimal character as a decimal point, whatever `decimal_character` is (e.g. `"-1,234.5"` and `"-1.234,5"` both give `-1234.5`, and `"007"` gives `7`). Use `response` for codes like PINs where leading zeros matter. Since this is a normal JavaScript number, a response with more than 15 significant digits may be rounded; `response` always keeps the exact digits. `null` if no response was given. |
-| rt | integer | The response time in milliseconds for the trial. |
+| rt | integer | The response time in milliseconds for the trial. `null` if the trial ended because `trial_duration` ran out. |
+| key_presses | array | Every key press during the trial, in order, including presses that had no effect (e.g. a digit past `max_digits`) and presses of `"continue"` that were rejected. Each entry is an object with the fields below. |
+
+Each entry of `key_presses` has:
+
+| Field | Type | Value |
+| ----- | ---- | ----- |
+| time | integer | The time of the key press in milliseconds, measured from the start of the trial like `rt`. |
+| key_pressed | string | The numpad key that was pressed (e.g. `"7"`, `"00"`, `"delete"`, `"continue"`), even when it was typed on the keyboard, so pressing Backspace is logged as `"delete"`. |
+| is_numpad | boolean | `true` for a click or tap on the numpad, `false` for a keyboard press. |
 
 ## Install
 
@@ -144,6 +155,18 @@ var money = {
     ["delete", "continue", "continue"],
   ],
   separate_pattern: "thousands", // or "lakh_crore"
+  format_function: (input) => "$" + input, // the response is still recorded without the "$"
+};
+```
+
+### Timed Estimate with Units
+
+```javascript
+var weight = {
+  type: jsPsychNumpad,
+  preamble: "<p>Estimate the weight. You have 10 seconds.</p>",
+  format_function: (input) => input + " kg",
+  trial_duration: 10000,
 };
 ```
 

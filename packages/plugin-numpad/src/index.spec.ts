@@ -493,4 +493,109 @@ describe("plugin-numpad", () => {
       await expectRunning();
     });
   });
+
+  describe("key_presses", () => {
+    it("logs every press with its time and whether it came from the numpad", async () => {
+      const { expectFinished, getData } = await startTimeline([
+        { type: jsPsychNumpad, max_digits: 1 },
+      ]);
+
+      jest.advanceTimersByTime(100);
+      click("1");
+      jest.advanceTimersByTime(100);
+      await pressKey("2"); // ignored: over max_digits, but still logged
+      click("delete");
+      await pressKey("Backspace");
+      click("continue"); // rejected: no digits
+      await pressKey("3");
+      await pressKey("Enter");
+
+      await expectFinished();
+      const data = getData().values()[0];
+      expect(data.key_presses).toEqual([
+        { time: 100, key_pressed: "1", is_numpad: true },
+        { time: 200, key_pressed: "2", is_numpad: false },
+        { time: 200, key_pressed: "delete", is_numpad: true },
+        { time: 200, key_pressed: "delete", is_numpad: false },
+        { time: 200, key_pressed: "continue", is_numpad: true },
+        { time: 200, key_pressed: "3", is_numpad: false },
+        { time: 200, key_pressed: "continue", is_numpad: false },
+      ]);
+      expect(data.response).toBe("3");
+    });
+
+    it("is empty if nothing was pressed", async () => {
+      const { expectFinished, getData } = await startTimeline([
+        { type: jsPsychNumpad, trial_duration: 500 },
+      ]);
+
+      jest.advanceTimersByTime(500);
+
+      await expectFinished();
+      expect(getData().values()[0].key_presses).toEqual([]);
+    });
+  });
+
+  describe("format_function", () => {
+    it("formats the preview but not the response", async () => {
+      const validate_fn = jest.fn(() => true);
+      const { expectFinished, getData } = await startTimeline([
+        {
+          type: jsPsychNumpad,
+          numpad_layout: [[1, 2, "decimal", "continue"]],
+          separate_pattern: "thousands",
+          format_function: (input: string) => `$${input} USD`,
+          validate_fn,
+        },
+      ]);
+
+      expect(preview()).toBe("$ USD");
+      click("1", "2", "1", "2", "decimal", "1");
+      expect(preview()).toBe("$1,212.1 USD");
+      click("continue");
+
+      await expectFinished();
+      expect(validate_fn).toHaveBeenCalledWith("1,212.1");
+      expect(getData().values()[0].response).toBe("1,212.1");
+    });
+  });
+
+  describe("trial_duration", () => {
+    it("ends the trial with the current input, unchecked, and a null rt", async () => {
+      const { expectRunning, expectFinished, getData } = await startTimeline([
+        {
+          type: jsPsychNumpad,
+          numpad_layout: [[1, "decimal", "continue"]],
+          min_digits: 3,
+          trial_duration: 1000,
+        },
+      ]);
+
+      click("1", "decimal");
+      jest.advanceTimersByTime(999);
+      await expectRunning();
+      jest.advanceTimersByTime(1);
+
+      await expectFinished();
+      const data = getData().values()[0];
+      expect(data.response).toBe("1.");
+      expect(data.raw_number).toBe(1);
+      expect(data.rt).toBeNull();
+      expect(data.key_presses).toHaveLength(2);
+    });
+
+    it("does not end the trial early if the participant continues first", async () => {
+      const { expectFinished, getData } = await startTimeline([
+        { type: jsPsychNumpad, trial_duration: 1000 },
+      ]);
+
+      jest.advanceTimersByTime(300);
+      click("1", "continue");
+
+      await expectFinished();
+      expect(getData().values()[0].rt).toBe(300);
+      jest.advanceTimersByTime(1000);
+      expect(getData().values()).toHaveLength(1);
+    });
+  });
 });

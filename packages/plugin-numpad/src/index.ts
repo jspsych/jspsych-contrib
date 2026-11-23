@@ -84,7 +84,16 @@ const info = <const>{
       default: true,
     },
     /**
-     * An HTML string that will be displayed above the numpad and the preview if enabled.
+     * A function taking in the current contents of the field `input` and returning the text to show in
+     * the preview, e.g. `(input) => "$" + input` or `(input) => input + " kg"`. This only changes what
+     * is displayed to the participant, and will not be reflected in the results or in `error_message`.
+     */
+    format_function: {
+      type: ParameterType.FUNCTION,
+      default: (input: string) => input,
+    },
+    /**
+     * An HTML string that will be displayed above the numpad and the preview if not `null`.
      */
     preamble: {
       type: ParameterType.HTML_STRING,
@@ -166,11 +175,20 @@ const info = <const>{
       type: ParameterType.KEY,
       default: "Enter",
     },
+    /**
+     * How long to wait for the participant to continue before ending the trial, in milliseconds. When
+     * the time runs out, the trial ends with whatever has been entered so far, with no validation, and
+     * `rt` is null. Set this to null for no time limit.
+     */
+    trial_duration: {
+      type: ParameterType.INT,
+      default: null,
+    },
   },
   data: {
     /**
-     * The response as displayed to the participant, including any minus sign, decimal character, and
-     * separators. `null` if no response was given.
+     * The response as entered, including any minus sign, decimal character, and separators, but
+     * without `format_function` applied. `null` if no response was given.
      */
     response: {
       type: ParameterType.STRING,
@@ -183,9 +201,37 @@ const info = <const>{
     raw_number: {
       type: ParameterType.FLOAT,
     },
-    /** The response time in milliseconds for the trial. */
+    /**
+     * The response time in milliseconds for the trial. `null` if the trial ended because
+     * `trial_duration` ran out.
+     */
     rt: {
       type: ParameterType.INT,
+    },
+    /**
+     * Every key press during the trial, in order, including presses that had no effect (e.g. a digit
+     * past `max_digits`) and presses of `"continue"` that were rejected.
+     */
+    key_presses: {
+      type: ParameterType.COMPLEX,
+      array: true,
+      nested: {
+        /** The time of the key press in milliseconds, measured from the start of the trial like `rt`. */
+        time: {
+          type: ParameterType.INT,
+        },
+        /**
+         * The numpad key that was pressed (e.g. `"7"`, `"00"`, `"delete"`, `"continue"`), even when it
+         * was typed on the keyboard.
+         */
+        key_pressed: {
+          type: ParameterType.STRING,
+        },
+        /** True for a click or tap on the numpad, false for a keyboard press. */
+        is_numpad: {
+          type: ParameterType.BOOL,
+        },
+      },
     },
   },
 };
@@ -210,6 +256,8 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
   private preview: HTMLElement | null;
   private errorDiv: HTMLElement;
   private startTime: number;
+  private keyPresses: { time: number; key_pressed: string; is_numpad: boolean }[];
+  private keyboardListener = null;
 
   constructor(private jsPsych: JsPsych) {}
 
@@ -217,6 +265,8 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
     this.params = trial;
     this.input = [];
     this.negative = false;
+    this.keyPresses = [];
+    this.keyboardListener = null;
 
     // validate layout and parameters
     const { rows, cols, buttons } = this.parseLayout(trial.numpad_layout);
@@ -280,11 +330,16 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
         label.textContent = b.key;
       }
       btn.appendChild(label);
-      btn.addEventListener("click", () => this.pressKey(b.key));
+      btn.addEventListener("click", () => this.pressKey(b.key, true));
       grid.appendChild(btn);
     }
 
+    this.updatePreview();
     this.startTime = performance.now();
+
+    if (trial.trial_duration !== null) {
+      this.jsPsych.pluginAPI.setTimeout(() => this.endTrial(true), trial.trial_duration);
+    }
 
     if (trial.allow_keyboard) {
       // typed key -> numpad key it presses. multi-digit keys like "00" can only be clicked.
@@ -296,14 +351,14 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
       if (keys.includes("decimal")) typedKeys.set(trial.decimal_character, "decimal");
       if (keys.includes("separator")) typedKeys.set(trial.separator_character, "separator");
 
-      this.jsPsych.pluginAPI.getKeyboardResponse({
+      this.keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: (info) => {
           if (this.jsPsych.pluginAPI.compareKeys(info.key, trial.delete_key)) {
-            this.pressKey("delete");
+            this.pressKey("delete", false);
           } else if (this.jsPsych.pluginAPI.compareKeys(info.key, trial.continue_key)) {
-            this.pressKey("continue");
+            this.pressKey("continue", false);
           } else if (typedKeys.has(info.key)) {
-            this.pressKey(typedKeys.get(info.key));
+            this.pressKey(typedKeys.get(info.key), false);
           }
         },
         valid_responses: [...typedKeys.keys(), trial.delete_key, trial.continue_key],
@@ -312,15 +367,16 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
     }
   }
 
-  private endTrial() {
-    if (this.params.allow_keyboard) {
-      this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
+  private endTrial(timedOut = false) {
+    if (this.keyboardListener !== null) {
+      this.jsPsych.pluginAPI.cancelKeyboardResponse(this.keyboardListener);
     }
     const input = this.formatInput();
     this.jsPsych.finishTrial({
       response: input === "" ? null : input,
       raw_number: this.getRawNumber(),
-      rt: Math.round(performance.now() - this.startTime),
+      rt: timedOut ? null : Math.round(performance.now() - this.startTime),
+      key_presses: this.keyPresses,
     });
   }
 
@@ -474,8 +530,14 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
     }
   }
 
-  /** applies a numpad key press, from either a click or the keyboard. */
-  private pressKey(key: string) {
+  /** logs and applies a numpad key press, from either a click (`isNumpad`) or the keyboard. */
+  private pressKey(key: string, isNumpad: boolean) {
+    this.keyPresses.push({
+      time: Math.round(performance.now() - this.startTime),
+      key_pressed: key,
+      is_numpad: isNumpad,
+    });
+
     if (key === "continue") {
       this.handleContinue();
       return;
@@ -572,10 +634,10 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
     return groups.join(this.params.separator_character);
   }
 
-  /** shows the formatted input, shrinking the font until it fits. */
+  /** shows the input through `format_function`, shrinking the font until it fits. */
   private updatePreview() {
     if (!this.preview) return;
-    this.preview.textContent = this.formatInput();
+    this.preview.textContent = String(this.params.format_function(this.formatInput()));
     let fontSize = 1.6;
     this.preview.style.fontSize = `${fontSize}em`;
     while (this.preview.scrollWidth > this.preview.clientWidth && fontSize > 0.5) {
