@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychPluginSnapSort Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/plain-draggable@2.5.15"></script> -->
+    <!-- Load the published plugin package here, e.g.
+<script src="https://unpkg.com/plugin-snap-sort"></script>
+<script src="../dist/index.browser.js"></script> -->
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+    <link rel="stylesheet" href="../src/styles.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+//first, a basic trial. boxes are black. participants can sort how they please. As long as all stimuli are sorted in a box, they may proceed.
+
+    const basic = {
+      type: jsPsychPluginSnapSort,
+      stimulus: [
+        {file: '../assets/blue-rec.png', height: 100, width: 200},
+        {file: '../assets/green-rec.png', height: 100, width: 200},
+        {file: '../assets/red-rec.png', height: 100, width: 200},
+        {file: '../assets/purple-square.png', height: 100, width: 100},
+      ],
+      holding_area_location: "left",
+      stim_height: 100,
+      stim_width: 120,
+      scale_factor: 1.1,
+      boxes: [
+        {id: 0, color: '#000000', height: 100, width: 200},
+        {id: 1, color: '#000000', height: 100, width: 200},
+        {id: 2, color: '#000000', height: 100, width: 200},
+        {id: 1, color: '#000000', height: 100, width: 200}
+      ],
+      use_correctness: false,
+      allow_multiple_per_box: true,
+      box_margin: 40,
+      box_hover_color: "#40E0D0",
+      snap_margin: 20,
+	    prompt: 'Add instructions --> <b>Drag and drop the boxes.</b><br>Notes: Same number of stimuli and boxes. Once all stimuli are sorted, participants can move on. Include messages to encourage your participant to finish the task below.)',
+      prompt_location: 'above',
+	    //<!--above is the only option.-->
+      button_label: 'Continue' ,
+      include_counter: true,
+      counter_text_unfinished: 'Your job is not done. Get to work!',
+      counter_text_finished: 'Nice',
+      show_button: "always",
+	    // <!--show_button doesn't seem to be independent of use_correctness yet-->
+      use_completeness_criteria: true,
+      completeness_criteria: "exact_correct_answers",
+	    // <!--use_completeness criteria (currently use_criteria) and completeness criteria are either not parameters or are not in use.-->
+      // trial_duration: 60000,
+	    // <!--trial_duration is not yet in use. -->
+      response_ends_trial: true
+	    // <!--response_ends_trial is not yet in use-->
+    };
+
+const basic_left = {
+      type: jsPsychPluginSnapSort,
+      stimulus: [
+        {id: 0, file: '../assets/blue-rec.png', height: 100, width: 200},
+        {id: 1, file: '../assets/green-rec.png', height: 100, width: 200},
+        {id: 2, file: '../assets/red-rec.png', height: 100, width: 200}
+      ],
+      holding_area_location: "left",
+      stim_height: 100,
+      stim_width: 120,
+      scale_factor: 1.1,
+      boxes: [
+        {id: 0, color: '#000000', height: 100, width: 200},
+        {id: 1, color: '#000000', height: 100, width: 200},
+        {id: 2, color: '#000000', height: 100, width: 200}
+      ],
+      use_correctness: false,
+      box_margin: 40,
+      box_hover_color: "#40E0D0",
+      snap_margin: 20,
+	    prompt: '<b>Drag and drop the boxes.</b><br>Notes: Same, except the holding area was moved to the left. The message tells participants how many more to sort.)',
+      prompt_location: 'above',
+	    // <!--above is the only option.-->
+      button_label: 'Continue',
+      include_counter: true,
+      allow_multiple_per_box: false,
+      show_button: "always",
+      use_completeness_criteria: true,
+      completeness_criteria: "exact_correct_answers",
+      trial_duration: 60000,
+      response_ends_trial: true
+    };
+
+
+    const trial_by_color = {
+      type: jsPsychPluginSnapSort,
+      stimulus: [
+        {correct_box_id: 0, file: '../assets/blue-rec.png', height: 100, width: 200},
+        {correct_box_id: 1, file: '../assets/green-rec.png', height: 100, width: 200},
+        {correct_box_id: 2, file: '../assets/red-rec.png', height: 100, width: 200}
+      ],
+      stim_height: 100,
+      stim_width: 120,
+      scale_factor: 1.1,
+      holding_area_location: "left",
+      boxes: [
+        {id: 0, color: '#0271bc', height: 100, width: 200},
+        {id: 1, color: '#3ab54b', height: 100, width: 200},
+        {id: 2, color: '#FF0000', height: 100, width: 200}
+      ],
+      use_correctness: true,
+      box_margin: 40,
+      box_hover_color: "#40E0D0",
+      snap_margin: 20,
+      prompt: 'Same, except this time the boxes have colored borders. Participants can only proceed if they put the stimuli in the correct boxes',
+      prompt_location: 'above',
+      button_label: 'Continue',
+      include_counter: true,
+      allow_multiple_per_box: false,
+      show_button: "always",
+    };
+
+
+    const trial_by_shape = {
+      type: jsPsychPluginSnapSort,
+      stimulus: [
+        {file: '../assets/blue-rec.png', color: '#0271bc', height: 50, width: 200, correct_box_id: 0},
+        {file: '../assets/green-rec.png', color: '#3ab54b', height: 75, width: 200, correct_box_id: 1},
+        {file: '../assets/red-rec.png', color: '#FF0000', height: 50, width: 200, correct_box_id: 0}
+      ],
+      stim_height: 100,
+      stim_width: 120,
+      scale_factor: 1.1,
+      holding_area_location: "left",
+      boxes: [
+        {id: 0, color: '#5B7C99', height: 50, width: 200},
+        {id: 1, color: '#5B7C99', height: 75, width: 200},
+        {id: 2, color: '#5B7C99', height: 100, width: 200}
+      ],
+      use_correctness: true,
+      allow_multiple_per_box: true,
+      box_margin: 40,
+      snap_margin: 20,
+      prompt: 'Categorize by shape. Multiple stimuli can be sorted into the same box.',
+      prompt_location: 'above',
+      button_label: 'Continue',
+      include_counter: true,
+    };
+
+
+     const trial_by_hidden = {
+      type: jsPsychPluginSnapSort,
+      stimulus: [
+        {file: '../assets/blue-rec.png', color: '#0271bc', height: 50, width: 200, correct_box_id: 1},
+        {file: '../assets/green-rec.png', color: '#3ab54b', height: 75, width: 200, correct_box_id: 2},
+        {file: '../assets/red-rec.png', color: '#FF0000', height: 50, width: 200, correct_box_id: 0}
+      ],
+      stim_height: 100,
+      stim_width: 120,
+      scale_factor: 1.1,
+      holding_area_location: "left",
+      boxes: [
+        {id: 0, color: '#5B7C99', height: 50, width: 200},
+        {id: 1, color: '#5B7C99', height: 75, width: 200},
+        {id: 2, color: '#5B7C99', height: 100, width: 200}
+      ],
+      use_correctness: true,
+      allow_multiple_per_box: true,
+      box_margin: 40,
+      snap_margin: 20,
+      prompt: 'There are correct answers, but it is unclear to the participant.',
+      //prompt_location: 'left',
+      button_label: 'Continue',
+      include_counter: true,
+    };
+
+    // const trial10 = {
+    //   type: jsPsychPluginSnapSort,
+    //   prompt: 'WONT WORK YET. This is a trial with a correct answer. You have to put all of the green shapes in the single box before you can move on.',
+    //   scale_factor: 1.1,
+    //   holding_area_location: "right",
+    //   box_margin: 40,
+    //   snap_margin: 20,
+    //   prompt_location: 'above',
+    //   button_label: 'Continue',
+    //   include_counter: false,
+    //   stimulus: [
+    //     {id: 0, file: '../assets/green-circle.png', height: 100, width: 100},
+    //     {id: 0, file: '../assets/green-triangle.png', height: 100, width: 100},
+    //     {id: 0, file: '../assets/green-square.png', height: 100, width: 100},
+    //     {id: 1, file: '../assets/orange-circle.png', height: 100, width: 100},
+    //     {id: 1, file: '../assets/purple-triangle.png', height: 100, width: 100},
+    //     {id: 1, file: '../assets/purple-square.png', height: 100, width: 100}
+    //   ],
+    //   stim_height: 100, 
+    //   stim_width: 120,
+    //   boxes: [
+    //     {id: 0, colour: '#0271bc', height: 100, width: 200}
+    //   ],
+    //   use_correctness: true,
+    //   correctness_by: 'id',
+    //   use_criteria: true,
+    //   criteria: 'exact_correct_answers',
+    //   show_button: 'on_criteria'
+    // };
+
+    // const trial11 = {
+    //   type: jsPsychPluginSnapSort,
+    //   prompt: 'WONT WORK YET. Put the circles in the red box, the triangles in the blue box, and the squares in the green box. The trial will advance automatically once you put the last shape in the boxes, even if the answer is wrong.',
+    //   scale_factor: 1.1,
+    //   box_margin: 40,
+    //   snap_margin: 20,
+    //   prompt_location: 'above',
+    //   button_label: 'Continue',
+    //   include_counter: false,
+    //   stimulus: [
+    //     {id: 0, file: '../assets/green-circle.png', height: 100, width: 100},
+    //     {id: 1, file: '../assets/green-triangle.png', height: 100, width: 100},
+    //     {id: 2, file: '../assets/green-square.png', height: 100, width: 100},
+    //     {id: 0, file: '../assets/orange-circle.png', height: 100, width: 100},
+    //     {id: 1, file: '../assets/purple-triangle.png', height: 100, width: 100},
+    //     {id: 2, file: '../assets/purple-square.png', height: 100, width: 100}
+    //   ],
+    //   stim_height: 100, 
+    //   stim_width: 120,
+    //   boxes: [
+    //     {id: 0, colour: 'Red', height: 100, width: 200},
+    //     {id: 1, colour: 'Blue', height: 100, width: 200},
+    //     {id: 2, colour: 'Green', height: 100, width: 200}
+    //   ],
+    //   use_correctness: false,
+    //   use_criteria: true,
+    //   criteria: 'all_items_sorted',
+    //   response_ends_trial: true 
+    // };
+    
+    
+    jsPsych.run([basic, basic_left, trial_by_color, trial_by_shape, trial_by_hidden]);
+  </script>
+</html>
