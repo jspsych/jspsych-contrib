@@ -360,7 +360,8 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
           // don't input act on space or enter if a key is focused (usually would just actuate the button)
           const focused = document.activeElement;
           if (
-            (info.key === "Enter" || info.key === " ") &&
+            (this.jsPsych.pluginAPI.compareKeys(info.key, "Enter") ||
+              this.jsPsych.pluginAPI.compareKeys(info.key, " ")) &&
             focused instanceof HTMLElement &&
             focused.classList.contains("jspsych-numpad-button")
           ) {
