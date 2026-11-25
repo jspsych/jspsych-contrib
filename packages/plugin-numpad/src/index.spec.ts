@@ -494,6 +494,34 @@ describe("plugin-numpad", () => {
     });
   });
 
+  describe("focus", () => {
+    it("keeps focus off keys when they are clicked", async () => {
+      await startTimeline([{ type: jsPsychNumpad }]);
+
+      const event = new MouseEvent("mousedown", { bubbles: true, cancelable: true });
+      key("5").dispatchEvent(event);
+      expect(event.defaultPrevented).toBe(true);
+    });
+
+    it("leaves Enter to a key focused with Tab instead of also continuing", async () => {
+      const { expectRunning, getData } = await startTimeline([{ type: jsPsychNumpad }]);
+
+      click("5");
+      (key("5") as HTMLElement).focus();
+      await pressKey("Enter");
+
+      expect(errorText()).toBeNull();
+      await expectRunning();
+      (document.activeElement as HTMLElement).blur();
+      await pressKey("Enter");
+      expect(
+        getData()
+          .values()[0]
+          .key_presses.map((p) => p.key_pressed)
+      ).toEqual(["5", "continue"]);
+    });
+  });
+
   describe("key_presses", () => {
     it("logs every press with its time and whether it came from the numpad", async () => {
       const { expectFinished, getData } = await startTimeline([

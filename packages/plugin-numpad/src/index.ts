@@ -332,6 +332,8 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
         label.textContent = b.key;
       }
       btn.appendChild(label);
+      // prevents focus on key so enter doesn't re-input key
+      btn.addEventListener("mousedown", (e) => e.preventDefault());
       btn.addEventListener("click", () => this.pressKey(b.key, true));
       grid.appendChild(btn);
     }
@@ -355,6 +357,15 @@ class NumpadPlugin implements JsPsychPlugin<Info> {
 
       this.keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: (info) => {
+          // don't input act on space or enter if a key is focused (usually would just actuate the button)
+          const focused = document.activeElement;
+          if (
+            (info.key === "Enter" || info.key === " ") &&
+            focused instanceof HTMLElement &&
+            focused.classList.contains("jspsych-numpad-button")
+          ) {
+            return;
+          }
           if (this.jsPsych.pluginAPI.compareKeys(info.key, trial.delete_key)) {
             this.pressKey("delete", false);
           } else if (this.jsPsych.pluginAPI.compareKeys(info.key, trial.continue_key)) {
